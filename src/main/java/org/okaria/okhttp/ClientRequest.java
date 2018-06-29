@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.log.Log;
 import org.okaria.manager.Item;
 import org.okaria.range.RangeInfo;
 
@@ -42,11 +43,11 @@ public interface ClientRequest {
     }
 
     default Response head(Item item) throws IOException {
-        return headCall(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders()).execute();
+        return response( headCall(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders()) );
     }
     
     default Response head(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-        return headCall(url, jar, headers).execute();
+        return response(headCall(url, jar, headers));
     }
     default Call headCall(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
         getHttpClient().cookieJar().saveFromResponse(url, jar);
@@ -54,7 +55,7 @@ public interface ClientRequest {
                 .url(url)
                 .headers(headers)
                 .head();
-        return getHttpClient().newCall(builder.build());
+        return newCall(builder.build());
     }
     
 	//--------------------------------------------------//
@@ -108,11 +109,11 @@ public interface ClientRequest {
     }
     
     default Response get(Item item) throws IOException {
-        return getCall(item, 0).execute();
+        return response(getCall(item, 0));
     }
     
     default Response get(Item item, int index) throws IOException {
-        return getCall(item, index).execute();
+        return response(getCall(item, index));
     }
     
     default Call getCall(Item item, int index) throws IOException {
@@ -125,11 +126,11 @@ public interface ClientRequest {
     }
     
     default Response get(Item item, long startRange, long endRange) throws IOException {
-        return getCall(item.getUpdateHttpUrl(), 
+        return response(getCall(item.getUpdateHttpUrl(), 
         		startRange, 
         		endRange, 
         		item.getCookies(), 
-        		item.getHeaders()).execute();
+        		item.getHeaders()));
     }
     default Call getCall(Item item, long startRange, long endRange) throws IOException {
         return getCall(item.getUpdateHttpUrl(), 
@@ -141,11 +142,11 @@ public interface ClientRequest {
     
     default Response get(HttpUrl url, long startRange, long endRange, List<Cookie> jar, Headers headers) throws IOException {
         if(endRange == -1) return get(url, startRange, jar, headers);
-    	return getCall(url, startRange, endRange, jar, headers).execute();
+    	return response(getCall(url, startRange, endRange, jar, headers));
     }
     
     default Response get(HttpUrl url, long startRange, List<Cookie> jar, Headers headers) throws IOException {
-        return getCall(url, startRange, jar, headers).execute();
+    	return response(getCall(url, startRange, jar, headers));
     }
     
     default Call getCall(HttpUrl url, long startRange, List<Cookie> jar, Headers headers) throws IOException {
@@ -156,7 +157,7 @@ public interface ClientRequest {
                 .get();
                 if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
         getHttpClient().cookieJar().saveFromResponse(url, jar);
-        return getHttpClient().newCall(builder.build());
+        return newCall(builder.build());
     }
     
     
@@ -192,6 +193,20 @@ public interface ClientRequest {
     	 * Connection: Keep-Alive
     	 */
         getHttpClient().cookieJar().saveFromResponse(url, jar);
-        return getHttpClient().newCall(builder.build());
+        return newCall(builder.build());
+    }
+    
+    default Call newCall( Request request) {
+    	Log.fine(getClass(), "Request", request.toString());
+    	Log.finer(getClass(), "Request Header", request.headers().toString());
+        return getHttpClient().newCall(request);
+    }
+    
+    default Response response( Call call) throws IOException {
+    	Response response = call.execute();
+    	Log.fine(getClass(), "Response", response.toString());
+    	Log.finer(getClass(), "Respnse Line", response.protocol() + " " + response.code() + " " + response.message());
+    	Log.finest(getClass(), "Response Header", response.headers().toString());
+        return response;
     }
 }

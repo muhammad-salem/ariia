@@ -85,6 +85,8 @@ public class ReportMonitor extends NetworkMonitorSpeed {
 			summery = "";
 			summery += Ansi.EraseLine + "\n";
 			summery += Ansi.EraseLine + "\n";
+			summery += Ansi.EraseLine + "\n";
+			summery += Ansi.EraseLine + "\n";
 			summery += Ansi.EraseLine;// + Ansi.SaveCursor;
 
 			// summery += "\r ";
@@ -140,6 +142,9 @@ public class ReportMonitor extends NetworkMonitorSpeed {
 			// summery += Ansi.EraseLine;
 			summery += Ansi.CursorUp;
 			// summery += Ansi.EraseLine;
+			summery += Ansi.CursorUp;
+			// summery += Ansi.EraseLine;
+			summery += Ansi.CursorUp;
 
 			System.out.print(summery);
 

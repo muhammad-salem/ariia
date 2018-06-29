@@ -469,14 +469,12 @@ public class Utils {
 	
 	public static String Filename(HttpUrl httpUrl) {
 		String filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size()-1);
-		if (filename.equals("") || filename.contains("?") || filename.equals(null)) {
+		if (httpUrl.pathSegments().size() > 2 && filename.equals("") || filename.contains("?") || filename.equals(null) ) {
 			filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size() - 2);
-		}	
-		
-		
-		//if (filename.equals("") || filename.equals(null)) {
-		//	filename = getFileName(url);
-		//}
+		}
+		if (filename.equals("") || filename.equals(null)) {
+			filename = getFileName(httpUrl.toString());
+		}
 		return filename;
 	}
 	public static String getFileName(String url) {
@@ -494,6 +492,10 @@ public class Utils {
 			lastslach -= 2;
 			filename = filename.substring(filename.lastIndexOf('/', lastslach)+1, lastslach);
 		}
+		
+		lastslach = filename.lastIndexOf('=')+1;
+		filename = filename.substring(lastslach);
+		
 		return filename;
 	}
 

@@ -139,8 +139,11 @@ public interface RangeUtils {
 		// case of download complete in this range
 		if( isSubRangeComplete(range) )
 			return range;
-		if(range[0] >= 12000)
+		if(range[0] >= 220000)		// 
+			range[0] -= 200000;		// 144256	
+		else if(range[0] >= 12000)
 			range[0] -= 10000;
+			
 		if(range[0] <= 0)
 			range[0] = 0;
 		return range;

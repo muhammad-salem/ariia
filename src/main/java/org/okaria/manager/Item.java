@@ -104,8 +104,21 @@ public class Item {
 		}
 	}
 
+	public void setHeaders(Map<String, String> headers) {
+		this.headers.clear();
+		for (String name : headers.keySet()) {
+			this.headers.put(name, headers.get(name));
+		}
+	}
+	
 	public void addHeaders(Headers headers) {
 		for (String name : headers.names()) {
+			this.headers.put(name, headers.get(name));
+		}
+	}
+	
+	public void addHeaders(Map<String, String> headers) {
+		for (String name : headers.keySet()) {
 			this.headers.put(name, headers.get(name));
 		}
 	}
@@ -142,8 +155,12 @@ public class Item {
 		return savepath + File.separatorChar + filename;
 	}
 
+	
 	@Override
 	public String toString() {
+		return toLiteString();
+	}
+	public String toFullString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ID : " + id);
 		builder.append("\t\t " + filename );
@@ -160,13 +177,13 @@ public class Item {
 				builder.append("\t Save Directory :\t" + savepath );
 				break;
 			case 2:
-				builder.append("\t File Total Length:\t" + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte)");
+				builder.append("\t File Total Length:\t" + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
 				break;	
 			case 3:
 				builder.append("\t Downloaded :\t\t" + rangeInfo.getDownLengthMB());
 				break;
 			case 4:
-				builder.append("\t Need To Download :\t" + rangeInfo.getRengeLengthMB());
+				builder.append("\t Remaining :\t" + rangeInfo.getRengeLengthMB());
 				break;
 			case 5:
 				builder.append("\t Is Redirect :\t\t" + redirect);
@@ -183,6 +200,29 @@ public class Item {
 			}
 			builder.append('\n');
 		}
+
+		return builder.toString();
+	}
+	
+	
+	public String toLiteString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ID : " + id);
+		builder.append("\t, " + filename );
+		builder.append("\n");
+		builder.append( url.toString());
+		builder.append("\n");
+		builder.append("Save Directory : " + savepath );
+		builder.append("\n");
+		builder.append("File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
+		builder.append("\t, Download : " + rangeInfo.getDownLengthMB());
+		builder.append("\t, Remaining : " + rangeInfo.getRengeLengthMB());
+		builder.append("\n");
+		builder.append("Is Redirect  : " + redirect);
+		builder.append("\t, Headers Size : " + headers.size() );
+		builder.append("\t, Cookies Size : " + cookies.size() );
+		builder.append("\n");
+		builder.append(Arrays.deepToString(rangeInfo.getRange()));
 
 		return builder.toString();
 	}

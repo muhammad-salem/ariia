@@ -74,89 +74,6 @@ public interface ClientResponse {
 		return false;
 	}
 
-	/*
-	default void writeResponse(RandomAccessFile file, Response response, SpeedMonitor... monitors) throws IOException {
-
-		if (isStateCodeAllowed(response, file) == false) return;
-		writeResponse(file, response.body().byteStream(), monitors);
-		// InputStream in = MonitorInputStreamWrapper.wrap(response.body().byteStream(),
-		// monitors);
-		// writeResponse(in, file);
-	}
-	
-	default void writeResponse(RandomAccessFile file, InputStream in, SpeedMonitor... monitors) throws IOException {
-		in = MonitorInputStreamWrapper.wrap(in, monitors);
-		writeResponse(file, in);
-	}
-
-//	default void writeResponse(RandomAccessFile file, InputStream in) throws IOException {
-//		// Objects.requireNonNull(file, "file");
-//		byte[] buffer = new byte[RESPONSE_BUFFER];
-//		int read;
-//		while ((read = in.read(buffer)) != -1) {
-//			file.write(buffer, 0, read);
-//		}
-//	}
-
-	default void writeResponse(RandomAccessFile file, Response response, long[] ranges, SpeedMonitor... monitors)
-			throws IOException {
-		if (response.code() == 200) {
-			file.seek(0);
-			if(ranges[0] != 0 ) return;
-		} else if (response.code() == 206) {
-			Range range = new Range(response.header("Content-Range"));
-			file.seek(range.start);
-		}else if (response.code() == 416) {			// error state
-			return;
-		}
-		//if (isStateCodeAllowed(response, file) == false) return;
-		writeResponse(file, response.body().byteStream(), ranges, monitors);
-		// InputStream in = MonitorInputStreamWrapper.wrap(response.body().byteStream(),
-		// monitors);
-		// writeResponse(in, file);
-	}
-
-	default void writeResponse(RandomAccessFile file, InputStream in, long[] ranges, SpeedMonitor... monitors)
-			throws IOException {
-		in = MonitorInputStreamWrapper.wrap(in, monitors);
-//		writeResponse(file, in, ranges);
-		writeResponseRangeLimit(file, in, ranges);
-	}
-
-	default void writeResponse(RandomAccessFile file, InputStream in, long[] ranges) throws IOException {
-		// Objects.requireNonNull(file, "file");
-		byte[] buffer = new byte[RESPONSE_BUFFER];
-		int read;
-		while ((read = in.read(buffer)) != -1) {
-			file.write(buffer, 0, read);
-			addToRange(ranges, read);
-		}
-	}
-	
-	default void writeResponseRangeLimit(RandomAccessFile file, InputStream in, long[] ranges) throws IOException {
-		// Objects.requireNonNull(file, "file");
-		byte[] buffer = new byte[RESPONSE_BUFFER];
-		int read;
-		while ((read = in.read(buffer)) != -1) {
-			file.write(buffer, 0, read);
-			addToRange(ranges, read);
-			
-			/**
-			 * stop read write operation intently
-			 * in case of keep reading more than the given range
-			 * when modify/update ranges 
-			 * new will read until new modified range
-			 * /
-			if(ranges[0] - ranges[1] >= 0) break;
-		}
-	}
-	
-	
-
-	default void addToRange(long[] ranges, long readed) {
-		ranges[0] += readed;
-	}
-	*/
 	default boolean downloadTask(HttpUrl httpUrl, long[] subrang, RandomAccessFile raf, SpeedMonitor... monitors) {
 		if (subrang[0] - subrang[1] >= 0)
 			return true;
@@ -218,9 +135,8 @@ public interface ClientResponse {
 		Response response = null;
 		try {
 			response = getClientRequest().get(item, index);
-			Log.info(getClass(), "respnse", response.toString());
-			Log.fine(getClass(), "respnse Line", response.protocol() + " " + response.code() + " " + response.message());
-			Log.finer(getClass(), "headers", response.headers().toString());
+			
+			
 			item.addCookies(getClientRequest().getHttpClient().cookieJar().loadForRequest(item.getUpdateHttpUrl()));
 			if (response.code() / 100 != 2) {
 				Log.warning(getClass(), "response.code != 200", item.getFilename());

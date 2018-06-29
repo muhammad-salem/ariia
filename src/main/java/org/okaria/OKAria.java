@@ -41,7 +41,7 @@ public class OKAria {
 
 		
 		
-		String log_level = commends.getOrDefault("--log-level", Level.debug.name());
+		String log_level = commends.getOrDefault("--log-level", Level.info.name());
 		Log.setLogLevel("aria", Level.valueOf(log_level));
 		
 		String proxyHost = null;
@@ -68,10 +68,7 @@ public class OKAria {
 		} 
 		OkServiceManager client = new OkServiceManager(Type.HTTP, proxyHost, port);
 		if (commends.get("-u") != null) {				// download link
-			String url = commends.get("-u");
-			List<String> urls = new ArrayList<>();
-			urls.add(url);
-			client.downloadItemList(urls);
+			client.downloadURL(commends.get("-u"));
 			client.startScheduledService();
 		} else if (commends.get("-i") != null) {		// list
 			client.downloadFromFileAsList(commends.get("-i"));
@@ -86,7 +83,7 @@ public class OKAria {
 //			client.startScheduledService();
 //
 //		}
-		Runtime.getRuntime().addShutdownHook(new Thread( ()-> System.out.println("\n\n")));
+		Runtime.getRuntime().addShutdownHook(new Thread( ()-> System.out.println("\n\n\n")));
 	}
 
 
