@@ -4,7 +4,7 @@ import org.okaria.Utils;
 
 public class RangeInfo {
 
-	public static final int RANGE_POOL_NUM = 8;
+	public static int RANGE_POOL_NUM = 8;
     protected long		fileLength;
     protected long[][]	range = null;
 
@@ -22,7 +22,6 @@ public class RangeInfo {
     	this(length, RANGE_POOL_NUM);
     }
     public RangeInfo(long length, int numOfRange) {
-    	
         fileLength = length;
         createSubRange(numOfRange);
     }
@@ -35,10 +34,13 @@ public class RangeInfo {
 	protected void createSubRange(int numOfRange) {
 		if (range == null) {
             // create new range for that file
-            if (fileLength >= 10485760)
+			if (fileLength >= 1048576)
                 range = SubRange.stream(fileLength, numOfRange);
-            else if (fileLength >= 1048576)
-                range = SubRange.subrange(fileLength, (int)(fileLength/1000000) );
+			
+//			if (fileLength >= 10485760)
+//                range = SubRange.stream(fileLength, numOfRange);
+//            else if (fileLength >= 1048576)
+//                range = SubRange.subrange(fileLength, (int)(fileLength/1000000) );
             else if (fileLength > 0)
                 range = SubRange.mksubrange(fileLength);
             // if filelength = -1 -- mean it have to be streamd 
@@ -84,6 +86,14 @@ public class RangeInfo {
         this.fileLength = fileLength;
     }
 
+    public boolean isFullInfo() {
+        return range!= null & fileLength > 0 & range[0][1] != -1;
+    }
+    
+    public boolean isStreaming() {
+        return range!= null & range.length == 1 & range[0][1] == -1;
+    }
+    
     public boolean isFinish() {
         return rangeUtils.isFinish(range);
     }

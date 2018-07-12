@@ -3,6 +3,7 @@ package org.okaria;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -37,7 +40,7 @@ public class Utils {
 	 */
 	public static String getStringWidth(String str, int count) {
 		if (str.length() > count)
-			return null;
+			return str;
 		for (int i = str.length(); i < count; i++) {
 			str += " ";
 		}
@@ -64,7 +67,7 @@ public class Utils {
 
 	public static String getStringRight(String str, int count) {
 		if (str.length() > count)
-			return null;
+			return str;
 		for (int i = str.length(); i < count; i++) {
 			str = " " + str;
 		}
@@ -114,9 +117,7 @@ public class Utils {
 	public static boolean writeJson(String filename, String json) {
 		try {
 			File file = new File(filename);
-			if (!file.getParentFile().exists()) {
-				file.mkdirs();
-			}
+			file.mkdirs();
 			FileWriter writer = new FileWriter(filename);
 			writer.write(json);
 			writer.close();
@@ -462,6 +463,13 @@ public class Utils {
 		return t;
 	}
 
+	public static String jsonFileName(String url) {
+		return Filename (url).concat(".json");
+	}
+	public static String jsonFileName(HttpUrl url) {
+		return Filename (url).concat(".json");
+	}
+	
 	public static String Filename(String url) {
 		HttpUrl httpUrl = HttpUrl.parse(url);
 		return Filename (httpUrl);
@@ -510,6 +518,15 @@ public class Utils {
 		formate += ':' + (ss > 9 ? ss + "" : "0" + ((ss >=0 )? ss : "0"));
 
 		return formate;
+	}
+	
+	public static void Copy(Path source, File destination){
+		try {
+			Files.copy(source, new FileOutputStream(destination));
+			
+		} catch (IOException e) {
+			
+		}
 	}
 	
 }

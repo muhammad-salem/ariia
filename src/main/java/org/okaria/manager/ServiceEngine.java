@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.okaria.R;
 import org.okaria.Utils;
 import org.okaria.okhttp.OkClient;
-import org.okaria.okhttp.SpeedReportMonitor;
+import org.okaria.range.RangeInfoMonitor;
 import org.okaria.speed.SpeedMonitor;
 
 public class ServiceEngine {
@@ -49,7 +49,7 @@ public class ServiceEngine {
 		queuItems = new LinkedList<ItemEngine>();
 		futures = new LinkedList<Future<?>>();
 		downloadPoolAvaliable = true;
-		totalMonitor = new SpeedReportMonitor();
+		totalMonitor = new RangeInfoMonitor();
 	}
 
 	public void shutdownEngine() {
@@ -108,7 +108,7 @@ public class ServiceEngine {
 
 	private void saveData() {
 		for (ItemEngine itemEngine : downloadItems) {
-			Utils.toJsonFile(R.getConfigFile(itemEngine.item.getFilename() + ".json"), itemEngine.item.getRangeInfo());
+			Utils.toJsonFile(R.getConfigPath(itemEngine.item.getFilename() + ".json"), itemEngine.item.getRangeInfo());
 		}
 	}
 

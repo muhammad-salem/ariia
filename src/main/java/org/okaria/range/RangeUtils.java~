@@ -91,9 +91,7 @@ public interface RangeUtils {
 		}
 	}
 
-	/** 
-	*	create new range 
-	*/
+	// create new range 
 	default long[][] checkRanges(long[][] ranges) {
 		long[][] newRange = null;
 		if(ranges.length < RangeInfo.RANGE_POOL_NUM){

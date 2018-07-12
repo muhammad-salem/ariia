@@ -5,8 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.okaria.manager.Item;
-import org.okaria.okhttp.ClientRequest;
 import org.okaria.okhttp.ClientResponse;
+import org.okaria.okhttp.request.ClientRequest;
 import org.okaria.speed.SpeedMonitor;
 
 public interface DownloadProcess extends ClientRequest, ClientResponse {

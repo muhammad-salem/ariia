@@ -1,0 +1,9 @@
+{
+  "name": "org.javafx.aria",
+  "description": "Ariafx",
+  "path": "/Applications/OkAria.app/Contents/MacOS/okaria",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://gaogianbgnmoompbfkmgnefkbehmeijh/"
+  ]
+}

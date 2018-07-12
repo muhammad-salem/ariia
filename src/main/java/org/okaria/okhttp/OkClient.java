@@ -1,41 +1,62 @@
 package org.okaria.okhttp;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.log.Log;
+import org.okaria.lunch.FilenameStore;
 import org.okaria.manager.Item;
+import org.okaria.manager.MetalinkItem;
+import org.okaria.okhttp.request.ClientRequest;
+import org.okaria.okhttp.request.StreamingClientRequest;
 import org.okaria.okhttp.writer.ClientChannelWriter;
 import org.okaria.okhttp.writer.ClinetWriter;
 import org.okaria.queue.StreamDownloadPlane;
+import org.okaria.range.RangeInfo;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
-public class OkClient implements ClientRequest, ClientResponse, StreamDownloadPlane {
+public class OkClient implements StreamingClientRequest, ClientResponse, StreamDownloadPlane {
 
+	public static int RETRIES = 0;
+	
+	private FilenameStore store;
 	private OkHttpClient httpClient;
-	private ClinetWriter channelWriter =  new ClientChannelWriter() {}; //  ClientMappedWriter ClientChannelWriter
+	private ClinetWriter channelWriter = new ClientChannelWriter() {}; // ClientMappedWriter ClientChannelWriter
+
 	@Override
 	public ClinetWriter getClinetWriter() {
 		return channelWriter;
 	}
-	
 
-	ExecutorService executor = Executors.newFixedThreadPool(32); // newCachedThreadPool();
-	List<Future<?>> futures = new LinkedList<Future<?>>();
+	ExecutorService executor =  Executors.newCachedThreadPool(); // Executors.newFixedThreadPool(32); //
 
 	public OkClient(OkConfig config) {
+		this.store = new FilenameStore();
+		createOkHttpClient(config);
+	}
+
+	public OkClient(OkConfig config, FilenameStore store) {
+		this.store = store;
 		createOkHttpClient(config);
 	}
 
 	public OkClient(OkHttpClient.Builder builder) {
+		this.store = new FilenameStore();
 		createOkHttpClient(builder);
+	}
+
+	public OkClient(OkHttpClient httpClient, FilenameStore store) {
+		this.httpClient = httpClient;
+		this.store = store;
 	}
 
 	public void createOkHttpClient(OkHttpClient.Builder builder) {
@@ -84,26 +105,135 @@ public class OkClient implements ClientRequest, ClientResponse, StreamDownloadPl
 	public void setSharedClient(OkHttpClient sharedClient) {
 		this.httpClient = sharedClient;
 	}
-
-
-//	public void downloadItem(Item item, SpeedMonitor... monitors) {
-//		if(item.isStateEqual(ItemState.COMPLETE)) return;
-//		item.setState(ItemState.DOWNLOAD);
-//		
-//		for (int index = 0; index < item.getRangeInfo().getRangeCount(); index++) {
-//			downloadPart(item, index, monitors);
-//		}
-//	}
 	
 
-	public void downloadPart(Item item, int index, SpeedMonitor... monitors) {
-		Future<?> future = executor.submit(() -> {
-			boolean finsh = false;
-			while (!finsh) {
-				finsh = downloadTask(item, index, monitors);
+	public Future<?> downloadPart(Item item, int index, SpeedMonitor... monitors) {
+
+		if (RETRIES == 0) {
+			return executor.submit(() -> {
+				boolean finsh = false;
+				while (!finsh) {
+					finsh = downloadTask(item, index, monitors);
+				}
+			});
+		}else {
+			return executor.submit(() -> {
+				for (int i = 0; i < RETRIES; i++) {
+					if(downloadTask(item, index, monitors)) {
+						break;
+					}
+				}
+			});
+		}
+
+	}
+
+	private boolean updateItemOnline(Item item, boolean headOrGet) {
+		Response response = null;
+		try {
+			if (headOrGet)
+				response = head(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+			else
+				response = get(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+		} catch (IOException e) {
+			Log.warning(e.getClass(), "Exception", e.getMessage());
+			return false;
+		}
+
+		// System.out.println(response);
+		if (response.isRedirect()) {
+			item.setRedirect();
+			item.setRedirectUrl(response.request().url());
+			Log.info(getClass(), "url is redirect", item.getRedirectUrl());
+		}
+		ResponseBody body = response.body();
+		try {
+			long length = Long.parseLong(response.header("Content-Length")); // body.contentLength();
+
+			RangeInfo rangeInfo = new RangeInfo(length);
+			item.setRangeInfo(rangeInfo);
+		} catch (NumberFormatException e) {
+			RangeInfo rangeInfo = new RangeInfo();
+			item.setRangeInfo(rangeInfo);
+		} finally {
+			body.close();
+		}
+		if (item.getFilename() == null) {
+			String filename = store.get(item.url());
+			String contentDisposition = response.header("Content-disposition", "filename=\"" + filename + "\"");
+			if (contentDisposition.contains("filename")) {
+				String[] split = contentDisposition.split("\"");
+				filename = split[split.length - 1];
 			}
-		});
-		futures.add(future);
+			item.setFilename(filename);
+		}
+		store.put(item.url(), item.getFilename());
+
+		return true;
+	}
+
+	private boolean updateItemOnline(MetalinkItem item, boolean headOrGet) {
+		Response response = null;
+		try {
+			if (headOrGet)
+				response = head(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+			else
+				response = get(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+		} catch (IOException e) {
+			Log.warning(e.getClass(), "Exception", e.getMessage());
+			return false;
+		}
+
+		// System.out.println(response);
+		if (response.isRedirect()) {
+			item.setRedirect();
+			item.setRedirectUrl(response.request().url());
+			Log.info(getClass(), "url is redirect", item.getRedirectUrl());
+		}
+		ResponseBody body = response.body();
+		try {
+			long length = Long.parseLong(response.header("Content-Length")); // body.contentLength();
+
+			RangeInfo rangeInfo = new RangeInfo(length);
+			item.setRangeInfo(rangeInfo);
+		} catch (NumberFormatException e) {
+			RangeInfo rangeInfo = new RangeInfo();
+			item.setRangeInfo(rangeInfo);
+		} finally {
+			body.close();
+		}
+
+		String filename = store.get(item.url());
+		String contentDisposition = response.header("Content-disposition", "filename=\"" + filename + "\"");
+		if (contentDisposition.contains("filename")) {
+			String[] split = contentDisposition.split("\"");
+			filename = split[split.length - 1];
+		}
+		item.setFilename(filename);
+		store.put(item.url(), filename);
+		return true;
+	}
+
+	public Item resolveItem(Item item) {
+		boolean reGet = true;
+		do {
+			reGet = updateItemOnline(item, true);
+			if (reGet)
+				break;
+			reGet = updateItemOnline(item, false);
+		} while (!reGet);
+		return item;
+	}
+
+	public MetalinkItem resolveItem(MetalinkItem item) {
+		boolean reGet = true;
+		do {
+			reGet = updateItemOnline(item, true);
+			if (reGet)
+				break;
+			reGet = updateItemOnline(item, false);
+		} while (!reGet);
+		return item;
 	}
 
 }

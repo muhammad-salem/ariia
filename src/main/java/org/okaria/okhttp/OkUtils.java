@@ -5,31 +5,33 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import okhttp3.Cookie;
 
 public class OkUtils {
 
-	private static List<String> readCookieFile(String cookiePath) {
-		List<String> lines = new ArrayList<>();
+	public static List<String> readLines(String filePath) {
+		List<String> lines = new LinkedList<>();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(cookiePath));
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
 			String textCookie;
 			while ((textCookie = reader.readLine()) != null) {
 				lines.add(textCookie);
 			}
 			reader.close();
 		} catch (IOException e) {
-			return null;
+			
 		}
 		return lines;
 	}
 
 	public static List<Cookie> getCookies(String cookiePath) {
-		List<String> txtCookies = readCookieFile(cookiePath);
+		List<String> txtCookies = readLines(cookiePath);
 		if (txtCookies == null)
-			return null;
+			return Collections.emptyList();
 
 		List<Cookie> listCookie = new ArrayList<>();
 		Cookie.Builder builder;
@@ -97,9 +99,9 @@ public class OkUtils {
 		return file;
 	}
 
-	public long getContentLengthFromContentRange(String range) {
-		int x = range.indexOf("/");
-		String length = range.substring(x + 1, range.length());
+	public long getContentLengthFromContentRange(String contentRange) {
+		int x = contentRange.indexOf("/");
+		String length = contentRange.substring(x + 1, contentRange.length());
 		long l = Long.valueOf(length);
 		return l;
 	}

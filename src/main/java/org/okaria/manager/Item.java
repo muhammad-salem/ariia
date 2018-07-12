@@ -18,23 +18,43 @@ import okhttp3.internal.http2.Header;
 
 public class Item {
 
-	private long id;
-	private String url;
-	private String redirectUrl;
-	private String referer;
-	private String filename;
-	private String savepath;
-	private boolean redirect;
-	private Map<String, String> headers;
-	private List<Cookie> cookies;
-	private RangeInfo rangeInfo;
+	public static String SAVE_DIR_PATH = R.CurrentDirectory();
+	
+	protected Long id;
+	protected String url;
+	protected String redirectUrl;
+	protected String referer;
+	protected String useragent;
+	protected String filename;
+	protected String savepath;
+	protected Boolean redirect;
+	protected Map<String, String> headers;
+	protected List<Cookie> cookies;
+	protected RangeInfo rangeInfo;
+	
+//	transient protected Object attach;
 
 	public Item() {
-		this.id = -1;
+		this.id = -1l;
 		this.rangeInfo = new RangeInfo();
 		this.headers   = new LinkedHashMap<>();
 		this.cookies   = new LinkedList<>();
 		this.redirect  = false;
+	}
+	
+	public Item(Builder builder) {
+		this.id 		= builder.id;
+		this.url 		= builder.url;
+		this.redirectUrl= builder.redirectUrl;
+		this.referer 	= builder.referer;
+		this.useragent	= builder.useragent;
+		this.filename 	= builder.filename;
+		this.savepath 	= builder.savepath;
+		this.redirect 	= builder.redirect;
+		this.headers 	= builder.headers;
+		this.cookies 	= builder.cookies;
+		this.rangeInfo 	= builder.rangeInfo;
+//		this.attach 	= builder.attach;
 	}
 
 	public long getId() {
@@ -45,6 +65,10 @@ public class Item {
 		this.id = id;
 	}
 	
+	public String url() {
+		return url;
+	}
+
 	public HttpUrl getUrl() {
 		return HttpUrl.parse(url);
 	}
@@ -85,6 +109,22 @@ public class Item {
 		this.headers = headers;
 	}
 
+	public void updateHeaders() {
+		if(useragent != null) 
+			headers.put("User-Agent", useragent);
+		if(referer != null) 
+			headers.put("Referer", referer);
+	}
+	
+	
+	public String getUseragent() {
+		return useragent;
+	}
+	
+	public void setUseragent(String useragent) {
+		this.useragent = useragent;
+	}
+	
 	/**
 	 * @return always new {@link Headers} object of the current header-map
 	 */
@@ -127,6 +167,7 @@ public class Item {
 		this.headers.put(header.name.utf8(), header.value.utf8());
 	}
 
+	
 	public List<Cookie> getCookies() {
 		return cookies;
 	}
@@ -136,13 +177,21 @@ public class Item {
 	}
 
 	public void addCookies(Cookie cookie) {
+		for (Cookie oldCookie : cookies) {
+			if(oldCookie.equals(cookie))
+				return;
+		}
 		this.cookies.add(cookie);
 	}
+	
 
 	public void addCookies(List<Cookie> cookies) {
-		this.cookies.addAll(cookies);
+		cookies.forEach(cok->{
+			addCookies(cok);
+		});
+		//this.cookies.addAll(cookies);
 	}
-
+	
 	public String getSavepath() {
 		return savepath;
 	}
@@ -151,10 +200,18 @@ public class Item {
 		this.savepath = savepath;
 	}
 	
-	public String getSavepathFile() {
+	public String fullSavePath() {
 		return savepath + File.separatorChar + filename;
 	}
 
+	
+//	public void attach(Object attach) {
+//		this.attach = attach;
+//	}
+//	
+//	public Object attach() {
+//		return attach;
+//	}
 	
 	@Override
 	public String toString() {
@@ -206,24 +263,36 @@ public class Item {
 	
 	
 	public String toLiteString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("ID : " + id);
-		builder.append("\t, " + filename );
+		StringBuilder builder = new StringBuilder(liteString());
 		builder.append("\n");
-		builder.append( url.toString());
+		builder.append("Redirect : " + redirect);
+		builder.append(",\tHeaders Size : " + headers.size() );
+		builder.append(",\tCookies Size : " + cookies.size() );
+		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
+		builder.append("\n");
+		int i = 0;
+		for( ; i < rangeInfo.getRangeCount()-1; i++){
+			builder.append(Arrays.toString(rangeInfo.getIndex(i)));
+			builder.append(", ");
+			if(i%4 == 3) builder.append('\n');
+		}
+		builder.append(Arrays.toString(rangeInfo.getIndex(i)));
+
+		return builder.toString();
+	}
+	
+	public String liteString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(filename );
+		builder.append(",\tID : " + id);
+		builder.append("\n");
+		builder.append( url);
 		builder.append("\n");
 		builder.append("Save Directory : " + savepath );
 		builder.append("\n");
 		builder.append("File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
-		builder.append("\t, Download : " + rangeInfo.getDownLengthMB());
-		builder.append("\t, Remaining : " + rangeInfo.getRengeLengthMB());
-		builder.append("\n");
-		builder.append("Is Redirect  : " + redirect);
-		builder.append("\t, Headers Size : " + headers.size() );
-		builder.append("\t, Cookies Size : " + cookies.size() );
-		builder.append("\n");
-		builder.append(Arrays.deepToString(rangeInfo.getRange()));
-
+		builder.append(",\tDownload : " + rangeInfo.getDownLengthMB());
+		builder.append(",\tRemaining : " + rangeInfo.getRengeLengthMB());
 		return builder.toString();
 	}
 
@@ -285,116 +354,164 @@ public class Item {
 
 	public static class Builder {
 
-		private long id;
-		private String url;
-		private String redirectUrl;
-		private String referer;
-		private String filename;
-		private String savepath;
-		private boolean redirect;
-		private Map<String, String> headers;
-		private List<Cookie> cookies;
-		private RangeInfo rangeInfo;
-
+		
+		protected Long id;
+		protected String url;
+		protected String redirectUrl;
+		protected String referer;
+		protected String useragent;
+		protected String filename;
+		protected String savepath;
+		protected Boolean redirect;
+		protected Map<String, String> headers;
+		protected List<Cookie> cookies;
+		protected RangeInfo rangeInfo;
+		
+//		protected Object attach;
+		
 		public Builder() {
-			
+			this.id = System.currentTimeMillis();
+			this.rangeInfo = new RangeInfo();
+			this.headers   = new LinkedHashMap<>();
+			this.cookies   = new LinkedList<>();
+			this.redirect  = false;
+			this.savepath();
 		}
 		
-		Builder id(long id) {
+		public Builder id(long id) {
 			this.id = id;
 			return this;
 		}
 		
-		Builder url(String url) {
+		public Builder url(String url) {
 			this.url = url;
 			return this;
 		}
-		Builder url(HttpUrl url) {
+		public Builder url(HttpUrl url) {
 			this.url = url.toString();
 			return this;
 		}
 		
-		HttpUrl url() {
+		public HttpUrl httpUrl() {
 			return HttpUrl.parse(url);
 		}
 		
-		Builder referer(String referer) {
+		public String url() {
+			return url;
+		}
+		
+		public Builder referer(String referer) {
 			this.referer = referer;
 			return this;
 		}
 		
-		Builder redirectUrl(HttpUrl redirectUrl) {
+		public Builder useragent(String useragent) {
+			this.useragent = useragent;
+			return this;
+		}
+		
+		public Builder redirectUrl(HttpUrl redirectUrl) {
 			this.redirectUrl = redirectUrl.toString();
 			return this;
 		}
-		Builder redirectUrl(String redirectUrl) {
+		public Builder redirectUrl(String redirectUrl) {
 			this.redirectUrl = redirectUrl;
 			return this;
 		}
 		
-		Builder redirect() {
+		public Builder redirect() {
 			return redirect(true);
 		}
-		Builder redirect(boolean redirect) {
+		
+		public Builder redirect(boolean redirect) {
 			this.redirect = redirect;
 			return this;
 		}
 		
-		Builder savepath() {
-			return savepath(R.getDownloadsFile());
+		public Builder savepath() {
+			return savepath(SAVE_DIR_PATH);
 		}
-		Builder savepath(String savepath) {
+		
+		public Builder savepath(String savepath) {
 			this.savepath = savepath;
 			return this;
 		}
 		
-		Builder filename(String filename) {
+		public Builder filename(String filename) {
 			this.filename = filename;
 			return this;
 		}
-		Builder headers(Map<String, String> headers) {
+		public Builder headers(Map<String, String> headers) {
 			this.headers = headers;
 			return this;
 		}
-		Builder cookies(List<Cookie> cookies) {
+		public Builder addHeader(String key, String value) {
+			this.headers.put(key, value);
+			return this;
+		}
+		
+		public Builder addHeaders(Map<String, String> headers) {
+			this.headers.putAll(headers);
+			return this;
+		}
+		public Builder cookies(List<Cookie> cookies) {
 			this.cookies = cookies;
 			return this;
 		}
 		
-		Builder rangeInfo(RangeInfo rangeInfo) {
+		public Builder addCookies(List<Cookie> cookies) {
+			this.cookies.addAll(cookies);
+			return this;
+		}
+		
+		public Builder addCookie ( Cookie cookie) {
+			this.cookies.add(cookie);
+			return this;
+		}
+		
+		public Builder rangeInfo(RangeInfo rangeInfo) {
 			this.rangeInfo = rangeInfo;
 			return this;
 		}
 		
-		Builder json(String filePath) {
+//		public Builder attach(Object object) {
+//			this.attach = object;
+//			return this;
+//		}
+		
+		public Builder json(String filePath) {
 			Item item = jsonItem(filePath);
 				id(item.id);
 				url(item.url);
 				redirectUrl(item.redirectUrl);
 				referer(item.referer);
+				useragent(item.useragent);
 				filename(item.filename);
 				savepath(item.savepath);
 				redirect(item.redirect);
 				headers(item.headers);
 				cookies(item.cookies);
 				rangeInfo(item.rangeInfo);
+//				attach(item.attach);
 			return this;
 		}
 		
 		
 		
-		Item build() {
+		public Item build() {
 			Item item = new Item();
 				item.id 		= this.id;
 				item.url 		= this.url;
 				item.redirectUrl= this.redirectUrl;
 				item.referer 	= this.referer;
+				item.useragent	= this.useragent;
 				item.filename 	= this.filename;
 				item.savepath 	= this.savepath;
 				item.redirect 	= this.redirect;
 				item.headers 	= this.headers;
 				item.cookies 	= this.cookies;
 				item.rangeInfo 	= this.rangeInfo;
+//				item.attach		= this.attach;
 			return item;
 		}
 		

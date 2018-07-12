@@ -1,0 +1,9 @@
+{
+  "name": "org.okaria.chrome",
+  "description": "OkAria",
+  "path": "/opt/okaria/okaria",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://gaogianbgnmoompbfkmgnefkbehmeijh/"
+  ]
+}

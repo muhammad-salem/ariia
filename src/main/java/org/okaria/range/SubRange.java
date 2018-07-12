@@ -185,11 +185,9 @@ public class SubRange {
 		return ranges;
 	}
 
+	
 	public static long[][] mksubrange(long length) {
-//		long[][] ranges = new long[1][2];
-//		ranges[0][0] = 0;
-//		ranges[0][1] = length;
-//		long[][] ranges = new long[][] {{0, length}};
+//		if(length == -1) return new long[][] {{0, Long.MAX_VALUE}};
 		return new long[][] {{0, length}};
 	}
 

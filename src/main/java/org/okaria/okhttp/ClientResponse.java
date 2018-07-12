@@ -2,6 +2,7 @@ package org.okaria.okhttp;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.log.Log;
 import org.okaria.R;
 import org.okaria.manager.Item;
+import org.okaria.okhttp.request.ClientRequest;
 import org.okaria.okhttp.writer.ClinetWriter;
 import org.okaria.range.RangeResponseHeader;
 import org.okaria.speed.SpeedMonitor;
@@ -139,11 +141,13 @@ public interface ClientResponse {
 			
 			item.addCookies(getClientRequest().getHttpClient().cookieJar().loadForRequest(item.getUpdateHttpUrl()));
 			if (response.code() / 100 != 2) {
-				Log.warning(getClass(), "response.code != 200", item.getFilename());
+				Log.warning(getClass(),  item.getFilename(), "response.code = " + response.code()
+					+ "\nurl = " + response.request().url().toString()
+					+ "\nindex = " + index + "\t" + Arrays.toString(item.getRangeInfo().getIndex(index)));
 				return false;
 			}
-			R.mkParentDir(item.getSavepathFile());
-			raf = new RandomAccessFile(item.getSavepathFile(), "rw");
+			R.mkParentDir(item.fullSavePath());
+			raf = new RandomAccessFile(item.fullSavePath(), "rw");
 			getClinetWriter().writeResponse(response, raf, subrang, monitors);
 //			writeResponse(raf, response, subrang, monitors);
 		} catch (Exception e) {

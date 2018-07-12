@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.log.Log;
+
 public class R {
 
 	private static char sprtr = File.separatorChar;
@@ -52,13 +54,25 @@ public class R {
 	 * @return string represent a
 	 */
 
-	public static String getConfigFile(String filename) {
+	public static String getConfigDirectory() {
+		return ConfigPath;
+	}
+	public static String getConfigPath(String filename) {
 		filename = ConfigPath + filename;
 		mkParentDir(filename);
 		return filename;
 	}
+	
+	public static File getConfigFile(String filename) {
+		return new File(getConfigPath(filename));
+	}
+	
 	public static String getCompleteFile(String filename) {
 		return getCompleteDir() + filename;
+	}
+	
+	public static String getNewDownload(String name) {
+		return ConfigPath + "download" + sprtr + name;
 	}
 	public static String getCompleteDir() {
 		return ConfigPath + "complete" + sprtr;
@@ -190,6 +204,29 @@ public class R {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static String CurrentDirectory() {
+		return  System.getProperty("user.dir") + File.separatorChar;	
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getCurrentDirectory() {
+		String path =  System.getProperty("user.dir") + File.separatorChar;
+		System.out.println(path);
+		try {
+			System.getSecurityManager().checkWrite(path+"test");
+			Log.info(R.class, "set default directory to [" + path + " ].");
+			return path;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.info(R.class, "set default directory to [" + getDownloadsFile() + " ].");
+			return getDownloadsFile();
+		}
+		
 	}
 
 }
