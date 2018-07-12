@@ -1,4 +1,4 @@
-# okaria  (0.1.91)
+# okaria  (0.1.98)
 
 A Smart Command Line Download Manager.
 -------------------------------------
@@ -13,23 +13,20 @@ Used lib:
 
 ## Options :
  - Support HTTP and HTTPS.
- - Good Handl for Header and Cookies
+ - Good Handle for Header and Cookies
  - Cross-platform: support Linux(Ubuntu), Windows and, Mac OS.
- - Prallel Download.
+ - Parallel Download.
  - Saved setting every 1 second.
- - support args for now : -u url 
- 						  -i file 
- 						  proxy 127.0.0.1:8080
-  
-## Comming Soon :
+ - supported arguments
  
- - Save date in json format
- - Support to firefox by flashgot [cli] :
-	[--url=URL] [--http-referer=REFERER] [--file-name=FNAME] 
+ ```
+ 	[--url=URL] [--http-referer=REFERER] [--file-name=FNAME] 
 	[--user-agent=UA] [--cookie=COOKIE] [--cookie-file=CFILE] [--input-file=UFILE]
+ ```
+	
 	
  - Support Google Chrome.
- - Support using Proxy [HTTP, HTTPS, SOCKS],   (SSH, jsch ) -> COMMING SOON.... 
+ - Support using Proxy [HTTP, HTTPS, SOCKS], COMMING SOON JSCH(SSH)
 
 
 
@@ -49,7 +46,10 @@ Used lib:
 
 ![screenshot](https://github.com/salemebo/okaria/blob/master/img/start-download02.png)
 
-![screenshot](https://github.com/salemebo/aria/blob/master/img/start-download03.png)
+![screenshot](https://github.com/salemebo/okaria/blob/master/img/start-download03.png)
 
+![screenshot](https://github.com/salemebo/okaria/blob/master/img/screenshot00.png)
+
+![screenshot](https://github.com/salemebo/okaria/blob/master/img/screenshot01.png)
 
 
