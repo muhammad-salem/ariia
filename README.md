@@ -64,15 +64,11 @@ OKaria is a smart command line download manager.
 ### Overview
 
 ![Overview](img/overview.png)
-![Overview](https://github.com/salemebo/okaria/blob/master/img/overview.png)
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
 
 ![Format2](img/text-format02.png)
 
-![Format1](https://github.com/salemebo/okaria/blob/master/img/text-format01.png)
-
-![Format2](https://github.com/salemebo/okaria/blob/master/img/text-format02.png)
 
 
