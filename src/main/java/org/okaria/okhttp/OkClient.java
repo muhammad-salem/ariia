@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.log.Log;
+import org.log.concurrent.Log;
 import org.okaria.lunch.FilenameStore;
 import org.okaria.manager.Item;
 import org.okaria.manager.MetalinkItem;
@@ -17,6 +17,7 @@ import org.okaria.okhttp.writer.ClientChannelWriter;
 import org.okaria.okhttp.writer.ClinetWriter;
 import org.okaria.queue.StreamDownloadPlane;
 import org.okaria.range.RangeInfo;
+import org.okaria.setting.AriaProperties;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.CookieJar;
@@ -26,7 +27,7 @@ import okhttp3.ResponseBody;
 
 public class OkClient implements StreamingClientRequest, ClientResponse, StreamDownloadPlane {
 
-	public static int RETRIES = 0;
+	
 	
 	private FilenameStore store;
 	private OkHttpClient httpClient;
@@ -109,7 +110,7 @@ public class OkClient implements StreamingClientRequest, ClientResponse, StreamD
 
 	public Future<?> downloadPart(Item item, int index, SpeedMonitor... monitors) {
 
-		if (RETRIES == 0) {
+		if (AriaProperties.RETRIES == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
 				while (!finsh) {
@@ -118,7 +119,7 @@ public class OkClient implements StreamingClientRequest, ClientResponse, StreamD
 			});
 		}else {
 			return executor.submit(() -> {
-				for (int i = 0; i < RETRIES; i++) {
+				for (int i = 0; i < AriaProperties.RETRIES; i++) {
 					if(downloadTask(item, index, monitors)) {
 						break;
 					}
@@ -132,20 +133,20 @@ public class OkClient implements StreamingClientRequest, ClientResponse, StreamD
 		Response response = null;
 		try {
 			if (headOrGet)
-				response = head(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+				response = head(item.getUrl(), item.getCookies(), item.getHeaders());
 			else
-				response = get(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+				response = get(item.getUrl(), item.getCookies(), item.getHeaders());
 		} catch (IOException e) {
 			Log.warning(e.getClass(), "Exception", e.getMessage());
 			return false;
 		}
 
 		// System.out.println(response);
-		if (response.isRedirect()) {
-			item.setRedirect();
-			item.setRedirectUrl(response.request().url());
-			Log.info(getClass(), "url is redirect", item.getRedirectUrl());
-		}
+//		if (response.isRedirect()) {
+//			item.setRedirect();
+//			item.setRedirectUrl(response.request().url());
+//			Log.info(getClass(), "url is redirect", item.getRedirectUrl());
+//		}
 		ResponseBody body = response.body();
 		try {
 			long length = Long.parseLong(response.header("Content-Length")); // body.contentLength();
@@ -176,20 +177,20 @@ public class OkClient implements StreamingClientRequest, ClientResponse, StreamD
 		Response response = null;
 		try {
 			if (headOrGet)
-				response = head(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+				response = head(item.getUrl(), item.getCookies(), item.getHeaders());
 			else
-				response = get(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders());
+				response = get(item.getUrl(), item.getCookies(), item.getHeaders());
 		} catch (IOException e) {
 			Log.warning(e.getClass(), "Exception", e.getMessage());
 			return false;
 		}
 
 		// System.out.println(response);
-		if (response.isRedirect()) {
-			item.setRedirect();
-			item.setRedirectUrl(response.request().url());
-			Log.info(getClass(), "url is redirect", item.getRedirectUrl());
-		}
+//		if (response.isRedirect()) {
+//			item.setRedirect();
+//			item.setRedirectUrl(response.request().url());
+//			Log.info(getClass(), "url is redirect", item.getRedirectUrl());
+//		}
 		ResponseBody body = response.body();
 		try {
 			long length = Long.parseLong(response.header("Content-Length")); // body.contentLength();

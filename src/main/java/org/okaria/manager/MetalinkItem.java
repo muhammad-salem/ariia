@@ -31,11 +31,14 @@ public class MetalinkItem extends Item {
 		return mirrors.get( (indexMark++)% mirrors.size()  );
 	}
 	
-	@Override
-	public HttpUrl getUpdateHttpUrl() {
-		return HttpUrl.parse(nextUrl());
+	
+	public String url() {
+		return mirrors.get(0);
 	}
 	
+	public HttpUrl getUrl() {
+		return HttpUrl.parse(mirrors.get(0));
+	}
 	
 	public List<String> getMirrors() {
 		return mirrors;
@@ -107,6 +110,12 @@ public class MetalinkItem extends Item {
 			this.mirrors.add(url);
 			return this;
 		}
+		
+		@Override
+		public String url() {
+			return this.mirrors.get(0);
+		}
+		
 		public Builder url(HttpUrl url) {
 			return url(url.toString());
 		}
@@ -123,7 +132,6 @@ public class MetalinkItem extends Item {
 				url(item.url);
 				mirrors(item.mirrors);
 				redirect(item.redirect);
-				redirectUrl(item.redirectUrl);
 				referer(item.referer);
 				filename(item.filename);
 				savepath(item.savepath);
@@ -140,7 +148,6 @@ public class MetalinkItem extends Item {
 				item.id 		= this.id;
 				item.url 		= this.url;
 				item.mirrors	= this.mirrors;
-				item.redirectUrl= this.redirectUrl;
 				item.referer 	= this.referer;
 				item.filename 	= this.filename;
 				item.savepath 	= this.savepath;

@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.okaria.R;
 import org.okaria.Utils;
 import org.okaria.range.RangeInfo;
+import org.okaria.setting.AriaProperties;
 
 import okhttp3.Cookie;
 import okhttp3.Headers;
@@ -18,11 +18,10 @@ import okhttp3.internal.http2.Header;
 
 public class Item {
 
-	public static String SAVE_DIR_PATH = R.CurrentDirectory();
+	
 	
 	protected Long id;
 	protected String url;
-	protected String redirectUrl;
 	protected String referer;
 	protected String useragent;
 	protected String filename;
@@ -32,7 +31,6 @@ public class Item {
 	protected List<Cookie> cookies;
 	protected RangeInfo rangeInfo;
 	
-//	transient protected Object attach;
 
 	public Item() {
 		this.id = -1l;
@@ -45,7 +43,6 @@ public class Item {
 	public Item(Builder builder) {
 		this.id 		= builder.id;
 		this.url 		= builder.url;
-		this.redirectUrl= builder.redirectUrl;
 		this.referer 	= builder.referer;
 		this.useragent	= builder.useragent;
 		this.filename 	= builder.filename;
@@ -54,7 +51,6 @@ public class Item {
 		this.headers 	= builder.headers;
 		this.cookies 	= builder.cookies;
 		this.rangeInfo 	= builder.rangeInfo;
-//		this.attach 	= builder.attach;
 	}
 
 	public long getId() {
@@ -95,6 +91,9 @@ public class Item {
 	
 	public boolean isFinish() {
         return rangeInfo.isFinish();
+    }
+	public boolean isStreaming() {
+        return rangeInfo.isStreaming();
     }
 
 	public void setRangeInfo(RangeInfo rangeInfo) {
@@ -205,14 +204,6 @@ public class Item {
 	}
 
 	
-//	public void attach(Object attach) {
-//		this.attach = attach;
-//	}
-//	
-//	public Object attach() {
-//		return attach;
-//	}
-	
 	@Override
 	public String toString() {
 		return toLiteString();
@@ -270,14 +261,7 @@ public class Item {
 		builder.append(",\tCookies Size : " + cookies.size() );
 		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
 		builder.append("\n");
-		int i = 0;
-		for( ; i < rangeInfo.getRangeCount()-1; i++){
-			builder.append(Arrays.toString(rangeInfo.getIndex(i)));
-			builder.append(", ");
-			if(i%4 == 3) builder.append('\n');
-		}
-		builder.append(Arrays.toString(rangeInfo.getIndex(i)));
-
+		builder.append(rangeInfo.toString());
 		return builder.toString();
 	}
 	
@@ -296,6 +280,22 @@ public class Item {
 		return builder.toString();
 	}
 
+	
+	@Override
+	public boolean equals(Object obj) {
+		Item item =  (Item) obj;
+		return  this.id == item.id
+				&& this.url.equals(item.url)
+				&& this.referer.equals(item.referer)
+				&& this.useragent.equals(item.useragent)
+				&& this.filename.equals(item.filename)
+				&& this.savepath.equals(item.savepath)
+				&& this.redirect.equals(item.redirect)
+				&& this.headers.equals(item.headers)
+				&& this.cookies.equals(item.cookies)
+				&& this.rangeInfo.equals(item.rangeInfo);
+	}
+	
 	static Item jsonItem(String filePath) {
 		return Utils.fromJson(filePath, Item.class);
 	}
@@ -314,32 +314,6 @@ public class Item {
 	public void setReferer(String referer) {
 		this.referer = referer;
 	}
-
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	public void setRedirectUrl(HttpUrl redirecturl) {
-		this.redirectUrl = redirecturl.toString();
-	}
-	public void setRedirectUrl(String redirecturl) {
-		this.redirectUrl = redirecturl;
-	}
-	
-	public HttpUrl getRedirectHttpUrl() {
-		return HttpUrl.parse(redirectUrl);
-	}
-
-	public HttpUrl getUpdateHttpUrl() {
-		return HttpUrl.parse(getUpdateUrl());
-	}
-	
-	public String getUpdateUrl() {
-		if(redirect)
-			return redirectUrl;
-		else
-			return url;
-	}
 	
 	public boolean isRedirect() {
 		return redirect;
@@ -357,7 +331,6 @@ public class Item {
 		
 		protected Long id;
 		protected String url;
-		protected String redirectUrl;
 		protected String referer;
 		protected String useragent;
 		protected String filename;
@@ -367,7 +340,6 @@ public class Item {
 		protected List<Cookie> cookies;
 		protected RangeInfo rangeInfo;
 		
-//		protected Object attach;
 		
 		public Builder() {
 			this.id = System.currentTimeMillis();
@@ -410,15 +382,6 @@ public class Item {
 			return this;
 		}
 		
-		public Builder redirectUrl(HttpUrl redirectUrl) {
-			this.redirectUrl = redirectUrl.toString();
-			return this;
-		}
-		public Builder redirectUrl(String redirectUrl) {
-			this.redirectUrl = redirectUrl;
-			return this;
-		}
-		
 		public Builder redirect() {
 			return redirect(true);
 		}
@@ -429,7 +392,7 @@ public class Item {
 		}
 		
 		public Builder savepath() {
-			return savepath(SAVE_DIR_PATH);
+			return savepath(AriaProperties.Default_SAVE_DIR_PATH);
 		}
 		
 		public Builder savepath(String savepath) {
@@ -474,16 +437,11 @@ public class Item {
 			return this;
 		}
 		
-//		public Builder attach(Object object) {
-//			this.attach = object;
-//			return this;
-//		}
 		
 		public Builder json(String filePath) {
 			Item item = jsonItem(filePath);
 				id(item.id);
 				url(item.url);
-				redirectUrl(item.redirectUrl);
 				referer(item.referer);
 				useragent(item.useragent);
 				filename(item.filename);
@@ -492,7 +450,6 @@ public class Item {
 				headers(item.headers);
 				cookies(item.cookies);
 				rangeInfo(item.rangeInfo);
-//				attach(item.attach);
 			return this;
 		}
 		
@@ -502,7 +459,6 @@ public class Item {
 			Item item = new Item();
 				item.id 		= this.id;
 				item.url 		= this.url;
-				item.redirectUrl= this.redirectUrl;
 				item.referer 	= this.referer;
 				item.useragent	= this.useragent;
 				item.filename 	= this.filename;
@@ -511,7 +467,6 @@ public class Item {
 				item.headers 	= this.headers;
 				item.cookies 	= this.cookies;
 				item.rangeInfo 	= this.rangeInfo;
-//				item.attach		= this.attach;
 			return item;
 		}
 		

@@ -15,6 +15,15 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 
 	protected List<RangeInfo> rangeInfos = new LinkedList<>();
 
+	public RangeInfoMonitor() {
+		rangeInfos = new LinkedList<>();
+		useMinmallMode(false);
+	}
+	public RangeInfoMonitor(boolean minmal) {
+		rangeInfos = new LinkedList<>();
+		useMinmallMode(minmal);
+	}
+	
 	@Override
 	public int size() {
 		return rangeInfos.size();
@@ -138,14 +147,14 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 	private long totalLength = 0;
 	private long downloadLength = 0;
 
-	private void updateTotalLength() {
+	public void updateTotalLength() {
 		totalLength = 0;
 		rangeInfos.forEach(info -> {
 			totalLength += info.getFileLength();
 		});
 	}
 
-	private void updateDownloadLength() {
+	public void updateDownloadLength() {
 		downloadLength = 0;
 		rangeInfos.forEach(info -> {
 			downloadLength += info.getDownLength();
@@ -160,11 +169,11 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 		return downloadLength;
 	}
 
-	protected String getTotalLengthMB() {
+	public String getTotalLengthMB() {
 		return toUnitLength(totalLength);
 	}
 
-	protected String getDownloadLengthMB() {
+	public String getDownloadLengthMB() {
 		return toUnitLength(downloadLength);
 	}
 
@@ -173,49 +182,49 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 	}
 
 	private String getReminningTimeString() {
-		return ansi.Green(ansi.Underscore(Utils.timeformate(getReminningTime())));
+		return ansi.green(ansi.Underscore(Utils.timeformate(getReminningTime())));
 	}
 
 	private long getRemainingLength() {
 		return getTotalLength() - getDownloadLength();
 	}
-
-	private String getRemainingLengthMB() {
+	
+	public String getRemainingLengthMB() {
 		return toUnitLength(getRemainingLength());
 	}
 
 	public String getTimer() {
-		return ansi.Green(ansi.Underscore(Utils.timeformate(timer++)));
+		return ansi.green(ansi.Underscore(Utils.timeformate(timer++)));
 	}
 
 	// ↓↑⇔⇧⇩⇅⛗⌚▽△▲▼⬆⬇⬌
 	public String getLengthInfo() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.Red(ansi.Bright(Utils.getStringWidth("T: " + getTotalLengthMB() , 20))));
+		builder.append(ansi.red(ansi.Bold(Utils.getStringWidth("T: " + getTotalLengthMB() , 20))));
 		// builder.append(",\t");
-		builder.append(ansi.Yellow(ansi.Bright(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 20))));
+		builder.append(ansi.yellow(ansi.Bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 20))));
 		// builder.append(",\t");
-		builder.append(ansi.MagentaLight(ansi.Bright(Utils.getStringWidth("Down: " + getTotalReceiveMB(), 20))));
+		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth("Down: " + getTotalReceiveMB(), 20))));
 
 		return builder.toString();
 	}
 
 	public String getSpeedInfo() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.Blue(ansi.Bright(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 20))));
+		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 20))));
 		// builder.append(",\t");
-		builder.append(Utils.getStringWidth(ansi.Red(ansi.Underscore(getPercent())), 30));
+		builder.append(Utils.getStringWidth(ansi.red(ansi.Underscore(getPercent())), 30));
 		return builder.toString();
 	}
 
 	/////////////////
 	public String getReportLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.Red(ansi.Bright(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
-		builder.append(ansi.MagentaLight(ansi.Bright(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
-		builder.append(ansi.Yellow(ansi.Bright(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
-		builder.append(ansi.MagentaLight(ansi.Bright(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.Blue(ansi.Bright(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
+		builder.append(ansi.red(ansi.Bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
+		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
+		builder.append(ansi.yellow(ansi.Bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
+		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
+		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
 		builder.append(getReminningTimeString());
 		return builder.toString();
 	}
@@ -225,15 +234,15 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 	public String getReportLineFixedWidth() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(
-				Utils.getStringWidth(ansi.Red(ansi.Bright("Total : ") + ansi.Underscore(getDownloadLengthMB())), 48));
+				Utils.getStringWidth(ansi.red(ansi.Bold("Total : ") + ansi.Underscore(getDownloadLengthMB())), 48));
 		builder.append(Utils
-				.getStringWidth(ansi.Yellow(ansi.Bright("Download : ") + ansi.Underscore(getTotalReceiveMB())), 50));
+				.getStringWidth(ansi.yellow(ansi.Bold("Download : ") + ansi.Underscore(getTotalReceiveMB())), 50));
 		builder.append(Utils.getStringWidth(
-				ansi.Yellow(ansi.Bright("Remaining : ") + ansi.Underscore(getRemainingLengthMB())), 50));
-		builder.append(ansi.Blue(ansi.Bright(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 22))));
+				ansi.yellow(ansi.Bold("Remaining : ") + ansi.Underscore(getRemainingLengthMB())), 50));
+		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 22))));
 		builder.append(Utils
-				.getStringWidth(ansi.Blue(ansi.Bright("↓ ") + ansi.Underscore(getSpeedTCPReceiveMB() + "/s")), 43));
-		builder.append(ansi.Red(ansi.Underscore(Utils.getStringWidth(getPercent(), 12))));
+				.getStringWidth(ansi.blue(ansi.Bold("↓ ") + ansi.Underscore(getSpeedTCPReceiveMB() + "/s")), 43));
+		builder.append(ansi.red(ansi.Underscore(Utils.getStringWidth(getPercent(), 12))));
 		builder.append("  " + getReminningTimeString() + "  ");
 		// demondSpeedNow();
 		return builder.toString();
@@ -246,12 +255,13 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 	public String progressLine() {
 		int percent = (int) (90 * (getDownloadLength() / (float) getTotalLength()));
 		StringBuilder builder = new StringBuilder();
+		builder.append(' ');
 		int i = 0;
 		for (; i < percent; i++) {
 			builder.append('=');
 		}
 		builder.append("> ");
-		builder.append(Utils.getStringWidth(ansi.Red(getPercent()), 21));
+		builder.append(Utils.getStringWidth(ansi.red(getPercent()), 21));
 		i++;
 		for (; i <= 90; i++) {
 			builder.append(' ');
@@ -267,12 +277,18 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 	}
 
 	protected String getPrintMessage() {
-		return '\r' + Ansi.EraseLine + '\n' + Ansi.EraseLine + '\n' + Ansi.EraseLine + "\n\r" + Ansi.EraseLine
-				+ "\r {0} [ {1} ] " + Ansi.EraseEndofLine + "\r\n" + Ansi.EraseLine + "\r [{2}] " + Ansi.EraseEndofLine
-				+ "\r\n" + Ansi.CursorUp + Ansi.CursorUp + Ansi.CursorUp + Ansi.CursorUp + Ansi.CursorUp;
+		return '\r' + Ansi.EraseDown
+//				+ ansi.cursorDown(3)
+				+ "\n\n\n"
+//				+ ansi.cursorNextLine(3)
+				+ getReport() + "\n\r" + ansi.cursorUp(5);
+	}
+	//os.name
+	protected String getReport() {
+		return "\r {0} [ {1} ] " + Ansi.EraseEndofLine + "\r\n" + Ansi.EraseLine + "\r [{2}] " + Ansi.EraseEndofLine;
 	}
 
-	private MessageFormat format = new MessageFormat(getPrintMessage());
+	private MessageFormat format;
 
 	public void scheduledUpdate() {
 		updateTotalLength();
@@ -289,6 +305,15 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 		demondSpeedNow();
 		return message;
 	}
+	
+	public void useMinmallMode(boolean minimal) {
+		if (minimal) {
+			format = new MessageFormat(getReport());
+		}else {
+			format = new MessageFormat(getPrintMessage());
+		}
+	}
+	
 
 	public String getMointorPrintMessageln() {
 		return '\r' + getMointorPrintMessage() + Ansi.CursorUp;
@@ -300,6 +325,5 @@ public class RangeInfoMonitor extends SpeedMonitor implements List<RangeInfo> {
 		totalLength = 0;
 		timer = 0;
 		rangeInfos.clear();
-		super.finalize();
 	}
 }

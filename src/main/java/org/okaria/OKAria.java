@@ -1,19 +1,24 @@
 package org.okaria;
 
-import org.log.Level;
-import org.log.Log;
+import java.util.Arrays;
+
+import org.fusesource.hawtjni.runtime.Library;
+import org.fusesource.jansi.AnsiConsole;
+import org.fusesource.jansi.internal.CLibrary;
+import org.log.beans.Level;
+import org.log.concurrent.Log;
 import org.okaria.chrome.ChromeConnection;
 import org.okaria.lunch.Argument;
 import org.okaria.lunch.TerminalArgument;
-import org.okaria.manager.Item;
-import org.okaria.okhttp.OkClient;
 import org.okaria.okhttp.OkServiceManager;
-import org.okaria.range.RangeInfo;
+import org.okaria.setting.AriaProperties;
 
 public class OKAria {
 	
 	
-	public static void main(String[] terminals) {
+	public static void main(String[] terminals) {			
+		
+		//System.out.println(TerminalArgument.Help());
 		
 //		String[] testChrome = new String[terminals.length +1];
 //		testChrome[terminals.length] = "gaogianbgnmoompbfkmgnefkbehmeijh";
@@ -40,30 +45,22 @@ public class OKAria {
 			System.out.println(TerminalArgument.Help());
 			return;
 		}else if(arguments.isVersion()) {
-			System.out.println("okaria version \"0.1.98\"");
+			System.out.println("okaria version \"0.2.04\"");
 			return;
 		}
+		Library lib = new Library("jansi", CLibrary.class);
+        lib.load();
+        AnsiConsole.systemInstall();
+        
+		String log_level = arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
+		Log.level(Level.valueOf(log_level));
+		Log.fine(OKAria.class, "terminal arguments", Arrays.toString(terminals));
 		
-		if(arguments.isTries()) {
-			OkClient.RETRIES = arguments.getTries();
-		}
-		
-		if(arguments.isConnection()) {
-			RangeInfo.RANGE_POOL_NUM = arguments.getNumberOfConnection();
-		}
-		
-		if(arguments.isSavePath()) {
-			Item.SAVE_DIR_PATH = arguments.getSavePath();
-		}
-		
-		if(arguments.isMaxItem()) {
-			OkServiceManager.MAX_ACTIVE_DOWNLOAD_POOL = arguments.getMaxItem();
-		}
+		AriaProperties.Config(arguments);
 		
 		
-		
-		String log_level = arguments.getOrDefault(TerminalArgument.Log, Level.info.name());
-		Log.setLogLevel("aria", Level.valueOf(log_level));
+        
+        
 		OkServiceManager manager = new OkServiceManager(arguments.getProxy());
 		manager.download(arguments);
 		manager.startScheduledService();

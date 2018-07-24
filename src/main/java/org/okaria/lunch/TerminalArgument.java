@@ -1,5 +1,9 @@
 package org.okaria.lunch;
 
+import java.util.Arrays;
+
+import org.log.beans.Level;
+
 public enum TerminalArgument{
 		Url("-u", "--url"),
 		InputFile("-i", "--input-file"),
@@ -33,9 +37,18 @@ public enum TerminalArgument{
 		SSHUser("-su", "--ssh-user"),
 		SSHPass("-sp", "--ssh-pass"),
 		
+		GoogleDriveFileID("-gd","--google-drive-id"),
+		
+		Maven("-mvn","--maven"),
+		GroupId("-mvng","--maven-groupId"),
+		ArtifactId("-mvna","--maven-artifactId"),
+		MVersion("-mvnv","--maven-version"),
+		MavenRepository("-mvnr", "--maven-repository"),
+		
+		
 		Help("-h", "--help"),
-		Log("-v", "--log-level"),
-		Version("-V", "--version"), 
+		Debug("-d", "--debug-level"),
+		Version("-v", "--version"), 
 		Chrome("-ch","--chrome");
 	
 		
@@ -61,7 +74,7 @@ public enum TerminalArgument{
 		
 		public static TerminalArgument argument(String line) {
 			for (TerminalArgument arg : TerminalArgument.values()) {
-				if(line.startsWith(arg.mini) || line.startsWith(arg.full)) {
+				if(line.contentEquals(arg.mini) || line.contentEquals(arg.full)) {
 					return arg;
 				}
 			}
@@ -70,10 +83,10 @@ public enum TerminalArgument{
 		
 		public static String arg(String line) {
 			for (TerminalArgument arg : TerminalArgument.values()) {
-				if(line.startsWith(arg.mini)) {
+				if(line.contentEquals(arg.mini)) {
 					return arg.mini;
 				}
-				else if(line.startsWith(arg.full)) {
+				else if(line.contentEquals(arg.full)) {
 					return arg.full;
 				}
 			}
@@ -82,20 +95,20 @@ public enum TerminalArgument{
 		
 		public static String mini(String line) {
 			for (TerminalArgument arg : TerminalArgument.values()) {
-				if(line.startsWith(arg.mini)) {
+				if(line.contentEquals(arg.mini)) {
 					return arg.mini;
 				}
 			}
-			return null;
+			return "";
 		}
 		
 		public static String full(String line) {
 			for (TerminalArgument arg : TerminalArgument.values()) {
-				if(line.startsWith(arg.full)) {
-					return arg.mini;
+				if(line.contentEquals(arg.full)) {
+					return arg.full;
 				}
 			}
-			return null;
+			return "";
 		}
 
 		public boolean isPair() {
@@ -113,33 +126,103 @@ public enum TerminalArgument{
 		
 		public static String Help() {
 			StringBuilder builder = new StringBuilder();
-			builder.append("\n   OKaria (commend line) download manager\n");
-			builder.append("\t-u	--url			link\n");
-			builder.append("\t-i	--input-file		text file\n");
-			builder.append("\t-m	--metalink		metalink text file\n");
-			builder.append("\t-r	--http-referer		referer link\n");
-			builder.append("\t-ua	--user-agent		user agent\n");
-			builder.append("\t-H	--header		header\n");
-			builder.append("\t-C	--cookie		cookie\n");
-			builder.append("\t-cf	--cookie-file		cookie file\n");
-			builder.append("\t-o	--file-name		file name\n");
-			builder.append("\t-sp	--save-path		directory to save list file in\n");
-			builder.append("\t-t	--tries			number of tries\n");
-			builder.append("\t-n	--num-download			max current download items\n");
-			builder.append("\t-c	--max-connection	max connection for current session\n");
-			builder.append("\t-p	--proxy 		http://127.0.0.1:8080/\n");
-			builder.append("\t-http	--http-proxy 		127.0.0.1:8080\n");
-			builder.append("\t-https	--https-proxy 		127.0.0.1:8443\n");
-			builder.append("\t-socks	--socks-proxy 		127.0.0.1:1080\n");
-			builder.append("\t-socks4	--socks4-proxy	 	127.0.0.1:1080\n");
-			builder.append("\t-socks5	--socks5-proxy 		127.0.0.1:1080\n");
-			builder.append("\t-s	--ssh 			remotehost:port\n");
-			builder.append("\t-su	--ssh-user 		remote login user name\n");
-			builder.append("\t-sp	--ssh-pass 		remote login password, if non will be asked from terminal or gui will be used\n");
-			builder.append("\t-h	--help			print this help message\n");
-			builder.append("\t-V	--version		show current app version\n");
-			builder.append("\t-v	--log-level		show logging info, debug, fine and all\n");
+			builder.append("\n okaria commend line download manager\n");
+			builder.append("\n java - jar okaria.jar [-u] URL\n");
+			for (TerminalArgument argument : TerminalArgument.values()) {
+				if(argument == TerminalArgument.Chrome) continue;
+				builder.append('\t');
+				builder.append(argument.mini);
+				builder.append("\t");
+				builder.append(argument.full);
+				if(argument.full.length() > 14)
+					builder.append("\t");
+				else if(argument.full.length() > 7)
+					builder.append("\t\t");
+				else 
+					builder.append("\t\t\t");
+				builder.append(argument.doc());
+				builder.append('\n');
+			}
 			return builder.toString();
+		}
+		
+		public String doc() {
+			switch (this) {
+				case Url :
+					return ("[-u] add new link/url to download manager");
+				case InputFile:
+					return ("downoload from text file - list of urls");
+				case MetaLink:
+					return ("downoload from  metalink text/xml file - list of urls on deffrient servers for the same daownloadable file");
+				
+				case Referer:
+					return("set referer header for that link");
+				case UserAgent:
+					return("set user-agent header while download");
+				case Header:
+					return("set one/multiable different header(s) for that link");
+				case Cookie:
+					return("add cookie(s) while download");
+				case CookieFile:
+					return("add cookie(s) from standered cookie file");
+				
+				case FileName:
+					return("save download link to file on hard-disk");
+				case SavePath:
+					return("set directory of download process");
+				
+				case Tries:
+					return("number of tries when failler, then giveup (0 for keep-try )");
+				case Connection:
+					return("max connection for current session for each link");
+				case MaxItem:
+					return("number of download links in queue, if more links, will be in watting list");
+				
+				case Proxy:
+					return("set proxy to http://host:port[8080]/, support protocols http, https ans socks4/5");
+				case HttpProxy:
+					return("use http proxy [host:port] format");
+				case HttpsProxy:
+					return("use https proxy [host:port] format");
+				case SocksProxy:
+					return("use socks proxy [host:port] format");
+				case Socks5Proxy:
+					return("use socks5 proxy [host:port] format");
+				case Socks4Proxy:
+					return("use socks4 proxy [host:port] format");
+				
+				case SSH:
+					return("use ssh connection as proxy - [remotehost:port], not supported yet");
+				case SSHUser:
+					return("set ssh user name - remote login user name");
+				case SSHPass:
+					return("set remote login password, if non will be asked from terminal");
+				
+				case GoogleDriveFileID:
+					return ("download from google drive servers, fileID or full URL");
+					
+				case Maven:
+					return ("download from  maven repository, (dafault http://central.maven.org/maven2/)");
+				case GroupId :
+					return ("set maven groupId");
+				case ArtifactId:
+					return ("set maven artifactId");
+				case MVersion:
+					return ("set maven version");
+				case MavenRepository:
+					return ("download to directory default set to system maven parh in user directory");	
+					
+				case Help:
+					return("print this message");
+				case Version:
+					return("display the version of okaria");
+				case Debug:
+					return("display logging, Levels: " + Arrays.toString(Level.values()));
+					
+
+				default :
+			}
+			return "";
 		}
 		
 	}

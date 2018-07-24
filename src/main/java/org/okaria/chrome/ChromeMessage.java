@@ -2,9 +2,9 @@ package org.okaria.chrome;
 
 import java.util.Map;
 
-import org.log.Level;
-import org.okaria.lunch.TerminalArgument;
+import org.log.beans.Level;
 import org.okaria.lunch.Argument;
+import org.okaria.lunch.TerminalArgument;
 
 import com.google.gson.Gson;
 
@@ -104,7 +104,7 @@ public class ChromeMessage {
 			map.put(TerminalArgument.Proxy, proxy);
 		
 		map.put(TerminalArgument.Chrome, TerminalArgument.Chrome.toString());
-		map.put(TerminalArgument.Log, Level.off.toString());
+		map.put(TerminalArgument.Debug, Level.off.toString());
 		return arguments;
 	}
 

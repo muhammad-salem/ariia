@@ -1,25 +1,28 @@
 package org.okaria.range;
 
+import java.util.Arrays;
+
 import org.okaria.Utils;
+import org.okaria.setting.AriaProperties;
 
 public class RangeInfo {
 
-	public static int RANGE_POOL_NUM = 8;
+	
     protected long		fileLength;
     protected long[][]	range = null;
 
-    private static RangeUtils rangeUtils = new RangeUtils() {};
+    private static RangeUtils RangeUtils = new RangeUtils() {};
 
    
     public RangeInfo() {
-       this(-1, RANGE_POOL_NUM);
+       this(-1, AriaProperties.RANGE_POOL_NUM);
     }
 
     /**
      * [length = -1] -> [streaming], [unknown length]
      */
     public RangeInfo(long length) {
-    	this(length, RANGE_POOL_NUM);
+    	this(length, AriaProperties.RANGE_POOL_NUM);
     }
     public RangeInfo(long length, int numOfRange) {
         fileLength = length;
@@ -34,19 +37,18 @@ public class RangeInfo {
 	protected void createSubRange(int numOfRange) {
 		if (range == null) {
             // create new range for that file
-			if (fileLength >= 1048576)
-                range = SubRange.stream(fileLength, numOfRange);
 			
-//			if (fileLength >= 10485760)
-//                range = SubRange.stream(fileLength, numOfRange);
-//            else if (fileLength >= 1048576)
-//                range = SubRange.subrange(fileLength, (int)(fileLength/1000000) );
+			if (fileLength >= 10485760)		// for 10MB
+                range = SubRange.stream(fileLength, numOfRange);
+                
+			else if (fileLength >= 1048576)		// for 1MB
+                range = SubRange.subrange(fileLength, numOfRange);
             else if (fileLength > 0)
                 range = SubRange.mksubrange(fileLength);
-            // if filelength = -1 -- mean it have to be streamd 
+            // if filelength = -1 -- mean it should to stream link
             else {
             	//fileLength = Long.MAX_VALUE;
-            	range =  SubRange.mksubrange( -1 /*Long.MAX_VALUE*/ );
+            	range =  SubRange.mksubrange( fileLength /*Long.MAX_VALUE*/ );
             }
         }
 	}
@@ -91,11 +93,11 @@ public class RangeInfo {
     }
     
     public boolean isStreaming() {
-        return range!= null & range.length == 1 & range[0][1] == -1;
+        return range!= null & range.length == -1 & range[0][1] == -1;
     }
     
     public boolean isFinish() {
-        return rangeUtils.isFinish(range);
+        return range!= null & range.length != -1 & RangeUtils.isFinish(range);
     }
 	
 	/**
@@ -106,8 +108,8 @@ public class RangeInfo {
 		int count = range.length;
 		if(newCountLength > count){
 			long[][] temp = new long[newCountLength][2];
-			rangeUtils.updateValue(temp, range);
-			range = rangeUtils.checkRanges(temp);
+			RangeUtils.updateValue(temp, range);
+			range = RangeUtils.checkRanges(temp);
 		}else if(newCountLength == count){
 			// do nothing
 			// 
@@ -124,11 +126,17 @@ public class RangeInfo {
 		long[][] ls = SubRange.subrange(getIndex(maxindex), 2);
 		
 		// edit range 
-		range[maxindex][0] = ls[0][0];
-		range[maxindex][1] = ls[0][1];
+		range[maxindex][0]	= ls[0][0];
+		range[maxindex][1]	= ls[0][1];
 		
-		range[index][0] = ls[1][0];
-		range[index][1] = ls[1][1];
+		range[index][0]		= ls[1][0];
+		range[index][1]		= ls[1][1];
+		
+		if(range[maxindex][1] > 1024) {
+			range[maxindex][1]	+= 1024;
+			range[index][0]		-= 1024;
+		}
+		
 		return true;
 	}
 	
@@ -157,8 +165,25 @@ public class RangeInfo {
 		this.range = nwRange;
 	}
 	
-	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for( ; i < getRangeCount()-1; i++){
+			builder.append(Arrays.toString(getIndex(i)));
+			builder.append(", ");
+			if(i%4 == 3) builder.append('\n');
+		}
+		builder.append(Arrays.toString(getIndex(i)));
+		return builder.toString();
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		RangeInfo info = (RangeInfo) obj;
+		return this.fileLength == info.fileLength && this.range == info.range;
+	}
+	
     //---------------- deleget operation -----------------//
 
 
@@ -167,60 +192,60 @@ public class RangeInfo {
     }
 
     public String getDownLengthMB() {
-        return rangeUtils.getDownLengthMB(range, fileLength);
+        return RangeUtils.getDownLengthMB(range, fileLength);
     }
 
     public long getDownLength() {
-        return rangeUtils.getDownLength(range, fileLength);
+        return RangeUtils.getDownLength(range, fileLength);
     }
 
     public String getRengeLengthMB() {
-        return rangeUtils.getRengeLengthMB(range);
+        return RangeUtils.getRengeLengthMB(range);
     }
 
     public long getNotDownLength() {
-        return rangeUtils.getNotDownLength(range);
+        return RangeUtils.getNotDownLength(range);
     }
 
     public long getRengesLength() {
-        return rangeUtils.getRengeLength(range);
+        return RangeUtils.getRengeLength(range);
     }
 
 
     public void printRange() {
-        rangeUtils.printRange(range);
+        RangeUtils.printRange(range);
     }
 
     public boolean isFinish(int index) {
-        return  rangeUtils.isFinish(range[index]);
+        return  RangeUtils.isFinish(range[index]);
     }
     
     public void checkRanges() {
-        range = rangeUtils.checkRanges(range);
+        range = RangeUtils.checkRanges(range);
     }
 
     public void avoidMissedBytes() {
-        range = rangeUtils.avoidMissedBytes(range);
+        range = RangeUtils.avoidMissedBytes(range);
     }
 
     public void avoidMissedBytes(int rangeIndex) {
-        range[rangeIndex] = rangeUtils.avoidMissedBytes(range[rangeIndex]);
+        range[rangeIndex] = RangeUtils.avoidMissedBytes(range[rangeIndex]);
     }
 
     public boolean isSubRangeComplete(int index) {
-        return rangeUtils.isSubRangeComplete(range[index]);
+        return RangeUtils.isSubRangeComplete(range[index]);
     }
 
     public void updateValue(long[][] copy) {
-        rangeUtils.updateValue(range, copy);
+        RangeUtils.updateValue(range, copy);
     }
     
     public int indexOfMaxRange() {
-        return rangeUtils.indexOfMaxRange(range);
+        return RangeUtils.indexOfMaxRange(range);
     }
     
     public long getIndexLength(int index) {
-        return rangeUtils.subLength(range[index]);
+        return RangeUtils.subLength(range[index]);
     }
 
 }

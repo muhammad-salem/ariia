@@ -80,9 +80,9 @@ public class SubRange {
 
 	public static long[][] initRangeNormal(int splitCount, int length, int downloaded, boolean isUnknowLength) {
 		long[][] ranges;
-		if (isUnknowLength || length > LengthFactor) {
+		if (isUnknowLength || length < LengthFactor) {
 			if (isUnknowLength) {
-				length = 0;
+				length = -1;
 			}
 			ranges = new long[1][2];
 			ranges[0][0] = downloaded;
@@ -157,7 +157,7 @@ public class SubRange {
 	}
 
 	public static boolean isUnknowingLength(long[][] ranges) {
-		return ranges[0][1] == 0;
+		return ranges[0][1] == -1;
 	}
 
 	public static long[] subrange(long downloded) {

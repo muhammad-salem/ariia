@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.log.Log;
+import org.log.concurrent.Log;
 import org.okaria.R;
 import org.okaria.manager.Item;
 import org.okaria.okhttp.request.ClientRequest;
@@ -131,15 +131,14 @@ public interface ClientResponse {
 	
 	default boolean downloadTask(Item item, int index, SpeedMonitor... monitors) {
 		long[] subrang = item.getRangeInfo().getIndex(index);
-		if (subrang[0] - subrang[1] >= 0)
+		if (item.getRangeInfo().isFinish(index))
 			return true;
 		RandomAccessFile raf = null;
 		Response response = null;
 		try {
 			response = getClientRequest().get(item, index);
 			
-			
-			item.addCookies(getClientRequest().getHttpClient().cookieJar().loadForRequest(item.getUpdateHttpUrl()));
+			item.addCookies(getClientRequest().getHttpClient().cookieJar().loadForRequest(item.getUrl()));
 			if (response.code() / 100 != 2) {
 				Log.warning(getClass(),  item.getFilename(), "response.code = " + response.code()
 					+ "\nurl = " + response.request().url().toString()
@@ -163,14 +162,10 @@ public interface ClientResponse {
 	}
 
 	default void relaseResources(RandomAccessFile raf, Response response) {
-		if (raf != null)
-			releaseResources.execute(() -> {
-				closeRAF(raf);
-			});
-		if (response != null)
-			releaseResources.execute(() -> {
+		releaseResources.execute(() -> {
 				if (response != null)
 					response.close();
+				closeRAF(raf);
 			});
 	}
 

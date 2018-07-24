@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.log.Log;
+import org.log.concurrent.Log;
 import org.okaria.manager.Item;
 import org.okaria.range.RangeInfo;
 
@@ -43,7 +43,7 @@ public interface ClientRequest {
     }
 
     default Response head(Item item) throws IOException {
-        return response( headCall(item.getUpdateHttpUrl(), item.getCookies(), item.getHeaders()) );
+        return response( headCall(item.getUrl(), item.getCookies(), item.getHeaders()) );
     }
     
     default Response head(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
@@ -127,7 +127,7 @@ public interface ClientRequest {
         return response(getCall(item, startRange, endRange));
     }
     default Call getCall(Item item, long startRange, long endRange) throws IOException {
-        return getCall(item.getUpdateHttpUrl(), 
+        return getCall(item.getUrl(), 
         		startRange, 
         		endRange, 
         		item.getCookies(), 
@@ -203,16 +203,15 @@ public interface ClientRequest {
     }
     
     default Call newCall( Request request) {
-    	Log.fine(getClass(), "Request", request.toString());
-    	Log.finer(getClass(), "Request Header", request.headers().toString());
+    	String message = request.method() + " " + request.url() + " HTTP/1.1\n" + request.headers().toString();
+    	Log.fine(getClass(), "Client Request", message);
         return getHttpClient().newCall(request);
     }
     
     default Response response( Call call) throws IOException {
     	Response response = call.execute();
-    	Log.fine(getClass(), "Response", response.toString());
-    	Log.finer(getClass(), "Respnse Line", response.protocol() + " " + response.code() + " " + response.message());
-    	Log.finest(getClass(), "Response Header", response.headers().toString());
+    	String message = response.protocol() + " " + response.code() + " " + response.message() + "\n" + response.headers().toString();
+    	Log.fine(getClass(), "Server Respnse", message);
         return response;
     }
 }

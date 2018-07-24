@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.okaria.Utils;
-import org.okaria.range.RangeInfo;
+import org.okaria.setting.AriaProperties;
 
 public interface RangeUtils {
 
@@ -95,29 +95,35 @@ public interface RangeUtils {
 	*	create new range 
 	*/
 	default long[][] checkRanges(long[][] ranges) {
+		
+		if(ranges.length == 1 ){ return ranges;}
 		long[][] newRange = null;
-		if(ranges.length < RangeInfo.RANGE_POOL_NUM){
-			newRange = new long[RangeInfo.RANGE_POOL_NUM][2];
-		}else{
+		if(ranges.length < AriaProperties.RANGE_POOL_NUM){
+			newRange = new long[AriaProperties.RANGE_POOL_NUM][2];
+		}
+		else {
 			newRange = new long[ranges.length][2];
 		}
 		
 		
 		int items = 0;
 		for (long[] ls : ranges) {
-			if (ls[0] - ls[1] >= 0)
+			if (isFinish(ls))	// ls[0] - ls[1] >= 0
 				continue;
 			newRange[items++] = ls;
 		}
 
 		for (int i = 0; items < newRange.length; i++, items++) {
 			long[][] split = SubRange.subrange(newRange[i][0], newRange[i][1], 2);
+			
+			if(split[0][1] > 1024){
+				split[0][1] += 1024;
+				split[1][0] -= 1024;
+			}
+			
 			newRange[i] = split[0];
 			newRange[items] = split[1];
 		}
-		
-		
-
 		return newRange;
 	}
 	
@@ -194,31 +200,37 @@ public interface RangeUtils {
 	default boolean isFinish(long[] mat) {
 		if (mat == null)
 			throw new NullPointerException("mat has null value");
-		return mat[0] - mat[1] >= 0;
+		return mat[1] > -1 & (mat[0] - mat[1] >= 0);
 	}
 	
 	default boolean isFinish(long[][] mat) {
-		if (mat == null)
-			throw new NullPointerException("Range Array has null value");
-		if(mat[0][1] == -1) return false;
-		long todownload = 0;
-		for (int i = 0; i < mat.length; i++) {
-			long[] ls = mat[i];
-			todownload += ls[1] - ls[0];
+		for (long[] ls : mat) {
+			if( ! isFinish(ls) ) return false;		// at least one array not yet had finished
 		}
-		if (todownload <= 0)
-			return true;
-		return false;
+		return true;
 	}
+	
+//	default boolean isFinish(long[][] mat) {
+//		if (mat == null)
+//			throw new NullPointerException("Range Array has null value");
+//		if(mat[0][1] == -1) return false;
+//		long todownload = 0;
+//		for (int i = 0; i < mat.length; i++) {
+//			long[] ls = mat[i];
+//			todownload += ls[1] - ls[0];
+//		}
+//		if (todownload <= 0)
+//			return true;
+//		return false;
+//	}
 
 	default boolean isFinish(List<long[][]> mat) {
-		if (mat == null)
-			throw new NullPointerException("Range Array has null value");
 		boolean result = false;
 		for (long[][] ls : mat) {
 			result &= isFinish(ls);
+			if( ! result ) return false;
 		}
-		return result;
+		return true;
 	}
 
 	default String getRengeLengthMB(List<long[][]> ranges) {

@@ -5,9 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.log.Log;
+import org.log.concurrent.Log;
 import org.okaria.R;
 import org.okaria.Utils;
+//import org.okaria.mointors.SingleItemMointor;
 import org.okaria.queue.DownloadPlane;
 import org.okaria.range.RangeInfo;
 import org.okaria.speed.SpeedMonitor;
@@ -18,18 +19,19 @@ public class ItemIndictor {
 	private File cacheFile;
 	private List<Future<?>> futures;
 	
-	
+	//private SingleItemMointor itemMointor;
 
 	private boolean downloading = false;
-	
 	
 	public ItemIndictor(Item item) {
 		this.item = item;
 		this.cacheFile = R.getConfigFile(Utils.jsonFileName(item.url()));
+		//this.itemMointor = new SingleItemMointor(item);
 	}
 	public ItemIndictor(Item item, File cacheFile) {
 		this.item = item;
 		this.cacheFile = cacheFile;
+		//this.itemMointor = new SingleItemMointor(item);
 	}
 
 	public Item getItem() {
@@ -39,6 +41,11 @@ public class ItemIndictor {
 	public void setItem(Item item) {
 		this.item = item;
 	}
+	/*
+	public SingleItemMointor getItemMointor() {
+		return itemMointor;
+	}
+	*/
 
 	public File getCacheFile() {
 		return cacheFile;
@@ -96,7 +103,7 @@ public class ItemIndictor {
 	}
 	
 	
-	public void replaceDoneFuturesFromMax(DownloadPlane plane, SpeedMonitor... monitors) {
+	public void checkDoneFuturesFromMax(DownloadPlane plane, SpeedMonitor... monitors) {
 		check();
 		RangeInfo info = item.getRangeInfo();
 		for (int index = 0; index < info.getRangeCount(); index++) {
@@ -127,7 +134,10 @@ public class ItemIndictor {
 	public void saveItem2CacheFile() {
 		Utils.toJsonFile(cacheFile, item);
 	}
-	
+
+	public void saveItem2BackupFile() {
+		Utils.toJsonFile(cacheFile+".bkup", item);
+	}
 	
 	
 	

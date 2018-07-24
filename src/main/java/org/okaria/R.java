@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.log.Log;
+import org.log.concurrent.Log;
 
 public class R {
 
-	private static char sprtr = File.separatorChar;
+	public static char sprtr = File.separatorChar;
 	public static String app_name = "okaria";
 	public static String code_name = "و";
 	public static String UserHome = System.getProperty("user.home");
