@@ -1,0 +1,9 @@
+{
+  "name": "org.okaria.chrome",
+  "description": "OkAria",
+  "path": "/Applications/OkAria.app/Contents/MacOS/okaria",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://gaogianbgnmoompbfkmgnefkbehmeijh/"
+  ]
+}

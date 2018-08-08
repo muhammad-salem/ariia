@@ -20,7 +20,6 @@ import org.okaria.manager.Item;
 import org.okaria.manager.MetalinkItem;
 import org.okaria.okhttp.OkUtils;
 import org.okaria.okhttp.service.ServiceManager;
-import org.okaria.okhttp.writer.StreamWriter;
 import org.okaria.plugin.maven.Maven;
 import org.okaria.setting.Properties;
 import org.w3c.dom.Document;
@@ -218,9 +217,6 @@ public class Lunch {
 		else if(arguments.isMaven()) {
 			downloadFromMaven(arguments);
 		}
-		else if(arguments.isStream()) {
-			streamUrl(arguments);
-		}
 //		else if(arguments.isGoogleDrive()) {
 //			downloadGoogleDrive(arguments.getGoogleDriveFileID());
 //		}
@@ -261,23 +257,6 @@ public class Lunch {
 //		
 //	}
 
-	
-
-	private void streamUrl(Argument arguments) {
-		Item builder = new Item();
-		builder.setUrl(arguments.getStream());
-		configBuilder(arguments, builder);
-		if(arguments.isFileName()) 
-			builder.setFilename(arguments.getFileName());
-		Item item = buildItem(builder);
-		if(!item.getFilename().equals("404:Not:Found")) {
-//			addItem2WattingList(item);
-			
-			manager.getWattingList().add(new StreamWriter(item));
-			manager.getSessionMointor().add(item.getRangeInfo());
-		}
-//			
-	}
 	
 
 	private void downloadFromMaven(Argument arg) {

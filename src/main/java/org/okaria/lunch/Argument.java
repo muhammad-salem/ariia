@@ -433,12 +433,4 @@ public class Argument {
 		return defaultValue;
 	}
 	
-	public boolean isStream() {
-		return is(TerminalArgument.Stream);
-	}
-	
-	public String getStream(){
-		return get(TerminalArgument.Stream);
-	}
-	
 }

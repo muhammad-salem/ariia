@@ -47,7 +47,6 @@ public enum TerminalArgument{
 		MavenRepository("-mvnr", "--maven-repository"),
 		
 		CheckFile("-ch", "--check-file"),
-		Stream("-st", "--stream"),
 		
 		Help("-h", "--help"),
 		Debug("-d", "--debug-level"),
@@ -219,11 +218,6 @@ public enum TerminalArgument{
 					
 				case CheckFile:
 					return ("check donload file if is complete, and try to complete it");
-				
-				case Stream:
-					return ("stream URL");
-					
-					
 				case Help:
 					return("print this message");
 				case Version:

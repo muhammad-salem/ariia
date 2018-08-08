@@ -172,7 +172,6 @@ public interface ClientRequest {
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .headers(headers)
-                .addHeader("Range", "bytes=0-")
                 .get();
                 //if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
         getHttpClient().cookieJar().saveFromResponse(url, jar);

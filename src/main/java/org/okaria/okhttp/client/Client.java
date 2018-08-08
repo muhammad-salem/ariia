@@ -138,43 +138,6 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 
 		return true;
 	}
-	
-	
-	public void updateStreamItemOnline(Item item) {
-		Response response = null;
-		try {
-			response = getStream(item.url(), item.getCookies(), item.getHeaders());
-		} catch (IOException e) {
-			Log.warn(e.getClass(), e.getClass().getSimpleName(), e.getMessage());
-		}
-		
-		if(response.code() == 404) {
-			item.setFilename("404:Not:Found");
-			return;
-		}
-
-		// System.out.println(response);
-		if (response.networkResponse() != null 
-				&& ! response.networkResponse().request().url().toString()
-					.equals(item.getUrl())) {
-			item.setRedirect();
-			item.setRedirectUrl(response.networkResponse().request().url().toString());
-			Log.fine(getClass(), "redirect item to another location", 
-					item.getUrl() + '\n' + item.getRedirectUrl());
-		}
-		
-		if (item.getFilename() == null) {
-			String filename = OkUtils.Filename(item.updateUrl());
-			String contentDisposition = response.header("Content-disposition", "filename=\"" + filename + "\"");
-			if (contentDisposition.contains("filename")) {
-				String[] split = contentDisposition.split("\"");
-				filename = split[split.length - 1];
-			}
-			item.setFilename(filename);
-		}
-	}
-	
-	
 	@Override
 	public ClientRequest getClientRequest() {
 		return this;
