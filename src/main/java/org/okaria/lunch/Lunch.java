@@ -1,0 +1,397 @@
+package org.okaria.lunch;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.log.concurrent.Log;
+import org.okaria.R;
+import org.okaria.filecheck.CheckManager;
+import org.okaria.manager.Item;
+import org.okaria.manager.MetalinkItem;
+import org.okaria.okhttp.OkUtils;
+import org.okaria.okhttp.service.ServiceManager;
+import org.okaria.okhttp.writer.StreamWriter;
+import org.okaria.plugin.maven.Maven;
+import org.okaria.setting.Properties;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+public class Lunch {
+	
+	ServiceManager manager;
+	
+	public Lunch(ServiceManager manager) {
+		this.manager = manager;
+	}
+	
+	public List<Item> mavenRepository(String baseUrl, String groupId, String artifactId, String version, String path){
+		
+		if(baseUrl != null & (baseUrl.startsWith("/") || baseUrl.startsWith("file://"))) {
+			
+			List<String> lines = OkUtils.readLines(baseUrl);
+			Iterator<String> iterator = lines.iterator();
+			while (iterator.hasNext()) {
+				String string = (String) iterator.next();
+				if (! string.startsWith("http")) {
+					iterator.remove();
+				}
+			}
+			List<Item> builders = new ArrayList<>();
+			for (String url : lines) {
+				builders.addAll(createItemsFromMaven(url, null, null, null, path));
+			}
+			return builders;
+		}
+		
+		return createItemsFromMaven(baseUrl, groupId, artifactId, version,path);
+		
+		
+		
+	}
+
+
+	/**
+	 * @param baseUrl
+	 * @param groupId
+	 * @param artifactId
+	 * @param version
+	 * @param path
+	 * @return
+	 */
+	protected List<Item> createItemsFromMaven(String baseUrl,
+			String groupId, String artifactId, String version, String path) {
+		Maven mvn = new Maven(baseUrl);
+		if(groupId != null)
+			mvn.setGroupId(groupId);
+		if(artifactId != null)
+			mvn.setArtifactId(artifactId);
+		if(version != null)
+			mvn.setVersion(version);		
+		Log.fine(getClass(), "Maven", mvn.toString());
+		return mvn.createBuilder(path + mvn.resolvePath());
+	}
+	
+	public List<Item> readListFile(String inputfile) {
+		List<String> urls = OkUtils.readLines(inputfile);
+		
+		Iterator<String> iterator = urls.iterator();
+		List<Item> builders = new LinkedList<>();
+		Item builder = null;
+		Map<String, String> headers = null;
+		while (iterator.hasNext()) {
+			String string = (String) iterator.next();
+			
+			if (string.startsWith("#")) {
+				if (builder != null) {
+					builders.add(builder);
+					builder = null;
+					headers = null;
+				}
+				iterator.remove();
+			} else if (string.startsWith("http")) {
+				if (builder != null) {
+					builders.add(builder);
+					builder = null;
+					headers = null;
+				}
+				builder = new Item();
+				headers = new LinkedHashMap<>();
+				builder.setUrl(string);
+				builder.setHeaders(headers);
+			} else if (string.startsWith("\t")) {
+				if (headers != null) {
+					int index = string.indexOf(": ");
+					headers.put(string.substring(1, index), string.substring(index + 2));
+				}
+
+			}
+		}
+		if (builder != null)
+			builders.add(builder);
+
+		return builders;
+	}
+
+	public MetalinkItem readMetaLink(String metaLinkFile) {
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder =  factory.newDocumentBuilder();
+			Document document = builder.parse(new File(metaLinkFile));
+			NodeList mirrors =  document.getElementsByTagName("url");
+			List<String> urls = new ArrayList<>();
+			
+			for (int i = 0; i < mirrors.getLength(); i++) {
+				Node node = mirrors.item(i);
+				if(node.hasAttributes() && node.getAttributes().getNamedItem("type").getNodeValue().equals("http"))
+					urls.add(node.getTextContent());
+			}
+			Iterator<String> iterator = urls.iterator();
+			return readMetaLinkText(iterator);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public MetalinkItem readMetaLinkXML(String metaLinkFile) {
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder =  factory.newDocumentBuilder();
+			Document document = builder.parse(new File(metaLinkFile));
+			NodeList mirrors =  document.getElementsByTagName("mirror");
+			List<String> urls = new ArrayList<>();
+			
+			for (int i = 0; i < mirrors.getLength(); i++) {
+				Node node = mirrors.item(i);
+				urls.add(node.getAttributes().getNamedItem("url").getNodeValue());
+			}
+			Iterator<String> iterator = urls.iterator();
+			return readMetaLinkText(iterator);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+	public MetalinkItem readMetaLinkText(String metaLinkFile) {
+		List<String> urls = OkUtils.readLines(metaLinkFile);
+		Iterator<String> iterator = urls.iterator();
+		return readMetaLinkText(iterator);
+	}
+	
+	private MetalinkItem readMetaLinkText(Iterator<String> iterator ) {
+		MetalinkItem builder = new MetalinkItem();
+		Map<String, String> headers = new LinkedHashMap<>();
+		
+		while (iterator.hasNext()) {
+			String string = (String) iterator.next();
+			if (string.startsWith("#")) {
+				iterator.remove();
+			} else if (string.startsWith("http")) {
+				builder.addMirror(string);
+			} else if (string.startsWith("\t")) {
+				int index = string.indexOf(": ");
+				headers.put(string.substring(1, index), string.substring(index + 2));
+			}
+		}
+		builder.setHeaders(headers);
+		return builder;
+	}
+	
+
+	public void download(Argument arguments) {
+		
+		if(arguments.isCheckFile()) {
+			CheckManager.CheckItem(arguments.getCheckFile(), manager);
+		}
+		else if(arguments.isUrl()) {
+			downloadUrl(arguments);
+		}
+		else if(arguments.isInputFile()) {
+			downloadInputFile(arguments);
+		}
+		else if(arguments.isMetaLink()) {
+			downloadMetalink(arguments);
+		}
+		else if(arguments.isMaven()) {
+			downloadFromMaven(arguments);
+		}
+		else if(arguments.isStream()) {
+			streamUrl(arguments);
+		}
+//		else if(arguments.isGoogleDrive()) {
+//			downloadGoogleDrive(arguments.getGoogleDriveFileID());
+//		}
+	}
+	
+//	private void downloadGoogleDrive(String fileID) {
+//		GoogleDriveFile drive = new GoogleDriveFile(fileID);
+//		try {
+//			HttpUrl url = HttpUrl.parse(drive.setupRequestUrl());
+//			Response response = client.get(url);
+//			drive.confirm(response.headers());
+//			
+//			List<Cookie> cookies = client.getHttpClient().cookieJar().loadForRequest(url);
+//			drive.setCookies(cookies);
+//			for (Cookie cookie : cookies) {
+//				Log.fine(getClass(), "cookie", 
+//						cookie.name() + " " + 
+//						cookie.domain() + " " + 
+//						cookie.value() + " " + 
+//						cookie.expiresAt() + " " + 
+//						cookie.path()
+//						);
+//				
+//			}
+//			response.close();
+//			
+//			url = HttpUrl.parse(drive.url());
+//			
+//			response = client.get(url, cookies);
+//			
+//			
+//			response.close();
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//	}
+
+	
+
+	private void streamUrl(Argument arguments) {
+		Item builder = new Item();
+		builder.setUrl(arguments.getStream());
+		configBuilder(arguments, builder);
+		if(arguments.isFileName()) 
+			builder.setFilename(arguments.getFileName());
+		Item item = buildItem(builder);
+		if(!item.getFilename().equals("404:Not:Found")) {
+//			addItem2WattingList(item);
+			
+			manager.getWattingList().add(new StreamWriter(item));
+			manager.getSessionMointor().add(item.getRangeInfo());
+		}
+//			
+	}
+	
+
+	private void downloadFromMaven(Argument arg) {
+		String saveto = arg.getMavenRepository();
+		if(saveto == null) saveto = arg.getSavePath();
+		if(saveto == null) saveto = Maven.MAVEN_REPOSITORY;
+		
+		
+		
+		List<Item> builders = mavenRepository(
+				arg.getMaven(),
+				arg.getMavenGroupId(), 
+				arg.getMavenArtifactId(), 
+				arg.getMavenVersion(), 
+				saveto);
+		for (Item builder : builders) {
+			configBuilder(arg, builder);
+			Item item = buildItem(builder);
+			if(!item.getFilename().equals("404:Not:Found")) {
+				addItem2WattingList(item);
+			}
+				
+		}
+		
+	}
+
+
+	public void downloadUrl(Argument arguments) {
+		Item builder = new Item();
+		builder.setUrl(arguments.getUrl());
+		configBuilder(arguments, builder);
+		if(arguments.isFileName()) 
+			builder.setFilename(arguments.getFileName());
+		Item item = buildItem(builder);
+		if(!item.getFilename().equals("404:Not:Found"))
+			addItem2WattingList(item);
+	}
+	
+
+	public void downloadInputFile(Argument arguments) {
+		List<Item> builders = readListFile(arguments.getInputFile());
+		for (Item builder : builders) {
+			configBuilder(arguments, builder);
+			Item item = buildItem(builder);
+			if(!item.getFilename().equals("404:Not:Found"))
+				addItem2WattingList(item);
+		}
+	}
+	
+	public void downloadMetalink(Argument arguments) {
+		MetalinkItem builder = null;
+		String metalinkFile = arguments.getMetaLinkFile();
+		if( metalinkFile.contains(".metalink")) {
+			builder = readMetaLink(metalinkFile);
+		}else if(metalinkFile.contains(".xml")) {
+			builder = readMetaLinkXML(metalinkFile);
+		}else {
+			builder = readMetaLinkText(metalinkFile);
+		}
+		if(builder == null) return;
+		configBuilder(arguments, builder);
+		Item item = buildItem(builder);
+		if(!item.getFilename().equals("404:Not:Found"))
+			addItem2WattingList(item);
+	}
+
+	/**
+	 * @param arguments
+	 * @param builder
+	 */
+	protected void configBuilder(Argument arguments, Item builder) {
+
+		builder.addHeaders(arguments.getHeaders());
+		builder.addCookies(arguments.getAllCookie());
+		if(arguments.isReferer()) 
+			builder.setReferer(arguments.getReferer());
+		if(arguments.isUserAgent())
+			builder.setUseragent(arguments.getUserAgent());
+		if(arguments.isSavePath())
+			builder.setFolder(arguments.getSavePath());
+		else {
+			if(builder.getFilename() == null)
+				builder.setFolder(Properties.Default_SAVE_DIR_PATH);
+		}
+		
+	}
+	
+	
+	protected Item buildItem(Item builder) {
+		Item item = manager.getItemStore().searchByUrl(builder.getUrl());
+		if (item == null) {
+			item = builder;
+			manager.getClient().updateItemOnline(item);
+			item.setCacheFile(R.getConfigPath(item.getFilename())+".json");
+		} else {
+			item.getRangeInfo().avoidMissedBytes();
+			item.getRangeInfo().checkRanges();
+		}
+		return item;
+	}
+	
+	public boolean addItem2WattingList(Item item) {
+		if( item.isStreaming() ) {
+			Log.info(getClass(), "add stream item to watting list ", item.liteString());
+		}
+		else if( item.isFinish() ) {
+			Log.info(getClass(), "Complete Download", item.liteString());
+			return false;
+		}else {
+			Log.info(getClass(), "add download item to watting list", item.toString());
+		}
+		
+		manager.warrpItem(item);
+		return true;
+	}
+	
+}

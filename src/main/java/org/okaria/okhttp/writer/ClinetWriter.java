@@ -12,7 +12,7 @@ import okhttp3.Response;
 
 public interface ClinetWriter {
 	
-	int RESPONSE_BUFFER = 8192;
+	int RESPONSE_BUFFER = 2048;
 	
 	
 	default void writeResponse(Response response, RandomAccessFile destination, long[] ranges, SpeedMonitor... monitors)

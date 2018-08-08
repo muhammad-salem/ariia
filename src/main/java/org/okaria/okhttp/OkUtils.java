@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 
 public class OkUtils {
 
@@ -71,6 +74,51 @@ public class OkUtils {
 		return false;
 	}
 
+	
+	public static String jsonFileName(String url) {
+		return Filename (url).concat(".json");
+	}
+	public static String jsonFileName(HttpUrl url) {
+		return Filename (url).concat(".json");
+	}
+	
+	public static String Filename(String url) {
+		HttpUrl httpUrl = HttpUrl.parse(url);
+		return Filename (httpUrl);
+	}
+	
+	public static String Filename(HttpUrl httpUrl) {
+		String filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size()-1);
+		if (httpUrl.pathSegments().size() > 2 && filename.equals("") || filename.contains("?") || filename.equals(null) ) {
+			filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size() - 2);
+		}
+		if (filename.equals("") || filename.equals(null)) {
+			filename = getFileName(httpUrl.toString());
+		}
+		return filename;
+	}
+	public static String getFileName(String url) {
+		URL url2 = null;
+		try {
+			url2 = new URL(url);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		String filename = url2.getFile();
+		int lastslach = filename.lastIndexOf('/')+1;
+		if(lastslach != filename.length())
+			filename = filename.substring(lastslach);
+		else {
+			lastslach -= 2;
+			filename = filename.substring(filename.lastIndexOf('/', lastslach)+1, lastslach);
+		}
+		
+		lastslach = filename.lastIndexOf('=')+1;
+		filename = filename.substring(lastslach);
+		
+		return filename;
+	}
+	
 	public File solveName(File file) {
 		return getNewName(file, 0);
 	}

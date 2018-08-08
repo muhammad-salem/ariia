@@ -9,7 +9,7 @@ public class StreamRangeInfo extends RangeInfo {
 	}
 
 	@Override
-	protected void createSubRange(int numOfRange) {
+	protected void initRange(int numOfRange) {
 		if (range == null) {
             // create new range for that file
 			range =  SubRange.mksubrange( fileLength /*Long.MAX_VALUE*/ );

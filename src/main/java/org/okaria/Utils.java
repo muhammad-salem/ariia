@@ -18,16 +18,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+
+import org.terminal.Ansi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import okhttp3.HttpUrl;
+import com.google.gson.JsonSyntaxException;
 
 public class Utils {
+	
+	public final static Ansi ANSI = new Ansi();
 
 	private static DecimalFormat decimalFormat = new DecimalFormat("0.000");
+	private static double kbyte = 1024;
 	
 	/**
 	 * concate " " to string
@@ -61,17 +66,21 @@ public class Utils {
 	}
 
 	public static String getStringMiddle(String str, int count) {
-
 		return getStringMiddle(str, count, ' ');
 	}
 
-	public static String getStringRight(String str, int count) {
+	public static String getRightString(String str, int count) {
 		if (str.length() > count)
 			return str;
-		for (int i = str.length(); i < count; i++) {
-			str = " " + str;
-		}
-		return str;
+		char[] cs = new char[count - str.length()];
+		Arrays.fill(cs, ' ');
+		StringBuilder builder = new StringBuilder();
+		builder.append(cs);
+		builder.append(str);
+//		for (int i = str.length(); i < count; i++) {
+//			str = " " + str;
+//		}
+		return builder.toString();
 	}
 
 	public static String GetWidthBracts(String title, int l) {
@@ -81,7 +90,7 @@ public class Utils {
 	}
 
 	public static String GetWidthBractsRight(String title, int l) {
-		title = getStringRight(title, l);
+		title = getRightString(title, l);
 		title = '[' + title + ']';
 		return title;
 	}
@@ -106,6 +115,9 @@ public class Utils {
 		return gson.toJson(object);
 	}
 
+	public static <T> T json(String json, Class<T> classOfT) throws JsonSyntaxException{
+		return gson.fromJson(json, classOfT);
+	}
 	public static String toJson(Object object, Type type) {
 		return gson.toJson(object, type);
 	}
@@ -117,7 +129,7 @@ public class Utils {
 	public static boolean writeJson(String filename, String json) {
 		try {
 			File file = new File(filename);
-			file.mkdirs();
+			file.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(filename);
 			writer.write(json);
 			writer.close();
@@ -138,7 +150,7 @@ public class Utils {
 	public static boolean writeJson(File file, String json) {
 		try {
 			if (!file.getParentFile().exists()) {
-				file.mkdirs();
+				file.getParentFile().mkdirs();
 			}
 			FileWriter writer = new FileWriter(file);
 			writer.write(json);
@@ -179,9 +191,7 @@ public class Utils {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			t = gson.fromJson(reader, classT);
-			// System.out.println(url);
 		} catch (Exception e) {
-			//System.err.println("no file found " + file);
 			return null;
 		}
 		return t;
@@ -271,7 +281,7 @@ public class Utils {
 		
 
 		// use (10^3) instead of (2^10)
-		double kbyte = 1000.0; // = 1024;
+//		double kbyte = 1000.0; // = 1024;
 		double b = length;
 		double k = b / kbyte;
 		double m = k / kbyte;
@@ -311,7 +321,7 @@ public class Utils {
 		//DecimalFormat dec = new DecimalFormat("0.00");
 
 		// use (10^3) instead of (2^10)
-		double kbyte = 1000.0; // = 1024;
+//		double kbyte = 1000.0; // = 1024;
 		double b = length;
 		double k = b / kbyte;
 		double m = k / kbyte;
@@ -335,7 +345,7 @@ public class Utils {
 
 	public static double fileLength(long length) {
 		// use (10^3) instead of (2^10)
-		double kbyte = 1000.0; // = 1024;
+//		double kbyte = 1000.0; // = 1024;
 		double b = length;
 		double k = b / kbyte;
 		double m = k / kbyte;
@@ -361,7 +371,7 @@ public class Utils {
 			return 1;
 		}
 		// use (10^3) instead of (2^10)
-		double kbyte = 1000.0; // = 1024;
+//		double kbyte = 1000.0; // = 1024;
 		double b = length;
 		double k = b / kbyte;
 		double m = k / kbyte;
@@ -463,49 +473,7 @@ public class Utils {
 		return t;
 	}
 
-	public static String jsonFileName(String url) {
-		return Filename (url).concat(".json");
-	}
-	public static String jsonFileName(HttpUrl url) {
-		return Filename (url).concat(".json");
-	}
 	
-	public static String Filename(String url) {
-		HttpUrl httpUrl = HttpUrl.parse(url);
-		return Filename (httpUrl);
-	}
-	
-	public static String Filename(HttpUrl httpUrl) {
-		String filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size()-1);
-		if (httpUrl.pathSegments().size() > 2 && filename.equals("") || filename.contains("?") || filename.equals(null) ) {
-			filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size() - 2);
-		}
-		if (filename.equals("") || filename.equals(null)) {
-			filename = getFileName(httpUrl.toString());
-		}
-		return filename;
-	}
-	public static String getFileName(String url) {
-		URL url2 = null;
-		try {
-			url2 = new URL(url);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		String filename = url2.getFile();
-		int lastslach = filename.lastIndexOf('/')+1;
-		if(lastslach != filename.length())
-			filename = filename.substring(lastslach);
-		else {
-			lastslach -= 2;
-			filename = filename.substring(filename.lastIndexOf('/', lastslach)+1, lastslach);
-		}
-		
-		lastslach = filename.lastIndexOf('=')+1;
-		filename = filename.substring(lastslach);
-		
-		return filename;
-	}
 
 	public static  String timeformate(final long millsecond) {
 		long hh, mm, ss;

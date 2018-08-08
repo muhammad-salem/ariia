@@ -1,4 +1,4 @@
-# okaria  (0.2.04)
+# okaria  (0.2.23)
 
 OKaria is a smart command line download manager.
 
@@ -11,15 +11,22 @@ OKaria is a smart command line download manager.
  - log (0.2.53)
 
 ### Options :
- - Support HTTP and HTTPS.
- - Good Handle for Header and Cookies
- - Cross-Platform: support linux/unix, windows and, mac-os.
- - Parallel Download.
+ - support HTTP and HTTPS.
+ - good Handle for Header and Cookies
+ - cross-Platform: support linux/unix, windows and, mac-os.
+ - parallel download, using segment.
  - Saved setting every 1 second.
  - Support Google Chrome with extension.
  - Support using Proxy [HTTP, HTTPS, SOCKS], COMMING SOON JSCH(SSH)
  - support download from maven repository
  - supported arguments
+ - save time while downloading, by spiriting download process and writing data to hard disk.
+ - using cache memory, to reduce hate resulted by continuous writhing to (mechanical/old/magnet hard disk),
+ 		not test on ssd Hard Disk
+ - add maven plugin to download (.pom and .jar) file from repos.
+ - solve heate pooblem, by reduce write time on hard disk - flush on fixed rate of time.
+  
+ 
  
  ```
  java -jar okaria.jar URL
@@ -64,11 +71,15 @@ OKaria is a smart command line download manager.
 ### Overview
 
 ![Overview](img/overview.png)
+![Overview](https://github.com/salemebo/okaria/blob/master/img/overview.png)
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
 
 ![Format2](img/text-format02.png)
 
+![Format1](https://github.com/salemebo/okaria/blob/master/img/text-format01.png)
+
+![Format2](https://github.com/salemebo/okaria/blob/master/img/text-format02.png)
 
 

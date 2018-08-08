@@ -52,30 +52,30 @@ public class SpeedMonitor extends NetworkMonitor implements SocketMonitor, Datag
 	 */
 	@Override
 	public void demondSpeedNow() {
-		receiveTCP_old = getReceiveTCP();
-		sendTCP_old = getSendTCP();
-		sendUDP_old = getSendUDP();
-		receiveUDP_old = getReceiveUDP();
+		receiveTCP_old = receiveTCP;
+		sendTCP_old = sendTCP;
+		sendUDP_old = sendUDP;
+		receiveUDP_old = receiveUDP;
 	}
 
 	@Override
 	public long speedOfTCPReceive() {
-		return getReceiveTCP() - receiveTCP_old;
+		return receiveTCP - receiveTCP_old;
 	}
 
 	@Override
 	public long speedOfUDPReceive() {
-		return getReceiveUDP() - receiveUDP_old;
+		return receiveUDP - receiveUDP_old;
 	}
 
 	@Override
 	public long speedOfTCPSend() {
-		return getSendTCP() - sendTCP_old;
+		return sendTCP - sendTCP_old;
 	}
 
 	@Override
 	public long speedOfUDPSend() {
-		return getSendUDP() - sendUDP_old;
+		return sendUDP - sendUDP_old;
 	}
 
 	@Override

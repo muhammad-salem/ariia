@@ -265,6 +265,10 @@ public class Argument {
 		return dictionary.get(TerminalArgument.SavePath);
 	}
 	
+	public String getCheckFile() {
+		return dictionary.get(TerminalArgument.CheckFile);
+	}
+	
 	public String getMaven() {
 		return dictionary.get(TerminalArgument.Maven);
 	}
@@ -375,6 +379,11 @@ public class Argument {
 		return is(TerminalArgument.Version);
 	}
 	
+
+	public boolean isCheckFile() {
+		return is(TerminalArgument.CheckFile);
+	}
+	
 	public boolean isHelp() {
 		return is(TerminalArgument.Help);
 	}
@@ -422,6 +431,14 @@ public class Argument {
 			return get(argument);
 		}
 		return defaultValue;
+	}
+	
+	public boolean isStream() {
+		return is(TerminalArgument.Stream);
+	}
+	
+	public String getStream(){
+		return get(TerminalArgument.Stream);
 	}
 	
 }

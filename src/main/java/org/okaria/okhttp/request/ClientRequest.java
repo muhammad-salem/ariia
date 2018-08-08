@@ -43,7 +43,7 @@ public interface ClientRequest {
     }
 
     default Response head(Item item) throws IOException {
-        return response( headCall(item.getUrl(), item.getCookies(), item.getHeaders()) );
+        return response( headCall(item.getUpdateUrl(), item.getCookies(), item.getHeaders()) );
     }
     
     default Response head(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
@@ -120,14 +120,14 @@ public interface ClientRequest {
     
     default Call getCall(Item item, int index) throws IOException {
     	RangeInfo info = item.getRangeInfo();
-        return getCall(item, info.getIndex(index)[0],info.getIndex(index)[1]);
+        return getCall(item, info.indexOf(index)[0],info.indexOf(index)[1]);
     }
     
     default Response get(Item item, long startRange, long endRange) throws IOException {
         return response(getCall(item, startRange, endRange));
     }
     default Call getCall(Item item, long startRange, long endRange) throws IOException {
-        return getCall(item.getUrl(), 
+        return getCall(item.getUpdateUrl(), 
         		startRange, 
         		endRange, 
         		item.getCookies(), 
@@ -159,6 +159,20 @@ public interface ClientRequest {
                 .url(url)
                 .headers(headers)
                 .addHeader("Range", "bytes=" + startRange + "-")
+                .get();
+                //if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
+        getHttpClient().cookieJar().saveFromResponse(url, jar);
+        return newCall(builder.build());
+    }
+    
+    default Response getStream(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
+    	return response(getStreamCall(url, jar, headers));
+    }
+    default Call getStreamCall(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
+        Request.Builder builder = new Request.Builder()
+                .url(url)
+                .headers(headers)
+                .addHeader("Range", "bytes=0-")
                 .get();
                 //if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
         getHttpClient().cookieJar().saveFromResponse(url, jar);
@@ -203,15 +217,41 @@ public interface ClientRequest {
     }
     
     default Call newCall( Request request) {
-    	String message = request.method() + " " + request.url() + " HTTP/1.1\n" + request.headers().toString();
-    	Log.fine(getClass(), "Client Request", message);
         return getHttpClient().newCall(request);
     }
     
     default Response response( Call call) throws IOException {
     	Response response = call.execute();
-    	String message = response.protocol() + " " + response.code() + " " + response.message() + "\n" + response.headers().toString();
-    	Log.fine(getClass(), "Server Respnse", message);
+    	debugResponse(response);
         return response;
+    }
+    
+    default void debugResponse( Response response) {
+    	Request request = response.networkResponse().request();
+    	StringBuilder builder = new StringBuilder();
+    	builder.append("request send:");
+    	builder.append('\n');
+    	builder.append(request.method());
+    	builder.append(' ');
+    	builder.append(request.url());
+    	builder.append(' ');
+    	builder.append(response.protocol());
+    	builder.append('\n');
+    	builder.append(request.headers().toString());
+    	builder.append('\n');
+    	builder.append('\n');
+    	
+    	builder.append("response begin:");
+    	builder.append('\n');
+    	builder.append(response.protocol());
+    	builder.append(' ');
+    	builder.append(response.code());
+    	builder.append(' ');
+    	builder.append(response.message());
+    	builder.append('\n');
+    	builder.append(response.headers().toString());
+    	builder.append('\n');
+    	builder.append('\n');
+    	Log.fine(getClass(), "Client Request / Server Respnse", builder.toString());
     }
 }

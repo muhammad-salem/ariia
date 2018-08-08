@@ -9,63 +9,72 @@ import org.log.beans.Level;
 import org.log.concurrent.Log;
 import org.okaria.chrome.ChromeConnection;
 import org.okaria.lunch.Argument;
+import org.okaria.lunch.Lunch;
 import org.okaria.lunch.TerminalArgument;
-import org.okaria.okhttp.OkServiceManager;
-import org.okaria.setting.AriaProperties;
+import org.okaria.okhttp.service.TableServiceManager;
+import org.okaria.setting.Properties;
 
 public class OKAria {
-	
-	
-	public static void main(String[] terminals) {			
+
+	public static void main(String[] terminals) {
+
+		// System.out.println(System.getProperties());
+		// System.out.println(Arrays.toString(terminals));
+		// System.out.println(TerminalArgument.Help());
+
+		// String[] testChrome = new String[terminals.length +1];
+		// testChrome[terminals.length] = "gaogianbgnmoompbfkmgnefkbehmeijh";
+		// for (int i = 0; i < terminals.length; i++) {
+		// testChrome[i] = terminals[i];
+		// }
 		
-		//System.out.println(TerminalArgument.Help());
-		
-//		String[] testChrome = new String[terminals.length +1];
-//		testChrome[terminals.length] = "gaogianbgnmoompbfkmgnefkbehmeijh";
-//		for (int i = 0; i < terminals.length; i++) {
-//			testChrome[i] = terminals[i];
-//		}
-		
-		//String[] args = new String[] {"-http", "127.0.0.1:8999", "http://www.film2movie.us/content/uploads/A.nt_.Ma_.n.And_.Th_.e.Wa_.sp_.2018.hd_.cm_.Film2Movie_US.png" };		
 		Argument arguments = null;
 		ChromeConnection chrome = null;
-		if( ChromeConnection.iSChromStream(terminals)) {
-			
+		if (ChromeConnection.iSChromStream(terminals)) {
+
 			chrome = new ChromeConnection();
-			chrome.redChromeMessage(/*629*/);
+			chrome.redChromeMessage(/* 629 */);
 			arguments = chrome.getArguments();
-			//chrome.send(arguments.getDictionary());
-			
-		}else {
+			// chrome.send(arguments.getDictionary());
+
+		} else {
 			arguments = new Argument(terminals);
-		} 
-		
-		
-		if(arguments.isHelp() ) {
+		}
+
+		if (arguments.isHelp()) {
 			System.out.println(TerminalArgument.Help());
 			return;
-		}else if(arguments.isVersion()) {
-			System.out.println("okaria version \"0.2.04\"");
+		} else if (arguments.isVersion()) {
+			System.out.println("okaria version \"0.2.23\"");
 			return;
 		}
 		Library lib = new Library("jansi", CLibrary.class);
-        lib.load();
-        AnsiConsole.systemInstall();
-        
-		String log_level = arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
+		lib.load();
+		AnsiConsole.systemInstall();
+
+		String log_level = arguments.getOrDefault(TerminalArgument.Debug,
+				Level.info.name());
 		Log.level(Level.valueOf(log_level));
-		Log.fine(OKAria.class, "terminal arguments", Arrays.toString(terminals));
-		
-		AriaProperties.Config(arguments);
-		
-		
-        
-        
-		OkServiceManager manager = new OkServiceManager(arguments.getProxy());
-		manager.download(arguments);
+		Log.fine(OKAria.class, "terminal arguments",
+				Arrays.toString(terminals));
+
+		Properties.Config(arguments);
+
+		TableServiceManager manager = TableServiceManager.SegmentServiceManager(arguments.getProxy());
 		manager.startScheduledService();
+		Lunch lunch = new Lunch(manager);
+		lunch.download(arguments);
+		manager.setEmptyQueueRunnable(()->{System.exit(0);});
 		
+		
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			manager.getSystemShutdownHook();
+			manager.close();
+			System.out.println("\u001B[50B\u001B[0m");
+		}));
+		
+
 	}
 
-	
 }

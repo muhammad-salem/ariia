@@ -1,54 +1,45 @@
 package org.okaria.range;
 
-import java.util.List;
-import java.util.Map;
-
 public interface Range {
 
+	long[][] getRange();
+	int getRangeCount();
 	/**
-	 * the new length will used to initiate the range array
-	 * 
-	 * @param length
+	 * call by reference to change the values of holder array to copy array 
+	 * @param holder
+	 * @param copy
 	 */
-	void setLength(long length);
-	long getLength();
-
-	void setChunkLength(long chunk);
-	long getChunkLength();
-
-	void setNumOfRange(int numOfRange);
-	int getRangeSize();
+	void updateRange(long[][] copy);
 	
-	void initRange();
-	void initLoadedRange();
-	
-	long[][] getArrayRange();
-	List<long[]> getListRange();
-	Map<Long, Long> getMapRange();
-
-	long[][] getCurrentDownloadArrayRange();
-	List<long[]> getCurrentDownloadListRange();
-	Map<Long, Long> getCurrentDownloadMapRange();
+	long getFileLength();
+	long getDownloadLength();
+	long getRemainingLength();
 	
 	
-	long[] getIndex(int index);
-	void updateIndex(int index, long[] newValue);
-	boolean updateIndexFromMaxRange(int index);
+	String getFileLengthMB();
+	String getDownloadLengthMB();
+	String getRemainingLengthMB();
 	
-	long[] getNextAvailableDownload();
+	void checkRanges();
+	void avoidMissedBytes();
+	void avoidMissedBytes(int index);
 	
-
+	
 	boolean isFinish();
-	void checkFinish();
-
+	boolean isFinish(int index);
+	long[] indexOf(int index);
+	long remainLengthOf(int index);
+	
+	int indexOfMaxRange();
+	void updateIndex(int index, long[] newValue);
+	int updateIndexFromMaxRange(int index);
 	
 
-	/**
-	 * suppose not to call in downloading process
-	 * it happen only if the new length will be not 
-	 * Long.MAX
-	 */
-	void updateRangesCountLength(int newCountLength);
+	
+	
+		
+	// cycle 
+	void oneCycleDataUpdate();
 
 	
 }

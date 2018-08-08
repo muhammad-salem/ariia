@@ -33,7 +33,7 @@ public class SubRange {
 			ranges[0][1] = LengthFactor;
 
 			ranges[parts - 1][0] = length - LengthFactor;
-			ranges[parts - 1][1] = length - 1;
+			ranges[parts - 1][1] = length ;
 
 			length = length - (2 * LengthFactor);
 			downloaded = LengthFactor;
@@ -45,9 +45,9 @@ public class SubRange {
 				// ranges[i][2] = 0;
 
 				ranges[i][0] = downloaded + (sub * i);
-				ranges[i][1] = downloaded + (sub * (i + 1)) - 1;
+				ranges[i][1] = downloaded + (sub * (i + 1));
 			}
-			ranges[parts - 2][1] = ranges[parts - 1][0] - 1;
+			ranges[parts - 2][1] = ranges[parts - 1][0];
 			return ranges;
 		}
 	}
@@ -63,7 +63,7 @@ public class SubRange {
 		ranges[0][1] = LengthFactor;
 
 		ranges[parts - 1][0] = endByte - LengthFactor;
-		ranges[parts - 1][1] = endByte - 1;
+		ranges[parts - 1][1] = endByte ;
 
 		long divBytes = endByte - (2 * LengthFactor);
 
@@ -71,11 +71,20 @@ public class SubRange {
 
 		for (int i = 1; i < parts - 1; i++) {
 			ranges[i][0] = ranges[0][1] + (sub * (i - 1));
-			ranges[i][1] = ranges[0][1] + (sub * (i)) - 1;
+			ranges[i][1] = ranges[0][1] + (sub * (i)) ;
 		}
-		ranges[parts - 2][1] = ranges[parts - 1][0] - 1;
+		ranges[parts - 2][1] = ranges[parts - 1][0] ;
 		return ranges;
 
+	}
+	
+	public static long[][][] createRanges(long length, int itemsCount, int numOfParts) {
+		long[][] temp = subrange(length, itemsCount);
+		long[][][] ranges = new long[itemsCount][numOfParts][2];
+		for (int i = 0; i < temp.length; i++) {
+			ranges[i] = subrange(temp[i], numOfParts);
+		}
+		return ranges;
 	}
 
 	public static long[][] initRangeNormal(int splitCount, int length, int downloaded, boolean isUnknowLength) {
@@ -93,9 +102,9 @@ public class SubRange {
 			long sub = length / splitCount;
 			for (int i = 0; i < splitCount; i++) {
 				ranges[i][0] = sub * i;
-				ranges[i][1] = sub * (i + 1) - 1;
+				ranges[i][1] = sub * (i + 1);
 			}
-			ranges[splitCount - 1][1] = length - 1;
+			ranges[splitCount - 1][1] = length ;
 		}
 		return ranges;
 
@@ -106,9 +115,9 @@ public class SubRange {
 		long sub = length / splitCount;
 		for (int i = from; i <= to; i++) {
 			ranges[i][0] = sub * i;
-			ranges[i][1] = sub * (i + 1) - 1;
+			ranges[i][1] = sub * (i + 1);
 		}
-		ranges[splitCount - 1][1] = length - 1;
+		ranges[splitCount - 1][1] = length ;
 		return ranges;
 	}
 
@@ -125,9 +134,9 @@ public class SubRange {
 		long sub = length / splitCount;
 		for (int i = srart; i < splitCount; i++) {
 			ranges[i][0] = sub * i;
-			ranges[i][1] = sub * (i + 1) - 1;
+			ranges[i][1] = sub * (i + 1) ;
 		}
-		ranges[splitCount - 1][1] = length - 1;
+		ranges[splitCount - 1][1] = length ;
 		return ranges;
 	}
 
@@ -136,23 +145,23 @@ public class SubRange {
 		long sub = (length - downloaded) / splitCount;
 		for (int i = srart; i < splitCount; i++) {
 			ranges[i][0] = downloaded + (sub * i);
-			ranges[i][1] = downloaded + (sub * (i + 1)) - 1;
+			ranges[i][1] = downloaded + (sub * (i + 1));
 		}
-		ranges[splitCount - 1][1] = length - 1;
+		ranges[splitCount - 1][1] = length;
 		return ranges;
 	}
 
-	public static long[][] subrangeEqual(long length, long downloaded, long splitLength, int srartNumber) {
+	public static long[][] subrangeEqual(long length, long downloaded, long splitLength, int startNumber) {
 
 		int numOfParts = (int) ((length - downloaded) / splitLength);
 
 		long[][] ranges = new long[numOfParts][2];
 		long sub = (length - downloaded) / numOfParts;
-		for (int i = srartNumber; i < numOfParts; i++) {
-			ranges[i][0] = downloaded + 1 + (sub * i);
-			ranges[i][1] = sub * (i + 1) - 1;
+		for (int i = startNumber; i < numOfParts; i++) {
+			ranges[i][0] = downloaded + (sub * i);
+			ranges[i][1] = sub * (i + 1);
 		}
-		ranges[numOfParts - 1][1] = length - 1;
+		ranges[numOfParts - 1][1] = length;
 		return ranges;
 	}
 
@@ -171,6 +180,18 @@ public class SubRange {
 		return range;
 	}
 
+
+	public static long[][] subrange(long[] arr, int numOfParts, int min) {
+		long[][] sub = subrange(arr, numOfParts);
+		for (int i = 0; i < arr.length; i++) {
+			if(i != 0 )
+				sub[i][0] -= min;
+			if(i != arr.length-1)
+				sub[i][1] += min;
+		}
+		return sub;
+	}
+	
 	public static long[][] subrange(long[] ls, int numOfParts) {
 		return subrange(ls[0], ls[1], numOfParts);
 	}
@@ -179,7 +200,7 @@ public class SubRange {
 		long sub = (endByte - startByte) / numOfParts;
 		for (int i = 0; i < numOfParts; i++) {
 			ranges[i][0] = startByte + (sub * i);
-			ranges[i][1] = startByte + (sub * (i + 1)) - 1;
+			ranges[i][1] = startByte + (sub * (i + 1));
 		}
 		ranges[numOfParts - 1][1] = endByte;
 		return ranges;
@@ -194,5 +215,6 @@ public class SubRange {
 	public static long[][] subrange(long length, int numOfParts) {
 		return subrange(0, length, numOfParts);
 	}
+
 
 }

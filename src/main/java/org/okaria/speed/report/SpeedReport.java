@@ -50,11 +50,10 @@ public interface SpeedReport extends SpeedTotal, CalculateSpeed {
 
 	// ******************Utils*******************//
 
+	DecimalFormat decFormat = new DecimalFormat("0.00");
+	float kbyte = 1024f;	// = 1000f;		// use (10^3) instead of (2^10)
 	default String toUnitLength(long length) {
 		// String size = new String();
-		DecimalFormat decFormat = new DecimalFormat("0.00");
-		// use (10^3) instead of (2^10)
-		float kbyte = 1000; // = 1024;
 		
 		float b = length;
 		float k = b / kbyte;

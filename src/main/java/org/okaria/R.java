@@ -59,7 +59,7 @@ public class R {
 	}
 	public static String getConfigPath(String filename) {
 		filename = ConfigPath + filename;
-		mkParentDir(filename);
+//		mkParentDir(filename);
 		return filename;
 	}
 	
@@ -118,6 +118,9 @@ public class R {
 		mkdir(creator);
 	}
 
+	public static void MK_DIRS(String creator) {
+		mkdir(new File(creator));
+	}
 	public static void mkdir(File creator) {
 		try {
 			creator.mkdirs();

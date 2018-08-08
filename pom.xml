@@ -6,7 +6,7 @@
 
     <groupId>org.okaria</groupId>
     <artifactId>okaria</artifactId>
-    <version>0.2.04</version>
+    <version>0.2.23</version>
 
     <description>Command Line Download Manager</description>
     <properties>
@@ -84,6 +84,13 @@
   			<version>0.2.53</version>
         </dependency> 
         
+        <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+        
     </dependencies>
     <build>
         <plugins>
@@ -92,8 +99,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>

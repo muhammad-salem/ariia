@@ -2,47 +2,43 @@ package org.okaria.range;
 
 import java.util.Arrays;
 
-import org.okaria.Utils;
-import org.okaria.setting.AriaProperties;
+import org.okaria.setting.Properties;
 
-public class RangeInfo {
-
+public class RangeInfo implements RangeUtil {
 	
-    protected long		fileLength;
-    protected long[][]	range = null;
-
-    private static RangeUtils RangeUtils = new RangeUtils() {};
-
-   
-    public RangeInfo() {
-       this(-1, AriaProperties.RANGE_POOL_NUM);
+	protected long		fileLength;
+	protected long		downloadLength;
+	protected long		remaninigLength;
+	protected long[][]	range;
+	
+	public RangeInfo() {
+       this(-1, Properties.RANGE_POOL_NUM);
     }
 
     /**
      * [length = -1] -> [streaming], [unknown length]
      */
     public RangeInfo(long length) {
-    	this(length, AriaProperties.RANGE_POOL_NUM);
+    	this(length, Properties.RANGE_POOL_NUM);
     }
-    public RangeInfo(long length, int numOfRange) {
+    public RangeInfo(long length, int rangeCount) {
         fileLength = length;
-        createSubRange(numOfRange);
+        initRange(rangeCount);
     }
 
     public RangeInfo(long length, long[][] range) {
         fileLength = length;
         this.range = range;
     }
-
-	protected void createSubRange(int numOfRange) {
+	protected void initRange(int rangeCount) {
 		if (range == null) {
             // create new range for that file
 			
 			if (fileLength >= 10485760)		// for 10MB
-                range = SubRange.stream(fileLength, numOfRange);
+                range = SubRange.stream(fileLength, rangeCount);
                 
 			else if (fileLength >= 1048576)		// for 1MB
-                range = SubRange.subrange(fileLength, numOfRange);
+                range = SubRange.subrange(fileLength, rangeCount);
             else if (fileLength > 0)
                 range = SubRange.mksubrange(fileLength);
             // if filelength = -1 -- mean it should to stream link
@@ -52,117 +48,71 @@ public class RangeInfo {
             }
         }
 	}
-
-    public long[][] getRange() {
-        return range;
-    }
-
-    public int getRangeCount() {
-        return range.length;
-    }
-
-    public long[] getIndex(int index) {
-    	if(index >= range.length) 
-    		return null;
-        return range[index];
-    }
-    
-
-    public void setRange(long[][] range) {
-        this.range = range;
-    }
-
-    public long getFileLength() {
-        return fileLength;
-    }
-    
-    public boolean isUnknowLength() {
-        return fileLength == -1;
-    }
-
-    /**
-     * the new length will used to init the range array
-     * @param fileLength
-     */
-    public void setFileLength(long fileLength) {
-        this.fileLength = fileLength;
-    }
-
-    public boolean isFullInfo() {
-        return range!= null & fileLength > 0 & range[0][1] != -1;
-    }
-    
-    public boolean isStreaming() {
-        return range!= null & range.length == -1 & range[0][1] == -1;
-    }
-    
-    public boolean isFinish() {
-        return range!= null & range.length != -1 & RangeUtils.isFinish(range);
-    }
 	
-	/**
-	* suppose not to call in downloading process
-	*
-	*/
-	public void updateRangesCountLength(int newCountLength)	{
-		int count = range.length;
-		if(newCountLength > count){
-			long[][] temp = new long[newCountLength][2];
-			RangeUtils.updateValue(temp, range);
-			range = RangeUtils.checkRanges(temp);
-		}else if(newCountLength == count){
-			// do nothing
-			// 
-		}else if(newCountLength < count){
-			// do nothing
-			// may be to connect the closed one if the difference is too low
-		}
+	@Override
+	public long[][] getRange() { return range;}
+	@Override
+	public void updateRange(long[][] copy) {this.range = copy;}
+	@Override
+	public long getFileLength() {return fileLength;}
+	@Override
+	public long getDownloadLength() {return downloadLength;}
+	@Override
+	public long getRemainingLength() {return remaninigLength;}
+	private void setDownloadLength(long download) {this.downloadLength = download;}
+	private void setRemainingLength(long remaining) {this.remaninigLength = remaining;}
+
+	@Override
+	public void oneCycleDataUpdate() {
+		setRemainingLength(calculateRemainingLength());
+		setDownloadLength(calculateDownloadLength());
 	}
 	
-	public boolean updateIndexFromMaxRange(int index)	{
-		int maxindex = indexOfMaxRange();
-//		System.out.println("max index = " + maxindex);
-		if(maxindex == -1) return false;
-		long[][] ls = SubRange.subrange(getIndex(maxindex), 2);
-		
-		// edit range 
-		range[maxindex][0]	= ls[0][0];
-		range[maxindex][1]	= ls[0][1];
-		
-		range[index][0]		= ls[1][0];
-		range[index][1]		= ls[1][1];
-		
-		if(range[maxindex][1] > 1024) {
-			range[maxindex][1]	+= 1024;
-			range[index][0]		-= 1024;
+	private long calculateRemainingLength() {
+		long length = 0;
+		long len = 0;
+		for (int index = 0; index < range.length; index++) {
+			len = remainLengthOf(index);
+			if( len > 0)
+				length += len;
 		}
-		
-		return true;
+		return length;
 	}
 	
-	/**
-	 * unstable operation 
-	 * need to check boundre
-	 * -------------
-	 * 				-------------
-	 * >>>>>>>>>>>>>>>>>
-	 * >>>>>>>>>>>>>>>>>---------
-	 * to remove
-	 * -------------
-	 * 				----
-	 * @param info
-	 */
-	public void concateRange(RangeInfo info)	{
-		int newLength = this.range.length + info.range.length;
-		long[][] nwRange = new long[newLength][2];
-		int i = 0;
-		for ( ; i < this.range.length; i++) {
-			nwRange[i] = this.range[i];
-		}
-		for ( int y = 0 ; y < info.range.length; y++, i++) {
-			nwRange[i] = info.range[y];
-		}
-		this.range = nwRange;
+	private long calculateDownloadLength() {
+		return fileLength - remaninigLength;
+	}
+	
+	public boolean isStreaming() {
+        return range.length == 1 & range[0][1] == -1;
+    }
+	
+	public long getIJ(int i, int j) {
+		return range[i][j];
+	}
+	
+	public long startOfIndex(int index) {
+		return range[index][0];
+	}
+	
+	public long limitOfIndex(int index) {
+		return range[index][1];
+	}
+	
+	public void setIJ(int i, int j, long value) {
+		range[i][j] = value;
+	}
+	
+	public void addIJ(int i, int j, long value) {
+		range[i][j] += value;
+	}
+	
+	public void addStartOfIndex(int i, long value) {
+		range[i][0] += value;
+	}
+	
+	public void addEndOfIndex(int i, long value) {
+		range[i][1] += value;
 	}
 	
 	@Override
@@ -170,11 +120,11 @@ public class RangeInfo {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		for( ; i < getRangeCount()-1; i++){
-			builder.append(Arrays.toString(getIndex(i)));
+			builder.append(Arrays.toString(indexOf(i)));
 			builder.append(", ");
 			if(i%4 == 3) builder.append('\n');
 		}
-		builder.append(Arrays.toString(getIndex(i)));
+		builder.append(Arrays.toString(indexOf(i)));
 		return builder.toString();
 	}
 
@@ -183,69 +133,9 @@ public class RangeInfo {
 		RangeInfo info = (RangeInfo) obj;
 		return this.fileLength == info.fileLength && this.range == info.range;
 	}
-	
-    //---------------- deleget operation -----------------//
 
-
-    public String getFileLengthMB() {
-        return Utils.fileLengthUnite(fileLength) ;//rangeUtils.getFileLengthMB(range);
-    }
-
-    public String getDownLengthMB() {
-        return RangeUtils.getDownLengthMB(range, fileLength);
-    }
-
-    public long getDownLength() {
-        return RangeUtils.getDownLength(range, fileLength);
-    }
-
-    public String getRengeLengthMB() {
-        return RangeUtils.getRengeLengthMB(range);
-    }
-
-    public long getNotDownLength() {
-        return RangeUtils.getNotDownLength(range);
-    }
-
-    public long getRengesLength() {
-        return RangeUtils.getRengeLength(range);
-    }
-
-
-    public void printRange() {
-        RangeUtils.printRange(range);
-    }
-
-    public boolean isFinish(int index) {
-        return  RangeUtils.isFinish(range[index]);
-    }
-    
-    public void checkRanges() {
-        range = RangeUtils.checkRanges(range);
-    }
-
-    public void avoidMissedBytes() {
-        range = RangeUtils.avoidMissedBytes(range);
-    }
-
-    public void avoidMissedBytes(int rangeIndex) {
-        range[rangeIndex] = RangeUtils.avoidMissedBytes(range[rangeIndex]);
-    }
-
-    public boolean isSubRangeComplete(int index) {
-        return RangeUtils.isSubRangeComplete(range[index]);
-    }
-
-    public void updateValue(long[][] copy) {
-        RangeUtils.updateValue(range, copy);
-    }
-    
-    public int indexOfMaxRange() {
-        return RangeUtils.indexOfMaxRange(range);
-    }
-    
-    public long getIndexLength(int index) {
-        return RangeUtils.subLength(range[index]);
-    }
-
+	@Override
+	public synchronized int updateIndexFromMaxRange(int index) {
+		return RangeUtil.super.updateIndexFromMaxRange(index);
+	}
 }

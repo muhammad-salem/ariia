@@ -40,11 +40,14 @@ public enum TerminalArgument{
 		GoogleDriveFileID("-gd","--google-drive-id"),
 		
 		Maven("-mvn","--maven"),
+		MavenPom("-pom","--maven-pom"),
 		GroupId("-mvng","--maven-groupId"),
 		ArtifactId("-mvna","--maven-artifactId"),
 		MVersion("-mvnv","--maven-version"),
 		MavenRepository("-mvnr", "--maven-repository"),
 		
+		CheckFile("-ch", "--check-file"),
+		Stream("-st", "--stream"),
 		
 		Help("-h", "--help"),
 		Debug("-d", "--debug-level"),
@@ -81,7 +84,7 @@ public enum TerminalArgument{
 			return null;
 		}
 		
-		public static String arg(String line) {
+		public static String GetStringArgument(String line) {
 			for (TerminalArgument arg : TerminalArgument.values()) {
 				if(line.contentEquals(arg.mini)) {
 					return arg.mini;
@@ -99,7 +102,7 @@ public enum TerminalArgument{
 					return arg.mini;
 				}
 			}
-			return "";
+			return null;
 		}
 		
 		public static String full(String line) {
@@ -108,7 +111,7 @@ public enum TerminalArgument{
 					return arg.full;
 				}
 			}
-			return "";
+			return null;
 		}
 
 		public boolean isPair() {
@@ -202,7 +205,9 @@ public enum TerminalArgument{
 					return ("download from google drive servers, fileID or full URL");
 					
 				case Maven:
-					return ("download from  maven repository, (dafault http://central.maven.org/maven2/)");
+					return ("download from  maven repository, (dafault http://central.maven.org/maven2/), OR could parse a file path which contain a list of files, Or a (.pom) file");
+				case MavenPom:
+					return ("download maven repository from given (.pom) file, and resolve it");
 				case GroupId :
 					return ("set maven groupId");
 				case ArtifactId:
@@ -210,7 +215,14 @@ public enum TerminalArgument{
 				case MVersion:
 					return ("set maven version");
 				case MavenRepository:
-					return ("download to directory default set to system maven parh in user directory");	
+					return ("download to directory default set to system maven parh in user directory");
+					
+				case CheckFile:
+					return ("check donload file if is complete, and try to complete it");
+				
+				case Stream:
+					return ("stream URL");
+					
 					
 				case Help:
 					return("print this message");
