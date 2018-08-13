@@ -52,6 +52,8 @@ public class RangeResponseHeader {
 		if(contentRange == null) {
 			start = -1;
 			end   = -1;
+			length = -1;
+			return;
 		}
 		String[] temp = contentRange.split(" ");
 		type = temp[0].equals("bytes") ? Type.bytes : Type.non;

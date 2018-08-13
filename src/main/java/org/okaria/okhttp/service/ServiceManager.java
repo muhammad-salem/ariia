@@ -19,7 +19,7 @@ import org.okaria.manager.ItemStore;
 import org.okaria.mointors.SimpleSessionMointor;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.client.SegmentClient;
-import org.okaria.range.RangeInfo;
+import org.okaria.range.RangeUtil;
 import org.okaria.setting.Properties;
 
 public abstract class ServiceManager implements Closeable {
@@ -27,7 +27,7 @@ public abstract class ServiceManager implements Closeable {
 	public final static int SCHEDULE_TIME = 1;
 	public final static int SCHEDULE_POOL = 10;
 
-	ScheduledExecutorService cheduledService;
+	ScheduledExecutorService scheduledService;
 
 	Queue<ItemMetaData> wattingList;
 	Queue<ItemMetaData> downloadingList;
@@ -61,6 +61,7 @@ public abstract class ServiceManager implements Closeable {
 	
 	protected ServiceManager() {}
 	
+	
 
 	public ServiceManager(Client client) {
 		initService(client);
@@ -76,13 +77,19 @@ public abstract class ServiceManager implements Closeable {
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 		this.sessionMointor = new SimpleSessionMointor(); 
-		this.cheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
+		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 	}
 	
 
 	@Override
 	public void close() {
-		cheduledService.shutdown();
+		for (ItemMetaData metaData : downloadingList) {
+			metaData.close();
+		}
+		for (ItemMetaData metaData : wattingList) {
+			metaData.close();
+		}
+		scheduledService.shutdown();
 	}
 	
 //	public void warrpItem(Item item) {
@@ -114,7 +121,7 @@ public abstract class ServiceManager implements Closeable {
 		List<ItemMetaData> removeList = new ArrayList<>();
 		for (ItemMetaData placeHolder : downloadingList) {
 			Item item = placeHolder.getItem();
-			RangeInfo info = item.getRangeInfo();
+			RangeUtil info = item.getRangeInfo();
 			if (info.isFinish()) {
 				Log.info(getClass(), "Remove Item from download list", item.getFilename());
 				removeList.add(placeHolder);
@@ -157,11 +164,11 @@ public abstract class ServiceManager implements Closeable {
 	public abstract void warrpItem(Item item);
 	
 	public ScheduledExecutorService getCheduledService() {
-		return cheduledService;
+		return scheduledService;
 	}
 
 	public void setCheduledService(ScheduledExecutorService cheduledService) {
-		this.cheduledService = cheduledService;
+		this.scheduledService = cheduledService;
 	}
 
 	public Queue<ItemMetaData> getWattingList() {

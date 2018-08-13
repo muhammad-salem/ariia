@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
-import org.okaria.range.RangeInfo;
+import org.okaria.range.RangeUtil;
 
 import okhttp3.Call;
 import okhttp3.Cookie;
@@ -119,7 +119,7 @@ public interface ClientRequest {
     }
     
     default Call getCall(Item item, int index) throws IOException {
-    	RangeInfo info = item.getRangeInfo();
+    	RangeUtil info = item.getRangeInfo();
         return getCall(item, info.indexOf(index)[0],info.indexOf(index)[1]);
     }
     
@@ -172,6 +172,7 @@ public interface ClientRequest {
         Request.Builder builder = new Request.Builder()
                 .url(url)
                 .headers(headers)
+                .addHeader("Range", "bytes=0-")
                 .get();
                 //if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
         getHttpClient().cookieJar().saveFromResponse(url, jar);

@@ -11,6 +11,7 @@ public interface Range {
 	 */
 	void updateRange(long[][] copy);
 	
+	void updateFileLength(long length);
 	long getFileLength();
 	long getDownloadLength();
 	long getRemainingLength();
@@ -41,5 +42,11 @@ public interface Range {
 	// cycle 
 	void oneCycleDataUpdate();
 
+
+	
+	boolean isStreaming();
+	long startOfIndex(int index);
+	long limitOfIndex(int index);
+	void addStartOfIndex(int index, long length);
 	
 }

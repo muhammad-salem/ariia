@@ -34,8 +34,12 @@ public class Argument {
 	public String[] getArgs() {
 		return args;
 	}
-	
-	public Map<TerminalArgument, String> getDictionary() {
+
+    public boolean isEmpty() {
+        return dictionary.isEmpty();
+    }
+
+    public Map<TerminalArgument, String> getDictionary() {
 		return dictionary;
 	}
 	
@@ -50,6 +54,9 @@ public class Argument {
 			if (arg.startsWith("-")) {
 				String[] t = arg.split("=", 2);
 				TerminalArgument argument = TerminalArgument.argument(t[0]);
+				if(argument == null) {
+					continue;
+				}
 				if (t.length == 1) {
 					if(argument.isPair()) {
 						addArgument(argument, args[++i]);
@@ -268,6 +275,17 @@ public class Argument {
 	public String getCheckFile() {
 		return dictionary.get(TerminalArgument.CheckFile);
 	}
+	public String getChunkSize() {
+		return dictionary.get(TerminalArgument.ChunkSize);
+	}
+	
+	public int getChunkSizeInt() {
+		try {
+			return Integer.parseInt(getChunkSize());
+		} catch (NumberFormatException e) {
+			return 1;
+		}
+	}
 	
 	public String getMaven() {
 		return dictionary.get(TerminalArgument.Maven);
@@ -384,6 +402,10 @@ public class Argument {
 		return is(TerminalArgument.CheckFile);
 	}
 	
+	public boolean isChunkSize() {
+		return is(TerminalArgument.ChunkSize);
+	}
+	
 	public boolean isHelp() {
 		return is(TerminalArgument.Help);
 	}
@@ -431,6 +453,14 @@ public class Argument {
 			return get(argument);
 		}
 		return defaultValue;
+	}
+	
+	public boolean isStream() {
+		return is(TerminalArgument.Stream);
+	}
+	
+	public String getStream(){
+		return get(TerminalArgument.Stream);
 	}
 	
 }

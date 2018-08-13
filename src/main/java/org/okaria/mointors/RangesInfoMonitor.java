@@ -15,7 +15,7 @@ public class RangesInfoMonitor extends SpeedMonitor {
 
 	private static  Ansi ansi = new Ansi();
 	protected MessageFormat format;
-	protected List<RangeInfo> rangeInfos = new LinkedList<>();
+	protected List<RangeInfo> rangeInfos;
 
 	public RangesInfoMonitor() {
 		rangeInfos = new LinkedList<>();
@@ -226,8 +226,5 @@ public class RangesInfoMonitor extends SpeedMonitor {
 //		return message;
 //	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		rangeInfos.clear();
-	}
+
 }

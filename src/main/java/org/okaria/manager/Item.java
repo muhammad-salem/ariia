@@ -231,6 +231,7 @@ public class Item {
 		builder.append( url());
 		builder.append('\n');
 		builder.append("Folder : " + folder );
+		builder.append("\nCache File : " + cacheFile );
 		builder.append('\n');
 		builder.append("File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
 		builder.append(",\tDownload : " + rangeInfo.getDownloadLengthMB());
@@ -257,9 +258,9 @@ public class Item {
 	public static Item fromJsonFile(String filePath) {
 		return Utils.fromJson(filePath, Item.class);
 	}
-	public static boolean toJsonFile(Item item) {
-		if(item.cacheFile == null) return false;
-		return Utils.toJsonFile(item.cacheFile, item);
+	public static void toJsonFile(Item item) {
+		if(item.cacheFile == null) return ;
+		Utils.toJsonFile(item.cacheFile, item);
 	}
 
 	public String getReferer() {

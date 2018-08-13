@@ -58,4 +58,8 @@ public interface DownloadResponse {
 	
 	ClientRequest getClientRequest();
 	boolean downloadTask(ItemMetaData metaData, int index, SpeedMonitor... monitors);
+	
+	
+	
+	
 }

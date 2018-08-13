@@ -5,6 +5,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
@@ -30,10 +31,9 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
 	}
 
 	@Override
-	public synchronized void systemFlush() {
-		if(segments.isEmpty()) return;
+	protected void flush(ConcurrentLinkedQueue<Segment> segmentQueue){
 		
-		Iterator<Segment> iterator =  segments.iterator();
+		Iterator<Segment> iterator =  segmentQueue.iterator();
 		StringBuilder report = new StringBuilder();
 		while (iterator.hasNext()) {
 			Segment segment = (Segment) iterator.next();
@@ -43,6 +43,7 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
 				mappedBuffer.put(segment.buffer);
 				
 				report.append(segment.toString());
+				report.append('\n');
 			} catch (Exception e) {
 				Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 //				if(raf != null) close();

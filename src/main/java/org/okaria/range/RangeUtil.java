@@ -33,7 +33,7 @@ public interface RangeUtil extends Range {
 		}
 
 		for (int i = 0; items < newRange.length; i++, items++) {
-			long[][] split = SubRange.subrange(newRange[i], 2);
+			long[][] split = SubRange.split(newRange[i], 2);
 
 			if (split[0][1] > 1024) {
 				split[0][1] += 1024;
@@ -112,21 +112,13 @@ public interface RangeUtil extends Range {
 			return maxIndex;
 		if (getRemainingLength() < 262144)
 			return -1;
-		long[][] ls = SubRange.subrange(indexOf(maxIndex), 2, 1024);
-		// edit range
+		long[][] ls = SubRange.  split(indexOf(maxIndex),2);
 		updateIndex(index, ls[0]);
 		updateIndex(maxIndex, ls[1]);
 		return maxIndex;
 	}
+	
 
-	// /**
-	// * suppose not to call in downloading process
-	// * it happen only if the new length will be not
-	// * Long.MAX
-	// */
-	// default void updateRangesCountLength(int newCountLength) {
-	// // TODO Auto-generated method stub
-	// // ignored for now
-	// }
+	
 
 }

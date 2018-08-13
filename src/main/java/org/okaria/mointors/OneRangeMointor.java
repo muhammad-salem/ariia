@@ -2,7 +2,7 @@ package org.okaria.mointors;
 
 import org.okaria.Utils;
 import org.okaria.manager.Item;
-import org.okaria.range.RangeInfo;
+import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
 
 public class OneRangeMointor extends SpeedMonitor {
@@ -10,7 +10,7 @@ public class OneRangeMointor extends SpeedMonitor {
 //	protected long timer = 0;
 	protected Item item;
 	
-	protected RangeInfo info;
+	protected RangeUtil info;
 	
 	public OneRangeMointor(Item item) {
 		this.item = item;

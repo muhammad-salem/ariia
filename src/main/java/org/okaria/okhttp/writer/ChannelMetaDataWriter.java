@@ -3,6 +3,7 @@ package org.okaria.okhttp.writer;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
@@ -18,9 +19,9 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 	}
 
 	@Override
-	public synchronized void systemFlush() {
-		if(segments.isEmpty()) return;
-		Iterator<Segment> iterator =  segments.iterator();
+	protected void flush(ConcurrentLinkedQueue<Segment> segmentQueue) {
+		if(segmentQueue.isEmpty()) return;
+		Iterator<Segment> iterator =  segmentQueue.iterator();
 		StringBuilder report = new StringBuilder();
 		while (iterator.hasNext()) {
 			Segment segment = (Segment) iterator.next();
@@ -31,6 +32,7 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 					channel.write(segment.buffer);
 				}
 				report.append(segment.toString());
+				report.append('\n');
 			} catch (IOException e) {
 				Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 				if(raf != null) close();

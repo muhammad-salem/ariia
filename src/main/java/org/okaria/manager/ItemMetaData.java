@@ -13,7 +13,7 @@ import org.log.concurrent.Log;
 import org.okaria.R;
 import org.okaria.mointors.OneRangeMointor;
 import org.okaria.okhttp.queue.DownloadPlane;
-import org.okaria.range.RangeInfo;
+import org.okaria.range.RangeUtil;
 import org.okaria.segment.Segment;
 import org.okaria.segment.Segment.OfferSegment;
 import org.okaria.speed.SpeedMonitor;
@@ -21,20 +21,22 @@ import org.okaria.speed.SpeedMonitor;
 public abstract class ItemMetaData implements OfferSegment, Closeable {
 	
 	protected Item item;
-	protected RangeInfo info;
+	protected RangeUtil info;
 	protected List<Future<?>> futures;
 	protected boolean downloading = false;
 	protected OneRangeMointor rangeMointor;
 	
 	protected RandomAccessFile raf;
 
-	protected ConcurrentLinkedQueue<Segment> segments;
+	private ConcurrentLinkedQueue<Segment> segments;
+	private ConcurrentLinkedQueue<Segment> segmentBackup;
 	
 	public ItemMetaData(Item item) {
 		this.item = item;
 		this.info = item.rangeInfo;
-		this.rangeMointor = new OneRangeMointor(item);
-		this.segments = new ConcurrentLinkedQueue<>();
+		this.rangeMointor	= new OneRangeMointor(item);
+		this.segments		= new ConcurrentLinkedQueue<>();
+		this.segmentBackup	= new ConcurrentLinkedQueue<>();
 		initRandomAccessFile();
 	}
 	/**
@@ -76,7 +78,25 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		info.addStartOfIndex(segment.index, segment.buffer.limit());
 	}
 	
-	public abstract void systemFlush();
+	public void systemFlush() {
+		if(segments.isEmpty()) return;
+		
+		synchronized (segments) {
+//			ConcurrentLinkedQueue<Segment> segmentQueue;
+//			segmentQueue = segments;
+//			segments = segmentBackup;
+//			segmentBackup = segmentQueue;
+			while (!segments.isEmpty()) {
+				try {
+					segmentBackup.add(segments.remove());
+				} catch (Exception e) {
+					break;
+				}
+			}
+		}
+		flush(segmentBackup);
+	}
+	protected abstract void flush(ConcurrentLinkedQueue<Segment> segmentQueue);
 	
 	public int segmentSize() {
 		return segments.size();
@@ -91,7 +111,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		this.item = item;
 	}
 	
-	public RangeInfo getRangeInfo() {
+	public RangeUtil getRangeInfo() {
 		return info;
 	}
 	

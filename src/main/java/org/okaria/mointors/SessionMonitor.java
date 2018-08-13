@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 
 import org.log.concurrent.Log;
 import org.okaria.Utils;
-import org.okaria.range.RangeInfo;
+import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
 import org.terminal.Ansi;
 
@@ -16,7 +16,7 @@ public abstract class SessionMonitor extends SpeedMonitor {
 
 	protected static  Ansi ansi = Utils.ANSI;
 	protected MessageFormat format;
-	protected List<RangeInfo> rangeInfos = new LinkedList<>();
+	protected List<RangeUtil> rangeInfos = new LinkedList<>();
 
 	public SessionMonitor() {
 		rangeInfos = new LinkedList<>();
@@ -29,7 +29,7 @@ public abstract class SessionMonitor extends SpeedMonitor {
 	public boolean isEmpty() {
 		return rangeInfos.isEmpty();
 	}
-	public boolean add(RangeInfo e) {
+	public boolean add(RangeUtil e) {
 		return rangeInfos.add(e);
 	}
 	public boolean remove(Object o) {
@@ -38,10 +38,10 @@ public abstract class SessionMonitor extends SpeedMonitor {
 	public void clear() {
 		rangeInfos.clear();
 	}
-	public RangeInfo get(int index) {
+	public RangeUtil get(int index) {
 		return rangeInfos.get(index);
 	}
-	public RangeInfo remove(int index) {
+	public RangeUtil remove(int index) {
 		return rangeInfos.remove(index);
 	}
 
@@ -53,7 +53,7 @@ public abstract class SessionMonitor extends SpeedMonitor {
 	private long downloadLength = 0;
 	private long remainigLength = 0;
 
-	protected void rangeInfoUpdateData() {
+	protected synchronized void rangeInfoUpdateData() {
 		totalLength = 0;
 		downloadLength = 0;
 		remainigLength = 0;
@@ -103,8 +103,14 @@ public abstract class SessionMonitor extends SpeedMonitor {
 	}
 	
 	public String progressLine(int width) {
-		width -= 12;
+		if(width < 45) {
+			width = 66;
+		}else {
+			width -= 12;
+		}
+		
 		int percent = (int)(width * percent());
+		if(percent < 0) return "";
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
 		builder.append(ansi.chars('=', percent));

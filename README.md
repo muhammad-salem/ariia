@@ -1,4 +1,4 @@
-# okaria  (0.2.22)
+# okaria  (0.2.24)
 
 OKaria is a smart command line download manager.
 
@@ -65,21 +65,21 @@ OKaria is a smart command line download manager.
 
 ### TO:DO:LIST
 
- - resolve system heat problem by caching data in memory as chunks then flush them at complete time
  - add SSH implemntaion
 
 ### Overview
 
 ![Overview](img/overview.png)
-![Overview](https://github.com/salemebo/okaria/blob/master/img/overview.png)
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
-
 ![Format2](img/text-format02.png)
 
-![Format1](https://github.com/salemebo/okaria/blob/master/img/text-format01.png)
 
-![Format2](https://github.com/salemebo/okaria/blob/master/img/text-format02.png)
 
+
+### Screenshot: 
+![screenshot-01](img/screenshot-01.png)
+![screenshot-02](img/screenshot-02.png)
+![screenshot-03](img/screenshot-03.png)
 

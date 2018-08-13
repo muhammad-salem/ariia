@@ -2,65 +2,64 @@ package org.okaria.okhttp.service;
 
 import java.net.Proxy;
 import java.net.Proxy.Type;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.log.concurrent.Log;
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
-import org.okaria.mointors.TableItemsMonitor;
+import org.okaria.mointors.ItemsMiniTableMonitor;
 import org.okaria.okhttp.client.ChannelClient;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.client.SegmentClient;
 import org.okaria.okhttp.writer.LargeMappedMetaDataWriter;
 
-public class TableServiceManager extends ServiceManager {
+public class MiniTableServiceManager extends ServiceManager {
 
-	TableItemsMonitor tableItemsMonitor;
+	ItemsMiniTableMonitor tableItemsMonitor;
 	private Runnable emptyQueueRunnable = ()->{};
-	public TableServiceManager(Type type, String proxyHost, int port) {
+	public MiniTableServiceManager(Type type, String proxyHost, int port) {
 		super(type, proxyHost, port);
 	}
 
-	public TableServiceManager(Proxy proxy) {
+	public MiniTableServiceManager(Proxy proxy) {
 		super(proxy);
 	}
 
-	public TableServiceManager(CookieJars jar, Proxy proxy) {
+	public MiniTableServiceManager(CookieJars jar, Proxy proxy) {
 		super(jar, proxy);
 	}
 	
-	public TableServiceManager(OkConfig config) {
+	public MiniTableServiceManager(OkConfig config) {
 		super(config);
 	}
-	public TableServiceManager(Client client) {
+	public MiniTableServiceManager(Client client) {
 		super(client);
 	}
 	
-	protected TableServiceManager() {}
+	protected MiniTableServiceManager() {}
 	
 	@Override
 	protected void initService(Client client) {
 		super.initService(client);
-		this.tableItemsMonitor = new TableItemsMonitor(sessionMointor);
+		this.tableItemsMonitor = new ItemsMiniTableMonitor(sessionMointor);
 	}
 	
-	public static TableServiceManager SegmentServiceManager(Proxy proxy) {
+
+	public static MiniTableServiceManager SegmentServiceManager(Proxy proxy) {
 		return SegmentServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
 	}
-	public static TableServiceManager SegmentServiceManager(OkConfig config) {
-		TableServiceManager manager = new TableServiceManager();
+	public static MiniTableServiceManager SegmentServiceManager(OkConfig config) {
+		MiniTableServiceManager manager = new MiniTableServiceManager();
 		manager.initService(new SegmentClient(config));
 		return manager;
 	}
 	
-	public static TableServiceManager ChannelServiceManager(Proxy proxy) {
+	public static MiniTableServiceManager ChannelServiceManager(Proxy proxy) {
 		return ChannelServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
 	}
-	public static TableServiceManager ChannelServiceManager(OkConfig config) {
-		TableServiceManager manager = new TableServiceManager();
+	public static MiniTableServiceManager ChannelServiceManager(OkConfig config) {
+		MiniTableServiceManager manager = new MiniTableServiceManager();
 		manager.initService(new ChannelClient(config));
 		return manager;
 	}
@@ -94,15 +93,7 @@ public class TableServiceManager extends ServiceManager {
 
 	@Override
 	protected void printReport() {
-		Future<?> future = scheduledService.submit(()->{
-			System.out.println(tableItemsMonitor.getTableReport());
-			});
-		try {
-			TimeUnit.MILLISECONDS.sleep(500);
-			future.cancel(true);
-		} catch (InterruptedException e) {
-			Log.info(getClass(), "print report problem", e.getMessage());
-		}
+		System.out.println(tableItemsMonitor.getTableReport());
 	}
 
 	@Override

@@ -32,6 +32,7 @@ public interface SegmentWriter {
 					response.header("Content-Range"));
 			start = range.start;
 		} else if (response.code() == 416) { // error state
+			
 			return;
 		}
 		InputStream source = MonitorInputStreamWrapper.wrap(response.body().byteStream(), monitors);

@@ -47,6 +47,9 @@ public enum TerminalArgument{
 		MavenRepository("-mvnr", "--maven-repository"),
 		
 		CheckFile("-ch", "--check-file"),
+		ChunkSize("-cs", "--chunk-size"),
+		
+		Stream("-st", "--stream"),
 		
 		Help("-h", "--help"),
 		Debug("-d", "--debug-level"),
@@ -218,6 +221,14 @@ public enum TerminalArgument{
 					
 				case CheckFile:
 					return ("check donload file if is complete, and try to complete it");
+				case ChunkSize:
+					return ("length of shunk/segment to check");
+					
+					
+				case Stream:
+					return ("stream URL");
+					
+					
 				case Help:
 					return("print this message");
 				case Version:

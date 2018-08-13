@@ -180,6 +180,9 @@ public class SubRange {
 		return range;
 	}
 
+    public static long[][] split(long[] arr, int numOfParts) {
+        return subrange(arr[0], arr[1], numOfParts);
+    }
 
 	public static long[][] subrange(long[] arr, int numOfParts, int min) {
 		long[][] sub = subrange(arr, numOfParts);

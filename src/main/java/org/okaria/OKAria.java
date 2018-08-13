@@ -1,6 +1,7 @@
 package org.okaria;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import org.fusesource.hawtjni.runtime.Library;
 import org.fusesource.jansi.AnsiConsole;
@@ -11,7 +12,7 @@ import org.okaria.chrome.ChromeConnection;
 import org.okaria.lunch.Argument;
 import org.okaria.lunch.Lunch;
 import org.okaria.lunch.TerminalArgument;
-import org.okaria.okhttp.service.TableServiceManager;
+import org.okaria.okhttp.service.MiniTableServiceManager;
 import org.okaria.setting.Properties;
 
 public class OKAria {
@@ -41,16 +42,18 @@ public class OKAria {
 			arguments = new Argument(terminals);
 		}
 
-		if (arguments.isHelp()) {
+		if (arguments.isEmpty() || arguments.isHelp()) {
 			System.out.println(TerminalArgument.Help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("okaria version \"0.2.22\"");
+			System.out.println("okaria version \"0.2.24\"");
 			return;
 		}
 		Library lib = new Library("jansi", CLibrary.class);
 		lib.load();
 		AnsiConsole.systemInstall();
+		
+		R.MK_DIRS(R.ConfigPath);
 
 		String log_level = arguments.getOrDefault(TerminalArgument.Debug,
 				Level.info.name());
@@ -60,16 +63,17 @@ public class OKAria {
 
 		Properties.Config(arguments);
 
-		TableServiceManager manager = TableServiceManager.SegmentServiceManager(arguments.getProxy());
+		MiniTableServiceManager manager = MiniTableServiceManager.SegmentServiceManager(arguments.getProxy());
 		manager.startScheduledService();
 		Lunch lunch = new Lunch(manager);
 		lunch.download(arguments);
 		manager.setEmptyQueueRunnable(()->{System.exit(0);});
 		
-		
+		Log.trace(OKAria.class, "Shutdown Hook", "register shutdown thread");
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			manager.getSystemShutdownHook();
+			try {TimeUnit.MILLISECONDS.sleep(600);}catch(Exception e) {}
 			manager.close();
 			System.out.println("\u001B[50B\u001B[0m");
 		}));

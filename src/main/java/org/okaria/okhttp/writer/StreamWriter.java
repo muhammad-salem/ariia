@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.log.concurrent.Log;
 import org.okaria.R;
@@ -38,9 +39,8 @@ public class StreamWriter extends ItemMetaData {
 	// suppose one range rangInfo[1][2]
 
 	@Override
-	public void systemFlush() {
-		if(segments.isEmpty()) return;
-		Iterator<Segment> iterator =  segments.iterator();
+	protected void flush(ConcurrentLinkedQueue<Segment> segmentQueue){
+		Iterator<Segment> iterator =  segmentQueue.iterator();
 		StringBuilder report = new StringBuilder();
 		while (iterator.hasNext()) {
 			Segment segment = (Segment) iterator.next();
@@ -49,12 +49,13 @@ public class StreamWriter extends ItemMetaData {
 					channel.write(segment.buffer);
 				}
 				report.append(segment.toString());
+				report.append('\n');
 			} catch (IOException e) {
 				Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 				if(raf != null) close();
 				initRandomAccessFile();
 				if(raf == null) return; 
-				continue;		// could lead to infint loop 
+				continue;		// could lead to infinite loop 
 			}
 			
 			releaseSegment(segment);

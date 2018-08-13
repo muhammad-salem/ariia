@@ -7,6 +7,7 @@ import java.nio.channels.FileChannel.MapMode;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
@@ -17,9 +18,13 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 
 	private static class Pair{
 		long start, limit; 
-		int size;
+		long size;
 		void initSize() {
-			size = (int) (limit - start);
+			size = limit - start;
+		}
+		@Override
+		public String toString() {
+			return start + " : " + limit + " -> " + size;
 		}
 	}
 	
@@ -45,7 +50,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 			pair.limit = Math.min(pos, length);
 			pair.initSize();
 			pos = pair.limit;
-			Log.trace(getClass(), "start/limit", pair.start + " <=> " + pair.limit + " <=> " +  pair.size);
+			Log.trace(getClass(), "Pair ", pair.toString());
 			try {
 				MappedByteBuffer buffer = channel.map(MapMode.READ_WRITE, pair.start, pair.size);
 				Log.trace(getClass(), "create mapped byte buffer", buffer.toString());
@@ -76,9 +81,8 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 	
 	
 	@Override
-	public void systemFlush() {
-		if(segments.isEmpty()) return;
-		Iterator<Segment> iterator =  segments.iterator();
+	protected void flush(ConcurrentLinkedQueue<Segment> segmentQueue) {
+		Iterator<Segment> iterator =  segmentQueue.iterator();
 		StringBuilder report = new StringBuilder();
 		while (iterator.hasNext()) {
 			Segment segment = (Segment) iterator.next();
@@ -87,6 +91,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 				data.mappedBuffer.position(data.start);
 				data.mappedBuffer.put(segment.buffer);
 				report.append(segment.toString());
+				report.append('\n');
 			} catch (Exception e) {
 				Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 			}

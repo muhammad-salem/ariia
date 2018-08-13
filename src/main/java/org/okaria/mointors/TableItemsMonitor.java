@@ -67,7 +67,7 @@ public class TableItemsMonitor {
 			row.add(mointor.getSpeedTCPReceiveMB() + "/s");
 			row.add(mointor.getPercent());	
 		}
-		if( table.getRows().size() != 1) {
+		if( ! table.getRows().isEmpty() & table.getRows().size() != 1) {
 			Row<String> row = table.createRow();
 			row.add("#");
 			row.add("session (" + session.size() +")");
@@ -116,22 +116,5 @@ public class TableItemsMonitor {
 
 
 	
-//	public static void main(String[] args) {
-//		File dir = new File( R.getConfigDirectory());
-//		File[] files = dir.listFiles();
-//		SimpleSessionMointor sessionMointor = new SimpleSessionMointor();
-//		TableItemsMonitor itemsMonitor = new TableItemsMonitor(sessionMointor);
-//		int i = 0;
-//		for (File file : files) {
-//			
-//			Item item = Utils.fromJson(file, Item.class);
-//			if(item == null) continue;
-//			itemsMonitor.add(new OneRangeMointor(item));
-//			sessionMointor.add(item.getRangeInfo());
-//			if(++i == 4) break;
-//		}
-//		
-//		System.out.println(itemsMonitor.getTableReport());
-//	}
 	
 }

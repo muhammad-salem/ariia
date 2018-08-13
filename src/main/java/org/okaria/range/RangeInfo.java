@@ -6,13 +6,13 @@ import org.okaria.setting.Properties;
 
 public class RangeInfo implements RangeUtil {
 	
-	protected long		fileLength;
-	protected long		downloadLength;
-	protected long		remaninigLength;
+	protected long	fileLength;
+	protected long	downloadLength;
+	protected long  remainingLength;
 	protected long[][]	range;
 	
 	public RangeInfo() {
-       this(-1, Properties.RANGE_POOL_NUM);
+       this(-1, 1);
     }
 
     /**
@@ -51,6 +51,11 @@ public class RangeInfo implements RangeUtil {
 	
 	@Override
 	public long[][] getRange() { return range;}
+	
+
+	@Override
+	public void updateFileLength(long length) { this.fileLength = length;}
+	
 	@Override
 	public void updateRange(long[][] copy) {this.range = copy;}
 	@Override
@@ -58,9 +63,9 @@ public class RangeInfo implements RangeUtil {
 	@Override
 	public long getDownloadLength() {return downloadLength;}
 	@Override
-	public long getRemainingLength() {return remaninigLength;}
+	public long  getRemainingLength() {return remainingLength;}
 	private void setDownloadLength(long download) {this.downloadLength = download;}
-	private void setRemainingLength(long remaining) {this.remaninigLength = remaining;}
+	private void setRemainingLength(long remaining) {this.remainingLength = remaining;}
 
 	@Override
 	public void oneCycleDataUpdate() {
@@ -80,7 +85,7 @@ public class RangeInfo implements RangeUtil {
 	}
 	
 	private long calculateDownloadLength() {
-		return fileLength - remaninigLength;
+		return fileLength - remainingLength;
 	}
 	
 	public boolean isStreaming() {
@@ -106,6 +111,8 @@ public class RangeInfo implements RangeUtil {
 	public void addIJ(int i, int j, long value) {
 		range[i][j] += value;
 	}
+	
+
 	
 	public void addStartOfIndex(int i, long value) {
 		range[i][0] += value;
@@ -138,4 +145,6 @@ public class RangeInfo implements RangeUtil {
 	public synchronized int updateIndexFromMaxRange(int index) {
 		return RangeUtil.super.updateIndexFromMaxRange(index);
 	}
+
+
 }

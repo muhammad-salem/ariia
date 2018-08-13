@@ -43,6 +43,8 @@ public class R {
 		}
 		LockFile = CachePath + sprtr + "lock";
 		ConfigJsonFile = ConfigPath + "config.json";
+		
+		;
 	}
 
 	/* ========================================================================= */

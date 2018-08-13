@@ -20,6 +20,7 @@ import org.okaria.manager.Item;
 import org.okaria.manager.MetalinkItem;
 import org.okaria.okhttp.OkUtils;
 import org.okaria.okhttp.service.ServiceManager;
+import org.okaria.okhttp.writer.StreamWriter;
 import org.okaria.plugin.maven.Maven;
 import org.okaria.setting.Properties;
 import org.w3c.dom.Document;
@@ -33,6 +34,33 @@ public class Lunch {
 	
 	public Lunch(ServiceManager manager) {
 		this.manager = manager;
+	}
+	
+
+	public void download(Argument arguments) {
+		
+		if(arguments.isUrl()) {
+			downloadUrl(arguments);
+		}
+		else if(arguments.isInputFile()) {
+			downloadInputFile(arguments);
+		}
+		else if(arguments.isMetaLink()) {
+			downloadMetalink(arguments);
+		}
+		else if(arguments.isMaven()) {
+			downloadFromMaven(arguments);
+		}
+		else if(arguments.isStream()) {
+			streamUrl(arguments);
+		}
+		else if(arguments.isCheckFile()) {
+			CheckManager.CheckItem(arguments.getCheckFile(), arguments.getChunkSizeInt(), manager);
+		}
+		 
+//		else if(arguments.isGoogleDrive()) {
+//			downloadGoogleDrive(arguments.getGoogleDriveFileID());
+//		}
 	}
 	
 	public List<Item> mavenRepository(String baseUrl, String groupId, String artifactId, String version, String path){
@@ -200,27 +228,6 @@ public class Lunch {
 	}
 	
 
-	public void download(Argument arguments) {
-		
-		if(arguments.isCheckFile()) {
-			CheckManager.CheckItem(arguments.getCheckFile(), manager);
-		}
-		else if(arguments.isUrl()) {
-			downloadUrl(arguments);
-		}
-		else if(arguments.isInputFile()) {
-			downloadInputFile(arguments);
-		}
-		else if(arguments.isMetaLink()) {
-			downloadMetalink(arguments);
-		}
-		else if(arguments.isMaven()) {
-			downloadFromMaven(arguments);
-		}
-//		else if(arguments.isGoogleDrive()) {
-//			downloadGoogleDrive(arguments.getGoogleDriveFileID());
-//		}
-	}
 	
 //	private void downloadGoogleDrive(String fileID) {
 //		GoogleDriveFile drive = new GoogleDriveFile(fileID);
@@ -259,6 +266,24 @@ public class Lunch {
 
 	
 
+	private void streamUrl(Argument arguments) {
+		Item builder = new Item();
+		builder.setUrl(arguments.getStream());
+		configBuilder(arguments, builder);
+		if(arguments.isFileName()) 
+			builder.setFilename(arguments.getFileName());
+		Item item = buildItem(builder);
+		setCache(item);
+		if(!item.getFilename().equals("404:Not:Found")) {
+//			addItem2WattingList(item);
+			
+			manager.getWattingList().add(new StreamWriter(item));
+			manager.getSessionMointor().add(item.getRangeInfo());
+		}
+//			
+	}
+	
+
 	private void downloadFromMaven(Argument arg) {
 		String saveto = arg.getMavenRepository();
 		if(saveto == null) saveto = arg.getSavePath();
@@ -273,8 +298,8 @@ public class Lunch {
 				arg.getMavenVersion(), 
 				saveto);
 		for (Item builder : builders) {
-			configBuilder(arg, builder);
 			Item item = buildItem(builder);
+			item.setCacheFile(null);
 			if(!item.getFilename().equals("404:Not:Found")) {
 				addItem2WattingList(item);
 			}
@@ -291,6 +316,7 @@ public class Lunch {
 		if(arguments.isFileName()) 
 			builder.setFilename(arguments.getFileName());
 		Item item = buildItem(builder);
+		setCache(item);
 		if(!item.getFilename().equals("404:Not:Found"))
 			addItem2WattingList(item);
 	}
@@ -301,6 +327,7 @@ public class Lunch {
 		for (Item builder : builders) {
 			configBuilder(arguments, builder);
 			Item item = buildItem(builder);
+			setCache(item);
 			if(!item.getFilename().equals("404:Not:Found"))
 				addItem2WattingList(item);
 		}
@@ -319,8 +346,17 @@ public class Lunch {
 		if(builder == null) return;
 		configBuilder(arguments, builder);
 		Item item = buildItem(builder);
+		setCache(item);
 		if(!item.getFilename().equals("404:Not:Found"))
 			addItem2WattingList(item);
+	}
+
+
+	/**
+	 * @param item
+	 */
+	protected void setCache(Item item) {
+		item.setCacheFile(R.getConfigPath(item.getFilename())+".json");
 	}
 
 	/**
@@ -338,7 +374,7 @@ public class Lunch {
 		if(arguments.isSavePath())
 			builder.setFolder(arguments.getSavePath());
 		else {
-			if(builder.getFilename() == null)
+			if(builder.getFolder() == null)
 				builder.setFolder(Properties.Default_SAVE_DIR_PATH);
 		}
 		
@@ -350,7 +386,6 @@ public class Lunch {
 		if (item == null) {
 			item = builder;
 			manager.getClient().updateItemOnline(item);
-			item.setCacheFile(R.getConfigPath(item.getFilename())+".json");
 		} else {
 			item.getRangeInfo().avoidMissedBytes();
 			item.getRangeInfo().checkRanges();
@@ -358,19 +393,20 @@ public class Lunch {
 		return item;
 	}
 	
-	public boolean addItem2WattingList(Item item) {
+
+	
+	public void addItem2WattingList(Item item) {
 		if( item.isStreaming() ) {
 			Log.info(getClass(), "add stream item to watting list ", item.liteString());
 		}
 		else if( item.isFinish() ) {
 			Log.info(getClass(), "Complete Download", item.liteString());
-			return false;
+			return ;
 		}else {
 			Log.info(getClass(), "add download item to watting list", item.toString());
 		}
 		
 		manager.warrpItem(item);
-		return true;
 	}
 	
 }

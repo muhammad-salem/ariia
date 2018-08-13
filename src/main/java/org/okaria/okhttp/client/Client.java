@@ -21,9 +21,8 @@ import org.okaria.speed.SpeedMonitor;
 import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
-public abstract class Client implements StreamingClientRequest, DownloadResponse, DownloadPlane {
+public abstract class Client implements StreamingClientRequest, DownloadResponse, DownloadPlane, ContentLength {
 
 	
 	private OkHttpClient httpClient;
@@ -78,13 +77,13 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 	}
 		
 	public void updateItemOnline(Item item) {
-		boolean reGet = true;
+		boolean retrie = true;
 		do {
-			reGet = updateItemOnline(item, false);
-			if (reGet)
+			retrie = updateItemOnline(item, false);
+			if (retrie)
 				break;
-			reGet = updateItemOnline(item, true);
-		} while (!reGet);
+			retrie = updateItemOnline(item, true);
+		} while (!retrie);
 	}
 
 	private boolean updateItemOnline(Item item, boolean headOrGet) {
@@ -101,6 +100,7 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 		
 		if(response.code() == 404) {
 			item.setFilename("404:Not:Found");
+			response.close();
 			return true;
 		}
 
@@ -113,20 +113,12 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 			Log.fine(getClass(), "redirect item to another location", 
 					item.getUrl() + '\n' + item.getRedirectUrl());
 		}
-		ResponseBody body = response.body();
-		try {
-			long length = Long.parseLong(response.header("Content-Length")); // body.contentLength();
-
-			RangeInfo rangeInfo = new RangeInfo(length);
-			item.setRangeInfo(rangeInfo);
-		} catch (NumberFormatException e) {
-			RangeInfo rangeInfo = new RangeInfo();
-			item.setRangeInfo(rangeInfo);
-		} finally {
-			body.close();
-		}
+		
+		RangeInfo rangeInfo = new RangeInfo(extracteLength(response));
+		item.setRangeInfo(rangeInfo);
+		response.close();
+		
 		if (item.getFilename() == null) {
-			
 			String filename = OkUtils.Filename(item.updateUrl());
 			String contentDisposition = response.header("Content-disposition", "filename=\"" + filename + "\"");
 			if (contentDisposition.contains("filename")) {
@@ -138,6 +130,8 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 
 		return true;
 	}
+	
+	
 	@Override
 	public ClientRequest getClientRequest() {
 		return this;

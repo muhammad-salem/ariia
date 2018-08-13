@@ -13,7 +13,12 @@ public class Maven {
 	public static String MAVEN_REPOSITORY = R.UserHome + R.sprtr + ".m2" + R.sprtr + "repository" ;
 	
 	static String FILE[] = new String[]
-			{".jar", ".pom", "-javadoc.jar", "-sources.jar", ".aar", "-docs.zip", "-spi-javadoc.jar", "-test-sources.jar", "-tests.jar"};
+			{".jar", ".pom", 
+					"-javadoc.jar", "-sources.jar", 
+					".aar", "-docs.zip", "-spi-javadoc.jar", 
+					"-test-sources.jar", "-tests.jar",
+					".tar.gz", ".zip"
+					};
 	
 	static String CERTIFACATES[] = new String[] {".sha1", ".asc", ".md5", ".asc.sha1", ".asc.md5"};
 	
@@ -77,6 +82,7 @@ public class Maven {
 			item.setUrl(map.get(name));
 			item.setFolder(savePath);
 			item.setFilename(name);
+			item.setCacheFile(null);
 			builders.add(item);
 		}
 		return builders;

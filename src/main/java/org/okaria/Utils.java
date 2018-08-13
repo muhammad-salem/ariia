@@ -20,12 +20,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.terminal.Ansi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 public class Utils {
 	
@@ -83,6 +85,22 @@ public class Utils {
 		return builder.toString();
 	}
 
+	
+	public static String middleMaxLength(final String string, int count) {
+		if (string.length() > count)
+			return string.substring(0, count-2).concat("..");
+		char[] cs = new char[(count - string.length())/2];
+		boolean reminder = ((count - string.length()) % 2) == 1;
+		Arrays.fill(cs, ' ');
+		StringBuilder builder = new StringBuilder();
+		builder.append(cs);
+		if(reminder)builder.append(' ');
+		builder.append(string);
+		builder.append(cs);
+		return builder.toString();
+	}
+	
+	
 	public static String GetWidthBracts(String title, int l) {
 		title = getStringWidth(title, l);
 		title = '[' + title + ']';
@@ -207,6 +225,34 @@ public class Utils {
 			System.err.println("no file found " + file);
 			return null;
 		}
+		return t;
+	}
+	
+	public static <T> T fromJsonGenric(String file, Class<T> classT) {
+		T t = null;
+		Type typeOfT = new TypeToken<T>(){}.getType();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			t = gson.fromJson(reader, typeOfT);
+		} catch (Exception e) {
+			System.err.println("no file found " + file);
+			return null;
+		}
+		
+		return t;
+	}
+	
+	public static <T> List<T> jsonList( Class<T> classT, String file) {
+		List<T> t = null;
+		Type typeOfT = new TypeToken<List<T>>(){}.getType();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			t = gson.fromJson(reader, typeOfT);
+		} catch (Exception e) {
+			System.err.println("no file found " + file);
+			return null;
+		}
+		
 		return t;
 	}
 
