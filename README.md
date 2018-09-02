@@ -69,7 +69,7 @@ OKaria is a smart command line download manager.
 
 ### Overview
 
-![Overview](img/overview.png)
+![Overview](img/mini-table-01.png)
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
@@ -79,7 +79,7 @@ OKaria is a smart command line download manager.
 
 
 ### Screenshot: 
-![screenshot-01](img/screenshot-01.png)
-![screenshot-02](img/screenshot-02.png)
-![screenshot-03](img/screenshot-03.png)
+![screenshot-01](img/mini-table-02.png)
+![screenshot-02](img/mini-table-03.png)
+![screenshot-03](img/mini-table-04.png)
 
