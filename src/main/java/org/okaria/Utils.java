@@ -244,7 +244,7 @@ public class Utils {
 	
 	public static <T> List<T> jsonList( Class<T> classT, String file) {
 		List<T> t = null;
-		Type typeOfT = new TypeToken<List<T>>(){}.getType();
+		Type typeOfT = new TypeToken<ArrayList<T>>(){}.getType();
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			t = gson.fromJson(reader, typeOfT);

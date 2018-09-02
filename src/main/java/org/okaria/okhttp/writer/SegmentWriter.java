@@ -16,10 +16,12 @@ import okhttp3.Response;
 
 public interface SegmentWriter {
 
-	default void writeResponse(Response response, OfferSegment offerSegment,int index, SpeedMonitor... monitors) 
-			throws IOException {
+	default void writeResponse
+			(Response response, OfferSegment offerSegment,int index, SpeedMonitor... monitors) 
+			throws IOException 
+	{
 				writeResponse(response, offerSegment, index, -1, monitors);
-			}
+	}
 	
 	default void writeResponse(Response response, OfferSegment offerSegment,int index, long limit, SpeedMonitor... monitors) 
 	throws IOException {
@@ -35,12 +37,22 @@ public interface SegmentWriter {
 			
 			return;
 		}
+		
+		
 		InputStream source = MonitorInputStreamWrapper.wrap(response.body().byteStream(), monitors);
+//		String encoding = response.header("Content-Encoding", "");
+//		if( ! encoding.isEmpty()) {
+//			if(encoding.equals("gzip")) {
+//				source = new GZIPInputStream(source);
+//			}
+//		}
+		
+		
 		ReadableByteChannel reader = Channels.newChannel(source);
 		
 		
 		if(limit == -1) writeStream(reader, offerSegment, index, start);
-		else			writeLimit(reader, offerSegment, index, start, limit);
+		else			writeLimit (reader, offerSegment, index, start, limit);
 		
 	}
 	

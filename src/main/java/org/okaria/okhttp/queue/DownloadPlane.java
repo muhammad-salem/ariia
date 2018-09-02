@@ -14,10 +14,10 @@ import org.okaria.speed.SpeedMonitor;
 public interface DownloadPlane {
 	
 
-	Future<?> downloadPart(ItemMetaData placeHolder, int index, SpeedMonitor... monitors);
+	Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors);
 	
-	default List<Future<?>> download(ItemMetaData placeHolder, SpeedMonitor itemMonitor, SpeedMonitor... monitors) {
-		return download(placeHolder, toArray(itemMonitor, monitors));
+	default List<Future<?>> download(ItemMetaData metaData, SpeedMonitor itemMonitor, SpeedMonitor... monitors) {
+		return download(metaData, toArray(itemMonitor, monitors));
 	}
 	/**
 	 * @param itemMonitor
@@ -30,8 +30,8 @@ public interface DownloadPlane {
 		allMonitors[monitors.length] = itemMonitor;
 		return allMonitors;
 	}
-	default List<Future<?>> download(ItemMetaData placeHolder, SpeedMonitor... monitors) {
-		Item item = placeHolder.getItem();
+	default List<Future<?>> download(ItemMetaData metaData, SpeedMonitor... monitors) {
+		Item item = metaData.getItem();
 		item.updateHeaders();
 		if(item.isStreaming()) {
 			Log.info(getClass(), "streaming...", item.getFilename());
@@ -43,7 +43,7 @@ public interface DownloadPlane {
 		List<Integer> indexs = downloadOrder(item.getRangeInfo().getRangeCount());
 		List<Future<?>> futures = new LinkedList<Future<?>>();
 		for (Integer index : indexs) {
-			futures.add(downloadPart(placeHolder, index, monitors));
+			futures.add(downloadPart(metaData, index, monitors));
 		}
 		return futures;
 	}
@@ -57,8 +57,8 @@ public interface DownloadPlane {
 	}
 	
 	
-	default Future<?> downloadPart(ItemMetaData placeHolder, int index, SpeedMonitor itemMonitor, SpeedMonitor... monitors){
-		return downloadPart(placeHolder, index, toArray(itemMonitor, monitors));
+	default Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor itemMonitor, SpeedMonitor... monitors){
+		return downloadPart(metaData, index, toArray(itemMonitor, monitors));
 	}
 	
 }

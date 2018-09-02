@@ -2,23 +2,29 @@ package org.okaria.plugin.maven;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.okaria.R;
 import org.okaria.manager.Item;
+import org.okaria.okhttp.OkUtils;
 
 public class Maven {
 	static String CENTRAL_MAVEN = "http://central.maven.org/maven2";
 	public static String MAVEN_REPOSITORY = R.UserHome + R.sprtr + ".m2" + R.sprtr + "repository" ;
 	
 	static String FILE[] = new String[]
-			{".jar", ".pom", 
-					"-javadoc.jar", "-sources.jar", 
+			{ 		
+					".pom", ".jar",
+					"-sources.jar", "-javadoc.jar",
 					".aar", "-docs.zip", "-spi-javadoc.jar", 
+					"-linux.jar", "-win.jar", "-mac.jar",
 					"-test-sources.jar", "-tests.jar",
 					".tar.gz", ".zip"
-					};
+					
+			};
 	
 	static String CERTIFACATES[] = new String[] {".sha1", ".asc", ".md5", ".asc.sha1", ".asc.md5"};
 	
@@ -79,14 +85,70 @@ public class Maven {
 		List<Item> builders = new ArrayList<>();
 		for (String name : map.keySet()) {
 			Item item = new Item();
+			item.setFilename(name);
 			item.setUrl(map.get(name));
 			item.setFolder(savePath);
-			item.setFilename(name);
 			item.setCacheFile(null);
 			builders.add(item);
 		}
 		return builders;
 	}
+	
+	public List<Item> getItems(String savePath, Map<String, String> map) {
+		List<Item> items = new ArrayList<>();
+		for (String name : map.keySet()) {
+			Item item = new Item();
+			item.setUrl(map.get(name));
+			item.setFilename(name);
+			item.setFolder(savePath);
+			item.setCacheFile(null);
+			items.add(item);
+		}
+		return items;
+	}
+	
+	public List<Item> getItems(String savePath, List< String> urls) {
+		List<Item> items = new ArrayList<>();
+		for (String url : urls) {
+			Item item = new Item();
+			item.setUrl(url);
+			item.setFilename(OkUtils.Filename(url));
+			item.setFolder(savePath);
+			item.setCacheFile(null);
+			items.add(item);
+		}
+		return items;
+	}
+	
+	
+	
+	public Map<String, String> mainFiles(){
+		String url = baseUrl + resolvePath();
+		HashMap<String, String> map = new LinkedHashMap<>();
+		for (String ext : FILE) {
+			String name = fileName(ext);
+			map.put(name, url + name);
+		}
+		return map;
+	}
+	
+	public Map<String, String> certificatedFiles(String name, String url ){
+		HashMap<String, String> map = new LinkedHashMap<>();
+		for (String crt : CERTIFACATES) {
+			map.put(name+crt, url+crt);
+		}
+		return map;
+	}
+	
+	public List<String> certificatedFiles(String url ){
+		List< String> list = new LinkedList<>();
+		for (String crt : CERTIFACATES) {
+			list.add(url+crt);
+		}
+		return list;
+	}
+	
+	
 	
 	public Map<String, String> urls(){
 		String bUrl = baseUrl + resolvePath();

@@ -43,7 +43,7 @@ public interface ClientRequest {
     }
 
     default Response head(Item item) throws IOException {
-        return response( headCall(item.getUpdateUrl(), item.getCookies(), item.getHeaders()) );
+        return response( headCall(item.url(), item.getCookies(), item.getHeaders()) );
     }
     
     default Response head(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
@@ -55,6 +55,7 @@ public interface ClientRequest {
                 .url(url)
                 .headers(headers)
                 .head();
+        addCommonHeader(builder);
         return newCall(builder.build());
     }
     
@@ -127,7 +128,7 @@ public interface ClientRequest {
         return response(getCall(item, startRange, endRange));
     }
     default Call getCall(Item item, long startRange, long endRange) throws IOException {
-        return getCall(item.getUpdateUrl(), 
+        return getCall(item.url(), 
         		startRange, 
         		endRange, 
         		item.getCookies(), 
@@ -150,21 +151,11 @@ public interface ClientRequest {
                 .url(url)
                 .headers(headers)
                 .get();
-        getHttpClient().cookieJar().saveFromResponse(url, jar);
+       // getHttpClient().cookieJar().saveFromResponse(url, jar);
         return newCall(builder.build());
     }
     
-    default Call getCall(HttpUrl url, long startRange, List<Cookie> jar, Headers headers) throws IOException {
-        Request.Builder builder = new Request.Builder()
-                .url(url)
-                .headers(headers)
-                .addHeader("Range", "bytes=" + startRange + "-")
-                .get();
-                //if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
-        getHttpClient().cookieJar().saveFromResponse(url, jar);
-        return newCall(builder.build());
-    }
-    
+
     default Response getStream(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
     	return response(getStreamCall(url, jar, headers));
     }
@@ -174,10 +165,23 @@ public interface ClientRequest {
                 .headers(headers)
                 .addHeader("Range", "bytes=0-")
                 .get();
-                //if( startRange > 0) builder.addHeader("Range", "bytes=" + startRange + "-");
-        getHttpClient().cookieJar().saveFromResponse(url, jar);
+        //addCommonHeader(builder);
+        
+//        getHttpClient().cookieJar().saveFromResponse(url, jar);
         return newCall(builder.build());
     }
+    
+    default Call getCall(HttpUrl url, long startRange, List<Cookie> jar, Headers headers) throws IOException {
+        Request.Builder builder = new Request.Builder()
+                .url(url)
+                .headers(headers)
+                .addHeader("Range", "bytes=" + startRange + "-")
+                .get();
+        //addCommonHeader(builder);
+//        getHttpClient().cookieJar().saveFromResponse(url, jar);
+        return newCall(builder.build());
+    }
+    
     
     
     
@@ -187,34 +191,25 @@ public interface ClientRequest {
                 .get()
                 .url(url)
                 .headers(headers)
-//                .addHeader("Range", "bytes=" + startRange + "-" + endRange) ;
-                .addHeader("Range", "bytes=" + startRange + "-" )
-                //.addHeader("Cache-Control", "no-cache")
-                //.addHeader("Pragma", "no-cache")
-                //.addHeader("Connection", "Keep-Alive")
-                //.addHeader("User-Agent", "okaria/1.88.0 (java)")
+                .addHeader("Range", "bytes=" + startRange + "-" + endRange) ;
+//                .addHeader("Range", "bytes=" + startRange + "-" )
                ;
-    	
-    	
-//    	if(startRange == 0) {
-//    		// nothing
-//    	}
-//    	else //if(endRange != -1 ) 
-//    		{
-//    		builder.addHeader("Range", "bytes=" + startRange + "-" + endRange);
-//    	}
-////    	else {
-////    		builder.addHeader("Range", "bytes=" + startRange + "-");
-////    	}
-    	
-    	/*
-    	 * Cache-Control: no-cache
-    	 * Pragma: no-cache
-    	 * Connection: Keep-Alive
-    	 */
-        getHttpClient().cookieJar().saveFromResponse(url, jar);
+    	//addCommonHeader(builder);
+//        getHttpClient().cookieJar().saveFromResponse(url, jar);
         return newCall(builder.build());
     }
+
+
+	/**
+	 * @param builder
+	 */
+	default void addCommonHeader(Request.Builder builder) {
+		builder.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+        builder.addHeader("Accept-Encoding", "gzip, deflate");
+        builder.addHeader("Accept-Language", "en-US,en;q=0.9");
+        builder.addHeader("Cache-Control", "no-cache");
+        builder.addHeader("Pragma", "no-cache");
+	}
     
     default Call newCall( Request request) {
         return getHttpClient().newCall(request);

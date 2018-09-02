@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.okhttp.queue.StreamOrder;
+import org.okaria.okhttp.queue.ThreadOrder;
 import org.okaria.okhttp.request.ClientRequest;
 import org.okaria.okhttp.response.ChannelResponse;
 import org.okaria.okhttp.writer.ClientChannelWriter;
@@ -18,7 +19,7 @@ import org.okaria.speed.SpeedMonitor;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
 
-public class ChannelClient extends Client implements ChannelResponse, StreamOrder{
+public class ChannelClient extends Client implements ChannelResponse, StreamOrder, ThreadOrder{
 
 	ExecutorService executor =  Executors.newCachedThreadPool();
 	ExecutorService releaseResources = Executors.newCachedThreadPool();
@@ -102,6 +103,10 @@ public class ChannelClient extends Client implements ChannelResponse, StreamOrde
 	@Override
 	public ExecutorService getReleaseResourcesExecutor() {
 		return releaseResources;
+	}
+	@Override
+	public ExecutorService getExecutorService() {
+		return executor;
 	}
 
 }

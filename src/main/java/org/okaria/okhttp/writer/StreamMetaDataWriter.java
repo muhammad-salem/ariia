@@ -1,26 +1,44 @@
 package org.okaria.okhttp.writer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
 import org.log.concurrent.Log;
+import org.okaria.R;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.segment.Segment;
 
-public class ChannelMetaDataWriter extends ItemMetaData {
-
-
-	protected FileChannel channel;
-	public ChannelMetaDataWriter(Item item) {
+public class StreamMetaDataWriter extends ItemMetaData {
+	
+	private FileChannel channel;
+	public StreamMetaDataWriter(Item item) {
 		super(item);
+	}
+	
+	@Override
+	protected void initRandomAccessFile() {
+		try {
+			R.mkParentDir(item.path());
+			raf = new RandomAccessFile(item.path(), "rw");
+			raf.seek(info.startOfIndex(0));
+		} catch (FileNotFoundException e) {
+			Log.error(getClass(), e.getMessage(), e.toString());
+		} catch (IOException e) {
+			Log.error(getClass(), e.getMessage(), e.toString());
+		}
 	}
 	
 	@Override
 	public void initMetaData() {
 		channel = raf.getChannel();
 	}
-	
+
+	/**
+	 * 
+	 */
 	@Override
 	public void forceUpdate() {
 		try {
@@ -29,38 +47,24 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 			Log.error(getClass(), "force update", "error force update to channel\n" + item.getFilename() + '\n' + e.getMessage());
 		}
 	}
-
 	
-	@Override
+	
 	protected boolean writeSegment(Segment segment) {
 		try {
-			channel.position(segment.start);
 			while (segment.buffer.hasRemaining()) {
 				channel.write(segment.buffer);
 			}
 			return true;
 		} catch (IOException e) {
-			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+			Log.error(getClass(), "write segment", "error force update to channel\n" + item.getFilename() + '\n' + e.getMessage());
 			return false;
 		}
 		
 	}
-
-
+	
 //	@Override
-//	public void clearFile() {
-//		try {
-//			channel.position(0);
-//			int segment = raf.length() > 2028098 ? 1 : 2048;
-//			ByteBuffer buffer = ByteBuffer.allocate(segment);
-//			for (int pos = 0; pos < raf.length(); pos += segment) {
-//				channel.write(buffer);
-//				buffer.flip();
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+//	public void clearFile() {}
+
 	
 	@Override
 	public void close() {
@@ -73,4 +77,5 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 		}
 		super.close();
 	}
+
 }

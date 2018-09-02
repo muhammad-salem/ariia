@@ -6,13 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
-import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.mointors.ItemsMiniTableMonitor;
 import org.okaria.okhttp.client.ChannelClient;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.client.SegmentClient;
-import org.okaria.okhttp.writer.LargeMappedMetaDataWriter;
 
 public class MiniTableServiceManager extends ServiceManager {
 
@@ -65,13 +63,13 @@ public class MiniTableServiceManager extends ServiceManager {
 	}
 	
 
-	@Override
-	public void getSystemShutdownHook() {
-		systemFlushDataOnly();
-		saveWattingItemToDisk();
+
+//	public void runSystemShutdownHook() {
+//		systemFlushData();
+//		saveWattingItemToDisk();
 		//saveDownloadingItemToDisk();
-		printReport();
-	}
+//		printReport();	
+//	}
 
 
 	
@@ -82,7 +80,8 @@ public class MiniTableServiceManager extends ServiceManager {
 		// for each 2 second
 		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
-		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 4, 10, TimeUnit.SECONDS);
+		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 10, 10, TimeUnit.SECONDS);
+//		scheduledService.scheduleAtFixedRate(this::systemFlushData, 10, 10, TimeUnit.SECONDS);
 		
 	}
 
@@ -92,7 +91,7 @@ public class MiniTableServiceManager extends ServiceManager {
 	}
 
 	@Override
-	protected void printReport() {
+	public void printReport() {
 		System.out.println(tableItemsMonitor.getTableReport());
 	}
 
@@ -100,15 +99,7 @@ public class MiniTableServiceManager extends ServiceManager {
 	protected void systemFlushData() {
 		for (ItemMetaData placeHolder : downloadingList) {
 			placeHolder.systemFlush();
-			placeHolder.saveItem2CacheFile();
 		}
-		//saveDownloadingItemToDisk();
-	}
-	protected void systemFlushDataOnly() {
-		for (ItemMetaData placeHolder : downloadingList) {
-			placeHolder.systemFlush();
-		}
-		//saveDownloadingItemToDisk();
 	}
 
 	@Override
@@ -134,20 +125,16 @@ public class MiniTableServiceManager extends ServiceManager {
 		}
 	}
 
-	public void setEmptyQueueRunnable(Runnable emptyQueueRunnable) {
+	public void setFinishDownloadQueueEvent(Runnable emptyQueueRunnable) {
 		this.emptyQueueRunnable = emptyQueueRunnable;
 	}
 	
 	@Override
-	public Runnable getEmptyQueueEvent() {
+	public Runnable getFinishDownloadQueueEvent() {
 		return emptyQueueRunnable;
 	}
 
-	@Override
-	public void warrpItem(Item item) {
-		sessionMointor.add(item.getRangeInfo());
-		wattingList.add(new LargeMappedMetaDataWriter(item));
-	}
+	
 
 
 }

@@ -3,6 +3,8 @@ package org.okaria.okhttp.client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.log.concurrent.Log;
@@ -18,7 +20,9 @@ import org.okaria.okhttp.response.DownloadResponse;
 import org.okaria.range.RangeInfo;
 import org.okaria.speed.SpeedMonitor;
 
+import okhttp3.Cookie;
 import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
@@ -88,6 +92,7 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 
 	private boolean updateItemOnline(Item item, boolean headOrGet) {
 		Response response = null;
+		getHttpClient().cookieJar().saveFromResponse(item.url(), item.getCookies());
 		try {
 			if (headOrGet)
 				response = head(item.url(), item.getCookies(), item.getHeaders());
@@ -98,6 +103,11 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 			return false;
 		}
 		
+		List<Cookie> list =  getHttpClient().cookieJar().loadForRequest(item.url());
+		item.addCookies(list);
+		
+//		getHttpClient().cookieJar().saveFromResponse(url, jar);
+		
 		if(response.code() == 404) {
 			item.setFilename("404:Not:Found");
 			response.close();
@@ -105,22 +115,39 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 		}
 
 		// System.out.println(response);
-		if (response.networkResponse() != null 
+		
+		HttpUrl usedUrl;
+		 if (response.networkResponse() != null 
 				&& ! response.networkResponse().request().url().toString()
 					.equals(item.getUrl())) {
-			item.setRedirect();
-			item.setRedirectUrl(response.networkResponse().request().url().toString());
-			Log.fine(getClass(), "redirect item to another location", 
-					item.getUrl() + '\n' + item.getRedirectUrl());
+			 usedUrl = response.networkResponse().request().url();
+			Log.fine(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
+					+ "\n redirect url \t"+ usedUrl );
+		}else {
+			usedUrl = response.request().url();
 		}
 		
-		RangeInfo rangeInfo = new RangeInfo(extracteLength(response));
+		long length = extracteLength(response);
+		RangeInfo rangeInfo = new RangeInfo();
+		if(length > 0) {
+			if (length > 104857600) {		// 100MB
+				rangeInfo = RangeInfo.RangeInfo2M(length);
+			}
+			else if (length > 10485760) {	// 10MB
+				rangeInfo = RangeInfo.RangeInfo1M(length);
+			}
+			else if (length > 5242880){		//5M
+				rangeInfo = RangeInfo.RangeInfo512K(length);
+			}else{
+				rangeInfo = new RangeInfo(length);
+			}
+		}
 		item.setRangeInfo(rangeInfo);
 		response.close();
 		
 		if (item.getFilename() == null) {
-			String filename = OkUtils.Filename(item.updateUrl());
-			String contentDisposition = response.header("Content-disposition", "filename=\"" + filename + "\"");
+			String filename = OkUtils.Filename(usedUrl);
+			String contentDisposition = response.networkResponse().header("Content-disposition", "filename=\"" + filename + "\"");
 			if (contentDisposition.contains("filename")) {
 				String[] split = contentDisposition.split("\"");
 				filename = split[split.length - 1];
@@ -143,6 +170,6 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 	
 	public abstract boolean downloadTask(ItemMetaData placeHolder, int index,SpeedMonitor... monitors);
 
-
+	public abstract ExecutorService getExecutorService();
 
 }

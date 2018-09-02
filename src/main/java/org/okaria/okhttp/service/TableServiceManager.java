@@ -8,13 +8,11 @@ import java.util.concurrent.TimeUnit;
 import org.log.concurrent.Log;
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
-import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.mointors.TableItemsMonitor;
 import org.okaria.okhttp.client.ChannelClient;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.client.SegmentClient;
-import org.okaria.okhttp.writer.LargeMappedMetaDataWriter;
 
 public class TableServiceManager extends ServiceManager {
 
@@ -66,13 +64,13 @@ public class TableServiceManager extends ServiceManager {
 	}
 	
 
-	@Override
-	public void getSystemShutdownHook() {
-		systemFlushDataOnly();
-		saveWattingItemToDisk();
-		//saveDownloadingItemToDisk();
-		printReport();
-	}
+//	@Override
+//	public void runSystemShutdownHook() {
+//		systemFlushDataOnly();
+//		saveWattingItemToDisk();
+//		//saveDownloadingItemToDisk();
+//		printReport();
+//	}
 
 
 	
@@ -93,7 +91,7 @@ public class TableServiceManager extends ServiceManager {
 	}
 
 	@Override
-	protected void printReport() {
+	public void printReport() {
 		Future<?> future = scheduledService.submit(()->{
 			System.out.println(tableItemsMonitor.getTableReport());
 			});
@@ -107,13 +105,6 @@ public class TableServiceManager extends ServiceManager {
 
 	@Override
 	protected void systemFlushData() {
-		for (ItemMetaData placeHolder : downloadingList) {
-			placeHolder.systemFlush();
-			placeHolder.saveItem2CacheFile();
-		}
-		//saveDownloadingItemToDisk();
-	}
-	protected void systemFlushDataOnly() {
 		for (ItemMetaData placeHolder : downloadingList) {
 			placeHolder.systemFlush();
 		}
@@ -143,20 +134,20 @@ public class TableServiceManager extends ServiceManager {
 		}
 	}
 
-	public void setEmptyQueueRunnable(Runnable emptyQueueRunnable) {
+	public void setFinishDownloadQueueEvent(Runnable emptyQueueRunnable) {
 		this.emptyQueueRunnable = emptyQueueRunnable;
 	}
 	
 	@Override
-	public Runnable getEmptyQueueEvent() {
+	public Runnable getFinishDownloadQueueEvent() {
 		return emptyQueueRunnable;
 	}
 
-	@Override
-	public void warrpItem(Item item) {
-		sessionMointor.add(item.getRangeInfo());
-		wattingList.add(new LargeMappedMetaDataWriter(item));
-	}
+//	@Override
+//	public void warrpItem(Item item) {
+//		sessionMointor.add(item.getRangeInfo());
+//		wattingList.add(new LargeMappedMetaDataWriter(item));
+//	}
 
 
 }

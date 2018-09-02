@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.okaria.Utils;
-import org.okaria.manager.Item;
 import org.terminal.Ansi;
 import org.terminal.beans.Row;
 
@@ -44,9 +43,9 @@ public class TableItemsMonitor {
 	}
 	
 	private void updateInfo() {
-//		for (OneRangeMointor mointor : mointors) {
-//			mointor.updatedata();
-//		}
+		for (OneRangeMointor mointor : mointors) {
+			mointor.updateData();
+		}
 		session.rangeInfoUpdateData();
 	}
 	
@@ -55,10 +54,9 @@ public class TableItemsMonitor {
 		//table.head("name", "Length", "TD", "Remain", "Down", "Speed", "100%");
 		int index = 0;
 		for (OneRangeMointor mointor : mointors) {
-			Item item = mointor.getItem();
 			Row<String> row = table.createRow();
 			row.add(++index + "");
-			row.add(item.getFilename());
+			row.add(mointor.getName());
 			row.add(mointor.getTotalLengthMB());
 			
 			row.add(mointor.getDownloadLengthMB());

@@ -16,7 +16,6 @@ public interface Range {
 	long getDownloadLength();
 	long getRemainingLength();
 	
-	
 	String getFileLengthMB();
 	String getDownloadLengthMB();
 	String getRemainingLengthMB();

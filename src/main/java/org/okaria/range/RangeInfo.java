@@ -6,13 +6,42 @@ import org.okaria.setting.Properties;
 
 public class RangeInfo implements RangeUtil {
 	
+
+    public static RangeInfo RangeInfo512K( long filelength) {
+    	return RangeInfoByte(filelength, 524288);
+    }
+    public static RangeInfo RangeInfo1M( long filelength) {
+    	return RangeInfoByte(filelength, 1048576);
+    }
+    public static RangeInfo RangeInfo2M( long filelength) {
+    	return RangeInfoByte(filelength, 2097152);
+    }
+    public static RangeInfo RangeInfo3M( long filelength) {
+    	return RangeInfoByte(filelength, 3145728);
+    }
+    public static RangeInfo RangeInfo4M( long filelength) {
+    	return RangeInfoByte(filelength, 4194304);
+    }
+    public static RangeInfo RangeInfoByte( long filelength, final int chunkLength) {
+    	int count = (int)(filelength / chunkLength) + ((int)(filelength%chunkLength) > 0 ? 1:0);
+		long[][] range = new long[count][2];
+		for (int index = 0; index < range.length; ) {
+			range[index][0] = chunkLength *   index;
+			range[index][1] = chunkLength * ++index;
+		}
+		range[count-1][1] = filelength;
+		RangeInfo info = new RangeInfo(filelength, range);
+    	return info;
+    }
+	
 	protected long	fileLength;
 	protected long	downloadLength;
 	protected long  remainingLength;
 	protected long[][]	range;
 	
 	public RangeInfo() {
-       this(-1, 1);
+		this.fileLength = -1l;
+	    this.range = SubRange.mksubrange(fileLength);
     }
 
     /**
@@ -21,6 +50,8 @@ public class RangeInfo implements RangeUtil {
     public RangeInfo(long length) {
     	this(length, Properties.RANGE_POOL_NUM);
     }
+    
+    
     public RangeInfo(long length, int rangeCount) {
         fileLength = length;
         initRange(rangeCount);

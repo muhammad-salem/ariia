@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.okaria.R;
 import org.okaria.okhttp.OkUtils;
 
 import okhttp3.Cookie;
@@ -269,7 +270,12 @@ public class Argument {
 	}
 	
 	public String getSavePath() {
-		return dictionary.get(TerminalArgument.SavePath);
+		String sp = dictionary.get(TerminalArgument.SavePath);
+		if(sp != null) {
+			if(sp.startsWith("~"))
+				sp = sp.replaceFirst("~", R.UserHome);
+		}
+		return sp;
 	}
 	
 	public String getCheckFile() {
@@ -279,11 +285,51 @@ public class Argument {
 		return dictionary.get(TerminalArgument.ChunkSize);
 	}
 	
-	public int getChunkSizeInt() {
+	public int parseChunkSize() {
 		try {
 			return Integer.parseInt(getChunkSize());
 		} catch (NumberFormatException e) {
-			return 1;
+			return -1;
+		}
+	}
+	
+	public String getDownloadPieces() {
+		return dictionary.get(TerminalArgument.DownloadPieces);
+	}
+	public int[] parseDownloadPieces() {
+		String pices = getDownloadPieces();
+		if(pices.startsWith("/") || pices.startsWith("file://")) {
+			List<String> list = OkUtils.readLines(pices);
+			
+//			List<Integer> indexs = new LinkedList<>();
+//			Iterator<String> iterator =  list.iterator();
+//			while (iterator.hasNext()) {
+//				String num = (String) iterator.next();
+//				try {
+//					Integer i = Integer.parseInt(num);
+//					indexs.add(i);
+//				} catch (Exception e) {
+//					continue;
+//				}
+//			}
+//			return (Integer[]) indexs.toArray(new Integer[indexs.size()]);
+			
+			int[] indexs = new int[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+				try {
+					indexs[i] = Integer.parseInt(list.get(i));
+				} catch (Exception e) {
+					indexs[i] = -1;
+				}
+			}
+			return indexs;
+		}else {
+			String temp [] = pices.split(" ");
+			int[] indexs = new int[temp.length];
+			for (int i = 0; i < temp.length; i++) {
+				indexs[i] = Integer.parseInt(temp[i]);
+			}
+			return indexs;
 		}
 	}
 	
@@ -401,10 +447,15 @@ public class Argument {
 	public boolean isCheckFile() {
 		return is(TerminalArgument.CheckFile);
 	}
-	
 	public boolean isChunkSize() {
 		return is(TerminalArgument.ChunkSize);
 	}
+	public boolean isDownloadPieces() {
+		return is(TerminalArgument.DownloadPieces);
+	}
+	
+	
+	
 	
 	public boolean isHelp() {
 		return is(TerminalArgument.Help);

@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
 
-public interface ClientChannelWriter extends ClinetWriter{
+public interface ClientChannelWriter extends ClinetWriter {
 	
 	
 	default void write(InputStream source, RandomAccessFile destination, long[] ranges, boolean stream) throws IOException {

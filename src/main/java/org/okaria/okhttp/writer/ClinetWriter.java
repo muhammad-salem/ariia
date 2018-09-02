@@ -26,11 +26,21 @@ public interface ClinetWriter {
 		}else if (response.code() == 416) {			// error state
 			return;
 		}
-		write(response.body().byteStream(), destination, ranges, monitors);
+		
+		InputStream source = MonitorInputStreamWrapper.wrap(response.body().byteStream(), monitors);
+		
+//		String encoding = response.header("Content-Encoding", "");
+//		if( ! encoding.isEmpty()) {
+//			if(encoding.equals("gzip")) {
+//				source = new GZIPInputStream(source);
+//			}
+//		}
+		write(source, destination, ranges, false);
 	}
 	
 	default void write(InputStream source, RandomAccessFile destination, long[] ranges, SpeedMonitor... monitors)
 			throws IOException {
+		
 		write(source, destination, ranges, true, monitors);
 	}
 	

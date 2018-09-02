@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
@@ -16,6 +18,7 @@ import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.range.RangeUtil;
 import org.okaria.segment.Segment;
 import org.okaria.segment.Segment.OfferSegment;
+import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 
 public abstract class ItemMetaData implements OfferSegment, Closeable {
@@ -23,22 +26,28 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	protected Item item;
 	protected RangeUtil info;
 	protected List<Future<?>> futures;
+	
 	protected boolean downloading = false;
 	protected OneRangeMointor rangeMointor;
 	
 	protected RandomAccessFile raf;
-
-	private ConcurrentLinkedQueue<Segment> segments;
-	private ConcurrentLinkedQueue<Segment> segmentBackup;
+	private   ConcurrentLinkedQueue<Segment> segments;
 	
 	public ItemMetaData(Item item) {
 		this.item = item;
 		this.info = item.rangeInfo;
-		this.rangeMointor	= new OneRangeMointor(item);
+		this.rangeMointor	= new OneRangeMointor(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
-		this.segmentBackup	= new ConcurrentLinkedQueue<>();
 		initRandomAccessFile();
+		initMetaData();
 	}
+	
+	protected abstract void    initMetaData();
+	protected abstract boolean writeSegment(Segment segment) ;
+	public    abstract void    forceUpdate();
+//	public    abstract void    clearFile();
+	
+	
 	/**
 	 * @param item
 	 */
@@ -55,6 +64,14 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		
 	}
 	
+	public boolean isClose() {
+		return !raf.getChannel().isOpen();
+	}
+	
+	public boolean isOpen() {
+		return raf.getChannel().isOpen();
+	}
+	
 	@Override
 	public void close() {
 		try {
@@ -63,6 +80,55 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 		}
 	}
+	
+	@Override
+	public void offerSegment(Segment segment) {
+		if(segment.buffer.remaining() == 0 ) {
+			releaseSegment(segment);
+			return;
+		}
+		segments.add(segment);
+		info.addStartOfIndex(segment.index, segment.buffer.limit());
+	}
+	
+	public synchronized void systemFlush() {
+		if(segments.isEmpty()) return;
+		flush(segments);
+		System.out.print("...");
+	}
+	
+	private void  flush(Queue<Segment> queue) {
+		StringBuilder report = new StringBuilder();
+		Segment segment;
+		while (!queue.isEmpty()) {
+			segment = queue.peek();
+			if(segment == null) break;
+			if(writeSegment(segment)) {
+				report.append(segment.toString());
+				report.append('\n');
+				queue.poll();
+				releaseSegment(segment);
+			}else {
+				// check raf is opened
+				if(raf == null || isClose() ) {
+					initRandomAccessFile();
+					initMetaData();
+				}
+			}
+		}
+		
+		saveItem2CacheFile();
+		forceUpdate();
+		
+		if(report.length() > 0)
+			Log.trace(getClass(), "flush segments", report.toString());
+	}
+	
+	
+	public int segmentSize() {
+		return segments.size();
+	}
+
 	@Override
 	public long startOfIndex(int index) {
 		return info.startOfIndex(index);
@@ -71,37 +137,6 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	public long limitOfIndex(int index) {
 		return info.limitOfIndex(index);
 	}
-	
-	@Override
-	public void offerSegment(Segment segment) {
-		segments.add(segment);
-		info.addStartOfIndex(segment.index, segment.buffer.limit());
-	}
-	
-	public void systemFlush() {
-		if(segments.isEmpty()) return;
-		
-		synchronized (segments) {
-//			ConcurrentLinkedQueue<Segment> segmentQueue;
-//			segmentQueue = segments;
-//			segments = segmentBackup;
-//			segmentBackup = segmentQueue;
-			while (!segments.isEmpty()) {
-				try {
-					segmentBackup.add(segments.remove());
-				} catch (Exception e) {
-					break;
-				}
-			}
-		}
-		flush(segmentBackup);
-	}
-	protected abstract void flush(ConcurrentLinkedQueue<Segment> segmentQueue);
-	
-	public int segmentSize() {
-		return segments.size();
-	}
-	
 
 	public Item getItem() {
 		return item;
@@ -142,8 +177,9 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	
 	public void pause() {
 		setPause();
+		check();
 		for (Future<?> future : futures) {
-			if(future.isDone()) continue;
+			if(future.isDone() || future.isCancelled()) continue;
 			future.cancel(true);
 		}
 	}
@@ -165,7 +201,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	}
 	
 	
-	public void checkDoneFuturesFromMax(DownloadPlane plane, SpeedMonitor... monitors) {
+	public void recycelCompletedFromMax2(DownloadPlane plane, SpeedMonitor... monitors) {
 		check();
 		for (int index = 0; index < info.getRangeCount(); index++) {
 			if (info.isFinish(index)) {
@@ -178,11 +214,108 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		}
 	}
 	
-	public void download(DownloadPlane plane, SpeedMonitor... monitors) {
+	
+	
+	public void download2(DownloadPlane plane, SpeedMonitor... monitors) {
 		R.mkParentDir(item.path());
 		futures = plane.download(this, rangeMointor, monitors);
 		setDownloading();
 	}
+	
+	private ConcurrentLinkedQueue<Integer> download = new ConcurrentLinkedQueue<>();
+	private ConcurrentLinkedQueue<Integer> waitting = new ConcurrentLinkedQueue<>();
+	
+	public void downloadThreads(DownloadPlane plane, SpeedMonitor... monitors) {
+		
+		int count = info.getRangeCount();
+		if (count == 0) return;
+		else if (count <= 10 || info.limitOfIndex(count-1) != info.getFileLength()) {
+			for (int index = 0; index < count; index++) {
+				if (! info.isFinish(index)) {
+					waitting.add(index);
+				}
+			}
+		}else {
+			
+			for (int index = count-1, i = 0; i < 4; i++) {
+				if (! info.isFinish(index-i)) {
+					waitting.add(index-i);
+				}
+			}
+			
+			for (int index = 0; index < count - 4; index++) {
+				if (! info.isFinish(index)) {
+					waitting.add(index);
+				}
+			}
+			
+			
+		}
+		
+		
+//		for (int index = 0; index < info.getRangeCount(); index++) {
+//			if (! info.isFinish(index)) {
+//				waitting.add(index);
+//			}
+//		}
+		R.mkParentDir(item.path());
+		futures = new LinkedList<Future<?>>();
+		downloadAction(plane, monitors);
+		setDownloading();
+	}
+
+	/**
+	 * @param plane
+	 * @param monitors
+	 */
+	protected void downloadAction(DownloadPlane plane, SpeedMonitor... monitors) {
+		
+		while ( download.size() <= Properties.RANGE_POOL_NUM & ! waitting.isEmpty()) {
+			if ( ! downloadFirstInIndex(plane , monitors) ) break;
+		}
+		
+//		if(download.size() == Properties.RANGE_POOL_NUM) return;
+		
+//		if(download.size() < Properties.RANGE_POOL_NUM & waitting.isEmpty()) {
+//			for ( int markIndex = 0; markIndex < info.getRangeCount(); markIndex++) {
+//				if ( info.isFinish(markIndex)) {
+//					int maxIndex = info.updateIndexFromMaxRange(markIndex);
+//					if (maxIndex > -1 & maxIndex < info.getRangeCount()) {
+//						waitting.add(markIndex);
+//					}
+//				}
+//			}
+//			return;
+//		}
+		
+		//downloadAction(plane, monitors);
+	}
+
+	/**
+	 * @param plane
+	 * @param monitors
+	 */
+	protected boolean downloadFirstInIndex(DownloadPlane plane,
+			SpeedMonitor... monitors) {
+		Integer index = waitting.poll();
+		if(index == null) return false;
+		downloadPart(plane, index, monitors);
+		download.add(index);
+		return true;
+	}
+	
+	public void checkCompleted(DownloadPlane plane, SpeedMonitor... monitors) {
+		check();
+		Iterator<Integer> iterator = download.iterator();
+		while (iterator.hasNext()) {
+			Integer index = (Integer) iterator.next();
+			if ( info.isFinish(index) ){
+				iterator.remove();
+			}
+		}
+		downloadAction(plane, monitors);
+	}
+	
 	
 	public void downloadPart(DownloadPlane plane, int index, SpeedMonitor... monitors) {
 		Future<?>  future= plane.downloadPart(this, index, rangeMointor, monitors);

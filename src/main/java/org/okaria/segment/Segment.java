@@ -18,8 +18,8 @@ public class Segment /* implements Comparable<Segment>*/{
 	}
 	
 	/**
-	 * have to flip buffer before call this fun
-	 * make sure limit had been set to current poision
+	 * had to flip buffer before call this fun
+	 * to make sure limit had been set to current position
 	 * @return
 	 */
 	public Segment nextSegment() {
@@ -32,7 +32,6 @@ public class Segment /* implements Comparable<Segment>*/{
 		long limitOfIndex(int index);
 		default void releaseSegment(Segment segment) {
 			ByteBufferPool.release(segment.buffer);
-			segment.buffer = null;
 		}
 	}
 	

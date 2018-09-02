@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
@@ -18,10 +16,9 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
 	protected FileChannel  channel;
 	public SimpleMappedMetaDataWriter(Item item) {
 		super(item);
-		initMetaData();
 	}
-	
-	private void initMetaData(){
+	@Override
+	protected void initMetaData() {
 		channel = raf.getChannel();
 		try {
 			mappedBuffer = channel.map(MapMode.READ_WRITE, 0, raf.length());
@@ -29,37 +26,42 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
 			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 		}
 	}
-
+	
 	@Override
-	protected void flush(ConcurrentLinkedQueue<Segment> segmentQueue){
-		
-		Iterator<Segment> iterator =  segmentQueue.iterator();
-		StringBuilder report = new StringBuilder();
-		while (iterator.hasNext()) {
-			Segment segment = (Segment) iterator.next();
-			try {
-				
-				mappedBuffer.position((int)segment.start);
+	protected boolean writeSegment(Segment segment) {
+		try {
+			mappedBuffer.position((int)segment.start);
+			while (segment.buffer.hasRemaining()) {
 				mappedBuffer.put(segment.buffer);
-				
-				report.append(segment.toString());
-				report.append('\n');
-			} catch (Exception e) {
-				Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
-//				if(raf != null) close();
-//				initRandomAccessFile();
-//				if(raf == null) return;
-//				channel = raf.getChannel();
-//				continue;		// could lead to infint loop 
 			}
-			
-			releaseSegment(segment);
-			iterator.remove();
+			return true;
+		} catch (Exception e) {
+			Log.error(getClass(), "flush data to file ", item.path() + '\n' + e);
+			return false;
 		}
+	}
+	
+	@Override
+	public void forceUpdate() {
 		mappedBuffer.force();
-		if(report.length() > 0)
-			Log.trace(getClass(), "flush segments", report.toString());
-		//saveItem2CacheFile();
+	}
+
+	
+//	@Override
+//	public void clearFile() {
+//		mappedBuffer.position(0);
+//		int segment = mappedBuffer.capacity() > 2028098 ? 2028098 : 1;
+//		for (int pos = 0; pos < mappedBuffer.capacity(); pos += segment) {
+//			mappedBuffer.put((byte)0);
+//		}
+//		mappedBuffer.force();
+//	}
+	
+	
+	@Override
+	public void close() {
+		mappedBuffer.force();
+		super.close();
 	}
 
 }

@@ -19,6 +19,8 @@ import org.okaria.manager.ItemStore;
 import org.okaria.mointors.SimpleSessionMointor;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.client.SegmentClient;
+import org.okaria.okhttp.writer.ChannelMetaDataWriter;
+import org.okaria.okhttp.writer.StreamMetaDataWriter;
 import org.okaria.range.RangeUtil;
 import org.okaria.setting.Properties;
 
@@ -83,31 +85,43 @@ public abstract class ServiceManager implements Closeable {
 
 	@Override
 	public void close() {
-		for (ItemMetaData metaData : downloadingList) {
-			metaData.close();
-		}
-		for (ItemMetaData metaData : wattingList) {
-			metaData.close();
-		}
+		client.getExecutorService().shutdown();
 		scheduledService.shutdown();
 	}
 	
-//	public void warrpItem(Item item) {
-//		sessionMointor.add(item.getRangeInfo());
-//		wattingList.add(new ItemMetaData(item));
-//	}
+	
+	public void warrpItem(Item item) {
+		RangeUtil range = item.getRangeInfo();
+		sessionMointor.add(range);
+		ItemMetaData metaData = null;
+		if(range.isStreaming()) {
+			metaData = new StreamMetaDataWriter(item);
+		}
+		else {
+			metaData = new ChannelMetaDataWriter(item);
+		}
+		
+//		else if(Integer.MAX_VALUE  > range.getFileLength()) {
+//			metaData = new SimpleMappedMetaDataWriter(item);
+//		}else {
+//			metaData = new LargeMappedMetaDataWriter(item);
+//		}
+		
+		range.oneCycleDataUpdate();
+		wattingList.add(metaData);
+	}
 	
 	protected void checkdownloadList() {
 		if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
 			StringBuilder builder = new StringBuilder();
 			while (downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL && !wattingList.isEmpty()) {
-				ItemMetaData placeHolder = wattingList.poll();
-				downloadingList.add(placeHolder);
-				addDownloadItemEvent(placeHolder);
-				placeHolder.getItem().getRangeInfo().oneCycleDataUpdate();
-				builder.append(placeHolder.getItem().getFilename());
+				ItemMetaData metaData = wattingList.poll();
+				downloadingList.add(metaData);
+				addDownloadItemEvent(metaData);
+				metaData.getItem().getRangeInfo().oneCycleDataUpdate();
+				builder.append(metaData.getItem().getFilename());
 				builder.append('\t');
-				builder.append( placeHolder.getItem().getRangeInfo().getRemainingLengthMB());
+				builder.append( metaData.getItem().getRangeInfo().getRemainingLengthMB());
 				builder.append(' ');
 				builder.append('\n');
 			}
@@ -119,49 +133,63 @@ public abstract class ServiceManager implements Closeable {
 		
 		
 		List<ItemMetaData> removeList = new ArrayList<>();
-		for (ItemMetaData placeHolder : downloadingList) {
-			Item item = placeHolder.getItem();
+		for (ItemMetaData metaData : downloadingList) {
+			Item item = metaData.getItem();
 			RangeUtil info = item.getRangeInfo();
 			if (info.isFinish()) {
 				Log.info(getClass(), "Remove Item from download list", item.getFilename());
-				removeList.add(placeHolder);
+				removeList.add(metaData);
 				continue;
-			}else if(! placeHolder.isDownloading()) {
-				placeHolder.download(client, sessionMointor/*, indictor.getItemMointor()*/);
+			}else if(! metaData.isDownloading()) {
+//				metaData.download(client, sessionMointor);
+				metaData.downloadThreads(client, sessionMointor);
 			}
-			placeHolder.checkDoneFuturesFromMax(client, sessionMointor/*, indictor.getItemMointor()*/);
+//			metaData.recycelCompletedFromMax(client, sessionMointor);
+			metaData.checkCompleted(client, sessionMointor);
 			
 		}
 		
 		// remove 
-		removeList.forEach((placeHolder)->{
-			placeHolder.getItem().getRangeInfo().oneCycleDataUpdate();
-			placeHolder.systemFlush();
-			Log.info(getClass(), "Download Complete", placeHolder.getItem().liteString());
-			downloadingList.remove(placeHolder);
-			removeDownloadItemEvent(placeHolder);
-			placeHolder.saveItem2CacheFile();
-			placeHolder.close();
+		removeList.forEach((metaData)->{
+			metaData.getItem().getRangeInfo().oneCycleDataUpdate();
+			metaData.systemFlush();
+			Log.info(getClass(), "Download Complete", metaData.getItem().liteString());
+			downloadingList.remove(metaData);
+			removeDownloadItemEvent(metaData);
+			metaData.saveItem2CacheFile();
+			metaData.close();
 		});
 		
 		if (downloadingList.isEmpty() & wattingList.isEmpty()) {
-			getEmptyQueueEvent().run();
+			getFinishDownloadQueueEvent().run();
 		}
 	}
 
 	protected abstract Class<? extends Client> getClientClass();
-	protected abstract void printReport();
+	public    abstract void printReport();
 	protected abstract void systemFlushData();
 	protected abstract void saveWattingItemToDisk();
 	protected abstract void saveDownloadingItemToDisk();
 	protected abstract void addDownloadItemEvent(ItemMetaData holder);
 	protected abstract void removeDownloadItemEvent(ItemMetaData holder);
 	
-	public abstract Runnable getEmptyQueueEvent();
-	public abstract void getSystemShutdownHook();
+	public abstract Runnable getFinishDownloadQueueEvent();
+	
 	public abstract void startScheduledService();
 	
-	public abstract void warrpItem(Item item);
+	public void runSystemShutdownHook() {
+		for (ItemMetaData metaData : downloadingList) {
+			metaData.systemFlush();
+			metaData.close();
+		}
+		for (ItemMetaData metaData : wattingList) {
+			metaData.saveItem2CacheFile();
+			metaData.close();
+		}
+//		printReport();
+	}
+	
+	
 	
 	public ScheduledExecutorService getCheduledService() {
 		return scheduledService;

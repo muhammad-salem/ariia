@@ -179,6 +179,18 @@ public class SubRange {
 		range[1] = end;
 		return range;
 	}
+	
+	 public static long[][] split(long[] arr, int numOfParts, int offest) {
+		 long[][] temp =  subrange(arr[0], arr[1], numOfParts);
+		 for (int i = 0; i < temp.length-1; i++) {
+			 if(temp[i][1] > offest) {
+				 temp[i][1]   += offest;
+				 temp[i+1][0] -= offest;
+			 }
+			
+		}
+		 return temp;
+	    }
 
     public static long[][] split(long[] arr, int numOfParts) {
         return subrange(arr[0], arr[1], numOfParts);
@@ -207,6 +219,40 @@ public class SubRange {
 		}
 		ranges[numOfParts - 1][1] = endByte;
 		return ranges;
+	}
+	
+	public static long[][] rangeChunk(long startByte, long endByte) {
+		long length = endByte - startByte;
+		if (length > 104857600) {		// 100MB
+			return rangeChunk(startByte, endByte, 2097152);
+		}
+		else if (length > 10485760) {	// 10MB
+			return rangeChunk(startByte, endByte, 1048576);
+		}
+		else if (length > 5242880){		//5M
+			return rangeChunk(startByte, endByte, 524288);
+		}
+		else if (length >= 628384){		//0.59M
+			return subrange(startByte, endByte, 8);
+		}
+		else{
+			return new long[][] {subrange(startByte, endByte)};
+		}
+		
+	}
+	
+	public static long[][] rangeChunk(long startByte, long endByte, final int chunkLength) {
+		long length = endByte - startByte;
+		int count = (int)(length / chunkLength) + ((int)(length%chunkLength) > 0 ? 1:0);
+		long[][] range = new long[count][2];
+		range[0][0] = startByte;
+		range[0][1] = startByte + chunkLength;
+		for (int index = 1; index < count; index++) {
+			range[index][0] = range[index-1][1];
+			range[index][1] = range[index][0] + chunkLength;
+		}
+		range[count-1][1] = endByte;
+		return range;
 	}
 
 	

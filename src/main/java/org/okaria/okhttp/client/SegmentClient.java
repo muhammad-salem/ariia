@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.okhttp.queue.StreamOrder;
+import org.okaria.okhttp.queue.ThreadOrder;
 import org.okaria.okhttp.request.ClientRequest;
 import org.okaria.okhttp.response.SegmentResponse;
 import org.okaria.okhttp.writer.SegmentWriter;
@@ -17,7 +18,7 @@ import org.okaria.speed.SpeedMonitor;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
 
-public class SegmentClient extends Client implements SegmentResponse, StreamOrder  {
+public class SegmentClient extends Client implements SegmentResponse, StreamOrder, ThreadOrder  {
 	SegmentWriter segmentWriter;
 	ExecutorService executor;
 
@@ -50,19 +51,19 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 	}
 
 	@Override
-	public Future<?> downloadPart(ItemMetaData placeHolder, int index,
+	public Future<?> downloadPart(ItemMetaData metaData, int index,
 			SpeedMonitor... monitors) {
 		if (Properties.RETRIES == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
 				while (!finsh) {
-					finsh = downloadTask(placeHolder, index, monitors);
+					finsh = downloadTask(metaData, index, monitors);
 				}
 			});
 		}else {
 			return executor.submit(() -> {
 				for (int i = 0; i < Properties.RETRIES; i++) {
-					if(downloadTask(placeHolder, index, monitors)) {
+					if(downloadTask(metaData, index, monitors)) {
 						break;
 					}
 				}
@@ -76,6 +77,10 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 	@Override
 	public SegmentWriter getSegmentWriter() {
 		return segmentWriter;
+	}
+	@Override
+	public ExecutorService getExecutorService() {
+		return executor;
 	}
 
 }

@@ -18,13 +18,11 @@ import okhttp3.internal.http2.Header;
 public class Item {
 	
 	protected String url;
-	protected String redirectUrl;
 	protected String referer;
 	protected String useragent;
 	protected String filename;
 	protected String folder;
 	protected String cacheFile;
-	protected boolean redirect;
 	protected Map<String, String> headers;
 	protected List<Cookie> cookies;
 	protected RangeInfo rangeInfo;
@@ -59,23 +57,6 @@ public class Item {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	
-
-	public void setRedirectUrl(String redirectUr) {
-		this.redirectUrl = redirectUr;
-	}
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-	
-	public String updateUrl() {
-		return redirect ? getRedirectUrl() : getUrl();
-	}
-
-	public HttpUrl getUpdateUrl() {
-		return HttpUrl.parse(updateUrl());
-	}
-
 
 	public RangeInfo getRangeInfo() {
 		return rangeInfo;
@@ -169,19 +150,12 @@ public class Item {
 	}
 
 	public void addCookies(Cookie cookie) {
-		for (Cookie oldCookie : cookies) {
-			if(oldCookie.equals(cookie))
-				return;
-		}
-		this.cookies.add(cookie);
+		if(!this.cookies.contains(cookie)) this.cookies.add(cookie);
 	}
 	
 
 	public void addCookies(List<Cookie> cookies) {
-		cookies.forEach(cok->{
-			addCookies(cok);
-		});
-		//this.cookies.addAll(cookies);
+		cookies.forEach(cookie->{addCookies(cookie);});
 	}
 	
 	public String getFolder() {
@@ -215,8 +189,7 @@ public class Item {
 	public String toString() {
 		StringBuilder builder = new StringBuilder(liteString());
 		builder.append('\n');
-		builder.append("Redirect : " + redirect);
-		builder.append(",\tHeaders Size : " + headers.size() );
+		builder.append("Headers Size : " + headers.size() );
 		builder.append(",\tCookies Size : " + cookies.size() );
 		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
 		builder.append('\n');
@@ -249,7 +222,6 @@ public class Item {
 				&& this.filename.equals(item.filename)
 				&& this.folder.equals(item.folder)
 				&& this.cacheFile.equals(item.cacheFile)
-				&& this.redirect == item.redirect
 				&& this.headers.equals(item.headers)
 				&& this.cookies.equals(item.cookies)
 				&& this.rangeInfo.equals(item.rangeInfo);
@@ -275,34 +247,33 @@ public class Item {
 		this.referer = referer;
 	}
 	
-	public boolean isRedirect() {
-		return redirect;
-	}
-
-	public void setRedirect() {
-		this.setRedirect(true);
-	}
-	public void setRedirect(boolean redirect) {
-		this.redirect = redirect;
-	}
-	
 	
 	
 	public Item copy() {
 		Item item = new Item();
 		if(url != null ) item.url = new String(this.url);
-		if(redirectUrl != null ) item.redirectUrl = new String(this.redirectUrl);
 		if(referer != null ) item.referer = new String(this.referer);
 		if(useragent != null ) item.useragent = new String(this.useragent);
 		if(filename != null ) item.filename = new String(this.filename);
 		if(folder != null ) item.folder = new String(this.folder);
 		if(cacheFile != null ) item.cacheFile = new String(this.cacheFile);
-		item.redirect = redirect ? true : false;
 		item.headers = new HashMap<String, String>(this.headers);
 		item.cookies = new LinkedList<>(this.cookies);
-		if(referer != null ) item.rangeInfo = new RangeInfo(this.rangeInfo.getFileLength());
+		if(rangeInfo != null ) item.rangeInfo = new RangeInfo(this.rangeInfo.getFileLength());
 		
 		return item;
+	}
+	
+	public void copy(Item item) {
+		this.url = item.url;
+		this.referer = item.referer;
+		this.useragent = item.useragent;
+		this.filename = item.filename;
+		this.folder = item.folder;
+		this.cacheFile = item.cacheFile;
+		this.headers = item.headers;
+		this.cookies = item.cookies;
+		this.rangeInfo = item.rangeInfo;
 	}
 
 }

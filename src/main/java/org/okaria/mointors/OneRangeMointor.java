@@ -1,28 +1,30 @@
 package org.okaria.mointors;
 
 import org.okaria.Utils;
-import org.okaria.manager.Item;
 import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
 
 public class OneRangeMointor extends SpeedMonitor {
-
-//	protected long timer = 0;
-	protected Item item;
 	
 	protected RangeUtil info;
+	protected String    name;
 	
-	public OneRangeMointor(Item item) {
-		this.item = item;
-		this.info = item.getRangeInfo();
+	
+	public OneRangeMointor(RangeUtil info, String name) {
+		this.info = info;
+		this.name = name;
 	}
 	
-	public Item getItem() {
-		return item;
+	public String getName() {
+		return name;
 	}
-	public void updatedata() {
+	
+	public RangeUtil getRangeUtil() {
+		return info;
+	}
+	
+	public void updateData() {
 		info.oneCycleDataUpdate();
-//		timer++;
 	}
 
 	public long getTotalLength() {

@@ -5,9 +5,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
@@ -36,11 +34,11 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 	Map<Pair, MappedByteBuffer> mappedBuffers;
 	public LargeMappedMetaDataWriter(Item item) {
 		super(item);
-		this.mappedBuffers = new HashMap<>();
-		initMetaData();
 	}
 	
-	private void initMetaData(){
+	@Override
+	protected void initMetaData() {
+		this.mappedBuffers = new HashMap<>();
 		FileChannel  channel = raf.getChannel();
 		long length = info.getFileLength();
 		for (long pos = 0; pos < length; ) {
@@ -75,36 +73,63 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 		}
 		return null;
 	}
-	protected void forceAllMappedByteBuffers() {
+	
+	@Override
+	public void forceUpdate() {
 		mappedBuffers.forEach((d,m)->{m.force();});
+	}
+	
+
+	/**
+	 * @param report
+	 * @param segment
+	 * @return 
+	 */
+	protected boolean writeSegment(Segment segment) {
+		MappedData data = getMappedDataOfPosition(segment.start);
+		if(data == null) return false;
+		try {
+			data.mappedBuffer.position(data.start);
+			while (segment.buffer.hasRemaining()) {
+			data.mappedBuffer.put(segment.buffer);
+			}
+			return true;
+		} catch (Exception e) {
+			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+			return false;
+		}
+	}
+	
+	
+	
+//	/**
+//	 * will wipe data in this file 
+//	 * all the data will be zero
+//	 */
+//	@Override
+//	public void clearFile() {
+//		synchronized(mappedBuffers) {
+//			mappedBuffers.forEach((d,m)->{clearMapped(m);});
+//			forceUpdate();
+//		}
+//	}
+
+	/**
+	 * @param buffer
+	 */
+	protected void clearMapped(MappedByteBuffer buffer) {
+		buffer.position(0);
+		int segment = buffer.capacity() > 2028098 ? 2028098 : 1;
+		for (int pos = 0; pos < buffer.capacity(); pos += segment) {
+			buffer.put((byte)0);
+		}
 	}
 	
 	
 	@Override
-	protected void flush(ConcurrentLinkedQueue<Segment> segmentQueue) {
-		Iterator<Segment> iterator =  segmentQueue.iterator();
-		StringBuilder report = new StringBuilder();
-		while (iterator.hasNext()) {
-			Segment segment = (Segment) iterator.next();
-			MappedData data = getMappedDataOfPosition(segment.start);
-			try {
-				data.mappedBuffer.position(data.start);
-				data.mappedBuffer.put(segment.buffer);
-				report.append(segment.toString());
-				report.append('\n');
-			} catch (Exception e) {
-				Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
-			}
-			
-			releaseSegment(segment);
-			iterator.remove();
-		}
-		forceAllMappedByteBuffers();
-		if(report.length() > 0)
-			Log.trace(getClass(), "flush segments", report.toString());
-		//saveItem2CacheFile();
+	public void close() {
+		forceUpdate();
+		super.close();
 	}
-	
-	
 
 }

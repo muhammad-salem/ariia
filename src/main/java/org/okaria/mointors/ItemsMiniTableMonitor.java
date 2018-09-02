@@ -12,27 +12,27 @@ import org.terminal.strings.StyleBuilder;
 
 /**
  * <pre>
-┌─┬──────────────────────────────────┬────────────────┬──────────────┐
-│#│         Name                     │ Complete/Rmain │  Down/Speed  │
-├─┼──────────────────────────────────┼────────────────┼──────────────┤
+┌─┬──────────────────────────────────┬─────────────────┬──────────────┐
+│#│         Name                     │ Complete/Remain │  Down/Speed  │
+├─┼──────────────────────────────────┼─────────────────┼──────────────┤
 
-│1│ debian-live-9.5.0-amd64-kde.iso  │     2.083 GB   │   104.40 MB  │
+│1│ debian-live-9.5.0-amd64-kde.iso  │     2.083 GB    │   104.40 MB  │
 
-│ │     2.412 GB   -   (86.354 %)    │   337.093 MB   │  14.81 KB/s  │
+│ │     2.412 GB   -   (86.354 %)    │   337.093 MB    │  14.81 KB/s  │
 
-├─┼──────────────────────────────────┼────────────────┼──────────────┤
+├─┼──────────────────────────────────┼─────────────────┼──────────────┤
 
-│2│ debian-live-9.5.0-amd64-kde.iso  │     2.083 GB   │   104.40 MB  │
+│2│ debian-live-9.5.0-amd64-kde.iso  │     2.083 GB    │   104.40 MB  │
 
-│ │     2.412 GB   -   (86.354 %)    │   337.093 MB   │  14.81 KB/s  │
+│ │     2.412 GB   -   (86.354 %)    │   337.093 MB    │  14.81 KB/s  │
 
-├─┼──────────────────────────────────┼────────────────┼──────────────┤
+├─┼──────────────────────────────────┼─────────────────┼──────────────┤
 
-│#│           Session (2)            │     2.083 GB   │   104.40 MB  │
+│#│           Session (2)            │     2.083 GB    │   104.40 MB  │
 
-│ │     2.412 GB       (86.354 %)    │   337.093 MB   │  14.81 KB/s  │
+│ │     2.412 GB       (86.354 %)    │   337.093 MB    │  14.81 KB/s  │
 
-└─┴──────────────────────────────────┴────────────────┴──────────────┘
+└─┴──────────────────────────────────┴─────────────────┴──────────────┘
  * </pre>
  * @author salem
  *
@@ -64,12 +64,12 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		borderStyle.bold().color(22, 200, 44);
 		
 		this.header = borderStyle.build(
-				"┌─┬─────────────────────────────────────────┬────────────────┬──────────────┐\n" + 
-				"│#│                   Name                  │ Complete/Rmain │  Speed/Down  │\n");
+				"┌─┬─────────────────────────────────────────┬─────────────────┬──────────────┐\n" + 
+				"│#│                   Name                  │ Complete/Remain │  Speed/Down  │\n");
 		this.midBorder = borderStyle.build(
-				"├─┼─────────────────────────────────────────┼────────────────┼──────────────┤\n");
+				"├─┼─────────────────────────────────────────┼─────────────────┼──────────────┤\n");
 		this.fotter 	= borderStyle.build(
-				"└─┴─────────────────────────────────────────┴────────────────┴──────────────┘");
+				"└─┴─────────────────────────────────────────┴─────────────────┴──────────────┘");
 		
 		StringBuilder builder = new StringBuilder();
 		builder.append(borderStyle.build("│"));
@@ -77,7 +77,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		builder.append(borderStyle.build("│"));
 		builder.append(dataStyle.get(1).build("{1}"));		// w = 41
 		builder.append(borderStyle.build("│"));
-		builder.append(dataStyle.get(2).build("{2}"));		// w = 16
+		builder.append(dataStyle.get(2).build("{2}"));		// w = 18
 		builder.append(borderStyle.build("│"));
 		builder.append(dataStyle.get(3).build("{3}"));		// w = 14
 		builder.append(borderStyle.build("│"));
@@ -90,7 +90,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		builder.append(dataStyle.get(4).build("({5})"));		// w = 10
 		builder.append("    ");
 		builder.append(borderStyle.build("│"));
-		builder.append(dataStyle.get(6).build("{6}"));		// w = 16
+		builder.append(dataStyle.get(6).build("{6}"));		// w = 17
 		builder.append(borderStyle.build("│"));
 		builder.append(dataStyle.get(6).build("{7}"));		// w = 14
 		builder.append(borderStyle.build("│"));
@@ -171,6 +171,9 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 	}
 	
 	private void updateInfo() {
+		for (OneRangeMointor mointor : mointors) {
+			mointor.updateData();
+		}
 		session.rangeInfoUpdateData();
 	}
 	
@@ -181,13 +184,13 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		for (OneRangeMointor mointor : mointors) {
 			Object[] obj = new Object[8];
 			obj[0] = ++index + "";
-			obj[1] = Utils.middleMaxLength(mointor.getItem().getFilename(), 41);
-			obj[2] = Utils.middleMaxLength(mointor.getDownloadLengthMB(), 16);
+			obj[1] = Utils.middleMaxLength(mointor.getName(), 41);
+			obj[2] = Utils.middleMaxLength(mointor.getDownloadLengthMB(), 17);
 			obj[3] = Utils.middleMaxLength(mointor.getSpeedTCPReceiveMB() + "/s", 14);
 			
 			obj[4] = Utils.middleMaxLength(mointor.getTotalLengthMB(), 10);
 			obj[5] = Utils.middleMaxLength(mointor.getPercent(), 10);
-			obj[6] = Utils.middleMaxLength(mointor.getRemainingLengthMB(), 16);
+			obj[6] = Utils.middleMaxLength(mointor.getRemainingLengthMB(), 17);
 			obj[7] = Utils.middleMaxLength(mointor.getTotalReceiveMB(), 14);
 			
 			message.append(midBorder);
@@ -197,12 +200,12 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 			Object[] obj = new Object[8];
 			obj[0] = "#";
 			obj[1] = Utils.middleMaxLength("Session (" + session.size() +")", 41);
-			obj[2] = Utils.middleMaxLength(session.getDownloadLengthMB(), 16);
+			obj[2] = Utils.middleMaxLength(session.getDownloadLengthMB(), 17);
 			obj[3] = Utils.middleMaxLength(session.getSpeedTCPReceiveMB() + "/s", 14);
 			
 			obj[4] = Utils.middleMaxLength(session.getTotalLengthMB(), 10);
 			obj[5] = Utils.middleMaxLength(session.getPercent(), 10);
-			obj[6] = Utils.middleMaxLength(session.getRemainingLengthMB(), 16);
+			obj[6] = Utils.middleMaxLength(session.getRemainingLengthMB(), 17);
 			obj[7] = Utils.middleMaxLength(session.getTotalReceiveMB(), 14);
 			
 			message.append(midBorder);

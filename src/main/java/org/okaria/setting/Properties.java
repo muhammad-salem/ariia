@@ -40,4 +40,6 @@ public final class Properties {
 		MAX_BUFFER_POOL = MAX_ACTIVE_DOWNLOAD_POOL * RANGE_POOL_NUM * 2;
 	}
 
+	
+	
 }

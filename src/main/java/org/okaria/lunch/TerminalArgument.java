@@ -48,6 +48,8 @@ public enum TerminalArgument{
 		
 		CheckFile("-ch", "--check-file"),
 		ChunkSize("-cs", "--chunk-size"),
+		DownloadPieces("-dp", "--download-pieces"),
+		
 		
 		Stream("-st", "--stream"),
 		
@@ -223,11 +225,11 @@ public enum TerminalArgument{
 					return ("check donload file if is complete, and try to complete it");
 				case ChunkSize:
 					return ("length of shunk/segment to check");
-					
+				case DownloadPieces:
+					return ("index of pieces which need download. it could be in formate of string as \"2 52 22 783 \" or a file holding the indexs separited by '\\n'");
 					
 				case Stream:
 					return ("stream URL");
-					
 					
 				case Help:
 					return("print this message");

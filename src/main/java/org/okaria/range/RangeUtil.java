@@ -74,6 +74,7 @@ public interface RangeUtil extends Range {
 	default long remainLengthOf(int index) {
 		return getRange()[index][1] - getRange()[index][0];
 	}
+	
 
 	default boolean isFinish(long[] ls) {
 		return (ls[1] != -1) && (ls[0] - ls[1] >= 0);
@@ -108,11 +109,11 @@ public interface RangeUtil extends Range {
 	
 	default int updateIndexFromMaxRange(int index) {
 		int maxIndex = indexOfMaxRange();
-		if (maxIndex == -1 && maxIndex < getRangeCount())
-			return maxIndex;
-		if (getRemainingLength() < 262144)
+		if (maxIndex == -1 || maxIndex > getRangeCount())
 			return -1;
-		long[][] ls = SubRange.  split(indexOf(maxIndex),2);
+//		else if (remainLengthOf(maxIndex) < 262144)
+//			return -1;
+		long[][] ls = SubRange.  split(indexOf(maxIndex), 2);
 		updateIndex(index, ls[0]);
 		updateIndex(maxIndex, ls[1]);
 		return maxIndex;

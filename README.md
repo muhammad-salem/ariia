@@ -1,4 +1,4 @@
-# okaria  (0.2.24)
+# okaria  (0.2.29)
 
 OKaria is a smart command line download manager.
 
