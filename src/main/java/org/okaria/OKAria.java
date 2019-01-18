@@ -1,7 +1,6 @@
 package org.okaria;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import org.fusesource.hawtjni.runtime.Library;
 import org.fusesource.jansi.AnsiConsole;
@@ -46,7 +45,7 @@ public class OKAria {
 			System.out.println(TerminalArgument.Help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("okaria version \"0.2.24\"");
+			System.out.println("OKaria version \"0.2.3\"");
 			return;
 		}
 		Library lib = new Library("jansi", CLibrary.class);
@@ -58,26 +57,24 @@ public class OKAria {
 		String log_level = arguments.getOrDefault(TerminalArgument.Debug,
 				Level.info.name());
 		Log.level(Level.valueOf(log_level));
-		Log.fine(OKAria.class, "terminal arguments",
-				Arrays.toString(terminals));
+		Log.fine(OKAria.class, "terminal arguments", Arrays.toString(terminals));
 
 		Properties.Config(arguments);
 
 		MiniTableServiceManager manager = MiniTableServiceManager.SegmentServiceManager(arguments.getProxy());
 		manager.startScheduledService();
-		Lunch lunch = new Lunch(manager);
-		lunch.download(arguments);
-		manager.setEmptyQueueRunnable(()->{System.exit(0);});
-		
-		Log.trace(OKAria.class, "Shutdown Hook", "register shutdown thread");
-		
+		Log.trace(OKAria.class, "Set Shutdown Hook Thread", "register shutdown thread");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			manager.getSystemShutdownHook();
-			try {TimeUnit.MILLISECONDS.sleep(600);}catch(Exception e) {}
-			manager.close();
-			System.out.println("\u001B[50B\u001B[0m");
+//			new Thread(manager::runSystemShutdownHook).start();
+			manager.runSystemShutdownHook();
+//			manager.close();
+			manager.printReport();
+			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
 		
+		Lunch lunch = new Lunch(manager);
+		lunch.download(arguments);
+		manager.setFinishDownloadQueueEvent(() ->  System.exit(0));
 
 	}
 

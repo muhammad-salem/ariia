@@ -11,7 +11,7 @@ import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.Response;
 
-public interface SegmentResponse extends DownloadResponse, ContentLength {
+public interface SegmentResponse extends DownloadResponse, ContentLength{
 	
 	SegmentWriter getSegmentWriter();
 	

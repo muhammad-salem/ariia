@@ -220,40 +220,6 @@ public class SubRange {
 		ranges[numOfParts - 1][1] = endByte;
 		return ranges;
 	}
-	
-	public static long[][] rangeChunk(long startByte, long endByte) {
-		long length = endByte - startByte;
-		if (length > 104857600) {		// 100MB
-			return rangeChunk(startByte, endByte, 2097152);
-		}
-		else if (length > 10485760) {	// 10MB
-			return rangeChunk(startByte, endByte, 1048576);
-		}
-		else if (length > 5242880){		//5M
-			return rangeChunk(startByte, endByte, 524288);
-		}
-		else if (length >= 628384){		//0.59M
-			return subrange(startByte, endByte, 8);
-		}
-		else{
-			return new long[][] {subrange(startByte, endByte)};
-		}
-		
-	}
-	
-	public static long[][] rangeChunk(long startByte, long endByte, final int chunkLength) {
-		long length = endByte - startByte;
-		int count = (int)(length / chunkLength) + ((int)(length%chunkLength) > 0 ? 1:0);
-		long[][] range = new long[count][2];
-		range[0][0] = startByte;
-		range[0][1] = startByte + chunkLength;
-		for (int index = 1; index < count; index++) {
-			range[index][0] = range[index-1][1];
-			range[index][1] = range[index][0] + chunkLength;
-		}
-		range[count-1][1] = endByte;
-		return range;
-	}
 
 	
 	public static long[][] mksubrange(long length) {

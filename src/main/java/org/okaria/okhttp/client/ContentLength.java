@@ -3,6 +3,7 @@ package org.okaria.okhttp.client;
 import org.okaria.range.RangeResponseHeader;
 import org.okaria.range.RangeUtil;
 import org.okaria.range.SubRange;
+import org.okaria.setting.Properties;
 
 import okhttp3.Response;
 
@@ -26,9 +27,7 @@ public interface ContentLength {
 		if(range.isStreaming()) {
 			range.indexOf(0)[1] = length;
 			range.updateFileLength(length);
-			
-			if(range.remainLengthOf(0) > 1048576)
-				range.updateRange(SubRange.rangeChunk(range.startOfIndex(0), range.limitOfIndex(0)));
+			range.updateRange(SubRange.subrange(range.startOfIndex(0), range.limitOfIndex(0), Properties.RANGE_POOL_NUM));
 		}else {
 			range.updateFileLength(length);
 		}

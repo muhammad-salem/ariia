@@ -1,4 +1,4 @@
-# okaria  (0.2.29)
+# okaria  (0.2.3)
 
 OKaria is a smart command line download manager.
 
@@ -6,9 +6,9 @@ OKaria is a smart command line download manager.
 ## Dependency
  - okhttp (3.10.0)
  - gson (2.8.4)
- - ansi (0.1.95)
+ - log (0.2.54)
+ - ansi (0.1.96)
  - jansi (1.17.1)
- - log (0.2.53)
 
 ### Options :
  - support HTTP and HTTPS.
@@ -70,6 +70,7 @@ OKaria is a smart command line download manager.
 ### Overview
 
 ![Overview](img/mini-table-01.png)
+![Overview](img/download-speed.png)
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)

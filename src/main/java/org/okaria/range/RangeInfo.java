@@ -1,6 +1,9 @@
 package org.okaria.range;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.okaria.setting.Properties;
 
@@ -25,9 +28,10 @@ public class RangeInfo implements RangeUtil {
     public static RangeInfo RangeInfoByte( long filelength, final int chunkLength) {
     	int count = (int)(filelength / chunkLength) + ((int)(filelength%chunkLength) > 0 ? 1:0);
 		long[][] range = new long[count][2];
-		for (int index = 0; index < range.length; ) {
-			range[index][0] = chunkLength *   index;
-			range[index][1] = chunkLength * ++index;
+		final long longChunk = chunkLength;
+		for (int index = 0; index < range.length; index++ ) {
+			range[index][0] = index * longChunk;
+			range[index][1] = (index+1) * longChunk;
 		}
 		range[count-1][1] = filelength;
 		RangeInfo info = new RangeInfo(filelength, range);

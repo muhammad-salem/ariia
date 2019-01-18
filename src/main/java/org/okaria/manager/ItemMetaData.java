@@ -222,8 +222,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		setDownloading();
 	}
 	
-	private ConcurrentLinkedQueue<Integer> download = new ConcurrentLinkedQueue<>();
-	private ConcurrentLinkedQueue<Integer> waitting = new ConcurrentLinkedQueue<>();
+	private LinkedList<Integer> download = new LinkedList<>();
+	private Queue<Integer> waitting = new LinkedList<>();
 	
 	public void downloadThreads(DownloadPlane plane, SpeedMonitor... monitors) {
 		
@@ -274,7 +274,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 			if ( ! downloadFirstInIndex(plane , monitors) ) break;
 		}
 		
-//		if(download.size() == Properties.RANGE_POOL_NUM) return;
+		if(download.size() == Properties.RANGE_POOL_NUM) return;
 		
 //		if(download.size() < Properties.RANGE_POOL_NUM & waitting.isEmpty()) {
 //			for ( int markIndex = 0; markIndex < info.getRangeCount(); markIndex++) {

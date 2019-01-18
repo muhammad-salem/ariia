@@ -13,6 +13,9 @@ public class RangeInfoTest {
 //		info.range = RangeInfo.StreamOrder(info.range);
 ////		System.out.println(Arrays.deepToString(info.range));
 //		System.out.println(info);
+
+		RangeInfo info = RangeInfo.RangeInfo2M(6629201711l);
+		System.out.println(info);
 	}
 
 }
