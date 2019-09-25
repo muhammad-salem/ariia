@@ -94,7 +94,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	public synchronized void systemFlush() {
 		if(segments.isEmpty()) return;
 		flush(segments);
-		System.out.print("...");
+		System.out.print(".");
 	}
 	
 	private void  flush(Queue<Segment> queue) {

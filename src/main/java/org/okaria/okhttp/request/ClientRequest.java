@@ -204,7 +204,8 @@ public interface ClientRequest {
 	 * @param builder
 	 */
 	default void addCommonHeader(Request.Builder builder) {
-		builder.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+		//builder.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+		builder.addHeader("Accept", "*/*");
         builder.addHeader("Accept-Encoding", "gzip, deflate");
         builder.addHeader("Accept-Language", "en-US,en;q=0.9");
         builder.addHeader("Cache-Control", "no-cache");

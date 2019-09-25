@@ -88,14 +88,28 @@ public class OkUtils {
 	}
 	
 	public static String Filename(HttpUrl httpUrl) {
-		String filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size()-1);
-		if (httpUrl.pathSegments().size() > 2 && filename.equals("") || filename.contains("?") || filename.equals(null) ) {
+		String filename;
+		if (httpUrl.pathSegments().size() == 0){
+		    filename = getFileName(httpUrl.toString(), httpUrl.host());
+		}
+		else {
+		    filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size()-1);
+		}
+		
+		 if (httpUrl.pathSegments().size() > 2 && filename.equals("") || filename.contains("?") || filename.equals(null) ) {
 			filename = httpUrl.pathSegments().get(httpUrl.pathSegments().size() - 2);
 		}
 		if (filename.equals("") || filename.equals(null)) {
-			filename = getFileName(httpUrl.toString());
+			filename = getFileName(httpUrl.toString(), httpUrl.host());
 		}
 		return filename;
+	}
+	public static String getFileName(String url, String defaultName) {
+	    try {
+	        return getFileName(url);
+	    } catch (StringIndexOutOfBoundsException e) {
+	        return defaultName;
+	    } 
 	}
 	public static String getFileName(String url) {
 		URL url2 = null;

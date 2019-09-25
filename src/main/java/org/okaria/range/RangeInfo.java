@@ -27,14 +27,14 @@ public class RangeInfo implements RangeUtil {
     }
     public static RangeInfo RangeInfoByte( long filelength, final int chunkLength) {
     	int count = (int)(filelength / chunkLength) + ((int)(filelength%chunkLength) > 0 ? 1:0);
-		long[][] range = new long[count][2];
+		long[][] rangeArray = new long[count][2];
 		final long longChunk = chunkLength;
-		for (int index = 0; index < range.length; index++ ) {
-			range[index][0] = index * longChunk;
-			range[index][1] = (index+1) * longChunk;
+		for (int index = 0; index < rangeArray.length; ) {
+			rangeArray[index][0] =   index * longChunk;
+			rangeArray[index][1] = ++index * longChunk;
 		}
-		range[count-1][1] = filelength;
-		RangeInfo info = new RangeInfo(filelength, range);
+		rangeArray[count-1][1] = filelength;
+		RangeInfo info = new RangeInfo(filelength, rangeArray);
     	return info;
     }
 	
@@ -42,7 +42,8 @@ public class RangeInfo implements RangeUtil {
 	protected long	downloadLength;
 	protected long  remainingLength;
 	protected long[][]	range;
-	
+	protected long  rangeBase;
+
 	public RangeInfo() {
 		this.fileLength = -1l;
 	    this.range = SubRange.mksubrange(fileLength);

@@ -1,9 +1,0 @@
-{
-  "name": "org.javafx.aria",
-  "description": "Ariafx",
-  "path": "/opt/okaria/okaria",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://gaogianbgnmoompbfkmgnefkbehmeijh/"
-  ]
-}

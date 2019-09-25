@@ -80,7 +80,7 @@ public class MiniTableServiceManager extends ServiceManager {
 		// for each 2 second
 		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
-		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 10, 10, TimeUnit.SECONDS);
+		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 5, 5, TimeUnit.SECONDS);
 //		scheduledService.scheduleAtFixedRate(this::systemFlushData, 10, 10, TimeUnit.SECONDS);
 		
 	}

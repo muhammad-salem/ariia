@@ -179,14 +179,19 @@ public class Lunch {
 				builder = new Item();
 				headers = new LinkedHashMap<>();
 				builder.setUrl(string);
-				builder.setHeaders(headers);
-			} else if (string.startsWith("\t")) {
+			} else if (string.startsWith("\\t") 
+					|| string.startsWith(" ")
+					|| string.startsWith("	")) {
 				if (headers != null) {
 					int index = string.indexOf(": ");
 					headers.put(string.substring(1, index),
 							string.substring(index + 2));
 				}
 
+			} else {
+				if(headers != null) {
+					builder.setHeaders(headers);
+				}
 			}
 		}
 		if (builder != null)
@@ -472,6 +477,7 @@ public class Lunch {
 		} else {
 			//temp.getRangeInfo().avoidMissedBytes();
 			temp.getRangeInfo().checkRanges();
+			temp.addHeaders(item.getHeaders());
 			item.copy(temp);
 		}
 	}
@@ -489,6 +495,7 @@ public class Lunch {
 		}
 
 		manager.warrpItem(item);
+		Item.toJsonFile(item);
 	}
 
 }
