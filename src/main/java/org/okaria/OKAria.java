@@ -45,7 +45,7 @@ public class OKAria {
 			System.out.println(TerminalArgument.Help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("OKaria version \"0.2.34\"");
+			System.out.println("OKaria version \"0.2.35\"");
 			return;
 		}
 		Library lib = new Library("jansi", CLibrary.class);
