@@ -7,7 +7,7 @@ import org.log.concurrent.Log;
 
 public class ByteBufferPool {
 	
-	private static final int BUFFER_SIZE = 512*1024; // AS 512 KB
+	private static final int BUFFER_SIZE = 8*1024; // AS 8 KB
 	private static final int QUEUE_MAX_SIZE = 100;
 	private static ConcurrentLinkedQueue<ByteBuffer> BUFFER_QUEUE = new ConcurrentLinkedQueue<>();
 	
