@@ -18,15 +18,18 @@ import org.okaria.okhttp.request.ClientRequest;
 import org.okaria.okhttp.request.StreamingClientRequest;
 import org.okaria.okhttp.response.DownloadResponse;
 import org.okaria.range.RangeInfo;
+import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 
-public abstract class Client implements StreamingClientRequest, DownloadResponse, DownloadPlane, ContentLength {
+public abstract class Client implements  ClientRequest /*StreamingClientRequest*/, DownloadResponse, DownloadPlane, ContentLength {
 
 	
 	private OkHttpClient httpClient;
@@ -41,7 +44,6 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 		createOkHttpClient(builder);
 	}
 
-	
 	public void createOkHttpClient(OkHttpClient.Builder builder) {
 		httpClient = builder.build();
 	}
@@ -53,12 +55,16 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 			OkHttpClient.Builder builder = new OkHttpClient.Builder();
 			builder.cookieJar(config.cookieJar());
 			builder.proxy(config.proxy());
+//			builder.addNetworkInterceptor(networkInterceptor);
 			httpClient = builder.build();
 		}
 	}
 
 	protected void defalutOkHttpClient() {
-		httpClient = new OkHttpClient().newBuilder().cookieJar(CookieJars.CookieJarMap).build();
+		httpClient = new OkHttpClient().newBuilder()
+				.cookieJar(CookieJars.CookieJarMap)
+//				.addNetworkInterceptor(networkInterceptor)
+				.build();
 	}
 
 	public void changeProxy(Proxy.Type type, String hostname, int port) {
@@ -109,7 +115,7 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 //		getHttpClient().cookieJar().saveFromResponse(url, jar);
 		
 		if(response.code() == 404) {
-			item.setFilename("404:Not:Found");
+			item.setFilename("404_Not_Found");
 			response.close();
 			return true;
 		}
@@ -129,7 +135,12 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 		
 		long length = extracteLength(response);
 		RangeInfo rangeInfo = new RangeInfo();
+
 		if(length > 0) {
+			//if (Properties.RANGE_POOL_NUM > 0){
+			//	rangeInfo = new RangeInfo(length, Properties.RANGE_POOL_NUM);
+			//}
+			//else
 			if (length > 104857600) {		// 100MB
 				rangeInfo = RangeInfo.RangeInfo2M(length);
 			}
@@ -164,12 +175,10 @@ public abstract class Client implements StreamingClientRequest, DownloadResponse
 		return this;
 	}
 	
-	
 	public abstract Future<?> downloadPart(ItemMetaData placeHolder, int index,SpeedMonitor... monitors);
-	
 	
 	public abstract boolean downloadTask(ItemMetaData placeHolder, int index,SpeedMonitor... monitors);
 
 	public abstract ExecutorService getExecutorService();
-
+	
 }

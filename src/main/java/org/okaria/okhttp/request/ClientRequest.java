@@ -121,7 +121,7 @@ public interface ClientRequest {
     
     default Call getCall(Item item, int index) throws IOException {
     	RangeUtil info = item.getRangeInfo();
-        return getCall(item, info.indexOf(index)[0],info.indexOf(index)[1]);
+        return getCall(item, info.indexOf(index)[0], info.indexOf(index)[1]);
     }
     
     default Response get(Item item, long startRange, long endRange) throws IOException {
@@ -248,6 +248,6 @@ public interface ClientRequest {
     	builder.append(response.headers().toString());
     	builder.append('\n');
     	builder.append('\n');
-    	Log.fine(getClass(), "Client Request / Server Respnse", builder.toString());
+    	Log.fine(getClass(), "Client Request / Server Response", builder.toString());
     }
 }

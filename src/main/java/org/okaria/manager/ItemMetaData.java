@@ -295,8 +295,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	 * @param plane
 	 * @param monitors
 	 */
-	protected boolean downloadFirstInIndex(DownloadPlane plane,
-			SpeedMonitor... monitors) {
+	protected boolean downloadFirstInIndex(DownloadPlane plane, SpeedMonitor... monitors) {
 		Integer index = waitting.poll();
 		if(index == null) return false;
 		downloadPart(plane, index, monitors);

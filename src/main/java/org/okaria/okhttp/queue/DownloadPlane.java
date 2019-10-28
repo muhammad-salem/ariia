@@ -24,8 +24,7 @@ public interface DownloadPlane {
 	 * @param monitors
 	 * @return
 	 */
-	default SpeedMonitor[] toArray(SpeedMonitor itemMonitor,
-			SpeedMonitor... monitors) {
+	default SpeedMonitor[] toArray(SpeedMonitor itemMonitor, SpeedMonitor... monitors) {
 		SpeedMonitor[] allMonitors = Arrays.copyOf(monitors, monitors.length + 1);
 		allMonitors[monitors.length] = itemMonitor;
 		return allMonitors;

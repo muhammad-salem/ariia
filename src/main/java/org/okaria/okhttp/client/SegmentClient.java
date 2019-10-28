@@ -51,8 +51,7 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 	}
 
 	@Override
-	public Future<?> downloadPart(ItemMetaData metaData, int index,
-			SpeedMonitor... monitors) {
+	public Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
 		if (Properties.RETRIES == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
@@ -62,10 +61,15 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 			});
 		}else {
 			return executor.submit(() -> {
+				boolean finised = false;
 				for (int i = 0; i < Properties.RETRIES; i++) {
-					if(downloadTask(metaData, index, monitors)) {
+					finised = downloadTask(metaData, index, monitors);
+					if(finised) {
 						break;
 					}
+				}
+				if (!finised) {
+					throw new RuntimeException("Network Connection Error");
 				}
 			});
 		}

@@ -2,8 +2,11 @@ package org.okaria.okhttp.service;
 
 import java.io.Closeable;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Proxy;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -80,6 +83,22 @@ public abstract class ServiceManager implements Closeable {
 		this.downloadingList = new LinkedList<>();
 		this.sessionMointor = new SimpleSessionMointor(); 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
+	}
+	
+	public boolean checkInternetConnectivity() {
+		try {
+			Enumeration<NetworkInterface> eni = NetworkInterface.getNetworkInterfaces();
+			while ( eni.hasMoreElements()) {
+				NetworkInterface ni = eni.nextElement();
+				if (ni.isUp() && ni.getParent() == null) {
+					return true;
+				}
+			}
+		} catch (SocketException e) {
+			return false;
+		}
+//		return false;
+		return sessionMointor.speedOfTCPReceive() > 0l;
 	}
 	
 
@@ -163,6 +182,11 @@ public abstract class ServiceManager implements Closeable {
 		if (downloadingList.isEmpty() & wattingList.isEmpty()) {
 			getFinishDownloadQueueEvent().run();
 		}
+		
+//		if (! checkInternetConnectivity()) {
+//			close();
+//		}
+		
 	}
 
 	protected abstract Class<? extends Client> getClientClass();

@@ -8,17 +8,17 @@ public interface StreamOrder  {
 	
 	default List<Integer> streamDownloadOrder(int count){
 		if(count == 0) return Collections.emptyList();
-		List<Integer> indexs = new ArrayList<>();
+		List<Integer> indexes = new ArrayList<>();
 		if(count == 1) {
-			indexs.add(0);
+			indexes.add(0);
 		}
 		else if(count > 1) {
-			indexs.add(0);
-			indexs.add(count-1);
+			indexes.add(0);
+			indexes.add(count-1);
 			for (int i = 1; i < count-1; i++) {
-				indexs.add(i);
+				indexes.add(i);
 			}
 		}
-		return indexs;
+		return indexes;
 	}
 }

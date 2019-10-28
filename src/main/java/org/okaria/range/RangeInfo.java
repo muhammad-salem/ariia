@@ -10,31 +10,31 @@ import org.okaria.setting.Properties;
 public class RangeInfo implements RangeUtil {
 	
 
-    public static RangeInfo RangeInfo512K( long filelength) {
-    	return RangeInfoByte(filelength, 524288);
+    public static RangeInfo RangeInfo512K( long fileLength) {
+    	return RangeInfoByte(fileLength, 524288);
     }
-    public static RangeInfo RangeInfo1M( long filelength) {
-    	return RangeInfoByte(filelength, 1048576);
+    public static RangeInfo RangeInfo1M( long fileLength) {
+    	return RangeInfoByte(fileLength, 1048576);
     }
-    public static RangeInfo RangeInfo2M( long filelength) {
-    	return RangeInfoByte(filelength, 2097152);
+    public static RangeInfo RangeInfo2M( long fileLength) {
+    	return RangeInfoByte(fileLength, 2097152);
     }
-    public static RangeInfo RangeInfo3M( long filelength) {
-    	return RangeInfoByte(filelength, 3145728);
+    public static RangeInfo RangeInfo3M( long fileLength) {
+    	return RangeInfoByte(fileLength, 3145728);
     }
-    public static RangeInfo RangeInfo4M( long filelength) {
-    	return RangeInfoByte(filelength, 4194304);
+    public static RangeInfo RangeInfo4M( long fileLength) {
+    	return RangeInfoByte(fileLength, 4194304);
     }
-    public static RangeInfo RangeInfoByte( long filelength, final int chunkLength) {
-    	int count = (int)(filelength / chunkLength) + ((int)(filelength%chunkLength) > 0 ? 1:0);
+    public static RangeInfo RangeInfoByte( long fileLength, final int chunkLength) {
+    	int count = (int)(fileLength / chunkLength) + ((int)(fileLength%chunkLength) > 0 ? 1:0);
 		long[][] rangeArray = new long[count][2];
 		final long longChunk = chunkLength;
 		for (int index = 0; index < rangeArray.length; ) {
 			rangeArray[index][0] =   index * longChunk;
 			rangeArray[index][1] = ++index * longChunk;
 		}
-		rangeArray[count-1][1] = filelength;
-		RangeInfo info = new RangeInfo(filelength, rangeArray);
+		rangeArray[count-1][1] = fileLength;
+		RangeInfo info = new RangeInfo(fileLength, rangeArray);
     	return info;
     }
 	

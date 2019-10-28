@@ -484,13 +484,13 @@ public class Lunch {
 
 	public void addItem2WattingList(Item item) {
 		if (item.isStreaming()) {
-			Log.info(getClass(), "add stream item to watting list ",
+			Log.info(getClass(), "add stream item to waiting list ",
 					item.liteString());
 		} else if (item.isFinish()) {
 			Log.info(getClass(), "Complete Download", item.liteString());
 			return;
 		} else {
-			Log.info(getClass(), "add download item to watting list",
+			Log.info(getClass(), "add download item to waiting list",
 					item.toString());
 		}
 
