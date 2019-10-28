@@ -9,7 +9,7 @@ import org.terminal.beans.Row;
 
 public class TableItemsMonitor {
 	
-	protected List<OneRangeMointor> mointors;
+	protected List<OneRangeMonitor> mointors;
 	protected SessionMonitor session;
 	protected TableItems table;
 	
@@ -21,11 +21,11 @@ public class TableItemsMonitor {
 	}
 	
 	
-	public boolean add(OneRangeMointor mointor) {
+	public boolean add(OneRangeMonitor mointor) {
 		return mointors.add(mointor);
 	}
 
-	public void remove(OneRangeMointor mointor) {
+	public void remove(OneRangeMonitor mointor) {
 		mointors.remove(mointor);
 	}
 	
@@ -36,14 +36,14 @@ public class TableItemsMonitor {
 
 	private void callSpeedForNextCycle() {
 		
-		for (OneRangeMointor mointor : mointors) {
+		for (OneRangeMonitor mointor : mointors) {
 			mointor.demondSpeedNow();
 		}
 		session.demondSpeedNow();
 	}
 	
 	private void updateInfo() {
-		for (OneRangeMointor mointor : mointors) {
+		for (OneRangeMonitor mointor : mointors) {
 			mointor.updateData();
 		}
 		session.rangeInfoUpdateData();
@@ -53,7 +53,7 @@ public class TableItemsMonitor {
 		table.getRows().clear();
 		//table.head("name", "Length", "TD", "Remain", "Down", "Speed", "100%");
 		int index = 0;
-		for (OneRangeMointor mointor : mointors) {
+		for (OneRangeMonitor mointor : mointors) {
 			Row<String> row = table.createRow();
 			row.add(++index + "");
 			row.add(mointor.getName());

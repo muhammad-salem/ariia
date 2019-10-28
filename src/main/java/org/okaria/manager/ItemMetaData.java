@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 
 import org.log.concurrent.Log;
 import org.okaria.R;
-import org.okaria.mointors.OneRangeMointor;
+import org.okaria.mointors.OneRangeMonitor;
 import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.range.RangeUtil;
 import org.okaria.segment.Segment;
@@ -28,7 +28,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	protected List<Future<?>> futures;
 	
 	protected boolean downloading = false;
-	protected OneRangeMointor rangeMointor;
+	protected OneRangeMonitor rangeMointor;
 	
 	protected RandomAccessFile raf;
 	private   ConcurrentLinkedQueue<Segment> segments;
@@ -36,7 +36,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	public ItemMetaData(Item item) {
 		this.item = item;
 		this.info = item.rangeInfo;
-		this.rangeMointor	= new OneRangeMointor(info, item.getFilename());
+		this.rangeMointor	= new OneRangeMonitor(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
 		initRandomAccessFile();
 		initMetaData();
@@ -150,7 +150,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return info;
 	}
 	
-	public OneRangeMointor getRangeMointor() {
+	public OneRangeMonitor getRangeMointor() {
 		return rangeMointor;
 	}
 	

@@ -4,13 +4,13 @@ import org.okaria.Utils;
 import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
 
-public class OneRangeMointor extends SpeedMonitor {
+public class OneRangeMonitor extends SpeedMonitor {
 	
 	protected RangeUtil info;
 	protected String    name;
 	
 	
-	public OneRangeMointor(RangeUtil info, String name) {
+	public OneRangeMonitor(RangeUtil info, String name) {
 		this.info = info;
 		this.name = name;
 	}

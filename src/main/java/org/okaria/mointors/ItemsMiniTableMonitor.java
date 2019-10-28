@@ -39,7 +39,7 @@ import org.terminal.strings.StyleBuilder;
  */
 public class ItemsMiniTableMonitor extends TableItemsMonitor {
 	
-	protected List<OneRangeMointor> mointors;
+	protected List<OneRangeMonitor> mointors;
 	protected SessionMonitor session;
 	
 	String header, midBorder, bodyTemplete, fotter;
@@ -149,11 +149,11 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		
 	}
 	
-	public boolean add(OneRangeMointor mointor) {
+	public boolean add(OneRangeMonitor mointor) {
 		return mointors.add(mointor);
 	}
 
-	public void remove(OneRangeMointor mointor) {
+	public void remove(OneRangeMonitor mointor) {
 		mointors.remove(mointor);
 	}
 	
@@ -164,14 +164,14 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 
 	private void callSpeedForNextCycle() {
 		
-		for (OneRangeMointor mointor : mointors) {
+		for (OneRangeMonitor mointor : mointors) {
 			mointor.demondSpeedNow();
 		}
 		session.demondSpeedNow();
 	}
 	
 	private void updateInfo() {
-		for (OneRangeMointor mointor : mointors) {
+		for (OneRangeMonitor mointor : mointors) {
 			mointor.updateData();
 		}
 		session.rangeInfoUpdateData();
@@ -181,7 +181,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		
 		message.append(header);
 		int index = 0;
-		for (OneRangeMointor mointor : mointors) {
+		for (OneRangeMonitor mointor : mointors) {
 			Object[] obj = new Object[8];
 			obj[0] = ++index + "";
 			obj[1] = Utils.middleMaxLength(mointor.getName(), 41);
