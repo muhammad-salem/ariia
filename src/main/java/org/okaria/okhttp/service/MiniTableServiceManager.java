@@ -36,7 +36,7 @@ public class MiniTableServiceManager extends ServiceManager {
 	}
 	
 	protected MiniTableServiceManager() {}
-	
+
 	@Override
 	protected void initService(Client client) {
 		super.initService(client);

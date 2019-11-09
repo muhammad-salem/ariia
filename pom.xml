@@ -6,7 +6,7 @@
 
 	<groupId>org.okaria</groupId>
 	<artifactId>okaria</artifactId>
-	<version>0.2.34</version>
+	<version>0.2.35</version>
 
 	<description>Command Line Download Manager</description>
 	<properties>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.logging</groupId>
 			<artifactId>log</artifactId>
-			<version>0.2.54</version>
+			<version>0.2.56</version>
 		</dependency>
 
 		<dependency>
