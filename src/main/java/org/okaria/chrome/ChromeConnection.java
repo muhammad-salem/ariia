@@ -15,10 +15,10 @@ import java.net.URL;
 import java.nio.file.Paths;
 
 import org.log.concurrent.Log;
-import org.okaria.PlatformUtil;
-import org.okaria.R;
-import org.okaria.Utils;
 import org.okaria.lunch.Argument;
+import org.okaria.util.PlatformUtil;
+import org.okaria.util.R;
+import org.okaria.util.Utils;
 
 
 /**

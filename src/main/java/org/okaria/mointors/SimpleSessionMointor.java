@@ -2,7 +2,7 @@ package org.okaria.mointors;
 
 import java.util.concurrent.Callable;
 
-import org.okaria.Utils;
+import org.okaria.util.Utils;
 import org.terminal.Ansi;
 
 public class SimpleSessionMointor extends SessionMonitor {

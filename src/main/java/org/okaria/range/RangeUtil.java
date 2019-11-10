@@ -1,7 +1,7 @@
 package org.okaria.range;
 
-import org.okaria.Utils;
 import org.okaria.setting.Properties;
+import org.okaria.util.Utils;
 
 public interface RangeUtil extends Range {
 	default int getRangeCount() {

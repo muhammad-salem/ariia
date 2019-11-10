@@ -3,7 +3,7 @@ package org.okaria.segment;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.log.concurrent.Log;
+//import org.log.concurrent.Log;
 
 public class ByteBufferPool {
 	

@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
 import org.log.concurrent.Log;
-import org.okaria.R;
 import org.okaria.mointors.OneRangeMonitor;
 import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.range.RangeUtil;
@@ -20,6 +19,7 @@ import org.okaria.segment.Segment;
 import org.okaria.segment.Segment.OfferSegment;
 import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
+import org.okaria.util.R;
 
 public abstract class ItemMetaData implements OfferSegment, Closeable {
 	

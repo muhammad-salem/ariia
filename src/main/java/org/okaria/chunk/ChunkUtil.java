@@ -1,6 +1,6 @@
 package org.okaria.chunk;
 
-import org.okaria.Utils;
+import org.okaria.util.Utils;
 
 public interface ChunkUtil extends Chunk {
 	

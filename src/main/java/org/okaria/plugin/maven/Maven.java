@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.okaria.R;
 import org.okaria.manager.Item;
 import org.okaria.okhttp.OkUtils;
+import org.okaria.util.R;
 
 public class Maven {
 	static String CENTRAL_MAVEN = "http://central.maven.org/maven2";

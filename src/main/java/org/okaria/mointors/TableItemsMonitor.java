@@ -3,7 +3,7 @@ package org.okaria.mointors;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.okaria.Utils;
+import org.okaria.util.Utils;
 import org.terminal.Ansi;
 import org.terminal.beans.Row;
 

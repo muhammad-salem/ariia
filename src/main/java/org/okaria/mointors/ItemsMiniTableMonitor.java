@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.okaria.Utils;
+import org.okaria.util.Utils;
 import org.terminal.Ansi;
 import org.terminal.beans.ColumnStyle;
 import org.terminal.strings.StyleBuilder;

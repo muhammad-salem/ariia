@@ -1,8 +1,8 @@
 package org.okaria.mointors;
 
-import org.okaria.Utils;
 import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
+import org.okaria.util.Utils;
 
 public class OneRangeMonitor extends SpeedMonitor {
 	

@@ -3,7 +3,7 @@ package org.okaria.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.okaria.Utils;
+import org.okaria.util.Utils;
 
 import okhttp3.HttpUrl;
 

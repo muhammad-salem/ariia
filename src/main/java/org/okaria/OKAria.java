@@ -10,6 +10,7 @@ import org.okaria.lunch.Lunch;
 import org.okaria.lunch.TerminalArgument;
 import org.okaria.okhttp.service.MiniTableServiceManager;
 import org.okaria.setting.Properties;
+import org.okaria.util.R;
 
 public class OKAria {
 

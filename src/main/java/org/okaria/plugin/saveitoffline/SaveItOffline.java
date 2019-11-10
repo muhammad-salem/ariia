@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.log.concurrent.Log;
-import org.okaria.Utils;
 import org.okaria.manager.Item;
 import org.okaria.okhttp.client.Client;
 import org.okaria.plugin.saveitoffline.OfflineObject.Quality;
+import org.okaria.util.Utils;
 
 import okhttp3.HttpUrl;
 import okhttp3.Response;

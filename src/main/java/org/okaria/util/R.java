@@ -1,4 +1,4 @@
-package org.okaria;
+package org.okaria.util;
 
 import java.io.File;
 import java.io.IOException;

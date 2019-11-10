@@ -80,6 +80,7 @@ public class ChromeMessage {
 	public boolean isPage() {
 		return page;
 	}
+	
 
 	public static ChromeMessage CreateMessage(String json) {
 		Gson gson = new Gson();

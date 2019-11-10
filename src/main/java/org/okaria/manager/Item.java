@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.okaria.Utils;
 import org.okaria.range.RangeInfo;
+import org.okaria.util.Utils;
 
 import okhttp3.Cookie;
 import okhttp3.Headers;

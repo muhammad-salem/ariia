@@ -6,10 +6,10 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
 import org.log.concurrent.Log;
-import org.okaria.R;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.segment.Segment;
+import org.okaria.util.R;
 
 public class StreamMetaDataWriter extends ItemMetaData {
 	

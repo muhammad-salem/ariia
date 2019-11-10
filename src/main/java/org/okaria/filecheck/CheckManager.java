@@ -1,6 +1,5 @@
 package org.okaria.filecheck;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.log.concurrent.Log;
-import org.okaria.R;
-import org.okaria.Utils;
 import org.okaria.manager.Item;
 import org.okaria.okhttp.service.ServiceManager;
 import org.okaria.range.RangeInfo;
@@ -20,25 +17,19 @@ public class CheckManager {
 	public static void CheckItem(String url, int chunkSize, ServiceManager manager) {
 		
 			Item item = manager.getItemStore().searchByUrl(url);
-			Log.trace(CheckManager.class, "found file chick", item.liteString());
-			//String result = R.getConfigPath("check" + R.sprtr + item.getFilename() + ".json");
-			
-			File result ;
-			
+			Log.trace(CheckManager.class, "found file chick", item.liteString());			
+			long[][] arr;
 			try {
-				result = File.createTempFile(item.getFilename(), ".json");
-				result.deleteOnExit();
 				RangeChecker checker;
 				if(chunkSize < 1)	checker = new RangeChecker(item.path());
 				else				checker = new RangeChecker(item.path(), chunkSize);
-				R.mkParentDir(result);
-				checker.channelFormat(result.getAbsolutePath());
+				arr = checker.channelFormatLong();
 				checker.close();
 			} catch (IOException e) {
 				Log.error(CheckManager.class, "IO Exception", e.getMessage());
 				return;
 			}
-			long[][] arr = Utils.fromJson(result, long[][].class);
+			
 //			List<Long[]> valuse = Utils.jsonList( Long[].class,  result );
 			List<Long[]> valuse = new ArrayList<>(arr.length);
 			for (long[] ls : arr) {

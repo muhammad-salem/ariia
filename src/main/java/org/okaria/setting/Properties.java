@@ -1,7 +1,7 @@
 package org.okaria.setting;
 
-import org.okaria.R;
 import org.okaria.lunch.Argument;
+import org.okaria.util.R;
 
 public final class Properties {
 	private Properties() {}

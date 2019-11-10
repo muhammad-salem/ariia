@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.okaria.R;
-import org.okaria.Utils;
+import org.okaria.util.R;
+import org.okaria.util.Utils;
 
 public class ItemStore {
 	

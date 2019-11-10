@@ -12,8 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.okaria.R;
 import org.okaria.okhttp.OkUtils;
+import org.okaria.util.R;
 
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;

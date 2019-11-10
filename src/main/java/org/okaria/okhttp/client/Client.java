@@ -15,18 +15,14 @@ import org.okaria.manager.ItemMetaData;
 import org.okaria.okhttp.OkUtils;
 import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.okhttp.request.ClientRequest;
-import org.okaria.okhttp.request.StreamingClientRequest;
 import org.okaria.okhttp.response.DownloadResponse;
 import org.okaria.range.RangeInfo;
-import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 public abstract class Client implements  ClientRequest /*StreamingClientRequest*/, DownloadResponse, DownloadPlane, ContentLength {

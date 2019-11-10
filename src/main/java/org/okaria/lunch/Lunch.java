@@ -14,7 +14,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.log.concurrent.Log;
-import org.okaria.R;
 import org.okaria.filecheck.CheckManager;
 import org.okaria.manager.Item;
 import org.okaria.manager.MetalinkItem;
@@ -23,6 +22,7 @@ import org.okaria.okhttp.service.ServiceManager;
 import org.okaria.okhttp.writer.StreamMetaDataWriter;
 import org.okaria.plugin.maven.Maven;
 import org.okaria.setting.Properties;
+import org.okaria.util.R;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

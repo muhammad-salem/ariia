@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.log.concurrent.Log;
-import org.okaria.Utils;
 import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
+import org.okaria.util.Utils;
 import org.terminal.Ansi;
 
 public abstract class SessionMonitor extends SpeedMonitor {
