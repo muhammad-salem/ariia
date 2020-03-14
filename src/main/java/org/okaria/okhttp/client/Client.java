@@ -156,7 +156,7 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 			String filename = OkUtils.Filename(usedUrl);
 			String contentDisposition = response.networkResponse().header("Content-disposition", "filename=\"" + filename + "\"");
 			if (contentDisposition.contains("filename")) {
-				String[] split = contentDisposition.split("\"");
+				String[] split = contentDisposition.split("=");
 				filename = split[split.length - 1];
 			}
 			item.setFilename(filename);

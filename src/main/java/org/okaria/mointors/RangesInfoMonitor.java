@@ -49,17 +49,17 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	protected long timer = 0;
 	private long totalLength = 0;
 	private long downloadLength = 0;
-	private long remainigLength = 0;
+	private long remainingLength = 0;
 
 	protected void updateRangeInfoData() {
 		totalLength = 0;
 		downloadLength = 0;
-		remainigLength = 0;
+		remainingLength = 0;
 		rangeInfos.forEach(info -> {
 			info.oneCycleDataUpdate();
 			totalLength += info.getFileLength();
 			downloadLength += info.getDownloadLength();
-			remainigLength += info.getRemainingLength();
+			remainingLength += info.getRemainingLength();
 		});
 	}
 
@@ -70,24 +70,18 @@ public class RangesInfoMonitor extends SpeedMonitor {
 		return downloadLength;
 	}
 	protected long getRemainingLength() {
-		return remainigLength;
+		return remainingLength;
 	}
 
-	public String getTotalLengthMB() {
-		return toUnitLength(totalLength);
-	}
-	public String getDownloadLengthMB() {
-		return toUnitLength(downloadLength);
-	}
-	public String getRemainingLengthMB() {
-		return toUnitLength(remainigLength);
-	}
+	public String getTotalLengthMB() { return toUnitLengthBytes(totalLength); }
+	public String getDownloadLengthMB() { return toUnitLengthBytes(downloadLength); }
+	public String getRemainingLengthMB() { return toUnitLengthBytes(remainingLength); }
 	
-	protected long getReminningTime() {
+	protected long getRemainingTime() {
 		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
 	}
-	protected String getReminningTimeString() {
-		return ansi.green(ansi.Underscore(Utils.timeformate(getReminningTime())));
+	protected String getRemainingTimeString() {
+		return ansi.green(ansi.Underscore(Utils.timeformate(getRemainingTime())));
 	}
 	public String getTimer() {
 		return ansi.green(ansi.Underscore(Utils.timeformate(timer++)));
@@ -155,7 +149,7 @@ public class RangesInfoMonitor extends SpeedMonitor {
 		builder.append(ansi.yellow(ansi.Bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
 		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
 		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
-		builder.append(getReminningTimeString());
+		builder.append(getRemainingTimeString());
 		return builder.toString();
 	}
 	/////////////////////////
@@ -187,7 +181,7 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	}
 	
 	private String newReport() {
-		Object[] args = { getTimer(), firstLine(), getReminningTimeString(), secondLine(), progressLine(78) };
+		Object[] args = { getTimer(), firstLine(), getRemainingTimeString(), secondLine(), progressLine(78) };
 		return format.format(args);
 	}
 	

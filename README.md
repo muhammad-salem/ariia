@@ -1,4 +1,4 @@
-# okaria  (0.2.34)
+# okaria  (0.2.36)
 
 OKaria is a smart command line download manager.
 
@@ -8,6 +8,8 @@ OKaria is a smart command line download manager.
  - gson (2.8.4)
  - log (0.2.54)
  - ansi (0.1.96)
+ 
+## remove Dependency
  - jansi (1.17.1)
 
 ### Options :
@@ -68,6 +70,8 @@ OKaria is a smart command line download manager.
  - add SSH implemntaion
 
 ### Overview
+
+![screenshot-01](img/download-ubuntu-mini.gif)
 
 ![screenshot-01](img/mini-table-01.png)
 ![screenshot-02](img/mini-table-02.png)

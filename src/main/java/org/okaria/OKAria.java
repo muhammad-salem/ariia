@@ -41,6 +41,7 @@ public class OKAria {
 
 		String log_level = arguments.getOrDefault(TerminalArgument.Debug,
 				Level.info.name());
+		Log.initService();
 		Log.level(Level.valueOf(log_level));
 		Log.fine(OKAria.class, "terminal arguments", Arrays.toString(args));
 

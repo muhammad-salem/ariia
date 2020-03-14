@@ -6,7 +6,7 @@
 
 	<groupId>org.okaria</groupId>
 	<artifactId>okaria</artifactId>
-	<version>0.2.35</version>
+	<version>0.2.36</version>
 
 	<description>Command Line Download Manager</description>
 	<properties>
@@ -29,6 +29,7 @@
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>3.10.0</version>
+<!--			<version>4.4.0</version> -->
 		</dependency>
 
 <!-- 		<dependency> -->

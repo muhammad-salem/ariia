@@ -75,15 +75,9 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		return remainigLength;
 	}
 
-	public String getTotalLengthMB() {
-		return toUnitLength(totalLength);
-	}
-	public String getDownloadLengthMB() {
-		return toUnitLength(downloadLength);
-	}
-	public String getRemainingLengthMB() {
-		return toUnitLength(remainigLength);
-	}
+	public String getTotalLengthMB() { return toUnitLengthBytes(totalLength); }
+	public String getDownloadLengthMB() { return toUnitLengthBytes(downloadLength); }
+	public String getRemainingLengthMB() { return toUnitLengthBytes(remainigLength); }
 	
 	protected long getRemainingTime() {
 		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);

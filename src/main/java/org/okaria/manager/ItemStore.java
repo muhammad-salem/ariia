@@ -42,7 +42,7 @@ public class ItemStore {
 	
 	public Item searchByUrl(String url) {
 		for (Item item : items) {
-			if(item.getUrl().equals(url)) return item;
+			if(url.equals(item.getUrl())) return item;
 		}
 		return null;
 	}
