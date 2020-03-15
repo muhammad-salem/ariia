@@ -4,7 +4,7 @@ OKaria is a smart command line download manager.
 
 
 ## Dependency
- - okhttp (3.10.0)
+ - okhttp (3.14.7)
  - gson (2.8.4)
  - log (0.2.54)
  - ansi (0.1.96)
