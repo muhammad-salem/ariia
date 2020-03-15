@@ -83,7 +83,7 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 	}
 		
 	public void updateItemOnline(Item item) {
-		boolean retrie = true;
+		boolean retrie;
 		do {
 			retrie = updateItemOnline(item, false);
 			if (retrie)
@@ -137,13 +137,13 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 			//	rangeInfo = new RangeInfo(length, Properties.RANGE_POOL_NUM);
 			//}
 			//else
-			if (length > 104857600) {		// 100MB
+			if (length > 104_857_600) {		// 100MB
 				rangeInfo = RangeInfo.RangeInfo2M(length);
 			}
-			else if (length > 10485760) {	// 10MB
+			else if (length > 10_485_760) {	// 10MB
 				rangeInfo = RangeInfo.RangeInfo1M(length);
 			}
-			else if (length > 5242880){		//5M
+			else if (length > 5242_880){		//5M
 				rangeInfo = RangeInfo.RangeInfo512K(length);
 			}else{
 				rangeInfo = new RangeInfo(length);
@@ -157,7 +157,11 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 			String contentDisposition = response.networkResponse().header("Content-disposition", "filename=\"" + filename + "\"");
 			if (contentDisposition.contains("filename")) {
 				String[] split = contentDisposition.split("=");
-				filename = split[split.length - 1];
+				filename = split[split.length - 1].trim();
+				filename = filename.substring(
+						filename.charAt(0) == '"' ? 1 : 0,
+						filename.charAt(filename.length()-1) == '"'
+								? filename.length()-1: filename.length());
 			}
 			item.setFilename(filename);
 		}
