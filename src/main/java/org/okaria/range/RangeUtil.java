@@ -113,13 +113,29 @@ public interface RangeUtil extends Range {
 			return -1;
 //		else if (remainLengthOf(maxIndex) < 262144)
 //			return -1;
-		long[][] ls = SubRange.  split(indexOf(maxIndex), 2);
+		long[][] ls = split(indexOf(maxIndex), 2);
 		updateIndex(index, ls[0]);
 		updateIndex(maxIndex, ls[1]);
 		return maxIndex;
 	}
 	
 
+	
+	default long[][] split(long[] ls, int numOfParts) {
+		return split(ls[0], ls[1], numOfParts);
+	}
+	
+	
+	default long[][] split(long startByte, long endByte, int numOfParts) {
+		long[][] ranges = new long[numOfParts][2];
+		long sub = (endByte - startByte) / numOfParts;
+		for (int i = 0; i < numOfParts; i++) {
+			ranges[i][0] = startByte + (sub * i);
+			ranges[i][1] = startByte + (sub * (i + 1));
+		}
+		ranges[numOfParts - 1][1] = endByte;
+		return ranges;
+	}
 	
 
 }

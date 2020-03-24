@@ -5,16 +5,13 @@ import org.junit.Test;
 public class RangeInfoTest {
 
 	@Test
-	public void test() {
-//		RangeInfo info =  RangeInfo.RangeInfo512K(10000000l); //new RangeInfo(100000090000l);
-////		System.out.println(Arrays.deepToString(info.range));
-//		System.out.println(info);
-//		
-//		info.range = RangeInfo.StreamOrder(info.range);
-////		System.out.println(Arrays.deepToString(info.range));
-//		System.out.println(info);
-
-		RangeInfo info = RangeInfo.RangeInfo2M(6629201711l);
+	public void test1() {
+		RangeInfo info = RangeInfo.RangeOf64M(6629201711l);
+		System.out.println(info);
+	}
+	@Test
+	public void test2() {
+		RangeInfo info =  RangeInfo.RangeOf512K(10000000l); //new RangeInfo(100000090000l);
 		System.out.println(info);
 	}
 

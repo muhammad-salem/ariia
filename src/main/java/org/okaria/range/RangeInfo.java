@@ -2,27 +2,42 @@ package org.okaria.range;
 
 import java.util.Arrays;
 
-import org.okaria.setting.Properties;
 
 public class RangeInfo implements RangeUtil {
 	
 
-    public static RangeInfo RangeInfo512K( long fileLength) {
-    	return RangeInfoByte(fileLength, 524288);
+    public static RangeInfo RangeOf512K( long fileLength) {
+    	return RangeOfByte(fileLength, 524288/*1024×512*/);
     }
-    public static RangeInfo RangeInfo1M( long fileLength) {
-    	return RangeInfoByte(fileLength, 1048576);
+    public static RangeInfo RangeOf1M( long fileLength) {
+    	return RangeOfByte(fileLength, 1048576/*1024×1024×1*/);
     }
-    public static RangeInfo RangeInfo2M( long fileLength) {
-    	return RangeInfoByte(fileLength, 2097152);
+    public static RangeInfo RangeOf2M( long fileLength) {
+    	return RangeOfByte(fileLength, 2097152/*1024×1024×2*/);
     }
-    public static RangeInfo RangeInfo3M( long fileLength) {
-    	return RangeInfoByte(fileLength, 3145728);
+    public static RangeInfo RangeOf4M( long fileLength) {
+    	return RangeOfByte(fileLength, 4194304/*1024×1024×4*/);
     }
-    public static RangeInfo RangeInfo4M( long fileLength) {
-    	return RangeInfoByte(fileLength, 4194304);
+    public static RangeInfo RangeOf8M( long fileLength) {
+    	return RangeOfByte(fileLength, 8388608 /*1024×1024×8*/);
     }
-    public static RangeInfo RangeInfoByte( long fileLength, final int chunkLength) {
+    public static RangeInfo RangeOf16M( long fileLength) {
+    	return RangeOfByte(fileLength, 16777216/*1024×1024×16*/);
+    }
+    public static RangeInfo RangeOf32M( long fileLength) {
+    	return RangeOfByte(fileLength, 33554432/*1024×1024×32*/);
+    }
+    public static RangeInfo RangeOf64M( long fileLength) {
+    	return RangeOfByte(fileLength, 67108864/*1024×1024×64*/);
+    }
+    
+    
+    public static RangeInfo RangeOfByte( long fileLength, final int chunkLength) {
+		long[][] rangeArray = rangeArray(fileLength, chunkLength);
+    	return new RangeInfo(fileLength, rangeArray);
+    }
+    
+	private static long[][] rangeArray(final long fileLength, final int chunkLength) {
     	int count = (int)(fileLength / chunkLength) + ((int)(fileLength%chunkLength) > 0 ? 1:0);
 		long[][] rangeArray = new long[count][2];
 		final long longChunk = chunkLength;
@@ -31,9 +46,10 @@ public class RangeInfo implements RangeUtil {
 			rangeArray[index][1] = ++index * longChunk;
 		}
 		rangeArray[count-1][1] = fileLength;
-		RangeInfo info = new RangeInfo(fileLength, rangeArray);
-    	return info;
-    }
+		return rangeArray;
+	}
+	
+	
 	
 	protected long	fileLength;
 	protected long	downloadLength;
@@ -41,46 +57,34 @@ public class RangeInfo implements RangeUtil {
 	protected long[][]	range;
 	protected long  rangeBase;
 
+	/**
+	 * stream contractor, unknown length
+	 */
 	public RangeInfo() {
 		this.fileLength = -1l;
-	    this.range = SubRange.mksubrange(fileLength);
+	    this.range = new long[][] {{0, -1}};
     }
 
     /**
+     * default range for stream with knowing length
+     *  
      * [length = -1] -> [streaming], [unknown length]
      */
     public RangeInfo(long length) {
-    	this(length, Properties.RANGE_POOL_NUM);
+    	this(length, 1);
     }
     
     
-    public RangeInfo(long length, int rangeCount) {
+    public RangeInfo(long length, int count) {
         fileLength = length;
-        initRange(rangeCount);
+        this.range = split(0, length, count);
+//        initRange(rangeCount);
     }
 
     public RangeInfo(long length, long[][] range) {
-        fileLength = length;
+    	this.fileLength = length;
         this.range = range;
     }
-	protected void initRange(int rangeCount) {
-		if (range == null) {
-            // create new range for that file
-			
-			if (fileLength >= 10485760)		// for 10MB
-                range = SubRange.stream(fileLength, rangeCount);
-                
-			else if (fileLength >= 1048576)		// for 1MB
-                range = SubRange.subrange(fileLength, rangeCount);
-            else if (fileLength > 0)
-                range = SubRange.mksubrange(fileLength);
-            // if filelength = -1 -- mean it should to stream link
-            else {
-            	//fileLength = Long.MAX_VALUE;
-            	range =  SubRange.mksubrange( fileLength /*Long.MAX_VALUE*/ );
-            }
-        }
-	}
 	
 	@Override
 	public long[][] getRange() { return range;}
@@ -121,6 +125,7 @@ public class RangeInfo implements RangeUtil {
 		return fileLength - remainingLength;
 	}
 	
+	@Override
 	public boolean isStreaming() {
         return range.length == 1 & range[0][1] == -1;
     }
@@ -129,10 +134,12 @@ public class RangeInfo implements RangeUtil {
 		return range[i][j];
 	}
 	
+	@Override
 	public long startOfIndex(int index) {
 		return range[index][0];
 	}
 	
+	@Override
 	public long limitOfIndex(int index) {
 		return range[index][1];
 	}
@@ -147,6 +154,7 @@ public class RangeInfo implements RangeUtil {
 	
 
 	
+	@Override
 	public void addStartOfIndex(int i, long value) {
 		range[i][0] += value;
 	}
