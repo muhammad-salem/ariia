@@ -17,6 +17,7 @@ import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.okhttp.request.ClientRequest;
 import org.okaria.okhttp.response.DownloadResponse;
 import org.okaria.range.RangeInfo;
+import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.Cookie;
@@ -51,7 +52,6 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 			OkHttpClient.Builder builder = new OkHttpClient.Builder();
 			builder.cookieJar(config.cookieJar());
 			builder.proxy(config.proxy());
-//			builder.addNetworkInterceptor(networkInterceptor);
 			httpClient = builder.build();
 		}
 	}
@@ -59,7 +59,6 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 	protected void defalutOkHttpClient() {
 		httpClient = new OkHttpClient().newBuilder()
 				.cookieJar(CookieJars.CookieJarMap)
-//				.addNetworkInterceptor(networkInterceptor)
 				.build();
 	}
 
@@ -93,80 +92,55 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 	}
 
 	private boolean updateItemOnline(Item item, boolean headOrGet) {
-		Response response = null;
-		getHttpClient().cookieJar().saveFromResponse(item.url(), item.getCookies());
-		try {
-			if (headOrGet)
-				response = head(item.url(), item.getCookies(), item.getHeaders());
-			else
-				response = get(item.url(), item.getCookies(), item.getHeaders());
+		if (item.getCookies().size() > 0) {
+			getHttpClient().cookieJar().saveFromResponse(item.url(), item.getCookies());
+		}
+		
+		try (Response response = headOrGet 
+				? head(item.url(), getHeaders(item))
+				: get(item.url(), getHeaders(item))) {
+			
+			List<Cookie> list =  getHttpClient().cookieJar().loadForRequest(item.url());
+			item.addCookies(list);
+			
+			if(response.code() == 404) {
+				item.setFilename("404_Not_Found");
+				return true;
+			}
+			
+			HttpUrl usedUrl;
+			 if (response.networkResponse() != null 
+					&& ! response.networkResponse().request().url().toString()
+						.equals(item.getUrl())) {
+				 usedUrl = response.networkResponse().request().url();
+				Log.fine(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
+						+ "\n redirect url \t"+ usedUrl );
+			} else {
+				usedUrl = response.request().url();
+			}
+			long length = extracteLength(response);
+			item.setRangeInfo(new RangeInfo(length, length > 0 ? Properties.RANGE_POOL_NUM : 1));
+			
+			
+			if (item.getFilename() == null) {
+				String filename = OkUtils.Filename(usedUrl);
+				String contentDisposition = response.networkResponse().header("Content-disposition", "filename=\"" + filename + "\"");
+				if (contentDisposition.contains("filename")) {
+					String[] split = contentDisposition.split("=");
+					filename = split[split.length - 1].trim();
+					filename = filename.substring(
+							filename.charAt(0) == '"' ? 1 : 0,
+							filename.charAt(filename.length()-1) == '"'
+									? filename.length()-1: filename.length());
+				}
+				item.setFilename(filename);
+			}
+			return true;
 		} catch (IOException e) {
 			Log.warn(e.getClass(), "Exception", e.getMessage());
 			return false;
 		}
 		
-		List<Cookie> list =  getHttpClient().cookieJar().loadForRequest(item.url());
-		item.addCookies(list);
-		
-//		getHttpClient().cookieJar().saveFromResponse(url, jar);
-		
-		if(response.code() == 404) {
-			item.setFilename("404_Not_Found");
-			response.close();
-			return true;
-		}
-
-		// System.out.println(response);
-		
-		HttpUrl usedUrl;
-		 if (response.networkResponse() != null 
-				&& ! response.networkResponse().request().url().toString()
-					.equals(item.getUrl())) {
-			 usedUrl = response.networkResponse().request().url();
-			Log.fine(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
-					+ "\n redirect url \t"+ usedUrl );
-		}else {
-			usedUrl = response.request().url();
-		}
-		
-		long length = extracteLength(response);
-		RangeInfo rangeInfo = new RangeInfo();
-
-		if(length > 0) {
-			//if (Properties.RANGE_POOL_NUM > 0){
-			//	rangeInfo = new RangeInfo(length, Properties.RANGE_POOL_NUM);
-			//}
-			//else
-			if (length > 104_857_600) {		// 100MB
-				rangeInfo = RangeInfo.RangeInfo2M(length);
-			}
-			else if (length > 10_485_760) {	// 10MB
-				rangeInfo = RangeInfo.RangeInfo1M(length);
-			}
-			else if (length > 5242_880){		//5M
-				rangeInfo = RangeInfo.RangeInfo512K(length);
-			}else{
-				rangeInfo = new RangeInfo(length);
-			}
-		}
-		item.setRangeInfo(rangeInfo);
-		response.close();
-		
-		if (item.getFilename() == null) {
-			String filename = OkUtils.Filename(usedUrl);
-			String contentDisposition = response.networkResponse().header("Content-disposition", "filename=\"" + filename + "\"");
-			if (contentDisposition.contains("filename")) {
-				String[] split = contentDisposition.split("=");
-				filename = split[split.length - 1].trim();
-				filename = filename.substring(
-						filename.charAt(0) == '"' ? 1 : 0,
-						filename.charAt(filename.length()-1) == '"'
-								? filename.length()-1: filename.length());
-			}
-			item.setFilename(filename);
-		}
-
-		return true;
 	}
 	
 	

@@ -1,16 +1,13 @@
 package org.okaria.okhttp.request;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 
 import org.log.concurrent.Log;
 import org.okaria.manager.Item;
 import org.okaria.range.RangeUtil;
 
 import okhttp3.Call;
-import okhttp3.Cookie;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -21,94 +18,59 @@ public interface ClientRequest {
 	
 	OkHttpClient getHttpClient();
 	
-	default Response head(String url) throws IOException {
-		return head(HttpUrl.parse(url), new ArrayList<>(), Headers.of(new HashMap<>()));
-	}
-
-	default Response head(HttpUrl url) throws IOException {
-		return head(url, new ArrayList<>(), Headers.of(new HashMap<>()));
-	}
-
-	default Response head(HttpUrl url, List<Cookie> jar) throws IOException {
-		return head(url, jar, Headers.of(new HashMap<>()));
-	}
-
-	
-	default Response head(String url, Headers headers) throws IOException {
-        return head(HttpUrl.parse(url), new ArrayList<>(), headers);
-    }
-
-    default Response head(HttpUrl url, Headers headers) throws IOException {
-        return head(url, new ArrayList<>(), headers);
-    }
-
-    default Response head(Item item) throws IOException {
-        return response( headCall(item.url(), item.getCookies(), item.getHeaders()) );
+    default Headers getHeaders(Item item) {
+    	return item.getHeaders().isEmpty() ? null : Headers.of(item.getHeaders());
     }
     
-    default Response head(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-        return response(headCall(url, jar, headers));
+	default Response head(String url) throws IOException {
+		return head(HttpUrl.parse(url),  null);
+	}
+	default Response head(HttpUrl url) throws IOException {
+		return head(url, null);
+	}
+	default Response head(String url, Headers headers) throws IOException {
+        return head(HttpUrl.parse(url), headers);
     }
-    default Call headCall(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-        getHttpClient().cookieJar().saveFromResponse(url, jar);
-        Request.Builder builder = new Request.Builder()
-                .url(url)
-                .headers(headers)
-                .head();
-        addCommonHeader(builder);
+    default Response head(Item item) throws IOException {
+        return response( headCall(item.url(), getHeaders(item)) );
+    }
+
+	default Response head(HttpUrl url, Headers headers) throws IOException {
+        return response(headCall(url, headers));
+    }
+    default Call headCall(HttpUrl url, Headers headers) throws IOException {
+        Request.Builder builder = new Request.Builder().head().url(url);
+        if (Objects.nonNull(headers)) {
+        	builder.headers(headers);
+		}
         return newCall(builder.build());
     }
     
 	//--------------------------------------------------//
 	
 	
+	default Response get(String url) throws IOException {
+		return get(HttpUrl.parse(url),  null);
+	}
+	
 	default Response get(HttpUrl url) throws IOException {
-		return get(url, new ArrayList<>(), Headers.of(new HashMap<>()));
+		return get(url, null);
 	}
 
-	default Response get(HttpUrl url, List<Cookie> jar) throws IOException {
-		return get(url, jar, Headers.of(new HashMap<>()));
-	}
-
-	default Response get(HttpUrl url, long startRange, long endRange, List<Cookie> jar) throws IOException {
-		return get(url, startRange, endRange, jar, Headers.of(new HashMap<>()));
-	}
 
 	default Response get(HttpUrl url, long startRange, long endRange) throws IOException {
-		return get(url, startRange, endRange, new ArrayList<>(), Headers.of(new HashMap<>()));
+		return get(url, startRange, endRange, null);
 	}
 
-	default Response get(HttpUrl url, long startRange, List<Cookie> jar) throws IOException {
-		return get(url, startRange, jar, Headers.of(new HashMap<>()));
-	}
 
 	default Response get(HttpUrl url, long startRange) throws IOException {
-		return get(url, startRange, new ArrayList<>(), Headers.of(new HashMap<>()));
+		return get(url, startRange, null);
 	}
 	//-----------------------------------------------------------------------------//
 
     
-
     default Response get(HttpUrl url, Headers headers) throws IOException {
-    	return get(url, new ArrayList<>(), headers);
-    }
-
-//    default Response get(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-//    	return get(url, 0, jar, headers);
-//    }
-
-    default Response get(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-    	return response(getCall(url, jar, headers));
-    }
-
-    default Response get(HttpUrl url, long startRange, long endRange, Headers headers) throws IOException {
-        return get(url, startRange, endRange, new ArrayList<>(), headers);
-    }
-
-    
-
-    default Response get(HttpUrl url, long startRange, Headers headers) throws IOException {
-        return get(url, startRange, new ArrayList<>(), headers);
+    	return response(getCall(url, headers));
     }
     
     default Response get(Item item) throws IOException {
@@ -131,86 +93,66 @@ public interface ClientRequest {
         return getCall(item.url(), 
         		startRange, 
         		endRange, 
-        		item.getCookies(), 
-        		item.getHeaders());
+        		getHeaders(item));
     }
     
-    default Response get(HttpUrl url, long startRange, long endRange, List<Cookie> jar, Headers headers) throws IOException {
-        if(endRange == -1) return get(url, startRange, jar, headers);
-    	return response(getCall(url, startRange, endRange, jar, headers));
+    default Response get(HttpUrl url, long startRange, long endRange, Headers headers) throws IOException {
+        if(endRange == -1) return get(url, startRange, headers);
+    	return response(getCall(url, startRange, endRange, headers));
     }
     
    
     
-    default Response get(HttpUrl url, long startRange, List<Cookie> jar, Headers headers) throws IOException {
-    	return response(getCall(url, startRange, jar, headers));
+    default Response get(HttpUrl url, long startRange, Headers headers) throws IOException {
+    	return response(getCall(url, startRange, headers));
     }
     
-    default Call getCall(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-        Request.Builder builder = new Request.Builder()
-                .url(url)
-                .headers(headers)
-                .get();
-       // getHttpClient().cookieJar().saveFromResponse(url, jar);
+    default Call getCall(HttpUrl url, Headers headers) throws IOException {
+        Request.Builder builder = new Request.Builder().get().url(url);
+        if (Objects.nonNull(headers)) {
+        	builder.headers(headers);
+		}
         return newCall(builder.build());
     }
     
 
-    default Response getStream(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
-    	return response(getStreamCall(url, jar, headers));
+    default Response getStream(HttpUrl url, Headers headers) throws IOException {
+    	return response(getStreamCall(url, headers));
     }
-    default Call getStreamCall(HttpUrl url, List<Cookie> jar, Headers headers) throws IOException {
+    default Call getStreamCall(HttpUrl url, Headers headers) throws IOException {
         Request.Builder builder = new Request.Builder()
+                .get()
                 .url(url)
-                .headers(headers)
-                .addHeader("Range", "bytes=0-")
-                .get();
-        //addCommonHeader(builder);
-        
-//        getHttpClient().cookieJar().saveFromResponse(url, jar);
+                .addHeader("Range", "bytes=0-");
+        if (Objects.nonNull(headers)) {
+        	builder.headers(headers);
+		}
         return newCall(builder.build());
     }
     
-    default Call getCall(HttpUrl url, long startRange, List<Cookie> jar, Headers headers) throws IOException {
+    default Call getCall(HttpUrl url, long startRange, Headers headers) throws IOException {
         Request.Builder builder = new Request.Builder()
-                .url(url)
-                .headers(headers)
-                .addHeader("Range", "bytes=" + startRange + "-")
-                .get();
-        //addCommonHeader(builder);
-//        getHttpClient().cookieJar().saveFromResponse(url, jar);
+        		.get()
+        		.url(url)
+                .addHeader("Range", "bytes=" + startRange + "-");
+        if (Objects.nonNull(headers)) {
+        	builder.headers(headers);
+		}
         return newCall(builder.build());
     }
     
     
-    
-    
-    default Call getCall(HttpUrl url, long startRange, long endRange, List<Cookie> jar, Headers headers) throws IOException {
-    	if(endRange == -1) return getCall(url, startRange, jar, headers);
+    default Call getCall(HttpUrl url, long startRange, long endRange, Headers headers) throws IOException {
+    	if(endRange == -1) return getCall(url, startRange, headers);
     	Request.Builder builder = new Request.Builder()
                 .get()
                 .url(url)
-                .headers(headers)
-                .addHeader("Range", "bytes=" + startRange + "-" + endRange) ;
-//                .addHeader("Range", "bytes=" + startRange + "-" )
-               ;
-    	//addCommonHeader(builder);
-//        getHttpClient().cookieJar().saveFromResponse(url, jar);
+                .addHeader("Range", "bytes=" + startRange + "-" + endRange);
+        if (Objects.nonNull(headers)) {
+        	builder.headers(headers);
+       	}
         return newCall(builder.build());
     }
-
-
-	/**
-	 * @param builder
-	 */
-	default void addCommonHeader(Request.Builder builder) {
-		//builder.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-		builder.addHeader("Accept", "*/*");
-        builder.addHeader("Accept-Encoding", "gzip, deflate");
-        builder.addHeader("Accept-Language", "en-US,en;q=0.9");
-        builder.addHeader("Cache-Control", "no-cache");
-        builder.addHeader("Pragma", "no-cache");
-	}
     
     default Call newCall( Request request) {
         return getHttpClient().newCall(request);

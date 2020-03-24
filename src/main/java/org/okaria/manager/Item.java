@@ -11,9 +11,7 @@ import org.okaria.range.RangeInfo;
 import org.okaria.util.Utils;
 
 import okhttp3.Cookie;
-import okhttp3.Headers;
 import okhttp3.HttpUrl;
-import okhttp3.internal.http2.Header;
 
 public class Item {
 	
@@ -73,7 +71,7 @@ public class Item {
 		this.rangeInfo = rangeInfo;
 	}
 
-	public Map<String, String> getMapHeaders() {
+	public Map<String, String> getHeaders() {
 		return headers;
 	}
 
@@ -96,35 +94,12 @@ public class Item {
 	public void setUseragent(String useragent) {
 		this.useragent = useragent;
 	}
-	
-	/**
-	 * @return always new {@link Headers} object of the current header-map
-	 */
-	public Headers getHeaders() {
-		return Headers.of(this.headers);
-	}
 
-	/**
-	 * clear the current map then put new values of from headers object.
-	 * 
-	 * @param headers
-	 */
-	public void setHeaders(Headers headers) {
-		this.headers.clear();
-		for (String name : headers.names()) {
-			this.headers.put(name, headers.get(name));
-		}
-	}
+	
 
 	public void setHeaders(Map<String, String> headers) {
 		this.headers.clear();
 		for (String name : headers.keySet()) {
-			this.headers.put(name, headers.get(name));
-		}
-	}
-	
-	public void addHeaders(Headers headers) {
-		for (String name : headers.names()) {
 			this.headers.put(name, headers.get(name));
 		}
 	}
@@ -134,10 +109,6 @@ public class Item {
 		for (String name : headers.keySet()) {
 			this.headers.put(name, headers.get(name));
 		}
-	}
-
-	public void addHeaders(Header header) {
-		this.headers.put(header.name.utf8(), header.value.utf8());
 	}
 
 	
