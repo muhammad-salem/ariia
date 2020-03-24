@@ -24,28 +24,32 @@ public class RangeChecker implements Closeable {
 		this.chunkSize = chunkSize;
 	}
 	void channelFormat(String outfile) throws IOException {
-		PrintStream out = new PrintStream(outfile);
-		long pos;
-		int temp ;
 		
-		long limit = file.length() - chunkSize;
-		out.print("[\n");
-		for ( pos = 0 ; pos < limit ; pos += chunkSize) {
+		try(PrintStream out = new PrintStream(outfile)){
+			long pos;
+			int temp ;
+			
+			long limit = file.length() - chunkSize;
+			out.print("[\n");
+			for ( pos = 0 ; pos < limit ; pos += chunkSize) {
+				file.seek(pos);
+				temp = file.read();
+				if(temp == 0x00) {
+					out.print("\t[\t" + pos + ",\t" + (long)(pos + chunkSize)  + " ],\n");
+				}
+			}
 			file.seek(pos);
 			temp = file.read();
 			if(temp == 0x00) {
-				out.print("\t[\t" + pos + ",\t" + (long)(pos + chunkSize)  + " ],\n");
+				out.print("\t[\t" + pos + ",\t" + (long)(file.length()-1) + " ]");
+			} else {
+				out.append("\t[\t0,\t0]");
 			}
+			out.print("\n]");
+			out.close();
+		} catch (Exception e) {
+			throw e;
 		}
-		file.seek(pos);
-		temp = file.read();
-		if(temp == 0x00) {
-			out.print("\t[\t" + pos + ",\t" + (long)(file.length()-1) + " ]");
-		} else {
-			out.append("\t[\t0,\t0]");
-		}
-		out.print("\n]");
-		out.close();
 
 	}
 	Map<Long, Long> channelFormat() throws IOException {

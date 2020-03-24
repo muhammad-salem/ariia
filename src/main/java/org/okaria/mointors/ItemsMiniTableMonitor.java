@@ -186,7 +186,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 			obj[0] = ++index + "";
 			obj[1] = Utils.middleMaxLength(mointor.getName(), 41);
 			obj[2] = Utils.middleMaxLength(mointor.getDownloadLengthMB(), 17);
-			obj[3] = Utils.middleMaxLength(mointor.getSpeedTCPReceiveMB() + "/s", 14);
+			obj[3] = Utils.middleMaxLength(mointor.getSpeedTCPReceiveMB() + "ps", 14);
 			
 			obj[4] = Utils.middleMaxLength(mointor.getTotalLengthMB(), 10);
 			obj[5] = Utils.middleMaxLength(mointor.getPercent(), 10);
@@ -201,7 +201,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 			obj[0] = "#";
 			obj[1] = Utils.middleMaxLength("Session (" + session.size() +")", 41);
 			obj[2] = Utils.middleMaxLength(session.getDownloadLengthMB(), 17);
-			obj[3] = Utils.middleMaxLength(session.getSpeedTCPReceiveMB() + "/s", 14);
+			obj[3] = Utils.middleMaxLength(session.getSpeedTCPReceiveMB() + "ps", 14);
 			
 			obj[4] = Utils.middleMaxLength(session.getTotalLengthMB(), 10);
 			obj[5] = Utils.middleMaxLength(session.getPercent(), 10);

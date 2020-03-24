@@ -148,7 +148,7 @@ public class RangesInfoMonitor extends SpeedMonitor {
 		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
 		builder.append(ansi.yellow(ansi.Bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
 		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
+		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
 		builder.append(getRemainingTimeString());
 		return builder.toString();
 	}
@@ -196,7 +196,7 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	private String secondLine() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
+		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
 		return builder.toString();
 	}
 	

@@ -33,18 +33,36 @@ public interface SpeedReport extends SpeedTotal, CalculateSpeed {
 	}
 
 	default String getSpeedTCPReceiveMB() {
-		return toUnitLengthBits(speedOfTCPReceive());
+		return toUnitLengthBytes(speedOfTCPReceive());
 	}
 
 	default String getSpeedTCPSendMB() {
-		return toUnitLengthBits(speedOfTCPSend());
+		return toUnitLengthBytes(speedOfTCPSend());
 	}
 
 	default String getSpeedUDPReceiveMB() {
-		return toUnitLengthBits(speedOfUDPReceive());
+		return toUnitLengthBytes(speedOfUDPReceive());
 	}
 
 	default String getSpeedUDPSendMB() {
+		return toUnitLengthBytes(speedOfUDPSend());
+	}
+	
+	//
+	
+	default String getSpeedTCPReceiveMb() {
+		return toUnitLengthBits(speedOfTCPReceive());
+	}
+
+	default String getSpeedTCPSendMb() {
+		return toUnitLengthBits(speedOfTCPSend());
+	}
+
+	default String getSpeedUDPReceiveMb() {
+		return toUnitLengthBits(speedOfUDPReceive());
+	}
+
+	default String getSpeedUDPSendMb() {
 		return toUnitLengthBits(speedOfUDPSend());
 	}
 
@@ -62,22 +80,37 @@ public interface SpeedReport extends SpeedTotal, CalculateSpeed {
 	}
 
 	default String toUnitLength(long length, boolean isByte, float kilo) {
-		float b = isByte ? length : length * 8;
+		float b = length;
 		float k = b / kilo;
 		float m = k / kilo;
 		float g = m / kilo;
 		float t = g / kilo;
 
 		if (t >= 1) {
-			return decFormat.format(t).concat(" TB").concat(isByte? "" : "i");
+			if (isByte){
+				return decFormat.format(t).concat(" TB");
+			} else {
+				return decFormat.format(t*8).concat(" Tb");
+			}
 		} else if (g >= 1) {
-			return decFormat.format(g).concat(" GB").concat(isByte? "" : "i");
+			if (isByte){
+				return decFormat.format(g).concat(" GB");
+			} else {
+				return decFormat.format(g*8).concat(" Gb");
+			}
 		} else if (m >= 1) {
-			return decFormat.format(m).concat(" MB").concat(isByte? "" : "i");
+			if (isByte){
+				return decFormat.format(m).concat(" MB");
+			} else {
+				return decFormat.format(m*8).concat(" Mb");
+			}
 		} else if (k >= 1) {
-			return decFormat.format(k).concat(" KB").concat(isByte? "" : "i");
+			if (isByte){
+				return decFormat.format(k).concat(" KB");
+			} else {
+				return decFormat.format(k*8).concat(" Kb");
+			}
 		}
-
-		return decFormat.format(b).concat(isByte? "Bytes" : "Bites");
+		return decFormat.format(b).concat(isByte? " B" : " b");
 	}
 }

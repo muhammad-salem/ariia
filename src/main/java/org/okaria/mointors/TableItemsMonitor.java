@@ -62,7 +62,7 @@ public class TableItemsMonitor {
 			row.add(mointor.getDownloadLengthMB());
 			row.add(mointor.getRemainingLengthMB());
 			row.add(mointor.getTotalReceiveMB());
-			row.add(mointor.getSpeedTCPReceiveMB() + "/s");
+			row.add(mointor.getSpeedTCPReceiveMB() + "ps");
 			row.add(mointor.getPercent());	
 		}
 		if( ! table.getRows().isEmpty() & table.getRows().size() != 1) {
@@ -74,7 +74,7 @@ public class TableItemsMonitor {
 			row.add(session.getDownloadLengthMB());
 			row.add(session.getRemainingLengthMB());
 			row.add(session.getTotalReceiveMB());
-			row.add(session.getSpeedTCPReceiveMB() + "/s");
+			row.add(session.getSpeedTCPReceiveMB() + "ps");
 			row.add(session.getPercent());	
 		}
 		
