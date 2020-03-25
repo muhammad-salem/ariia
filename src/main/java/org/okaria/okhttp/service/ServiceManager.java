@@ -159,7 +159,7 @@ public abstract class ServiceManager implements Closeable {
 				Log.info(getClass(), "Remove Item from download list", item.getFilename());
 				removeList.add(metaData);
 				continue;
-			}else if(! metaData.isDownloading()) {
+			} else if(! metaData.isDownloading()) {
 //				metaData.download(client, sessionMointor);
 				metaData.downloadThreads(client, sessionMointor);
 			}

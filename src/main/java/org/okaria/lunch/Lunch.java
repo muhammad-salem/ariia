@@ -52,7 +52,7 @@ public class Lunch {
 			
 			if(arguments.isDownloadPieces()) {
 				CheckManager.downloadPices(arguments.getCheckFile(), arguments.parseDownloadPieces(), arguments.parseChunkSize(), manager);
-			}else {
+			} else {
 				CheckManager.CheckItem(arguments.getCheckFile(),arguments.parseChunkSize(), manager);
 			}
 			
@@ -323,7 +323,7 @@ public class Lunch {
 			item.setFilename(arguments.getFileName());
 		buildItem(item);
 		setCache(item);
-		if (!item.getFilename().equals("404:Not:Found")) {
+		if (!item.getFilename().equals("404_Not_Found")) {
 			// addItem2WattingList(item);
 
 			manager.getWattingList().add(new StreamMetaDataWriter(item));
@@ -347,13 +347,13 @@ public class Lunch {
 			for (Item item : items) {
 				buildItem(item);
 				item.setCacheFile(null);
-				if (!item.getFilename().equals("404:Not:Found")) {
+				if (!item.getFilename().equals("404_Not_Found")) {
 					addItem2WattingList(item);
 					List<Item> cItems = maven.getItems(saveto + maven.resolvePath(), maven.certificatedFiles(item.getUrl()));
 					for (Item item2 : cItems) {
 						buildItem(item2);
 						item2.setCacheFile(null);
-						if (!item2.getFilename().equals("404:Not:Found")) {
+						if (!item2.getFilename().equals("404_Not_Found")) {
 							addItem2WattingList(item2);
 						}
 					}
@@ -374,7 +374,7 @@ public class Lunch {
 		// while (iterator.hasNext()) {
 		// Item item = (Item) iterator.next();
 		// item = buildItem(item);
-		// if(item.getFilename().equals("404:Not:Found")) {
+		// if(item.getFilename().equals("404_Not_Found")) {
 		// String name = item.getFilename();
 		// iterator.remove();
 		// while (iterator.hasNext()) {
@@ -392,7 +392,7 @@ public class Lunch {
 		// for (Item builder : builders) {
 		// Item item = buildItem(builder);
 		// item.setCacheFile(null);
-		// if(!item.getFilename().equals("404:Not:Found")) {
+		// if(!item.getFilename().equals("404_Not_Found")) {
 		// addItem2WattingList(item);
 		// }else {
 		//
@@ -409,7 +409,7 @@ public class Lunch {
 		if (arguments.isFileName())
 			item.setFilename(arguments.getFileName());
 		buildItem(item);
-		if (!item.getFilename().equals("404:Not:Found"))
+		if (!item.getFilename().equals("404_Not_Found"))
 			addItem2WattingList(item);
 	}
 
@@ -418,7 +418,7 @@ public class Lunch {
 		for (Item item : items) {
 			configBuilder(arguments, item);
 			buildItem(item);
-			if (!item.getFilename().equals("404:Not:Found"))
+			if (!item.getFilename().equals("404_Not_Found"))
 				addItem2WattingList(item);
 		}
 	}
@@ -437,7 +437,7 @@ public class Lunch {
 			return;
 		configBuilder(arguments, item);
 		buildItem(item);
-		if (!item.getFilename().equals("404:Not:Found"))
+		if (!item.getFilename().equals("404_Not_Found"))
 			addItem2WattingList(item);
 	}
 

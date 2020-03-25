@@ -59,7 +59,7 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 					finsh = downloadTask(metaData, index, monitors);
 				}
 			});
-		}else {
+		} else {
 			return executor.submit(() -> {
 				boolean finised = false;
 				for (int i = 0; i < Properties.RETRIES; i++) {
@@ -74,6 +74,8 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 			});
 		}
 	}
+	
+	
 	@Override
 	public ClientRequest getClientRequest() {
 		return this;

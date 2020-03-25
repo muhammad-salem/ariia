@@ -33,7 +33,7 @@ public interface DownloadPlane {
 		Item item = metaData.getItem();
 		item.updateHeaders();
 		if(item.isStreaming()) {
-			Log.info(getClass(), "streaming...", item.getFilename());
+			Log.info(getClass(), "Streaming...", item.getFilename());
 		}
 		else if(item.isFinish()) {
 			Log.info(getClass(), "Download Complete", item.getFilename());

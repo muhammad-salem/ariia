@@ -78,7 +78,6 @@ public interface SegmentWriter {
 		} catch (IOException e) {
 			buffer.flip();
 			offerSegment.offerSegment(segment);
-//			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 			throw e;
 		}
 
@@ -106,7 +105,6 @@ public interface SegmentWriter {
 		} catch (IOException e) {
 			buffer.flip();
 			offerSegment.offerSegment(segment);
-//			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 			throw e;
 		}
 

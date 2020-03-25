@@ -2,6 +2,7 @@ package org.okaria.okhttp.response;
 
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -57,9 +58,13 @@ public interface ChannelResponse extends DownloadResponse, ContentLength {
 	default void relaseResources(RandomAccessFile raf, Response response) {
 		getReleaseResourcesExecutor().execute(() -> {
 			try {
-				response.close();
+				if (Objects.nonNull(response)) {
+					response.close();
+				}
 				TimeUnit.SECONDS.sleep(2);
-				raf.close();
+				if (Objects.nonNull(raf)) {
+					raf.close();
+				}
 			} catch (Exception e) {
 				Log.info(getClass(), e.getClass().getName(), e.getMessage());
 			}

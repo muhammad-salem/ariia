@@ -56,7 +56,7 @@
 		<dependency>
 			<groupId>org.logging</groupId>
 			<artifactId>log</artifactId>
-			<version>0.2.56</version>
+			<version>0.2.57</version>
 		</dependency>
 
 		<dependency>

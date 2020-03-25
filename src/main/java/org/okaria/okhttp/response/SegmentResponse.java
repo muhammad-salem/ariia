@@ -1,5 +1,6 @@
 package org.okaria.okhttp.response;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.log.concurrent.Log;
@@ -20,9 +21,7 @@ public interface SegmentResponse extends DownloadResponse, ContentLength{
 		Item item = metaData.getItem();
 		if (item.getRangeInfo().isFinish(index)) return true;
 		
-		Response response = null;
-		try {
-			response = getClientRequest().get(item, index);
+		try (Response response = getClientRequest().get(item, index)) {
 			if(metaData.getRangeInfo().isStreaming()) updateLength(metaData.getRangeInfo(), response);
 			if (response.code() / 100 != 2) {
 				Log.warn(getClass(),  item.getFilename(), 
@@ -36,17 +35,16 @@ public interface SegmentResponse extends DownloadResponse, ContentLength{
 //				return true;
 //			}
 			
-			getSegmentWriter().writeResponse(response, metaData, index, item.getRangeInfo().limitOfIndex(index) , monitors);
-		} catch (Exception e) {
+			getSegmentWriter()
+				.writeResponse(response, 
+						metaData,
+						index, 
+						item.getRangeInfo().limitOfIndex(index), 
+						monitors);
+			return true;
+		} catch (IOException e) {
 			return false;
-		} finally {
-			try {
-				response.close();
-			} catch (Exception e) {
-				Log.error(getClass(), e.getClass().getName(), e.getMessage());
-			}
 		}
-		return true;
 	}
 
 }

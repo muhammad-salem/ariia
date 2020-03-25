@@ -108,10 +108,11 @@ public interface ClientRequest {
     }
     
     default Call getCall(HttpUrl url, Headers headers) throws IOException {
-        Request.Builder builder = new Request.Builder().get().url(url);
+        Request.Builder builder = new Request.Builder();
         if (Objects.nonNull(headers)) {
         	builder.headers(headers);
-		}
+       	}
+        builder.get().url(url);
         return newCall(builder.build());
     }
     
@@ -120,37 +121,36 @@ public interface ClientRequest {
     	return response(getStreamCall(url, headers));
     }
     default Call getStreamCall(HttpUrl url, Headers headers) throws IOException {
-        Request.Builder builder = new Request.Builder()
-                .get()
-                .url(url)
-                .addHeader("Range", "bytes=0-");
+        Request.Builder builder = new Request.Builder();
         if (Objects.nonNull(headers)) {
         	builder.headers(headers);
-		}
+       	}
+        builder.get()
+                .url(url)
+                .addHeader("Range", "bytes=0-");
         return newCall(builder.build());
     }
     
     default Call getCall(HttpUrl url, long startRange, Headers headers) throws IOException {
-        Request.Builder builder = new Request.Builder()
-        		.get()
-        		.url(url)
-                .addHeader("Range", "bytes=" + startRange + "-");
+        Request.Builder builder = new Request.Builder();
         if (Objects.nonNull(headers)) {
         	builder.headers(headers);
-		}
+       	}
+        builder.get()
+        		.url(url)
+                .addHeader("Range", "bytes=" + startRange + "-");
         return newCall(builder.build());
     }
     
     
     default Call getCall(HttpUrl url, long startRange, long endRange, Headers headers) throws IOException {
     	if(endRange == -1) return getCall(url, startRange, headers);
-    	Request.Builder builder = new Request.Builder()
-                .get()
-                .url(url)
-                .addHeader("Range", "bytes=" + startRange + "-" + endRange);
+    	Request.Builder builder = new Request.Builder();
         if (Objects.nonNull(headers)) {
         	builder.headers(headers);
        	}
+        builder.get().url(url)
+        		.addHeader("Range", "bytes=" + startRange + "-" + endRange);
         return newCall(builder.build());
     }
     

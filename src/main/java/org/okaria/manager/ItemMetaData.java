@@ -235,7 +235,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 					waitting.add(index);
 				}
 			}
-		}else {
+		} else {
 			
 			for (int index = count-1, i = 0; i < 4; i++) {
 				if (! info.isFinish(index-i)) {
@@ -274,7 +274,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 			if ( ! downloadFirstInIndex(plane , monitors) ) break;
 		}
 		
-		if(download.size() == Properties.RANGE_POOL_NUM) return;
+//		if(download.size() == Properties.RANGE_POOL_NUM) return;
 		
 //		if(download.size() < Properties.RANGE_POOL_NUM & waitting.isEmpty()) {
 //			for ( int markIndex = 0; markIndex < info.getRangeCount(); markIndex++) {

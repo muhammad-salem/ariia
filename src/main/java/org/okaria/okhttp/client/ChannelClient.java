@@ -80,7 +80,7 @@ public class ChannelClient extends Client implements ChannelResponse, StreamOrde
 					finsh = downloadTask(placeHolder, index, monitors);
 				}
 			});
-		}else {
+		} else {
 			return executor.submit(() -> {
 				for (int i = 0; i < Properties.RETRIES; i++) {
 					if(downloadTask(placeHolder, index, monitors)) {

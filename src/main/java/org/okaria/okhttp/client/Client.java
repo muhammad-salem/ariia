@@ -82,16 +82,27 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 	}
 		
 	public void updateItemOnline(Item item) {
-		boolean retrie;
+		int count = 0;
 		do {
-			retrie = updateItemOnline(item, false);
-			if (retrie)
-				break;
-			retrie = updateItemOnline(item, true);
-		} while (!retrie);
+			try {
+				 updateItemOnline(item, false);
+				 count++;
+				 break;
+			} catch (Exception e) {
+				try {
+					updateItemOnline(item, true);
+					 count++;
+					break;
+				} catch (IOException e1) {
+					if (count >= 10) {
+						break;
+					}
+				}
+			}
+		} while (true);
 	}
 
-	private boolean updateItemOnline(Item item, boolean headOrGet) {
+	private void updateItemOnline(Item item, boolean headOrGet) throws IOException {
 		if (item.getCookies().size() > 0) {
 			getHttpClient().cookieJar().saveFromResponse(item.url(), item.getCookies());
 		}
@@ -105,7 +116,7 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 			
 			if(response.code() == 404) {
 				item.setFilename("404_Not_Found");
-				return true;
+				return;
 			}
 			
 			HttpUrl usedUrl;
@@ -114,7 +125,7 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 						.equals(item.getUrl())) {
 				 usedUrl = response.networkResponse().request().url();
 				Log.fine(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
-						+ "\n redirect url \t"+ usedUrl );
+						+ "\nredirect url: \t"+ usedUrl );
 			} else {
 				usedUrl = response.request().url();
 			}
@@ -135,10 +146,9 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 				}
 				item.setFilename(filename);
 			}
-			return true;
 		} catch (IOException e) {
-			Log.warn(e.getClass(), "Exception", e.getMessage());
-			return false;
+			Log.warn(getClass(), e.getClass().getSimpleName(), e.getMessage());
+			throw e;
 		}
 		
 	}
