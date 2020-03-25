@@ -177,8 +177,7 @@ public interface ClientRequest {
     	builder.append('\n');
     	builder.append(request.headers().toString());
     	builder.append('\n');
-    	builder.append('\n');
-    	
+  
     	builder.append("response begin:");
     	builder.append('\n');
     	builder.append(response.protocol());
@@ -188,8 +187,6 @@ public interface ClientRequest {
     	builder.append(response.message());
     	builder.append('\n');
     	builder.append(response.headers().toString());
-    	builder.append('\n');
-    	builder.append('\n');
     	Log.fine(getClass(), "Client Request / Server Response", builder.toString());
     }
 }

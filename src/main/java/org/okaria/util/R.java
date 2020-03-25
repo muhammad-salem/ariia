@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.log.concurrent.Log;
 
 public class R {
 
@@ -224,11 +223,9 @@ public class R {
 		System.out.println(path);
 		try {
 			System.getSecurityManager().checkWrite(path+"test");
-			Log.info(R.class, "set default directory to [" + path + " ].");
 			return path;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Log.info(R.class, "set default directory to [" + getDownloadsFile() + " ].");
 			return getDownloadsFile();
 		}
 		

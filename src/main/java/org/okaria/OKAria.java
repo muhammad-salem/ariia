@@ -39,11 +39,10 @@ public class OKAria {
 		
 		R.MK_DIRS(R.ConfigPath);
 
-		String log_level = arguments.getOrDefault(TerminalArgument.Debug,
-				Level.info.name());
+		String log_level = 
+				arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
 		Log.level(log_level);
-		Log.fine(OKAria.class, "terminal arguments", Arrays.toString(args));
-
+		Log.fine(OKAria.class, "user input", Arrays.toString(args));
 		Properties.Config(arguments);
 
 		MiniTableServiceManager manager = MiniTableServiceManager.SegmentServiceManager(arguments.getProxy());
