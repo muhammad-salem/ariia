@@ -14,6 +14,20 @@ import org.okaria.okhttp.client.SegmentClient;
 
 public class MiniTableServiceManager extends ServiceManager {
 
+	public static MiniTableServiceManager SegmentServiceManager(Proxy proxy) {
+		return SegmentServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
+	}
+	public static MiniTableServiceManager SegmentServiceManager(OkConfig config) {
+		return  new MiniTableServiceManager(new SegmentClient(config));
+	}
+	
+	public static MiniTableServiceManager ChannelServiceManager(Proxy proxy) {
+		return ChannelServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
+	}
+	public static MiniTableServiceManager ChannelServiceManager(OkConfig config) {
+		return new MiniTableServiceManager(new ChannelClient(config));
+	}
+	
 	ItemsMiniTableMonitor tableItemsMonitor;
 	private Runnable emptyQueueRunnable = ()->{};
 	public MiniTableServiceManager(Type type, String proxyHost, int port) {
@@ -41,25 +55,6 @@ public class MiniTableServiceManager extends ServiceManager {
 	protected void initService(Client client) {
 		super.initService(client);
 		this.tableItemsMonitor = new ItemsMiniTableMonitor(sessionMointor);
-	}
-	
-
-	public static MiniTableServiceManager SegmentServiceManager(Proxy proxy) {
-		return SegmentServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
-	}
-	public static MiniTableServiceManager SegmentServiceManager(OkConfig config) {
-		MiniTableServiceManager manager = new MiniTableServiceManager();
-		manager.initService(new SegmentClient(config));
-		return manager;
-	}
-	
-	public static MiniTableServiceManager ChannelServiceManager(Proxy proxy) {
-		return ChannelServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
-	}
-	public static MiniTableServiceManager ChannelServiceManager(OkConfig config) {
-		MiniTableServiceManager manager = new MiniTableServiceManager();
-		manager.initService(new ChannelClient(config));
-		return manager;
 	}
 	
 

@@ -16,6 +16,21 @@ import org.okaria.okhttp.client.SegmentClient;
 
 public class TableServiceManager extends ServiceManager {
 
+	public static TableServiceManager SegmentServiceManager(Proxy proxy) {
+		return SegmentServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
+	}
+	public static TableServiceManager SegmentServiceManager(OkConfig config) {
+		return new TableServiceManager(new SegmentClient(config));
+	}
+	
+	public static TableServiceManager ChannelServiceManager(Proxy proxy) {
+		return ChannelServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
+	}
+	public static TableServiceManager ChannelServiceManager(OkConfig config) {
+		return new TableServiceManager(new ChannelClient(config));
+	}
+	
+	
 	TableItemsMonitor tableItemsMonitor;
 	private Runnable emptyQueueRunnable = ()->{};
 	public TableServiceManager(Type type, String proxyHost, int port) {
@@ -43,24 +58,6 @@ public class TableServiceManager extends ServiceManager {
 	protected void initService(Client client) {
 		super.initService(client);
 		this.tableItemsMonitor = new TableItemsMonitor(sessionMointor);
-	}
-	
-	public static TableServiceManager SegmentServiceManager(Proxy proxy) {
-		return SegmentServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
-	}
-	public static TableServiceManager SegmentServiceManager(OkConfig config) {
-		TableServiceManager manager = new TableServiceManager();
-		manager.initService(new SegmentClient(config));
-		return manager;
-	}
-	
-	public static TableServiceManager ChannelServiceManager(Proxy proxy) {
-		return ChannelServiceManager(new OkConfig(CookieJars.CookieJarMap, proxy));
-	}
-	public static TableServiceManager ChannelServiceManager(OkConfig config) {
-		TableServiceManager manager = new TableServiceManager();
-		manager.initService(new ChannelClient(config));
-		return manager;
 	}
 	
 
