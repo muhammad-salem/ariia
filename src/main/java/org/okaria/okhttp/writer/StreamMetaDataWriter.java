@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.segment.Segment;

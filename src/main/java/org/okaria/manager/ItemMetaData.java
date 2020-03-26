@@ -11,7 +11,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.mointors.OneRangeMonitor;
 import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.range.RangeUtil;

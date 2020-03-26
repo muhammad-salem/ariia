@@ -3,7 +3,7 @@ package org.okaria.okhttp.response;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.okhttp.client.ContentLength;

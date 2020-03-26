@@ -2,15 +2,15 @@ package org.okaria;
 
 import java.util.Arrays;
 
-import org.log.beans.Level;
-import org.log.concurrent.Log;
 import org.okaria.chrome.ChromeConnection;
+import org.terminal.console.log.Log;
 import org.okaria.lunch.Argument;
 import org.okaria.lunch.Lunch;
 import org.okaria.lunch.TerminalArgument;
 import org.okaria.okhttp.service.MiniTableServiceManager;
 import org.okaria.setting.Properties;
 import org.okaria.util.R;
+import org.terminal.console.log.Level;
 
 public class OKAria {
 
@@ -42,7 +42,7 @@ public class OKAria {
 		String log_level = 
 				arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
 		Log.level(log_level);
-		Log.fine(OKAria.class, "user input", Arrays.toString(args));
+		Log.log(OKAria.class, "user input", Arrays.toString(args));
 		Properties.Config(arguments);
 
 		MiniTableServiceManager manager = MiniTableServiceManager.SegmentServiceManager(arguments.getProxy());

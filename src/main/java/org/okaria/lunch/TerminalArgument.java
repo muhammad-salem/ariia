@@ -2,7 +2,8 @@ package org.okaria.lunch;
 
 import java.util.Arrays;
 
-import org.log.beans.Level;
+import org.terminal.console.log.Level;
+
 
 public enum TerminalArgument{
 		Url("-u", "--url"),

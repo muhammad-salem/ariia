@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.speed.SpeedMonitor;

@@ -14,7 +14,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.nio.file.Paths;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.lunch.Argument;
 import org.okaria.util.PlatformUtil;
 import org.okaria.util.R;

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.range.RangeInfo;
 import org.okaria.speed.SpeedMonitor;
 import org.okaria.util.Utils;
@@ -81,10 +81,10 @@ public class RangesInfoMonitor extends SpeedMonitor {
 		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
 	}
 	protected String getRemainingTimeString() {
-		return ansi.green(ansi.Underscore(Utils.timeformate(getRemainingTime())));
+		return ansi.green(ansi.underscore(Utils.timeformate(getRemainingTime())));
 	}
 	public String getTimer() {
-		return ansi.green(ansi.Underscore(Utils.timeformate(timer++)));
+		return ansi.green(ansi.underscore(Utils.timeformate(timer++)));
 	}
 
 	public String getPercent() {
@@ -144,11 +144,11 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	/////////////////
 	public String getReportLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.red(ansi.Bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
-		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
-		builder.append(ansi.yellow(ansi.Bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
-		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
+		builder.append(ansi.red(ansi.bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
+		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
+		builder.append(ansi.yellow(ansi.bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
+		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
+		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
 		builder.append(getRemainingTimeString());
 		return builder.toString();
 	}
@@ -187,16 +187,16 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	
 	private String firstLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.red(ansi.Bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
-		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
-		builder.append(ansi.yellow(ansi.Bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
+		builder.append(ansi.red(ansi.bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
+		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
+		builder.append(ansi.yellow(ansi.bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
 		return builder.toString();
 	}
 	
 	private String secondLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.magentaLight(ansi.Bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.Bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
+		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
+		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
 		return builder.toString();
 	}
 	

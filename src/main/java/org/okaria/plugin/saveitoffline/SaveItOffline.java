@@ -3,7 +3,7 @@ package org.okaria.plugin.saveitoffline;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.manager.Item;
 import org.okaria.okhttp.client.Client;
 import org.okaria.plugin.saveitoffline.OfflineObject.Quality;

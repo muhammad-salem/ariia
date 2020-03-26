@@ -5,7 +5,7 @@ import java.net.Proxy.Type;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.ItemMetaData;

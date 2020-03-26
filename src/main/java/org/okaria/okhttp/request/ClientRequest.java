@@ -3,7 +3,7 @@ package org.okaria.okhttp.request;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.manager.Item;
 import org.okaria.range.RangeUtil;
 
@@ -187,6 +187,6 @@ public interface ClientRequest {
     	builder.append(response.message());
     	builder.append('\n');
     	builder.append(response.headers().toString());
-    	Log.fine(getClass(), "Client Request / Server Response", builder.toString());
+    	Log.debug(getClass(), "Client Request / Server Response", builder.toString());
     }
 }

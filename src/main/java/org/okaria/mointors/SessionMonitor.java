@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;
 import org.okaria.util.Utils;
@@ -83,10 +83,10 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
 	}
 	protected String getRemainingTimeString() {
-		return ansi.green(ansi.Underscore(Utils.timeformate(getRemainingTime())));
+		return ansi.green(ansi.underscore(Utils.timeformate(getRemainingTime())));
 	}
 	public String getTimer() {
-		return ansi.green(ansi.Underscore(Utils.timeformate(timer++)));
+		return ansi.green(ansi.underscore(Utils.timeformate(timer++)));
 	}
 
 	public String getPercent() {

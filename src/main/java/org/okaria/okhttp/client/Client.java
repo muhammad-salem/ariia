@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.Item;
@@ -124,7 +124,7 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 					&& ! response.networkResponse().request().url().toString()
 						.equals(item.getUrl())) {
 				 usedUrl = response.networkResponse().request().url();
-				Log.fine(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
+				Log.trace(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
 						+ "\nredirect url: \t"+ usedUrl );
 			} else {
 				usedUrl = response.request().url();

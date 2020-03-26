@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.filecheck.CheckManager;
 import org.okaria.manager.Item;
 import org.okaria.manager.MetalinkItem;
@@ -136,7 +136,7 @@ public class Lunch {
 			mvn.setArtifactId(artifactId);
 		if (version != null)
 			mvn.setVersion(version);
-		Log.fine(getClass(), "Maven", mvn.toString());
+		Log.trace(getClass(), "Maven", mvn.toString());
 		return mvn.createBuilder(path + mvn.resolvePath());
 	}
 
@@ -149,7 +149,7 @@ public class Lunch {
 			mvn.setArtifactId(artifactId);
 		if (version != null)
 			mvn.setVersion(version);
-		Log.fine(getClass(), "Maven", mvn.toString());
+		Log.trace(getClass(), "Maven", mvn.toString());
 		return mvn;
 	}
 

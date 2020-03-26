@@ -13,7 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.Item;

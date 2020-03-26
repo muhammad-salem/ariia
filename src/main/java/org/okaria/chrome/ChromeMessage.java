@@ -2,9 +2,9 @@ package org.okaria.chrome;
 
 import java.util.Map;
 
-import org.log.beans.Level;
 import org.okaria.lunch.Argument;
 import org.okaria.lunch.TerminalArgument;
+import org.terminal.console.log.Level;
 
 import com.google.gson.Gson;
 

@@ -3,7 +3,7 @@ package org.okaria.plugin.googledrive;
 import java.util.List;
 import java.util.Map;
 
-import org.log.concurrent.Log;
+import org.terminal.console.log.Log;
 
 import okhttp3.Cookie;
 import okhttp3.Headers;
