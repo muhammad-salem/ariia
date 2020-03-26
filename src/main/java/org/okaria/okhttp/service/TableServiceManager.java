@@ -1,11 +1,10 @@
 package org.okaria.okhttp.service;
 
 import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.terminal.console.log.Log;
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.ItemMetaData;
@@ -13,6 +12,7 @@ import org.okaria.mointors.TableItemsMonitor;
 import org.okaria.okhttp.client.ChannelClient;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.client.SegmentClient;
+import org.terminal.console.log.Log;
 
 public class TableServiceManager extends ServiceManager {
 
@@ -32,59 +32,31 @@ public class TableServiceManager extends ServiceManager {
 	
 	
 	TableItemsMonitor tableItemsMonitor;
-	private Runnable emptyQueueRunnable = ()->{};
-	public TableServiceManager(Type type, String proxyHost, int port) {
-		super(type, proxyHost, port);
-	}
-
-	public TableServiceManager(Proxy proxy) {
-		super(proxy);
-	}
-
-	public TableServiceManager(CookieJars jar, Proxy proxy) {
-		super(jar, proxy);
-	}
+//	NetworkConnectivity connectivity;
 	
-	public TableServiceManager(OkConfig config) {
-		super(config);
-	}
+	private Runnable emptyQueueRunnable = ()->{};
+
 	public TableServiceManager(Client client) {
 		super(client);
-	}
-	
-	protected TableServiceManager() {}
-	
-	@Override
-	protected void initService(Client client) {
-		super.initService(client);
 		this.tableItemsMonitor = new TableItemsMonitor(sessionMointor);
+//		this.connectivity = new NetworkConnectivity(client);
 	}
 	
 
-//	@Override
-//	public void runSystemShutdownHook() {
-//		systemFlushDataOnly();
-//		saveWattingItemToDisk();
-//		//saveDownloadingItemToDisk();
-//		printReport();
-//	}
-
 
 	
+	ScheduledFuture<?> downloadServices;
+
 	@Override
 	public void startScheduledService() {
 		scheduledService.execute(this::saveWattingItemToDisk);
+//		scheduledService.scheduleWithFixedDelay(this::checkInternetConnectivity, 3, 1, TimeUnit.MINUTES);
 		
 		// for each 2 second
-		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
+		downloadServices = scheduledService
+				.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
-		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 4, 10, TimeUnit.SECONDS);
-		
-	}
-
-	@Override
-	protected Class<? extends Client> getClientClass() {
-		return client.getClass();
+		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 5, 5, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -107,14 +79,40 @@ public class TableServiceManager extends ServiceManager {
 		}
 		//saveDownloadingItemToDisk();
 	}
+	
+//	@Override
+//	public void checkInternetConnectivity() {
+//		
+//		if (sessionMointor.isDownloading()) {
+//			boolean isOnline = connectivity.isOnline();
+//			if (isOnline) {
+//				if (Objects.isNull(downloadServices)) {
+//					Log.info(getClass() , "start schedule download Services");
+//					downloadServices = scheduledService
+//							.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
+//				}
+//			} else {
+//				for (ItemMetaData item : downloadingList) {
+//					item.pause();
+//					wattingList.add(item);
+//				}
+//				downloadServices.cancel(true);
+//				downloadServices = null;
+//			}
+//			Log.info(getClass(), "network connectivity", 
+//					"isOnline: ".concat( Boolean.toString(isOnline))
+//					+  "\nisDownloading(): ".concat(Boolean.toString(sessionMointor.isDownloading())));
+//		}
+//	}
+
 
 	@Override
-	protected void addDownloadItemEvent(ItemMetaData holder) {
+	protected void addItemEvent(ItemMetaData holder) {
 		tableItemsMonitor.add(holder.getRangeMointor());
 	}
 
 	@Override
-	protected void removeDownloadItemEvent(ItemMetaData holder) {
+	protected void removeItemEvent(ItemMetaData holder) {
 		tableItemsMonitor.remove(holder.getRangeMointor());
 	}
 

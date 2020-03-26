@@ -484,17 +484,17 @@ public class Lunch {
 
 	public void addItem2WattingList(Item item) {
 		if (item.isStreaming()) {
-			Log.info(getClass(), "add stream item to waiting list ",
+			Log.info(getClass(), "add stream URL to waiting download list ",
 					item.liteString());
 		} else if (item.isFinish()) {
-			Log.info(getClass(), "Complete Download", item.liteString());
+			Log.info(getClass(), "Download Complete for URL", item.liteString());
 			return;
 		} else {
-			Log.info(getClass(), "add download item to waiting list",
+			Log.info(getClass(), "add URL to waiting download list",
 					item.toString());
 		}
 
-		manager.warrpItem(item);
+		manager.addItemToWattingList(item);
 		Item.toJsonFile(item);
 	}
 

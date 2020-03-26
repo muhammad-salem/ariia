@@ -67,8 +67,8 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 		try {
 			channel.force(true);
 		} catch (IOException e) {
-			Log.error(getClass(), "close channel", "error force any updates of this channel's file "
-					+ "\nto be written to the storage device that contains it \n" 
+			Log.error(getClass(), "close channel", "force any updates of this channel's file"
+					+ "\nto be written to the storage device\n" 
 					+ e.getMessage());
 		}
 		super.close();

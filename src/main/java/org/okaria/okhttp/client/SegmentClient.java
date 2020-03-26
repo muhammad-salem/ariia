@@ -16,7 +16,6 @@ import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.OkHttpClient;
-import okhttp3.OkHttpClient.Builder;
 
 public class SegmentClient extends Client implements SegmentResponse, StreamOrder, ThreadOrder  {
 	SegmentWriter segmentWriter;
@@ -28,10 +27,6 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 	}
 	public SegmentClient(OkHttpClient httpClient) {
 		super(httpClient);
-		init();
-	}
-	public SegmentClient(Builder builder) {
-		super(builder);
 		init();
 	}
 	
@@ -55,21 +50,15 @@ public class SegmentClient extends Client implements SegmentResponse, StreamOrde
 		if (Properties.RETRIES == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
-				while (!finsh) {
+				while (!finsh && metaData.isDownloading()) {
 					finsh = downloadTask(metaData, index, monitors);
 				}
 			});
 		} else {
 			return executor.submit(() -> {
 				boolean finised = false;
-				for (int i = 0; i < Properties.RETRIES; i++) {
+				for (int i = 0; (i < Properties.RETRIES && !finised && metaData.isDownloading()); i++) {
 					finised = downloadTask(metaData, index, monitors);
-					if(finised) {
-						break;
-					}
-				}
-				if (!finised) {
-					throw new RuntimeException("Network Connection Error");
 				}
 			});
 		}

@@ -22,6 +22,9 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		rangeInfos = new LinkedList<>();
 		format = new MessageFormat(pattern());
 	}
+
+	protected abstract String pattern();
+	protected abstract Callable<String> updateDataCallable();
 	
 	public int size() {
 		return rangeInfos.size();
@@ -52,6 +55,8 @@ public abstract class SessionMonitor extends SpeedMonitor {
 	private long totalLength = 0;
 	private long downloadLength = 0;
 	private long remainigLength = 0;
+	
+	private boolean downloading = false;
 
 	protected synchronized void rangeInfoUpdateData() {
 		totalLength = 0;
@@ -63,6 +68,7 @@ public abstract class SessionMonitor extends SpeedMonitor {
 			downloadLength += info.getDownloadLength();
 			remainigLength += info.getRemainingLength();
 		});
+		downloading = speedOfTCPReceive() > 0;
 	}
 
 	protected long getTotalLength() {
@@ -115,7 +121,6 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		return builder.toString();
 	}
 	
-	protected abstract String pattern();
 
 	public void printMointorReport() {
 		printMointorReport(System.out);
@@ -125,18 +130,22 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		out.print(scheduledUpdate(updateDataCallable()));
 	}
 	
-	protected abstract Callable<String> updateDataCallable();
-	
 	protected <T> T scheduledUpdate(Callable<T> callable) {
 		rangeInfoUpdateData();
 		T t = null;
 		try {
 			t = callable.call();
 		} catch (Exception e) {
-			Log.error(getClass(), e.getClass().getName(), e.getMessage());
+			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 		}
 		demondSpeedNow();
 		return t;
+	}
+
+
+
+	public boolean isDownloading() {
+		return downloading;
 	}
 	
 }

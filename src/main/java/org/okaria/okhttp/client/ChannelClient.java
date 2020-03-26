@@ -17,7 +17,6 @@ import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 
 import okhttp3.OkHttpClient;
-import okhttp3.OkHttpClient.Builder;
 
 public class ChannelClient extends Client implements ChannelResponse, StreamOrder, ThreadOrder{
 
@@ -42,14 +41,6 @@ public class ChannelClient extends Client implements ChannelResponse, StreamOrde
 		super(httpClient);
 		init(null);
 	}
-	public ChannelClient(Builder builder) {
-		super(builder);
-		init(null);
-	}
-	public ChannelClient(Builder builder, ClinetWriter channelWriter) {
-		super(builder);
-		init(channelWriter);
-	}
 	
 	
 	protected void init(ClinetWriter writer) {
@@ -70,26 +61,24 @@ public class ChannelClient extends Client implements ChannelResponse, StreamOrde
 		return ChannelResponse.super.downloadTask(metaData, index, monitors);
 	}
 	
+	
 	@Override
-	public Future<?> downloadPart(ItemMetaData placeHolder, int index,
-			SpeedMonitor... monitors) {
+	public Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
 		if (Properties.RETRIES == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
-				while (!finsh) {
-					finsh = downloadTask(placeHolder, index, monitors);
+				while (!finsh && metaData.isDownloading()) {
+					finsh = downloadTask(metaData, index, monitors);
 				}
 			});
 		} else {
 			return executor.submit(() -> {
-				for (int i = 0; i < Properties.RETRIES; i++) {
-					if(downloadTask(placeHolder, index, monitors)) {
-						break;
-					}
+				boolean finised = false;
+				for (int i = 0; (i < Properties.RETRIES && !finised && metaData.isDownloading()); i++) {
+					finised = downloadTask(metaData, index, monitors);
 				}
 			});
 		}
-
 	}
 	
 	@Override

@@ -1,31 +1,23 @@
 package org.okaria.okhttp.service;
 
 import java.io.Closeable;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.Proxy;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.terminal.console.log.Log;
-import org.okaria.core.CookieJars;
-import org.okaria.core.OkConfig;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.manager.ItemStore;
 import org.okaria.mointors.SimpleSessionMointor;
 import org.okaria.okhttp.client.Client;
-import org.okaria.okhttp.client.SegmentClient;
 import org.okaria.okhttp.writer.ChannelMetaDataWriter;
 import org.okaria.okhttp.writer.StreamMetaDataWriter;
 import org.okaria.range.RangeUtil;
 import org.okaria.setting.Properties;
+import org.terminal.console.log.Log;
 
 public abstract class ServiceManager implements Closeable {
 	
@@ -40,76 +32,39 @@ public abstract class ServiceManager implements Closeable {
 	ItemStore itemStore;
 	Client client;
 	SimpleSessionMointor sessionMointor;
+	NetworkConnectivity connectivity;
 	
-	
-	public ServiceManager(Proxy.Type type, String proxyHost, int port) {
-		this(new Proxy(type, new InetSocketAddress(proxyHost, port)));
-	}
-
-	public ServiceManager(Proxy proxy) {
-		this(CookieJars.CookieJarMap, proxy);
-	}
-	public ServiceManager(CookieJars jar,Proxy proxy) {
-		this(new OkConfig(jar, proxy));
-	}
-	
-	public ServiceManager(OkConfig config) {
-		Class< ? extends Client> clientClass = getClientClass();
-		Client client = null;
-		try {
-			client = clientClass.getConstructor(OkConfig.class).newInstance(config);
-		} catch (Exception e) {
-			client = new SegmentClient(config);
-		}
-		initService(client);
-	}
-	
-	protected ServiceManager() {}
-	
-	
-
 	public ServiceManager(Client client) {
-		initService(client);
-	}
-
-
-	/**
-	 * 
-	 */
-	protected void initService(Client client) {
 		this.client = client;
 		this.itemStore = ItemStore.CreateAndInitStore();
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 		this.sessionMointor = new SimpleSessionMointor(); 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-	}
-	
-	public boolean checkInternetConnectivity() {
-		try {
-			Enumeration<NetworkInterface> eni = NetworkInterface.getNetworkInterfaces();
-			while ( eni.hasMoreElements()) {
-				NetworkInterface ni = eni.nextElement();
-				if (ni.isUp() && ni.getParent() == null) {
-					return true;
-				}
-			}
-		} catch (SocketException e) {
-			return false;
-		}
-//		return false;
-		return sessionMointor.speedOfTCPReceive() > 0l;
+		this.connectivity = new NetworkConnectivity(client);
 	}
 	
 
 	@Override
 	public void close() {
-		client.getExecutorService().shutdown();
-		scheduledService.shutdown();
+		client.getExecutorService().shutdownNow();
+		scheduledService.shutdownNow();
+	}
+		
+	public boolean isNetworkFailer() {
+		if (sessionMointor.isDownloading()) {
+			return false;
+		} else {
+			if (connectivity.isOnline()) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 	
 	
-	public void warrpItem(Item item) {
+	public void addItemToWattingList(Item item) {
 		RangeUtil range = item.getRangeInfo();
 		sessionMointor.add(range);
 		ItemMetaData metaData = null;
@@ -122,7 +77,7 @@ public abstract class ServiceManager implements Closeable {
 		
 //		else if(Integer.MAX_VALUE  > range.getFileLength()) {
 //			metaData = new SimpleMappedMetaDataWriter(item);
-//		}else {
+//		} else {
 //			metaData = new LargeMappedMetaDataWriter(item);
 //		}
 		
@@ -131,71 +86,72 @@ public abstract class ServiceManager implements Closeable {
 	}
 	
 	protected void checkdownloadList() {
-		if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
-			StringBuilder builder = new StringBuilder();
-			while (downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL && !wattingList.isEmpty()) {
-				ItemMetaData metaData = wattingList.poll();
-				downloadingList.add(metaData);
-				addDownloadItemEvent(metaData);
-				metaData.getItem().getRangeInfo().oneCycleDataUpdate();
-				builder.append(metaData.getItem().getFilename());
-				builder.append('\t');
-				builder.append( metaData.getItem().getRangeInfo().getRemainingLengthMB());
-				builder.append(' ');
-				builder.append('\n');
+		if (isNetworkFailer()) {
+			for (ItemMetaData item : downloadingList) {
+				item.pause();
+				downloadingList.remove(item);
+				removeItemEvent(item);
+				wattingList.add(item);
 			}
-			if(builder.length() != 0) {
-				builder.delete(builder.length()-2, builder.length());
-				Log.info(getClass(), "items added to download list", builder.toString());
+			Log.info(getClass(), "Check Network Connection",
+					"Network Connectivity Statues: NETWORK DISCONNECTED");
+		} else {
+			if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
+				while (downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL && !wattingList.isEmpty()) {
+					ItemMetaData metaData = wattingList.poll();
+					downloadingList.add(metaData);
+					addItemEvent(metaData);
+					metaData.getItem().getRangeInfo().oneCycleDataUpdate();
+
+					StringBuilder builder = new StringBuilder();
+					builder.append(metaData.getItem().getFilename());
+					builder.append("\tRemaining: ");
+					builder.append( metaData.getItem().getRangeInfo().getRemainingLengthMB());
+					Log.info(getClass(), "add item to download list", builder.toString());
+				}
 			}
-		}
-		
-		
-		List<ItemMetaData> removeList = new ArrayList<>();
-		for (ItemMetaData metaData : downloadingList) {
-			Item item = metaData.getItem();
-			RangeUtil info = item.getRangeInfo();
-			if (info.isFinish()) {
-				Log.info(getClass(), "Remove Item from download list", item.getFilename());
-				removeList.add(metaData);
-				continue;
-			} else if(! metaData.isDownloading()) {
-//				metaData.download(client, sessionMointor);
-				metaData.downloadThreads(client, sessionMointor);
-			}
-//			metaData.recycelCompletedFromMax(client, sessionMointor);
-			metaData.checkCompleted(client, sessionMointor);
 			
+			List<ItemMetaData> removeList = new ArrayList<>();
+			
+			for (ItemMetaData metaData : downloadingList) {
+				Item item = metaData.getItem();
+				RangeUtil info = item.getRangeInfo();
+				if (info.isFinish()) {
+					Log.info(getClass(), "finish download URL", item.getFilename());
+					removeList.add(metaData);
+					continue;
+				}
+				metaData.initWaitQueue();
+				metaData.checkCompleted();
+				metaData.startDownloadQueue(client, sessionMointor);
+				
+			}
+			
+			// remove 
+			removeList.forEach((metaData)->{
+				metaData.getItem().getRangeInfo().oneCycleDataUpdate();
+				metaData.systemFlush();
+				Log.info(getClass(), "Download Complete", metaData.getItem().liteString());
+				downloadingList.remove(metaData);
+				removeItemEvent(metaData);
+				metaData.saveItem2CacheFile();
+				metaData.close();
+			});
+			
+			if (downloadingList.isEmpty() & wattingList.isEmpty()) {
+				close();
+				getFinishDownloadQueueEvent().run();
+			}
 		}
-		
-		// remove 
-		removeList.forEach((metaData)->{
-			metaData.getItem().getRangeInfo().oneCycleDataUpdate();
-			metaData.systemFlush();
-			Log.info(getClass(), "Download Complete", metaData.getItem().liteString());
-			downloadingList.remove(metaData);
-			removeDownloadItemEvent(metaData);
-			metaData.saveItem2CacheFile();
-			metaData.close();
-		});
-		
-		if (downloadingList.isEmpty() & wattingList.isEmpty()) {
-			getFinishDownloadQueueEvent().run();
-		}
-		
-//		if (! checkInternetConnectivity()) {
-//			close();
-//		}
 		
 	}
 
-	protected abstract Class<? extends Client> getClientClass();
 	public    abstract void printReport();
 	protected abstract void systemFlushData();
 	protected abstract void saveWattingItemToDisk();
 	protected abstract void saveDownloadingItemToDisk();
-	protected abstract void addDownloadItemEvent(ItemMetaData holder);
-	protected abstract void removeDownloadItemEvent(ItemMetaData holder);
+	protected abstract void addItemEvent(ItemMetaData holder);
+	protected abstract void removeItemEvent(ItemMetaData holder);
 	
 	public abstract Runnable getFinishDownloadQueueEvent();
 	
@@ -210,7 +166,6 @@ public abstract class ServiceManager implements Closeable {
 			metaData.saveItem2CacheFile();
 			metaData.close();
 		}
-//		printReport();
 	}
 	
 	

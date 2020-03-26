@@ -1,8 +1,8 @@
 package org.okaria.okhttp.service;
 
 import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.util.concurrent.TimeUnit;
+
 
 import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
@@ -29,60 +29,25 @@ public class MiniTableServiceManager extends ServiceManager {
 	}
 	
 	ItemsMiniTableMonitor tableItemsMonitor;
-	private Runnable emptyQueueRunnable = ()->{};
-	public MiniTableServiceManager(Type type, String proxyHost, int port) {
-		super(type, proxyHost, port);
-	}
-
-	public MiniTableServiceManager(Proxy proxy) {
-		super(proxy);
-	}
-
-	public MiniTableServiceManager(CookieJars jar, Proxy proxy) {
-		super(jar, proxy);
-	}
 	
-	public MiniTableServiceManager(OkConfig config) {
-		super(config);
-	}
+	private Runnable emptyQueueRunnable = ()->{};
+	
 	public MiniTableServiceManager(Client client) {
 		super(client);
-	}
-	
-	protected MiniTableServiceManager() {}
-
-	@Override
-	protected void initService(Client client) {
-		super.initService(client);
 		this.tableItemsMonitor = new ItemsMiniTableMonitor(sessionMointor);
 	}
 	
-
-
-//	public void runSystemShutdownHook() {
-//		systemFlushData();
-//		saveWattingItemToDisk();
-		//saveDownloadingItemToDisk();
-//		printReport();	
-//	}
-
-
-	
+	boolean allowDownload = true;
 	@Override
 	public void startScheduledService() {
 		scheduledService.execute(this::saveWattingItemToDisk);
+
+//		scheduledService.scheduleWithFixedDelay(this::checkInternetConnectivity, 0, 1, TimeUnit.SECONDS);
 		
 		// for each 2 second
 		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 5, 5, TimeUnit.SECONDS);
-//		scheduledService.scheduleAtFixedRate(this::systemFlushData, 10, 10, TimeUnit.SECONDS);
-		
-	}
-
-	@Override
-	protected Class<? extends Client> getClientClass() {
-		return client.getClass();
 	}
 
 	@Override
@@ -96,14 +61,37 @@ public class MiniTableServiceManager extends ServiceManager {
 			placeHolder.systemFlush();
 		}
 	}
+	
+	
+//	@Override
+//	public void checkInternetConnectivity() {
+//		boolean isDownloading = sessionMointor.isDownloading();
+//		
+//		if (isDownloading) {
+//			allowDownload = true;
+//		} else {
+//			boolean isOnline = connectivity.isOnline();
+//			if (isOnline) {
+//				allowDownload = true;
+//			} else {
+//				allowDownload = false;
+//				for (ItemMetaData item : downloadingList) {
+//					item.pause();
+//					wattingList.add(item);
+//				}
+//				close();
+//			}
+//		}
+//		Log.info(getClass(), "Network Connectivity", "Allow Download: " + Boolean.toString(allowDownload));
+//	}
 
 	@Override
-	protected void addDownloadItemEvent(ItemMetaData holder) {
+	protected void addItemEvent(ItemMetaData holder) {
 		tableItemsMonitor.add(holder.getRangeMointor());
 	}
 
 	@Override
-	protected void removeDownloadItemEvent(ItemMetaData holder) {
+	protected void removeItemEvent(ItemMetaData holder) {
 		tableItemsMonitor.remove(holder.getRangeMointor());
 	}
 

@@ -57,7 +57,7 @@ public class CheckManager {
 				copy.getRangeInfo().avoidMissedBytes();
 				copy.getRangeInfo().oneCycleDataUpdate();
 				copy.setCacheFile(null);
-				manager.warrpItem(copy);
+				manager.addItemToWattingList(copy);
 				Log.info(CheckManager.class, "add item", copy.toString());
 			}
 		
@@ -87,7 +87,7 @@ public class CheckManager {
 		Item copy = search.copy();
 		copy.setRangeInfo(info);
 		copy.setCacheFile(null);
-		manager.warrpItem(copy);
+		manager.addItemToWattingList(copy);
 		Log.info(CheckManager.class, "add item", copy.toString());
 	}
 

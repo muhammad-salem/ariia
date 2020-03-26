@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
 
-import org.terminal.console.log.Log;
 import org.okaria.mointors.OneRangeMonitor;
 import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.range.RangeUtil;
@@ -20,12 +17,12 @@ import org.okaria.segment.Segment.OfferSegment;
 import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 import org.okaria.util.R;
+import org.terminal.console.log.Log;
 
 public abstract class ItemMetaData implements OfferSegment, Closeable {
 	
 	protected Item item;
 	protected RangeUtil info;
-	protected List<Future<?>> futures;
 	
 	protected boolean downloading = false;
 	protected OneRangeMonitor rangeMointor;
@@ -34,8 +31,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	private   ConcurrentLinkedQueue<Segment> segments;
 	
 	public ItemMetaData(Item item) {
-		this.item = item;
-		this.info = item.rangeInfo;
+		this.item 			= item;
+		this.info 			= item.rangeInfo;
 		this.rangeMointor	= new OneRangeMonitor(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
 		initRandomAccessFile();
@@ -108,7 +105,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 				report.append('\n');
 				queue.poll();
 				releaseSegment(segment);
-			}else {
+			} else {
 				// check raf is opened
 				if(raf == null || isClose() ) {
 					initRandomAccessFile();
@@ -154,173 +151,76 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return rangeMointor;
 	}
 	
-	
-	public boolean addFuture(Future<?> e) {
-		return futures.add(e);
-	}
-
-	public List<Future<?>> getFutures() {
-		return futures;
-	}
-	
 	public boolean isDownloading() {
 		return downloading;
 	}
 	
-	public void setDownloading() {
-		 downloading = true;
-	}
-	
-	public void setPause() {
-		downloading = false;
+	public void checkCompleted() {
+		Iterator<Integer> iterator = downloadList.iterator();
+		while (iterator.hasNext()) {
+			Integer index = iterator.next();
+			if ( info.isFinish(index)){
+				iterator.remove();
+			} else {
+				iterator.remove();
+				waitQueue.add(index);
+			}
+		}
 	}
 	
 	public void pause() {
-		setPause();
-		check();
-		for (Future<?> future : futures) {
-			if(future.isDone() || future.isCancelled()) continue;
-			future.cancel(true);
-		}
+		downloading = false;
+		checkCompleted();
 	}
 	
 	
-	/**
-	 * check and clear done and cancelled Future
-	 */
-	private void check() {
-		Iterator<Future<?>> iterator =  futures.iterator();
-		while (iterator.hasNext()) {
-			Future<?> future = (Future<?>) iterator.next();
-			if(future.isDone() || future.isCancelled()) {
-				iterator.remove();
-			}
-		}
-		
-		
-	}
+	private LinkedList<Integer> downloadList = new LinkedList<>();
+	private Queue<Integer> waitQueue = new LinkedList<>();
 	
-	
-	public void recycelCompletedFromMax2(DownloadPlane plane, SpeedMonitor... monitors) {
-		check();
-		for (int index = 0; index < info.getRangeCount(); index++) {
-			if (info.isFinish(index)) {
-				int maxIndex = info.updateIndexFromMaxRange(index);
-				if (maxIndex > -1 & maxIndex < info.getRangeCount()) {
-					Log.trace(getClass(), "Item Update", item.toString());
-					downloadPart(plane, index, monitors);
-				}
-			}
-		}
-	}
-	
-	
-	
-	public void download2(DownloadPlane plane, SpeedMonitor... monitors) {
-		R.mkParentDir(item.path());
-		futures = plane.download(this, rangeMointor, monitors);
-		setDownloading();
-	}
-	
-	private LinkedList<Integer> download = new LinkedList<>();
-	private Queue<Integer> waitting = new LinkedList<>();
-	
-	public void downloadThreads(DownloadPlane plane, SpeedMonitor... monitors) {
-		
+	public void initWaitQueue() {
 		int count = info.getRangeCount();
 		if (count == 0) return;
-		else if (count <= 10 || info.limitOfIndex(count-1) != info.getFileLength()) {
+		waitQueue.clear();
+		if (count <= 10 || info.limitOfIndex(count-1) != info.getFileLength()) {
 			for (int index = 0; index < count; index++) {
 				if (! info.isFinish(index)) {
-					waitting.add(index);
+					waitQueue.add(index);
 				}
 			}
 		} else {
-			
 			for (int index = count-1, i = 0; i < 4; i++) {
 				if (! info.isFinish(index-i)) {
-					waitting.add(index-i);
+					waitQueue.add(index-i);
 				}
 			}
-			
 			for (int index = 0; index < count - 4; index++) {
 				if (! info.isFinish(index)) {
-					waitting.add(index);
+					waitQueue.add(index);
 				}
 			}
-			
-			
 		}
-		
-		
-//		for (int index = 0; index < info.getRangeCount(); index++) {
-//			if (! info.isFinish(index)) {
-//				waitting.add(index);
-//			}
-//		}
-		R.mkParentDir(item.path());
-		futures = new LinkedList<Future<?>>();
-		downloadAction(plane, monitors);
-		setDownloading();
 	}
 
-	/**
-	 * @param plane
-	 * @param monitors
-	 */
-	protected void downloadAction(DownloadPlane plane, SpeedMonitor... monitors) {
-		
-		while ( download.size() <= Properties.RANGE_POOL_NUM & ! waitting.isEmpty()) {
-			if ( ! downloadFirstInIndex(plane , monitors) ) break;
-		}
-		
-//		if(download.size() == Properties.RANGE_POOL_NUM) return;
-		
-//		if(download.size() < Properties.RANGE_POOL_NUM & waitting.isEmpty()) {
-//			for ( int markIndex = 0; markIndex < info.getRangeCount(); markIndex++) {
-//				if ( info.isFinish(markIndex)) {
-//					int maxIndex = info.updateIndexFromMaxRange(markIndex);
-//					if (maxIndex > -1 & maxIndex < info.getRangeCount()) {
-//						waitting.add(markIndex);
-//					}
-//				}
-//			}
-//			return;
-//		}
-		
-		//downloadAction(plane, monitors);
-	}
-
-	/**
-	 * @param plane
-	 * @param monitors
-	 */
-	protected boolean downloadFirstInIndex(DownloadPlane plane, SpeedMonitor... monitors) {
-		Integer index = waitting.poll();
-		if(index == null) return false;
-		downloadPart(plane, index, monitors);
-		download.add(index);
-		return true;
-	}
-	
-	public void checkCompleted(DownloadPlane plane, SpeedMonitor... monitors) {
-		check();
-		Iterator<Integer> iterator = download.iterator();
-		while (iterator.hasNext()) {
-			Integer index = (Integer) iterator.next();
-			if ( info.isFinish(index) ){
-				iterator.remove();
+	public void startDownloadQueue(DownloadPlane plane, SpeedMonitor... monitors) {
+		downloading = true;
+		while ( downloadList.size() < Properties.RANGE_POOL_NUM & ! waitQueue.isEmpty()) {
+			Integer index = waitQueue.poll();
+			if(index == null) break;
+			else {
+				plane.downloadPart(this, index, rangeMointor, monitors);
+				downloadList.add(index);
 			}
 		}
-		downloadAction(plane, monitors);
 	}
 	
+
 	
-	public void downloadPart(DownloadPlane plane, int index, SpeedMonitor... monitors) {
-		Future<?>  future= plane.downloadPart(this, index, rangeMointor, monitors);
-		futures.add(future);
-		setDownloading();
-	}
+	
+//	public void downloadPart(DownloadPlane plane, int index, SpeedMonitor... monitors) {
+//		Future<?>  future = plane.downloadPart(this, index, rangeMointor, monitors);
+//		futures.add(future);
+//		downloading = true;
+//	}
 	
 	
 	public void saveItem2CacheFile() {

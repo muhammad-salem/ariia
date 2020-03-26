@@ -1,14 +1,10 @@
 package org.okaria.okhttp.client;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import org.terminal.console.log.Log;
-import org.okaria.core.CookieJars;
 import org.okaria.core.OkConfig;
 import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
@@ -19,9 +15,9 @@ import org.okaria.okhttp.response.DownloadResponse;
 import org.okaria.range.RangeInfo;
 import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
+import org.terminal.console.log.Log;
 
 import okhttp3.Cookie;
-import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -30,57 +26,50 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 
 	
 	private OkHttpClient httpClient;
+	private OkConfig config;
 	
 	public Client(OkConfig config) {
-		createOkHttpClient(config);
+		this.setConfig(config);
 	}
 	public Client(OkHttpClient httpClient) {
-		this.httpClient = httpClient;
+		this.setHttpClient(httpClient);
 	}
-	public Client(OkHttpClient.Builder builder) {
-		createOkHttpClient(builder);
+	
+
+	private void init(OkConfig config) {
+		OkHttpClient.Builder builder = new OkHttpClient.Builder();
+		builder
+			.cookieJar(config.cookieJar())
+			.proxy(config.proxy())
+			.retryOnConnectionFailure(false);
+		setHttpClient(builder.build());
 	}
 
-	public void createOkHttpClient(OkHttpClient.Builder builder) {
-		httpClient = builder.build();
+	
+	private void init(OkHttpClient httpClient) {
+		this.config = new OkConfig();
+		this.config.updateCookieJar(httpClient.cookieJar());
+		this.config.updaeProxy(httpClient.proxy());
 	}
-
-	public void createOkHttpClient(OkConfig config) {
-		if (config == null) {
-			httpClient = new OkHttpClient();
-		} else {
-			OkHttpClient.Builder builder = new OkHttpClient.Builder();
-			builder.cookieJar(config.cookieJar());
-			builder.proxy(config.proxy());
-			httpClient = builder.build();
-		}
+	
+	public OkConfig getConfig() {
+		return config;
 	}
-
-	protected void defalutOkHttpClient() {
-		httpClient = new OkHttpClient().newBuilder()
-				.cookieJar(CookieJars.CookieJarMap)
-				.build();
-	}
-
-	public void changeProxy(Proxy.Type type, String hostname, int port) {
-		OkHttpClient.Builder builder = getHttpClient().newBuilder();
-		builder.proxy(new Proxy(type, new InetSocketAddress(hostname, port)));
-		httpClient = builder.build();
-	}
-
-	public void setCookieJar(CookieJar cookieJar) {
-		OkHttpClient.Builder builder = getHttpClient().newBuilder();
-		builder.cookieJar(cookieJar);
-		httpClient = builder.build();
+	
+	public void setConfig(OkConfig config) {
+		this.config = config;
+		init(config);
 	}
 
 	@Override
 	public OkHttpClient getHttpClient() {
-		if (httpClient == null)
-			defalutOkHttpClient();
 		return httpClient;
 	}
-		
+	public void setHttpClient(OkHttpClient httpClient) {
+		this.httpClient = httpClient;
+		this.init(httpClient);
+	}
+			
 	public void updateItemOnline(Item item) {
 		int count = 0;
 		do {
