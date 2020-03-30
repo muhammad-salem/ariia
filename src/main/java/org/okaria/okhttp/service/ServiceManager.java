@@ -293,8 +293,6 @@ public class ServiceManager implements Closeable {
 	}
 	
 	
-
-
 //	@Override
 	public void printReport() {
 		System.out.println(reportTable.getTableReport());

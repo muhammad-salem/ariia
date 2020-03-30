@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import org.okaria.chrome.ChromeConnection;
 import org.okaria.lunch.Argument;
-import org.okaria.lunch.Lunch;
 import org.okaria.lunch.TerminalArgument;
 import org.okaria.okhttp.service.ServiceManager;
 import org.okaria.setting.Properties;
@@ -55,8 +54,8 @@ public class OKAria {
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
 		
-		Lunch lunch = new Lunch(manager);
-		lunch.download(arguments);
+//		Lunch lunch = new Lunch(manager);
+//		lunch.download(arguments);
 		manager.setFinishDownloadAction(() ->  System.exit(0));
 
 	}
