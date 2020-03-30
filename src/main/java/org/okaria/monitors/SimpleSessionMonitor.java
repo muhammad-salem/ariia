@@ -1,4 +1,4 @@
-package org.okaria.mointors;
+package org.okaria.monitors;
 
 import java.util.concurrent.Callable;
 

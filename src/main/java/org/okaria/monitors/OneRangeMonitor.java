@@ -1,4 +1,4 @@
-package org.okaria.mointors;
+package org.okaria.monitors;
 
 import org.okaria.range.RangeUtil;
 import org.okaria.speed.SpeedMonitor;

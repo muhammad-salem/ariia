@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.okaria.mointors.OneRangeMonitor;
+import org.okaria.monitors.OneRangeMonitor;
 import org.okaria.okhttp.queue.DownloadPlane;
 import org.okaria.range.RangeUtil;
 import org.okaria.segment.Segment;
