@@ -7,7 +7,7 @@ import org.okaria.util.Utils;
 import org.terminal.Ansi;
 import org.terminal.beans.Row;
 
-public class TableItemsMonitor {
+public class TableItemsMonitor implements TableMonitor {
 	
 	protected Set<OneRangeMonitor> monitors;
 	protected SessionMonitor session;
@@ -21,16 +21,24 @@ public class TableItemsMonitor {
 	}
 	
 	
+	@Override
 	public boolean add(OneRangeMonitor mointor) {
 		return monitors.add(mointor);
 	}
 
+	@Override
 	public void remove(OneRangeMonitor mointor) {
 		monitors.remove(mointor);
 	}
 	
+	@Override
 	public void clear() {
 		monitors.clear();
+	}
+	
+	@Override
+	public SessionMonitor getSessionMonitor() {
+		return session;
 	}
 	
 
@@ -82,6 +90,7 @@ public class TableItemsMonitor {
 	}
 	
 	
+	@Override
 	public String getTableReport() {
 		updateInfo();
 		updateTable();

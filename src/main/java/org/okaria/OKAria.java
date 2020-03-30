@@ -3,14 +3,14 @@ package org.okaria;
 import java.util.Arrays;
 
 import org.okaria.chrome.ChromeConnection;
-import org.terminal.console.log.Log;
 import org.okaria.lunch.Argument;
 import org.okaria.lunch.Lunch;
 import org.okaria.lunch.TerminalArgument;
-import org.okaria.okhttp.service.MiniTableServiceManager;
+import org.okaria.okhttp.service.ServiceManager;
 import org.okaria.setting.Properties;
 import org.okaria.util.R;
 import org.terminal.console.log.Level;
+import org.terminal.console.log.Log;
 
 public class OKAria {
 
@@ -45,8 +45,9 @@ public class OKAria {
 		Log.log(OKAria.class, "user input", Arrays.toString(args));
 		Properties.Config(arguments);
 
-		MiniTableServiceManager manager = MiniTableServiceManager.SegmentServiceManager(arguments.getProxy());
+		ServiceManager manager = ServiceManager.SegmentServiceManager(arguments.getProxy());
 		manager.startScheduledService();
+		
 		Log.trace(OKAria.class, "Set Shutdown Hook Thread", "register shutdown thread");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			manager.runSystemShutdownHook();
@@ -56,7 +57,7 @@ public class OKAria {
 		
 		Lunch lunch = new Lunch(manager);
 		lunch.download(arguments);
-		manager.setFinishDownloadQueueEvent(() ->  System.exit(0));
+		manager.setFinishDownloadAction(() ->  System.exit(0));
 
 	}
 

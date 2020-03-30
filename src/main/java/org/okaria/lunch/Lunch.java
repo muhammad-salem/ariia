@@ -55,9 +55,6 @@ public class Lunch {
 			} else {
 				CheckManager.CheckItem(arguments.getCheckFile(),arguments.parseChunkSize(), manager);
 			}
-			
-			
-			
 		}
 
 		// else if(arguments.isGoogleDrive()) {
