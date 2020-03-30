@@ -12,6 +12,8 @@ import org.okaria.manager.Item;
 import org.okaria.manager.ItemMetaData;
 import org.okaria.manager.ItemStore;
 import org.okaria.mointors.SimpleSessionMointor;
+import org.okaria.network.ConnectivityCheck;
+import org.okaria.network.UrlConnectivity;
 import org.okaria.okhttp.client.Client;
 import org.okaria.okhttp.writer.ChannelMetaDataWriter;
 import org.okaria.okhttp.writer.StreamMetaDataWriter;
@@ -32,7 +34,7 @@ public abstract class ServiceManager implements Closeable {
 	ItemStore itemStore;
 	Client client;
 	SimpleSessionMointor sessionMointor;
-	NetworkConnectivity connectivity;
+	ConnectivityCheck connectivity;
 	
 	public ServiceManager(Client client) {
 		this.client = client;
@@ -41,7 +43,7 @@ public abstract class ServiceManager implements Closeable {
 		this.downloadingList = new LinkedList<>();
 		this.sessionMointor = new SimpleSessionMointor(); 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.connectivity = new NetworkConnectivity(client);
+		this.connectivity = new UrlConnectivity(client.getHttpClient().proxy());
 	}
 	
 
@@ -87,14 +89,14 @@ public abstract class ServiceManager implements Closeable {
 	
 	protected void checkdownloadList() {
 		if (isNetworkFailer()) {
+			Log.info(getClass(), "Check Network Connection",
+					"Network Connectivity Statues: NETWORK DISCONNECTED");
 			for (ItemMetaData item : downloadingList) {
 				item.pause();
 				downloadingList.remove(item);
-				removeItemEvent(item);
+//				removeItemEvent(item);
 				wattingList.add(item);
 			}
-			Log.info(getClass(), "Check Network Connection",
-					"Network Connectivity Statues: NETWORK DISCONNECTED");
 		} else {
 			if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
 				while (downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL && !wattingList.isEmpty()) {
