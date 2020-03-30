@@ -1,7 +1,7 @@
 package org.okaria.mointors;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.okaria.util.Utils;
 import org.terminal.Ansi;
@@ -9,41 +9,41 @@ import org.terminal.beans.Row;
 
 public class TableItemsMonitor {
 	
-	protected List<OneRangeMonitor> mointors;
+	protected Set<OneRangeMonitor> monitors;
 	protected SessionMonitor session;
 	protected TableItems table;
 	
 	public TableItemsMonitor(SessionMonitor session) {
 		this.session = session;
-		mointors = new LinkedList<>();
+		monitors = new HashSet<>();
 		table = new TableItems(8);
 		table.head("#", "Name", "Length", "Complete", "Remain", "Down", "Speed", "%");
 	}
 	
 	
 	public boolean add(OneRangeMonitor mointor) {
-		return mointors.add(mointor);
+		return monitors.add(mointor);
 	}
 
 	public void remove(OneRangeMonitor mointor) {
-		mointors.remove(mointor);
+		monitors.remove(mointor);
 	}
 	
 	public void clear() {
-		mointors.clear();
+		monitors.clear();
 	}
 	
 
 	private void callSpeedForNextCycle() {
 		
-		for (OneRangeMonitor mointor : mointors) {
+		for (OneRangeMonitor mointor : monitors) {
 			mointor.demondSpeedNow();
 		}
 		session.demondSpeedNow();
 	}
 	
 	private void updateInfo() {
-		for (OneRangeMonitor mointor : mointors) {
+		for (OneRangeMonitor mointor : monitors) {
 			mointor.updateData();
 		}
 		session.rangeInfoUpdateData();
@@ -53,7 +53,7 @@ public class TableItemsMonitor {
 		table.getRows().clear();
 		//table.head("name", "Length", "TD", "Remain", "Down", "Speed", "100%");
 		int index = 0;
-		for (OneRangeMonitor mointor : mointors) {
+		for (OneRangeMonitor mointor : monitors) {
 			Row<String> row = table.createRow();
 			row.add(++index + "");
 			row.add(mointor.getName());

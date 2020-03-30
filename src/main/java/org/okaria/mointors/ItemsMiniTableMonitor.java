@@ -2,8 +2,9 @@ package org.okaria.mointors;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.okaria.util.Utils;
 import org.terminal.Ansi;
@@ -39,7 +40,7 @@ import org.terminal.strings.StyleBuilder;
  */
 public class ItemsMiniTableMonitor extends TableItemsMonitor {
 	
-	protected List<OneRangeMonitor> mointors;
+	protected Set<OneRangeMonitor> monitors;
 	protected SessionMonitor session;
 	
 	String header, midBorder, bodyTemplete, fotter;
@@ -52,7 +53,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 	public ItemsMiniTableMonitor(SessionMonitor session) {
 		super(session);
 		this.session = session;
-		this.mointors = new LinkedList<>();
+		this.monitors = new HashSet<>();
 		initColumnStyle();
 		initTempletes();
 		this.format = new MessageFormat(bodyTemplete);
@@ -149,29 +150,29 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		
 	}
 	
-	public boolean add(OneRangeMonitor mointor) {
-		return mointors.add(mointor);
+	public boolean add(OneRangeMonitor monitor) {
+		return monitors.add(monitor);
 	}
 
-	public void remove(OneRangeMonitor mointor) {
-		mointors.remove(mointor);
+	public void remove(OneRangeMonitor monitor) {
+		monitors.remove(monitor);
 	}
 	
 	public void clear() {
-		mointors.clear();
+		monitors.clear();
 	}
 	
 
 	private void callSpeedForNextCycle() {
 		
-		for (OneRangeMonitor mointor : mointors) {
+		for (OneRangeMonitor mointor : monitors) {
 			mointor.demondSpeedNow();
 		}
 		session.demondSpeedNow();
 	}
 	
 	private void updateInfo() {
-		for (OneRangeMonitor mointor : mointors) {
+		for (OneRangeMonitor mointor : monitors) {
 			mointor.updateData();
 		}
 		session.rangeInfoUpdateData();
@@ -181,7 +182,7 @@ public class ItemsMiniTableMonitor extends TableItemsMonitor {
 		
 		message.append(header);
 		int index = 0;
-		for (OneRangeMonitor mointor : mointors) {
+		for (OneRangeMonitor mointor : monitors) {
 			Object[] obj = new Object[8];
 			obj[0] = ++index + "";
 			obj[1] = Utils.middleMaxLength(mointor.getName(), 41);
