@@ -38,15 +38,6 @@ public enum TerminalArgument{
 		SSHUser("-su", "--ssh-user"),
 		SSHPass("-sp", "--ssh-pass"),
 		
-		GoogleDriveFileID("-gd","--google-drive-id"),
-		
-		Maven("-mvn","--maven"),
-		MavenPom("-pom","--maven-pom"),
-		GroupId("-mvng","--maven-groupId"),
-		ArtifactId("-mvna","--maven-artifactId"),
-		MVersion("-mvnv","--maven-version"),
-		MavenRepository("-mvnr", "--maven-repository"),
-		
 		CheckFile("-ch", "--check-file"),
 		ChunkSize("-cs", "--chunk-size"),
 		DownloadPieces("-dp", "--download-pieces"),
@@ -205,22 +196,6 @@ public enum TerminalArgument{
 					return("set ssh user name - remote login user name");
 				case SSHPass:
 					return("set remote login password, if non will be asked from terminal");
-				
-				case GoogleDriveFileID:
-					return ("download from google drive servers, fileID or full URL");
-					
-				case Maven:
-					return ("download from  maven repository, (dafault http://central.maven.org/maven2/), OR could parse a file path which contain a list of files, Or a (.pom) file");
-				case MavenPom:
-					return ("download maven repository from given (.pom) file, and resolve it");
-				case GroupId :
-					return ("set maven groupId");
-				case ArtifactId:
-					return ("set maven artifactId");
-				case MVersion:
-					return ("set maven version");
-				case MavenRepository:
-					return ("download to directory default set to system maven parh in user directory");
 					
 				case CheckFile:
 					return ("check donload file if is complete, and try to complete it");
@@ -230,7 +205,7 @@ public enum TerminalArgument{
 					return ("index of pieces which need download. it could be in formate of string as \"2 52 22 783 \" or a file holding the indexs separited by '\\n'");
 					
 				case Stream:
-					return ("stream URL");
+					return ("stream URL One download connection");
 					
 				case Help:
 					return("print this message");

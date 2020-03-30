@@ -17,7 +17,7 @@ public class CheckManager {
 	public static void CheckItem(String url, int chunkSize, ServiceManager manager) {
 		
 			Item item = manager.getItemStore().searchByUrl(url);
-			Log.trace(CheckManager.class, "found file chick", item.liteString());			
+			Log.trace(CheckManager.class, "found file", item.liteString());			
 			long[][] arr;
 			try {
 				RangeChecker checker;
@@ -57,7 +57,7 @@ public class CheckManager {
 				copy.getRangeInfo().avoidMissedBytes();
 				copy.getRangeInfo().oneCycleDataUpdate();
 				copy.setCacheFile(null);
-				manager.addItemToWattingList(copy);
+				manager.download(copy);
 				Log.info(CheckManager.class, "add item", copy.toString());
 			}
 		
@@ -87,7 +87,7 @@ public class CheckManager {
 		Item copy = search.copy();
 		copy.setRangeInfo(info);
 		copy.setCacheFile(null);
-		manager.addItemToWattingList(copy);
+		manager.download(copy);
 		Log.info(CheckManager.class, "add item", copy.toString());
 	}
 

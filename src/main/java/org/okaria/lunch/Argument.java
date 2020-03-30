@@ -333,26 +333,6 @@ public class Argument {
 		}
 	}
 	
-	public String getMaven() {
-		return dictionary.get(TerminalArgument.Maven);
-	}
-	public String getMavenGroupId() {
-		return dictionary.get(TerminalArgument.GroupId);
-	}
-	public String getMavenArtifactId() {
-		return dictionary.get(TerminalArgument.ArtifactId);
-	}
-	public String getMavenVersion() {
-		return dictionary.get(TerminalArgument.MVersion);
-	}
-	public String getMavenRepository() {
-		return dictionary.get(TerminalArgument.MavenRepository);
-	}
-	
-	public String getGoogleDriveFileID() {
-		return dictionary.get(TerminalArgument.GoogleDriveFileID);
-	}
-	
 	
 	private boolean is(TerminalArgument key) {
 		return dictionary.containsKey(key);
@@ -484,18 +464,6 @@ public class Argument {
 		return is(TerminalArgument.SavePath);
 	}
 	
-	public boolean isGoogleDrive() {
-		return is(TerminalArgument.GoogleDriveFileID);
-	}
-	
-	public boolean isMaven() {
-		return is(TerminalArgument.GroupId)
-				|| is(TerminalArgument.ArtifactId)
-				|| is(TerminalArgument.MVersion)
-				|| is(TerminalArgument.Maven) 
-				|| is(TerminalArgument.MavenRepository);
-	}
-
 	public String get(TerminalArgument argument ){
 		return dictionary.get(argument);
 	}

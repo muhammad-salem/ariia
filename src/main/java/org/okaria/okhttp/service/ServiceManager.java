@@ -131,28 +131,6 @@ public class ServiceManager implements Closeable {
 		}
 	}
 	
-	
-	public void addItemToWattingList(Item item) {
-		RangeUtil range = item.getRangeInfo();
-		sessionMonitor.add(range);
-		ItemMetaData metaData = null;
-		if(range.isStreaming()) {
-			metaData = new StreamMetaDataWriter(item);
-		}
-		else {
-			metaData = new ChannelMetaDataWriter(item);
-		}
-		
-//		else if(Integer.MAX_VALUE  > range.getFileLength()) {
-//			metaData = new SimpleMappedMetaDataWriter(item);
-//		} else {
-//			metaData = new LargeMappedMetaDataWriter(item);
-//		}
-		
-		range.oneCycleDataUpdate();
-		wattingList.add(metaData);
-	}
-	
 	protected void checkdownloadList() {
 		if (isNetworkFailer()) {
 			Log.info(getClass(), "Check Network Connection",
@@ -213,20 +191,13 @@ public class ServiceManager implements Closeable {
 		}
 		
 	}
-
-//	public    abstract void printReport();
-//	protected abstract void systemFlushData();
-//	protected abstract void saveWattingItemToDisk();
-//	protected abstract void saveDownloadingItemToDisk();
-//	protected abstract void addItemEvent(ItemMetaData holder);
-//	protected abstract void removeItemEvent(ItemMetaData holder);
-//	public	  abstract void startScheduledService();
 	
 	public void runSystemShutdownHook() {
 		for (ItemMetaData metaData : downloadingList) {
 			metaData.systemFlush();
 			metaData.close();
 		}
+		
 		for (ItemMetaData metaData : wattingList) {
 			metaData.saveItem2CacheFile();
 			metaData.close();
@@ -234,17 +205,12 @@ public class ServiceManager implements Closeable {
 	}
 	
 	
-	public void setFinishDownloadAction(Runnable runnable) {
+	public void setFinishAction(Runnable runnable) {
 		this.finishAction = runnable;
 	}
 	
-
-//	public Runnable getFinishDownloadQueueEvent() {
-//		return emptyQueueRunnable;
-//	}
 	
-	
-	public ScheduledExecutorService getCheduledService() {
+	public ScheduledExecutorService getScheduledService() {
 		return scheduledService;
 	}
 
@@ -252,19 +218,19 @@ public class ServiceManager implements Closeable {
 		this.scheduledService = cheduledService;
 	}
 
-	public Queue<ItemMetaData> getWattingList() {
+	protected Queue<ItemMetaData> getWattingList() {
 		return wattingList;
 	}
 
-	public void setWattingList(Queue<ItemMetaData> wattingList) {
+	protected void setWattingList(Queue<ItemMetaData> wattingList) {
 		this.wattingList = wattingList;
 	}
 
-	public Queue<ItemMetaData> getDownloadingList() {
+	protected Queue<ItemMetaData> getDownloadingList() {
 		return downloadingList;
 	}
 
-	public void setDownloadingList(Queue<ItemMetaData> downloadingList) {
+	protected void setDownloadingList(Queue<ItemMetaData> downloadingList) {
 		this.downloadingList = downloadingList;
 	}
 
@@ -293,12 +259,10 @@ public class ServiceManager implements Closeable {
 	}
 	
 	
-//	@Override
-	public void printReport() {
+	protected void printReport() {
 		System.out.println(reportTable.getTableReport());
 	}
 
-//	@Override
 	protected void systemFlushData() {
 		for (ItemMetaData placeHolder : downloadingList) {
 			placeHolder.systemFlush();
@@ -306,28 +270,53 @@ public class ServiceManager implements Closeable {
 	}
 	
 
-//	@Override
 	protected void addItemEvent(ItemMetaData holder) {
 		reportTable.add(holder.getRangeMointor());
 	}
 
-//	@Override
 	protected void removeItemEvent(ItemMetaData holder) {
 		reportTable.remove(holder.getRangeMointor());
 	}
 
-//	@Override
-	public void saveDownloadingItemToDisk() {
+	protected void saveDownloadingItemToDisk() {
 		for (ItemMetaData placeHolder : downloadingList) {
 			placeHolder.saveItem2CacheFile();
 		}
 	}
-//	@Override
-	public void saveWattingItemToDisk() {
+
+	protected void saveWattingItemToDisk() {
 		for (ItemMetaData placeHolder : wattingList) {
 			placeHolder.saveItem2CacheFile();
 		}
 	}
+	
+	
+	public void download(Item item) {
+		RangeUtil range = item.getRangeInfo();
+		sessionMonitor.add(range);
+		ItemMetaData metaData = null;
+		if(range.isStreaming()) {
+			metaData = new StreamMetaDataWriter(item);
+		}
+		else {
+			metaData = new ChannelMetaDataWriter(item);
+		}
+		
+//		else if(Integer.MAX_VALUE  > range.getFileLength()) {
+//			metaData = new SimpleMappedMetaDataWriter(item);
+//		} else {
+//			metaData = new LargeMappedMetaDataWriter(item);
+//		}
+		
+		range.oneCycleDataUpdate();
+		wattingList.add(metaData);
+	}
+	
+	public void download(Queue<Item> items) {
+		items.forEach(this:: download);
+	}
+	
+	
 
 	
 }
