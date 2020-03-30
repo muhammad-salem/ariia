@@ -1,48 +1,65 @@
 package org.okaria.okhttp.service;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
+import org.okaria.network.CheckServer;
+import org.okaria.network.ConnectivityCheck;
+import org.okaria.network.NetworkStatus;
 import org.okaria.okhttp.client.Client;
 import org.terminal.console.log.Log;
 
 import okhttp3.Response;
 
-public class NetworkConnectivity {
-
+public class NetworkConnectivity implements ConnectivityCheck {
 	
-	/*
-	 * GET / HTTP/1.1
-	 * Host: connectivity-check.ubuntu.com
-	 */
-	/*
-	 * HTTP/1.1 204 No Content
-	 * Date: Thu, 26 Mar 2020 09:44:44 GMT
-	 * Server: Apache/2.4.18 (Ubuntu)
-	 * X-NetworkManager-Status: online
-	 * Keep-Alive: timeout=5, max=100
-	 * Connection: Keep-Alive
-	 */
-	// http://connectivity-check.ubuntu.com/
-	private final String CONNECTIVITY_URL = "http://connectivity-check.ubuntu.com/"; 
+	private  Queue<CheckServer> servers = new LinkedList<>();
+	
+	
 	private Client client;
+	
 	public NetworkConnectivity(Client client) {
 		this.client = client;
+		this.servers.addAll(Arrays.asList(CheckServer.values()));
 	}
-
+	
+	public void setClient(Client client) {
+		this.client = client;
+	}
 	
 	public boolean isOnline() {
+		CheckServer server = servers.poll();
 		try {
-			Response response = client.get(CONNECTIVITY_URL);
-			Log.trace(getClass(),
-					"Ubunt Server - Connectivity Check",
-					"X-NetworkManager-Status: " + response.header("X-NetworkManager-Status"));
-//			Log.trace(getClass(), "Ubunt Server - Connectivity Check", response.headers().toString());
+			// if we get any response 
+			Response response = client.get(server.url());
+			Log.trace(getClass(), server.serverName(), response.headers().toString());
 			return true;
 		} catch (IOException e) {
-			Log.debug(getClass(), CONNECTIVITY_URL, e.getMessage());
+			Log.debug(getClass(), server.serverName(), e.getMessage());
 			return false;
+		} finally {
+			servers.offer(server);
 		}
 	}
 	
+	public NetworkStatus getNetworkStatus() {
+		CheckServer server = servers.poll();
+		try {
+			// if we get any response 
+			Response response = client.get(server.url());
+			Log.trace(getClass(), server.serverName(), response.headers().toString());
+			if (response.isRedirect()) {
+				return NetworkStatus.Redirected;
+			}
+			return NetworkStatus.Connected;
+		} catch (IOException e) {
+			Log.debug(getClass(), server.serverName(), e.getMessage());
+			return NetworkStatus.Disconnected;
+		} finally {
+			servers.offer(server);
+		}
+	}
 
 }
