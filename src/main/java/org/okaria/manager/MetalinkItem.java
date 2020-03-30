@@ -67,7 +67,7 @@ public class MetalinkItem extends Item {
 		builder.append("\n(#URL: " + mirrors.size() + ")\t");
 		builder.append( url());
 		builder.append('\n');
-		builder.append("Folder : " + folder );
+		builder.append("Folder : " + saveDir );
 		builder.append('\n');
 		builder.append("File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
 		builder.append(",\tDownload : " + rangeInfo.getDownloadLengthMB());

@@ -50,12 +50,11 @@ public class RangeInfo implements RangeUtil {
 	}
 	
 	
-	
-	protected long	fileLength;
-	protected long	downloadLength;
-	protected long  remainingLength;
+
+	protected long		fileLength;
+	protected long		downloadLength;
+	protected long  	remainingLength;
 	protected long[][]	range;
-	protected long  rangeBase;
 
 	/**
 	 * stream contractor, unknown length
@@ -78,7 +77,6 @@ public class RangeInfo implements RangeUtil {
     public RangeInfo(long length, int count) {
         fileLength = length;
         this.range = split(0, length, count);
-//        initRange(rangeCount);
     }
 
     public RangeInfo(long length, long[][] range) {
@@ -127,6 +125,11 @@ public class RangeInfo implements RangeUtil {
 	
 	@Override
 	public boolean isStreaming() {
+        return range.length == 1 & range[0][0] >= 0;
+    }
+	
+	@Override
+	public boolean hadLength() {
         return range.length == 1 & range[0][1] == -1;
     }
 	

@@ -44,6 +44,7 @@ public interface Range {
 
 	
 	boolean isStreaming();
+	boolean hadLength();
 	long startOfIndex(int index);
 	long limitOfIndex(int index);
 	void addStartOfIndex(int index, long length);

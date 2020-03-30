@@ -51,7 +51,7 @@ public class CheckManager {
 					}
 				}
 				
-				Item copy = item.copy();
+				Item copy = item.getCopy();
 				copy.setRangeInfo(new RangeInfo(item.getRangeInfo().getFileLength(), info));
 				copy.getRangeInfo().checkRanges();
 				copy.getRangeInfo().avoidMissedBytes();
@@ -84,7 +84,7 @@ public class CheckManager {
 		Log.trace(CheckManager.class, "found file chick", search.liteString());
 		RangeInfo info = new RangeInfo(search.getRangeInfo().getFileLength(), downoad);
 		info.oneCycleDataUpdate();
-		Item copy = search.copy();
+		Item copy = search.getCopy();
 		copy.setRangeInfo(info);
 		copy.setCacheFile(null);
 		manager.download(copy);

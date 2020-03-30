@@ -1,5 +1,8 @@
 package org.okaria.chrome;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 
 import org.okaria.lunch.Argument;
@@ -99,8 +102,16 @@ public class ChromeMessage {
 			map.put(TerminalArgument.FileName, filename);
 		if(useragent != null)
 			map.put(TerminalArgument.UserAgent, useragent);
-		if(cookies != null & ! cookies.equals(""))
-			map.put(TerminalArgument.Cookie, cookies);
+		if(cookies != null & ! "".equals(cookies)) {
+			try {
+				File cookieFile = File.createTempFile("aria", ".txt");
+				FileWriter writer = new FileWriter(filename);
+				writer.write(cookies);
+				writer.close();
+				map.put(TerminalArgument.CookieFile, cookieFile.getAbsolutePath());
+			} catch (IOException e) {
+			}
+		}
 		if(proxy != null)
 			map.put(TerminalArgument.Proxy, proxy);
 		

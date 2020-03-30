@@ -13,7 +13,6 @@ public enum TerminalArgument{
 		
 		UserAgent("-ua", "--user-agent"),
 		Header("-H", "--header"),
-		Cookie("-C","--cookie"),
 		CookieFile("-cf", "--cookie-file"),
 		
 
@@ -159,9 +158,7 @@ public enum TerminalArgument{
 				case UserAgent:
 					return("set user-agent header while download");
 				case Header:
-					return("set one/multiable different header(s) for that link");
-				case Cookie:
-					return("add cookie(s) while download");
+					return("set one/multiable different header(s) for that link\n\t\t\tadd cookie(s) while download");
 				case CookieFile:
 					return("add cookie(s) from standered cookie file");
 				

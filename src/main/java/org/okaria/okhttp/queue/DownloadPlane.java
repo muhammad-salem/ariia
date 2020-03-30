@@ -31,7 +31,6 @@ public interface DownloadPlane {
 	}
 	default List<Future<?>> download(ItemMetaData metaData, SpeedMonitor... monitors) {
 		Item item = metaData.getItem();
-		item.updateHeaders();
 		if(item.isStreaming()) {
 			Log.info(getClass(), "Streaming...", item.getFilename());
 		}

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.okaria.chrome.ChromeConnection;
 import org.okaria.lunch.Argument;
+import org.okaria.lunch.ItemBuilder;
 import org.okaria.lunch.TerminalArgument;
 import org.okaria.okhttp.service.ServiceManager;
 import org.okaria.setting.Properties;
@@ -41,7 +42,7 @@ public class OKAria {
 		String log_level = 
 				arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
 		Log.level(log_level);
-		Log.log(OKAria.class, "user input", Arrays.toString(args));
+		Log.trace(OKAria.class, "user input", Arrays.toString(args));
 		Properties.Config(arguments);
 
 		ServiceManager manager = ServiceManager.SegmentServiceManager(arguments.getProxy());
@@ -54,9 +55,10 @@ public class OKAria {
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
 		
-//		Lunch lunch = new Lunch(manager);
-//		lunch.download(arguments);
-		manager.setFinishDownloadAction(() ->  System.exit(0));
+		ItemBuilder builder = new ItemBuilder(arguments);
+		
+		manager.initForDownload(builder.getItems());
+		manager.setFinishAction(() ->  System.exit(0));
 
 	}
 

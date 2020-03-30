@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +76,7 @@ public class Argument {
 	}
 
 	private void addArgument(TerminalArgument argument, String value) {
-		if (argument == TerminalArgument.Header || argument == TerminalArgument.Cookie) {
+		if (argument == TerminalArgument.Header) {
 			String header = dictionary.getOrDefault(argument, "");
 			value = value + "\n" + header;
 		}
@@ -222,34 +221,15 @@ public class Argument {
 		return headers;
 	}
 	
-	public String getCookie() {
-		return dictionary.get(TerminalArgument.Cookie);
-	}
-	
-	public List<Cookie> getAllCookie() {
-		List<Cookie> cookies = new LinkedList<>();
-		if(isCookie())
-			cookies.add(Cookie.parse(HttpUrl.parse(getUrl()), getCookie()));
-		Map<String, String> headers = getHeaders();
-		
-		headers.forEach((k,v)->{
-			if(k.equalsIgnoreCase("Set-Cookie")) {
-				cookies.add(Cookie.parse(HttpUrl.parse(getUrl()), v));
-			}
-		});
-		if(isCookieFile()) {
-			List<Cookie> list = OkUtils.getCookies(getCookieFile());
-			cookies.addAll(list);
-		}
-		return cookies;
-	}
-	
 	public String getCookieFile() {
 		return dictionary.get(TerminalArgument.CookieFile);
 	}
 	
-	public List<Cookie> fileCookies() {
-		return OkUtils.getCookies(dictionary.get(TerminalArgument.CookieFile));
+	public List<Cookie> getCookiedFileList() {
+		if (isCookieFile()) {
+			return OkUtils.getCookies(dictionary.get(TerminalArgument.CookieFile));
+		}
+		return Collections.emptyList();
 	}
 	
 	public String getLogLevel() {
@@ -364,10 +344,6 @@ public class Argument {
 	
 	public boolean isHeader() {
 		return is(TerminalArgument.Header);
-	}
-	
-	public boolean isCookie() {
-		return is(TerminalArgument.Cookie);
 	}
 	
 	public boolean isCookieFile() {

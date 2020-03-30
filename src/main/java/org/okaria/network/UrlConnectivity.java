@@ -48,7 +48,7 @@ public class UrlConnectivity implements ConnectivityCheck {
 			connection.connect();
 			Log.trace(getClass(), server.serverName(), 
 					connection.getResponseCode() 
-					+ ' ' + connection.getResponseMessage());
+					+ " " + connection.getResponseMessage());
 			if (isRedirect(connection.getResponseCode())) {
 				return NetworkStatus.Redirected;
 			}

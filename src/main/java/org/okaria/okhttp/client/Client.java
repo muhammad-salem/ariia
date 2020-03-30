@@ -1,7 +1,6 @@
 package org.okaria.okhttp.client;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -17,7 +16,6 @@ import org.okaria.setting.Properties;
 import org.okaria.speed.SpeedMonitor;
 import org.terminal.console.log.Log;
 
-import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -92,16 +90,10 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 	}
 
 	private void updateItemOnline(Item item, boolean headOrGet) throws IOException {
-		if (item.getCookies().size() > 0) {
-			getHttpClient().cookieJar().saveFromResponse(item.url(), item.getCookies());
-		}
 		
 		try (Response response = headOrGet 
 				? head(item.url(), getHeaders(item))
 				: get(item.url(), getHeaders(item))) {
-			
-			List<Cookie> list =  getHttpClient().cookieJar().loadForRequest(item.url());
-			item.addCookies(list);
 			
 			if(response.code() == 404) {
 				item.setFilename("404_Not_Found");

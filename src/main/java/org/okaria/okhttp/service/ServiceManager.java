@@ -5,7 +5,9 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -185,7 +187,7 @@ public class ServiceManager implements Closeable {
 			});
 			
 			if (downloadingList.isEmpty() & wattingList.isEmpty()) {
-				close();
+//				close();
 				finishAction.run();
 			}
 		}
@@ -259,7 +261,7 @@ public class ServiceManager implements Closeable {
 	}
 	
 	
-	protected void printReport() {
+	public void printReport() {
 		System.out.println(reportTable.getTableReport());
 	}
 
@@ -312,11 +314,23 @@ public class ServiceManager implements Closeable {
 		wattingList.add(metaData);
 	}
 	
-	public void download(Queue<Item> items) {
+	public void download(Set<Item> items) {
 		items.forEach(this:: download);
 	}
 	
 	
-
+	public void initForDownload(Set<Item> items) {
+		items.forEach(item -> {
+			Item old = itemStore.searchByUrl(item.getUrl());
+			if (Objects.isNull(old)) {
+				client.updateItemOnline(item);
+			} else {
+				old.getRangeInfo().checkRanges();
+				old.addHeaders(item.getHeaders());
+				item.copy(old);
+			}
+			download(item);
+		});
+	}
 	
 }
