@@ -15,6 +15,7 @@ import org.aria.okhttp.response.DownloadResponse;
 import org.aria.range.RangeInfo;
 import org.aria.setting.Properties;
 import org.aria.speed.SpeedMonitor;
+import org.aria.util.R;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -120,6 +121,7 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 									? filename.length()-1: filename.length());
 				}
 				item.setFilename(filename);
+				item.setCacheFile(R.getConfigPath(item.getFilename()) + ".json");
 			}
 		} catch (IOException e) {
 			Log.warn(getClass(), e.getClass().getSimpleName(), e.getMessage());

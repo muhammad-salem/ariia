@@ -2,9 +2,7 @@ package org.aria.okhttp.service;
 
 import java.io.Closeable;
 import java.net.Proxy;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -112,7 +110,7 @@ public class ServiceManager implements Closeable {
 		// for each 2 second
 		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
-		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 5, 5, TimeUnit.SECONDS);
+		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 1, 5, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -145,53 +143,59 @@ public class ServiceManager implements Closeable {
 			}
 		} else {
 			if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
+				StringBuilder builder = new StringBuilder();
 				while (downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL && !wattingList.isEmpty()) {
 					ItemMetaData metaData = wattingList.poll();
-					downloadingList.add(metaData);
 					addItemEvent(metaData);
-					metaData.getItem().getRangeInfo().oneCycleDataUpdate();
-
-					StringBuilder builder = new StringBuilder();
 					builder.append(metaData.getItem().getFilename());
 					builder.append("\tRemaining: ");
 					builder.append( metaData.getItem().getRangeInfo().getRemainingLengthMB());
-					Log.info(getClass(), "add item to download list", builder.toString());
+					builder.append('\n');
+				}
+				if(builder.length() != 0) {
+					builder.delete(builder.length()-2, builder.length());
+					Log.info(getClass(), "items added to download list", builder.toString());
 				}
 			}
-			
-			List<ItemMetaData> removeList = new ArrayList<>();
 			
 			for (ItemMetaData metaData : downloadingList) {
 				Item item = metaData.getItem();
 				RangeUtil info = item.getRangeInfo();
 				if (info.isFinish()) {
-					Log.info(getClass(), "finish download URL", item.getFilename());
-					removeList.add(metaData);
+					removeItemEvent(metaData);
+					Log.info(getClass(), "Download Finish: " + metaData.getItem().getFilename(),
+							metaData.getItem().liteString());
 					continue;
+				} else if(! metaData.isDownloading()) {
+					metaData.startDownloadQueue(client, sessionMonitor);
 				}
-				metaData.initWaitQueue();
 				metaData.checkCompleted();
-				metaData.startDownloadQueue(client, sessionMonitor);
 				
 			}
 			
-			// remove 
-			removeList.forEach((metaData)->{
-				metaData.getItem().getRangeInfo().oneCycleDataUpdate();
-				metaData.systemFlush();
-				Log.info(getClass(), "Download Complete", metaData.getItem().liteString());
-				downloadingList.remove(metaData);
-				removeItemEvent(metaData);
-				metaData.saveItem2CacheFile();
-				metaData.close();
-			});
-			
 			if (downloadingList.isEmpty() & wattingList.isEmpty()) {
-//				close();
 				finishAction.run();
 			}
 		}
 		
+	}
+	
+	
+	protected void addItemEvent(ItemMetaData metaData) {
+		metaData.initWaitQueue();
+		metaData.checkCompleted();
+		downloadingList.add(metaData);
+		metaData.startDownloadQueue(client, sessionMonitor);
+		reportTable.add(metaData.getRangeMointor());
+		metaData.getItem().getRangeInfo().oneCycleDataUpdate();
+	}
+
+	protected void removeItemEvent(ItemMetaData metaData) {
+		metaData.systemFlush();
+		metaData.saveItem2CacheFile();
+		metaData.close();
+		downloadingList.remove(metaData);
+		reportTable.remove(metaData.getRangeMointor());
 	}
 	
 	public void runSystemShutdownHook() {
@@ -272,13 +276,7 @@ public class ServiceManager implements Closeable {
 	}
 	
 
-	protected void addItemEvent(ItemMetaData holder) {
-		reportTable.add(holder.getRangeMointor());
-	}
 
-	protected void removeItemEvent(ItemMetaData holder) {
-		reportTable.remove(holder.getRangeMointor());
-	}
 
 	protected void saveDownloadingItemToDisk() {
 		for (ItemMetaData placeHolder : downloadingList) {
@@ -295,6 +293,11 @@ public class ServiceManager implements Closeable {
 	
 	public void download(Item item) {
 		RangeUtil range = item.getRangeInfo();
+		if (range.isFinish()) {
+			Log.info(getClass(), "Download Finish: " + item.getFilename(), item.liteString());
+			return;
+		}
+		
 		sessionMonitor.add(range);
 		ItemMetaData metaData = null;
 		if(range.isStreaming()) {
@@ -310,8 +313,8 @@ public class ServiceManager implements Closeable {
 //			metaData = new LargeMappedMetaDataWriter(item);
 //		}
 		
-		Log.log(getClass(), item.getFilename(), "Meta Data Writer: " +  metaData.getClass().getSimpleName());
-		
+		Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " +  metaData.getClass().getSimpleName());
+		Log.info(getClass(), "add download item to waiting list", item.toString());
 		range.oneCycleDataUpdate();
 		wattingList.add(metaData);
 	}

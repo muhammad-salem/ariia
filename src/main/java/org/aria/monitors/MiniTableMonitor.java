@@ -228,7 +228,7 @@ public class MiniTableMonitor implements TableMonitor {
 			message.append(midBorder);
 			message.append(format.format(obj));
 		}
-		if(!session.isEmpty() & session.size() != 1) {
+		if(session.size() != 1) {
 			Object[] obj = new Object[8];
 			obj[0] = "#";
 			obj[1] = Utils.middleMaxLength("Session (" + session.size() +")", 41);

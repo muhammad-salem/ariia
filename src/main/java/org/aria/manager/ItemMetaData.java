@@ -155,6 +155,11 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return downloading;
 	}
 	
+	@Override
+	public boolean allowSegmentWrite() {
+		return downloading;
+	}
+	
 	public void checkCompleted() {
 		Iterator<Integer> iterator = downloadList.iterator();
 		while (iterator.hasNext()) {

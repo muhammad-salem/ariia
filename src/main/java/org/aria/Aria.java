@@ -53,12 +53,15 @@ public class Aria {
 			manager.runSystemShutdownHook();
 			manager.printReport();
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
+			
 		}));
 		
 		ItemBuilder builder = new ItemBuilder(arguments);
 		
 		manager.initForDownload(builder.getItems());
-		manager.setFinishAction(() ->  System.exit(0));
+		manager.setFinishAction(() ->  {
+			System.exit(0);
+		});
 
 	}
 

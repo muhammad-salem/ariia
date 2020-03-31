@@ -63,12 +63,12 @@ public interface SegmentWriter {
 		long length = start;
 		int len = 0;
 		try {
-			while (true) {
+			while (offerSegment.allowSegmentWrite()) {
 				if(buffer.hasRemaining()) {
 					len = reader.read(buffer);
 					if( len == -1) throw new IOException("the channel has reached end-of-stream.");
 					length += len;
-				}else {
+				} else {
 					buffer.flip();
 					offerSegment.offerSegment(segment);
 					segment = new Segment(index, length);
@@ -89,12 +89,12 @@ public interface SegmentWriter {
 		long length = start;
 		int len = 0;
 		try {
-			while (true) {
+			while (offerSegment.allowSegmentWrite()) {
 				if(buffer.hasRemaining()) {
 					len = reader.read(buffer);
 					if( len == -1) throw new IOException("the channel has reached end-of-stream.");
 					length += len;
-				}else {
+				} else {
 					buffer.flip();
 					offerSegment.offerSegment(segment);
 					if(length >= limit) return;
