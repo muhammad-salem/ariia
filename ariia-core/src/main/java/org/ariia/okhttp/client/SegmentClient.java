@@ -7,11 +7,11 @@ import java.util.concurrent.Future;
 
 import org.ariia.config.OkConfig;
 import org.ariia.config.Properties;
-import org.ariia.manager.ItemMetaData;
 import org.ariia.okhttp.queue.StreamOrder;
 import org.ariia.okhttp.queue.ThreadOrder;
 import org.ariia.okhttp.request.ClientRequest;
 import org.ariia.okhttp.response.SegmentResponse;
+import org.ariia.okhttp.writer.ItemMetaData;
 import org.ariia.okhttp.writer.SegmentWriter;
 import org.ariia.speed.SpeedMonitor;
 

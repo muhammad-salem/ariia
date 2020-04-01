@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.ItemMetaData;
+import org.ariia.okhttp.writer.ItemMetaData;
 import org.ariia.speed.SpeedMonitor;
 
 public interface DownloadPlane {

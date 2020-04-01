@@ -1,7 +1,7 @@
 package org.ariia.okhttp.response;
 
-import org.ariia.manager.ItemMetaData;
 import org.ariia.okhttp.request.ClientRequest;
+import org.ariia.okhttp.writer.ItemMetaData;
 import org.ariia.speed.SpeedMonitor;
 
 /*

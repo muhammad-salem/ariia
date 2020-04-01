@@ -8,11 +8,11 @@ import org.ariia.config.OkConfig;
 import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.ItemMetaData;
 import org.ariia.okhttp.OkUtils;
 import org.ariia.okhttp.queue.DownloadPlane;
 import org.ariia.okhttp.request.ClientRequest;
 import org.ariia.okhttp.response.DownloadResponse;
+import org.ariia.okhttp.writer.ItemMetaData;
 import org.ariia.range.RangeInfo;
 import org.ariia.speed.SpeedMonitor;
 

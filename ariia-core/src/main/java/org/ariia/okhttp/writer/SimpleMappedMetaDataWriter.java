@@ -7,7 +7,6 @@ import java.nio.channels.FileChannel.MapMode;
 
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.ItemMetaData;
 import org.ariia.segment.Segment;
 
 public class SimpleMappedMetaDataWriter extends ItemMetaData {

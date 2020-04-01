@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.ItemMetaData;
 import org.ariia.segment.Segment;
 
 public class LargeMappedMetaDataWriter extends ItemMetaData{

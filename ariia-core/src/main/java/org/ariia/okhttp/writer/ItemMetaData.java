@@ -1,4 +1,4 @@
-package org.ariia.manager;
+package org.ariia.okhttp.writer;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;

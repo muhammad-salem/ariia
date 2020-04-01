@@ -16,7 +16,6 @@ import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.items.ItemStore;
 import org.ariia.logging.Log;
-import org.ariia.manager.ItemMetaData;
 import org.ariia.monitors.MiniTableMonitor;
 import org.ariia.monitors.SessionMonitor;
 import org.ariia.monitors.SimpleSessionMonitor;
@@ -29,6 +28,7 @@ import org.ariia.okhttp.client.ChannelClient;
 import org.ariia.okhttp.client.Client;
 import org.ariia.okhttp.client.SegmentClient;
 import org.ariia.okhttp.writer.ChannelMetaDataWriter;
+import org.ariia.okhttp.writer.ItemMetaData;
 import org.ariia.okhttp.writer.StreamMetaDataWriter;
 import org.ariia.range.RangeUtil;
 

@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.ItemMetaData;
 import org.ariia.okhttp.client.ContentLength;
+import org.ariia.okhttp.writer.ItemMetaData;
 import org.ariia.okhttp.writer.SegmentWriter;
 import org.ariia.speed.SpeedMonitor;
 
