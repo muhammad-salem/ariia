@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.ariia.logging.Log;
 import org.ariia.range.RangeUtil;
 import org.ariia.speed.SpeedMonitor;
 import org.ariia.util.Utils;
@@ -136,7 +135,8 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		try {
 			t = callable.call();
 		} catch (Exception e) {
-			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+			e.printStackTrace();
+//			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 		}
 		demondSpeedNow();
 		return t;
