@@ -2,7 +2,6 @@ package org.ariia;
 
 import java.util.Arrays;
 
-import org.ariia.chrome.ChromeConnection;
 import org.ariia.logging.Log;
 import org.ariia.lunch.Argument;
 import org.ariia.lunch.ItemBuilder;
@@ -16,19 +15,7 @@ public class Ariia {
 
 	public static void main(String[] args) {
 
-		Argument arguments = null;
-		ChromeConnection chrome = null;
-		if (ChromeConnection.iSChromStream(args)) {
-
-			chrome = new ChromeConnection();
-			chrome.redChromeMessage(/* 629 */);
-			arguments = chrome.getArguments();
-			// chrome.send(arguments.getDictionary());
-
-		} else {
-			arguments = new Argument(args);
-		}
-
+		Argument arguments = new Argument(args);
 		if (arguments.isEmpty() || arguments.isHelp()) {
 			System.out.println(TerminalArgument.Help());
 			return;
