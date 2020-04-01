@@ -5,6 +5,18 @@
     <artifactId>ariia-pom</artifactId>
     <version>0.2.4</version>
   </parent>
-  <artifactId>ariia-network</artifactId>
+  <artifactId>ariia-util</artifactId>
   
+  <dependencies>
+	  	<dependency>
+	  		<groupId>org.ansi</groupId>
+	  		<artifactId>lawnha</artifactId>
+	  		<version>0.2.0</version>
+	  	</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.4</version>
+		</dependency>
+	</dependencies>
 </project>

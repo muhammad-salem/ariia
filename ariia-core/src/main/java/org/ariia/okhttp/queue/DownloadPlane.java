@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.Item;
 import org.ariia.manager.ItemMetaData;
 import org.ariia.speed.SpeedMonitor;
 

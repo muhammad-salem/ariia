@@ -3,8 +3,8 @@ package org.ariia.okhttp.writer;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.Item;
 import org.ariia.manager.ItemMetaData;
 import org.ariia.segment.Segment;
 

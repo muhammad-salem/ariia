@@ -1,6 +1,6 @@
 package org.ariia.okhttp.writer;
 
-import org.ariia.manager.Item;
+import org.ariia.items.Item;
 import org.ariia.segment.Segment;
 
 public class DirectChannelMetaDataWriter extends ChannelMetaDataWriter {

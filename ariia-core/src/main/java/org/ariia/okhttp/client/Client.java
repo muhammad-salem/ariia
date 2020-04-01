@@ -5,8 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.ariia.core.OkConfig;
+import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.Item;
 import org.ariia.manager.ItemMetaData;
 import org.ariia.okhttp.OkUtils;
 import org.ariia.okhttp.queue.DownloadPlane;
@@ -86,8 +86,8 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 	private void updateItemOnline(Item item, boolean headOrGet) throws IOException {
 		
 		try (Response response = headOrGet 
-				? head(item.url(), getHeaders(item))
-				: get(item.url(), getHeaders(item))) {
+				? head(item.getUrl(), getHeaders(item))
+				: get(item.getUrl(), getHeaders(item))) {
 			
 			if(response.code() == 404) {
 				item.setFilename("404_Not_Found");

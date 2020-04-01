@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.ariia.logging.Log;
-
 public class UrlConnectivity implements ConnectivityCheck {
 	
 	private  Queue<CheckServer> servers = new LinkedList<>();
@@ -27,7 +25,7 @@ public class UrlConnectivity implements ConnectivityCheck {
 	
 	@Override
 	public boolean isOnline() {
-		return NetworkStatus.Connected.equals(getNetworkStatus());
+		return NetworkStatus.Connected.equals(networkStatus());
 	}
 	
 	/**
@@ -38,7 +36,7 @@ public class UrlConnectivity implements ConnectivityCheck {
 	 * @return
 	 */
 	@Override
-	public NetworkStatus getNetworkStatus() {
+	public NetworkStatus networkStatus() {
 		CheckServer server = servers.poll();
 		try {
 			URL url = new URL(server.url());
@@ -46,16 +44,35 @@ public class UrlConnectivity implements ConnectivityCheck {
 					(HttpURLConnection) url.openConnection(proxy);
 			connection.setInstanceFollowRedirects(false);
 			connection.connect();
-			Log.trace(getClass(), server.serverName(), 
-					connection.getResponseCode() 
-					+ " " + connection.getResponseMessage());
-			if (isRedirect(connection.getResponseCode())) {
-				return NetworkStatus.Redirected;
-			}
-			return NetworkStatus.Connected;
+			return isRedirect(connection.getResponseCode()) ? 
+					NetworkStatus.Redirected : NetworkStatus.Connected;
 		} catch (IOException e) {
-			Log.debug(getClass(), server.serverName(), e.getMessage());
 			return NetworkStatus.Disconnected;
+		} finally {
+			servers.offer(server);
+		}
+	}
+	
+	@Override
+	public NetworkReport networkReport() {
+		CheckServer server = servers.poll();
+		try {
+			URL url = new URL(server.url());
+			HttpURLConnection connection =  
+					(HttpURLConnection) url.openConnection(proxy);
+			connection.setInstanceFollowRedirects(false);
+			connection.connect();
+			return new NetworkReport(
+					isRedirect(connection.getResponseCode()) ? 
+							NetworkStatus.Redirected : NetworkStatus.Connected,
+					server.serverName(),
+					connection.getResponseCode() + " " + 
+					connection.getResponseMessage());
+		} catch (IOException e) {
+			return new NetworkReport(
+					NetworkStatus.Disconnected,
+					server.serverName(),
+					e.getMessage());
 		} finally {
 			servers.offer(server);
 		}

@@ -1,4 +1,4 @@
-package org.ariia.manager;
+package org.ariia.items;
 
 import java.io.File;
 import java.util.HashMap;
@@ -6,8 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.ariia.range.RangeInfo;
-
-import okhttp3.HttpUrl;
 
 public class Item {
 	
@@ -29,14 +27,6 @@ public class Item {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-	
-	public HttpUrl url() {
-		return HttpUrl.parse(getUrl());
-	}
-	
-	public void url(HttpUrl url) {
-		this.url = url.toString();
 	}
 
 	public String getFilename() {
@@ -115,7 +105,7 @@ public class Item {
 		StringBuilder builder = new StringBuilder();
 		builder.append(filename );
 		builder.append('\n');
-		builder.append( url());
+		builder.append( url);
 		builder.append('\n');
 		builder.append("Folder : " + saveDir );
 		builder.append('\n');

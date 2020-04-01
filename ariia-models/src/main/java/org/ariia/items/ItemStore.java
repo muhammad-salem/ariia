@@ -1,4 +1,4 @@
-package org.ariia.manager;
+package org.ariia.items;
 
 import java.io.File;
 import java.util.ArrayList;

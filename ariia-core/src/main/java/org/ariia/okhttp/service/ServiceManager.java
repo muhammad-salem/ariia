@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.ariia.core.CookieJars;
 import org.ariia.core.OkConfig;
+import org.ariia.items.Item;
+import org.ariia.items.ItemStore;
 import org.ariia.logging.Log;
-import org.ariia.manager.Item;
 import org.ariia.manager.ItemMetaData;
-import org.ariia.manager.ItemStore;
 import org.ariia.monitors.MiniTableMonitor;
 import org.ariia.monitors.SessionMonitor;
 import org.ariia.monitors.SimpleSessionMonitor;

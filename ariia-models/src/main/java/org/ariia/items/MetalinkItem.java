@@ -1,11 +1,9 @@
-package org.ariia.manager;
+package org.ariia.items;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.ariia.util.Utils;
-
-import okhttp3.HttpUrl;
 
 public class MetalinkItem extends Item {
 
@@ -14,8 +12,6 @@ public class MetalinkItem extends Item {
 		super();
 		mirrors = new ArrayList<>();
 	}
-	
-	
 	
 	transient int indexMark = -1;
 	public String nextUrl() {
@@ -30,10 +26,6 @@ public class MetalinkItem extends Item {
 	@Override
 	public String getUrl() {
 		return nextUrl();
-	}
-	@Override
-	public HttpUrl url() {
-		return HttpUrl.parse(nextUrl());
 	}
 	
 	public List<String> getMirrors() {
@@ -65,7 +57,7 @@ public class MetalinkItem extends Item {
 		StringBuilder builder = new StringBuilder();
 		builder.append(filename );
 		builder.append("\n(#URL: " + mirrors.size() + ")\t");
-		builder.append( url());
+		builder.append( url);
 		builder.append('\n');
 		builder.append("Folder : " + saveDir );
 		builder.append('\n');

@@ -5,6 +5,14 @@
     <artifactId>ariia-pom</artifactId>
     <version>0.2.4</version>
   </parent>
-  <artifactId>ariia-network</artifactId>
+  <artifactId>ariia-models</artifactId>
   
+  	<dependencies>
+		<dependency>
+	  		<groupId>org.ariia</groupId>
+	  		<artifactId>ariia-util</artifactId>
+			<version>${project.version}</version>
+	  	</dependency>
+	</dependencies>
+	
 </project>

@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.monitors.OneRangeMonitor;
 import org.ariia.okhttp.queue.DownloadPlane;
@@ -32,7 +33,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	
 	public ItemMetaData(Item item) {
 		this.item 			= item;
-		this.info 			= item.rangeInfo;
+		this.info 			= item.getRangeInfo();
 		this.rangeMointor	= new OneRangeMonitor(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
 		initRandomAccessFile();
@@ -218,22 +219,6 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 			}
 		}
 	}
-	
-
-	
-	
-//	public void downloadPart(DownloadPlane plane, int index, SpeedMonitor... monitors) {
-//		Future<?>  future = plane.downloadPart(this, index, rangeMointor, monitors);
-//		futures.add(future);
-//		downloading = true;
-//	}
-	
-	
-//	public void saveItem2CacheFile() {
-//		Item.toJsonFile(item);
-//	}
-	
-	
 	
 	
 }

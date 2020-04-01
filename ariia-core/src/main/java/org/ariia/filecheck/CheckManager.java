@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.Item;
 import org.ariia.okhttp.service.ServiceManager;
 import org.ariia.range.RangeInfo;
 

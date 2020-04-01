@@ -34,15 +34,11 @@ public interface Range {
 	void updateIndex(int index, long[] newValue);
 	int updateIndexFromMaxRange(int index);
 	
-
-	
-	
-		
 	// cycle 
 	void oneCycleDataUpdate();
 
+	int getMaxRangePollNum();
 
-	
 	boolean isStreaming();
 	boolean hadLength();
 	long startOfIndex(int index);

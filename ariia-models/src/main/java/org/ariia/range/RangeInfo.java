@@ -54,6 +54,7 @@ public class RangeInfo implements RangeUtil {
 	protected long		fileLength;
 	protected long		downloadLength;
 	protected long  	remainingLength;
+	protected int		maxRangePollNum;
 	protected long[][]	range;
 
 	/**
@@ -62,6 +63,7 @@ public class RangeInfo implements RangeUtil {
 	public RangeInfo() {
 		this.fileLength = -1l;
 	    this.range = new long[][] {{0, -1}};
+	    this.maxRangePollNum = 1;
     }
 
     /**
@@ -74,9 +76,10 @@ public class RangeInfo implements RangeUtil {
     }
     
     
-    public RangeInfo(long length, int count) {
+    public RangeInfo(long length, int maxRangePollNum) {
         fileLength = length;
-        this.range = split(0, length, count);
+        this.range = split(0, length, maxRangePollNum);
+	    this.maxRangePollNum = maxRangePollNum;
     }
 
     public RangeInfo(long length, long[][] range) {
@@ -188,6 +191,10 @@ public class RangeInfo implements RangeUtil {
 	@Override
 	public synchronized int updateIndexFromMaxRange(int index) {
 		return RangeUtil.super.updateIndexFromMaxRange(index);
+	}
+	@Override
+	public int getMaxRangePollNum() {
+		return maxRangePollNum;
 	}
 
 

@@ -1,6 +1,5 @@
 package org.ariia.range;
 
-import org.ariia.setting.Properties;
 import org.ariia.util.Utils;
 
 public interface RangeUtil extends Range {
@@ -16,12 +15,13 @@ public interface RangeUtil extends Range {
 	default String getRemainingLengthMB() {
 		return Utils.fileLengthUnite(getRemainingLength());
 	}
+	
 	default void checkRanges() {
 		if (getRangeCount() == 1)
 			return;
 		long[][] newRange = null;
-		if (getRangeCount() < Properties.RANGE_POOL_NUM) {
-			newRange = new long[Properties.RANGE_POOL_NUM][2];
+		if (getRangeCount() < getMaxRangePollNum()) {
+			newRange = new long[getMaxRangePollNum()][2];
 		} else {
 			newRange = new long[getRangeCount()][2];
 		}

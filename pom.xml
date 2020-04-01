@@ -13,6 +13,8 @@
 		<module>ariia-core</module>
 		<module>ariia-network</module>
 		<module>ariia-logger</module>
+		<module>ariia-models</module>
+		<module>ariia-util</module>
 	</modules>
 	
 	<description>Command Line Download Manager</description>

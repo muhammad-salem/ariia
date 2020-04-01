@@ -3,8 +3,8 @@ package org.ariia.okhttp.request;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.manager.Item;
 import org.ariia.range.RangeUtil;
 
 import okhttp3.Call;
@@ -32,7 +32,7 @@ public interface ClientRequest {
         return head(HttpUrl.parse(url), headers);
     }
     default Response head(Item item) throws IOException {
-        return response( headCall(item.url(), getHeaders(item)) );
+        return response( headCall(HttpUrl.parse(item.getUrl()), getHeaders(item)) );
     }
 
 	default Response head(HttpUrl url, Headers headers) throws IOException {
@@ -69,7 +69,11 @@ public interface ClientRequest {
 	//-----------------------------------------------------------------------------//
 
     
-    default Response get(HttpUrl url, Headers headers) throws IOException {
+	default Response get(String url, Headers headers) throws IOException {
+    	return response(getCall(HttpUrl.parse(url), headers));
+    }
+	
+	default Response get(HttpUrl url, Headers headers) throws IOException {
     	return response(getCall(url, headers));
     }
     
@@ -90,7 +94,7 @@ public interface ClientRequest {
         return response(getCall(item, startRange, endRange));
     }
     default Call getCall(Item item, long startRange, long endRange) throws IOException {
-        return getCall(item.url(), 
+        return getCall(HttpUrl.parse(item.getUrl()), 
         		startRange, 
         		endRange, 
         		getHeaders(item));

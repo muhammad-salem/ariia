@@ -12,6 +12,8 @@ public interface ConnectivityCheck {
 	 * if got any network / IO exception 	--> disconnected <br>
 	 * @return
 	 */
-	NetworkStatus getNetworkStatus();
+	NetworkStatus networkStatus();
+	
+	NetworkReport networkReport();
 
 }

@@ -410,7 +410,7 @@ public class Utils {
 		return length;
 	}
 
-	public static int gesslChunkesNum(long length) {
+	public static int gusslChunkesNum(long length) {
 		// double k = length / 1024.0;
 
 		if (length <= 0) {

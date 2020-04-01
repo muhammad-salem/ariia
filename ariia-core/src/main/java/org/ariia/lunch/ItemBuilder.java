@@ -15,8 +15,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.ariia.manager.Item;
-import org.ariia.manager.MetalinkItem;
+import org.ariia.items.Item;
+import org.ariia.items.MetalinkItem;
 import org.ariia.okhttp.OkUtils;
 import org.ariia.setting.Properties;
 import org.w3c.dom.Document;
