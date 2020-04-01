@@ -9,7 +9,6 @@
   
   
 	<properties>
-		<java.version>1.8</java.version>
 		<main.class>org.ariia.Ariia</main.class>
 	</properties>
   
