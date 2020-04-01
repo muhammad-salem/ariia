@@ -1,4 +1,4 @@
-package org.ariia.core;
+package org.ariia.config;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;

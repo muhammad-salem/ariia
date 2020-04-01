@@ -1,4 +1,4 @@
-package org.ariia.core;
+package org.ariia.config;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

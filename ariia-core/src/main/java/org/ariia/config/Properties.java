@@ -1,4 +1,4 @@
-package org.ariia.setting;
+package org.ariia.config;
 
 import org.ariia.lunch.Argument;
 import org.ariia.util.R;

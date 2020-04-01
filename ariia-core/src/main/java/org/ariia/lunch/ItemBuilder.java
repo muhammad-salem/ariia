@@ -15,10 +15,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.items.MetalinkItem;
 import org.ariia.okhttp.OkUtils;
-import org.ariia.setting.Properties;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

@@ -10,8 +10,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.ariia.core.CookieJars;
-import org.ariia.core.OkConfig;
+import org.ariia.config.CookieJars;
+import org.ariia.config.OkConfig;
+import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.items.ItemStore;
 import org.ariia.logging.Log;
@@ -21,6 +22,8 @@ import org.ariia.monitors.SessionMonitor;
 import org.ariia.monitors.SimpleSessionMonitor;
 import org.ariia.monitors.TableMonitor;
 import org.ariia.network.ConnectivityCheck;
+import org.ariia.network.NetworkReport;
+import org.ariia.network.NetworkStatus;
 import org.ariia.network.UrlConnectivity;
 import org.ariia.okhttp.client.ChannelClient;
 import org.ariia.okhttp.client.Client;
@@ -28,7 +31,6 @@ import org.ariia.okhttp.client.SegmentClient;
 import org.ariia.okhttp.writer.ChannelMetaDataWriter;
 import org.ariia.okhttp.writer.StreamMetaDataWriter;
 import org.ariia.range.RangeUtil;
-import org.ariia.setting.Properties;
 
 public class ServiceManager implements Closeable {
 	
@@ -123,7 +125,9 @@ public class ServiceManager implements Closeable {
 		if (sessionMonitor.isDownloading()) {
 			return false;
 		} else {
-			if (connectivity.isOnline()) {
+			NetworkReport report = connectivity.networkReport();
+			Log.trace(connectivity.getClass(), report.getTitle(), report.getMessage());
+			if (NetworkStatus.Connected.equals(report.getNetworkStatus())) {
 				return false;
 			} else {
 				return true;

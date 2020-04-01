@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.ariia.setting.Properties;
+import org.ariia.config.Properties;
 
 public interface ThreadOrder {
 	
