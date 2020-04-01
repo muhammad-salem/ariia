@@ -1,4 +1,4 @@
-# ariia  (0.2.37)
+# ariia  (0.2.4)
 
 OKaria is a smart command line download manager.
 
@@ -8,6 +8,19 @@ OKaria is a smart command line download manager.
  - gson (2.8.4)
  - lawnha (0.2.0)
  
+ 
+## Modules
+ 
+- ariia-pom
+- ariia-network
+- ariia-util
+- ariia-models
+- ariia-network-monitor
+- ariia-logger
+- ariia-core
+- ariia-verfiy-data
+- ariia-cli
+
 
 ### Options :
  - support HTTP and HTTPS.
