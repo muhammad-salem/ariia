@@ -1,4 +1,4 @@
-# okaria  (0.2.36)
+# ariia  (0.2.37)
 
 OKaria is a smart command line download manager.
 
@@ -6,27 +6,23 @@ OKaria is a smart command line download manager.
 ## Dependency
  - okhttp (3.14.7)
  - gson (2.8.4)
- - log (0.2.54)
- - ansi (0.1.96)
+ - lawnha (0.2.0)
  
-## remove Dependency
- - jansi (1.17.1)
 
 ### Options :
  - support HTTP and HTTPS.
- - good Handle for Header and Cookies
- - cross-Platform: support linux/unix, windows and, mac-os.
+ - support Header and Cookies
+ - cross-Platform: support Linux, Unix, Windows and Mac OS.
  - parallel download, using segment.
- - Saved setting every 1 second.
- - Support Google Chrome with extension.
- - Support using Proxy [HTTP, HTTPS, SOCKS], COMMING SOON JSCH(SSH)
+ - saved setting every 1 second.
+ - support Google Chrome with extension.
+ - support using Proxy [HTTP, HTTPS, SOCKS], COMMING SOON JSCH(SSH)
  - support download from maven repository
  - supported arguments
  - save time while downloading, by spiriting download process and writing data to hard disk.
  - using cache memory, to reduce hate resulted by continuous writhing to (mechanical/old/magnet hard disk),
  		not test on ssd Hard Disk
- - add maven plugin to download (.pom and .jar) file from repos.
- - solve heate pooblem, by reduce write time on hard disk - flush on fixed rate of time.
+ - solve heat problem, by reduce write time to hard disk - flush on fixed rate of time every 5s.
   
  
  
@@ -36,9 +32,7 @@ OKaria is a smart command line download manager.
 	-i		--input-file		downoload from text file - list of urls
 	-m		--metalink		downoload from  metalink text/xml file - list of urls on deffrient servers for the same daownloadable file
 	-r		--http-referer		set referer header for that link
-	-ua		--user-agent		set user-agent header while download
 	-H		--header		set one/multiable different header(s) for that link
-	-C		--cookie		add cookie(s) while download
 	-cf		--cookie-file		add cookie(s) from standered cookie file
 	-o		--file-name		save download link to file on hard-disk
 	-sp		--save-path		set directory of download process
@@ -54,12 +48,6 @@ OKaria is a smart command line download manager.
 	-s		--ssh			use ssh connection as proxy - [remotehost:port], not supported yet
 	-su		--ssh-user		set ssh user name - remote login user name
 	-sp		--ssh-pass		set remote login password, if non will be asked from terminal
-	-gd		--google-drive-id	download from google drive servers, fileID or full URL
-	-mvn	--maven			download from  maven repository, (dafault http://central.maven.org/maven2/)
-	-mvng	--maven-groupId		set maven groupId
-	-mvna	--maven-artifactId	set maven artifactId
-	-mvnv	--maven-version		set maven version
-	-mvnr	--maven-repository	download to directory default set to system maven parh in user directory
 	-h		--help			print this message
 	-d		--debug-level		display logging, Levels: [off, error, debug, warning, info, fine, finer, finest, all]
 	-v		--version		display the version of okaria
@@ -79,8 +67,6 @@ OKaria is a smart command line download manager.
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
 ![Format2](img/text-format02.png)
-
-
 
 
 ### ISSUE FIX:
