@@ -16,6 +16,7 @@
 		<module>ariia-models</module>
 		<module>ariia-util</module>
 		<module>ariia-network-monitor</module>
+		<module>ariia-verfiy-data</module>
 	</modules>
 	
 	<description>Command Line Download Manager</description>
