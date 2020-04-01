@@ -1,4 +1,4 @@
-package org.aria.range;
+package org.ariia.range;
 
 import org.ariia.range.RangeInfo;
 import org.junit.Test;

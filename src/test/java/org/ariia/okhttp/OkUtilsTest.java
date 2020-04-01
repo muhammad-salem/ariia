@@ -1,4 +1,4 @@
-package org.aria.okhttp;
+package org.ariia.okhttp;
 
 import org.junit.Test;
 
