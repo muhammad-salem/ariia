@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.okaria</groupId>
-	<artifactId>okaria</artifactId>
+	<groupId>org</groupId>
+	<artifactId>ariia</artifactId>
 	<version>0.2.37</version>
 
 	<description>Command Line Download Manager</description>
 	<properties>
 		<java.version>1.8</java.version>
-		<main.class>org.aria.Aria</main.class>
+		<main.class>org.ariia.Ariia</main.class>
 	</properties>
 
 	<url>https://github.com/salemebo/okaria</url>

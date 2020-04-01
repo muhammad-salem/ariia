@@ -2,7 +2,7 @@ package org.aria.range;
 
 import java.util.Arrays;
 
-import org.aria.range.SubRange;
+import org.ariia.range.SubRange;
 import org.junit.Test;
 
 public class SubRangeTest {

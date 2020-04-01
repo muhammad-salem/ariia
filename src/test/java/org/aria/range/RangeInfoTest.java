@@ -1,6 +1,6 @@
 package org.aria.range;
 
-import org.aria.range.RangeInfo;
+import org.ariia.range.RangeInfo;
 import org.junit.Test;
 
 public class RangeInfoTest {
