@@ -24,7 +24,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import okhttp3.Cookie;
 
 /**
  * build only items from arguments
@@ -76,10 +75,10 @@ public class ItemBuilder {
 		item.setUrl(url);
 		item.setHeaders(headers);
 		if (arguments.isCookieFile()) {
-			List<Cookie> cookies = arguments.getCookiedFileList();
-			String cookie = cookies.get(0).name() + '=' + cookies.get(0).value();
-			for (int i = 1; i < cookies.size(); i++) {
-				cookie = cookie + "; " + cookies.get(i).name() + '=' + cookies.get(i).value();
+			Map<String, String> cookies = arguments.getCookies();
+			String cookie = "";
+			for (Map.Entry<String, String> entry : cookies.entrySet()) {
+				cookie = entry.getKey() + '=' + entry.getValue() + "; " + cookie;
 			}
 			item.addHeader("Cookie", cookie);
 		}

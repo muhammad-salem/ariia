@@ -1,21 +1,24 @@
 package org.ariia.lunch;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.ariia.okhttp.OkUtils;
 import org.ariia.util.R;
-
-import okhttp3.Cookie;
-import okhttp3.HttpUrl;
 
 public class Argument {
 
@@ -67,10 +70,12 @@ public class Argument {
 					addArgument(argument, t[1]);
 				}
 			} else if (arg.startsWith("http")){
-				HttpUrl url = HttpUrl.parse(arg);
-				if (url == null)
+				try {
+					new URL(arg);
+					dictionary.put(TerminalArgument.Url, arg);
+				} catch (MalformedURLException e) {
 					continue;
-				dictionary.put(TerminalArgument.Url, arg);
+				}
 			}
 		}
 	}
@@ -225,11 +230,29 @@ public class Argument {
 		return dictionary.get(TerminalArgument.CookieFile);
 	}
 	
-	public List<Cookie> getCookiedFileList() {
-		if (isCookieFile()) {
-			return OkUtils.getCookies(dictionary.get(TerminalArgument.CookieFile));
+	public Map<String, String> getCookies() {
+		
+		List<String> txtCookies = new LinkedList<>();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(getCookieFile()));
+			String textCookie;
+			while ((textCookie = reader.readLine()) != null) {
+				txtCookies.add(textCookie);
+			}
+			reader.close();
+		} catch (IOException e) {
+			return Collections.emptyMap();
 		}
-		return Collections.emptyList();
+		HashMap<String, String> cookies = new HashMap<>();
+		// 0 1 2 3 4 5 6
+		// .domain.com HTTPONLY / Secure ExpiryDate name value
+		// .ubuntu.com TRUE / false 77777777 _ga GA1.2.86547
+		for (String cookie : txtCookies) {
+
+			String[] str = cookie.split("\t");
+			cookies.put(str[5], str[6]);
+		}
+		return cookies;
 	}
 	
 	public String getLogLevel() {
