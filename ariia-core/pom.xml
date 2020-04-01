@@ -22,7 +22,7 @@
 		
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-network</artifactId>
+	  		<artifactId>ariia-network-monitor</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 		<dependency>
@@ -33,11 +33,6 @@
 		<dependency>
 	  		<groupId>org.ariia</groupId>
 	  		<artifactId>ariia-models</artifactId>
-			<version>${project.version}</version>
-	  	</dependency>
-		<dependency>
-	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-network-monitor</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 	  	
