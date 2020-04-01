@@ -2,7 +2,6 @@ package org.aria.okhttp.client;
 
 import org.aria.range.RangeResponseHeader;
 import org.aria.range.RangeUtil;
-import org.aria.setting.Properties;
 
 import okhttp3.Response;
 
@@ -26,7 +25,6 @@ public interface ContentLength {
 		if(range.isStreaming()) {
 			range.indexOf(0)[1] = length;
 			range.updateFileLength(length);
-			range.updateRange(range.split(range.indexOf(0), Properties.RANGE_POOL_NUM));
 		}else {
 			range.updateFileLength(length);
 		}

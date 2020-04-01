@@ -114,7 +114,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 			}
 		}
 		
-		saveItem2CacheFile();
+//		saveItem2CacheFile();
 		forceUpdate();
 		
 		if(report.length() > 0)
@@ -229,9 +229,9 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 //	}
 	
 	
-	public void saveItem2CacheFile() {
-		Item.toJsonFile(item);
-	}
+//	public void saveItem2CacheFile() {
+//		Item.toJsonFile(item);
+//	}
 	
 	
 	

@@ -1,28 +1,30 @@
 package org.aria.manager;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.aria.util.R;
 import org.aria.util.Utils;
 
-public final class ItemStore {
+public class ItemStore {
+
+	private ArrayList<Item> items;
+	private String storePath;
 	
-	public static ItemStore CreateAndInitStore() {
-		ItemStore store = new ItemStore();
-		InitStore(store, R.getConfigDirectory());
-		return store;
+	public ItemStore() {
+		this(R.getConfigDirectory());
 	}
-	
-	public static void InitStore(ItemStore store) {
-		InitStore(store, R.getConfigDirectory());
+	public ItemStore(String storePath) {
+		items = new ArrayList<>();
+		this.storePath = storePath;
+		refreshStore();
 	}
 			
-	public static final void InitStore(ItemStore store, String folder) {
-		File dir = new File( folder);
+	public void refreshStore() {
+		items.clear();
+		File dir = new File( storePath );
 		File[] files = dir.listFiles();
 		for (File file : files) {
 			if(file.getName().contains(".json~")) {
@@ -34,19 +36,10 @@ public final class ItemStore {
 					// clean cache files
 					file.delete();
 				} else {
-					store.items.add(item);
+					items.add(item);
 				}
 			}
-			
-			
 		}
-	}
-
-	
-	private List<Item> items;
-	
-	private ItemStore() {
-		items = new LinkedList<>();
 	}
 	
 	public Item searchByUrl(String url) {
@@ -70,7 +63,9 @@ public final class ItemStore {
 			});
 	}
 	
-	
-	
+	public void toJsonFile(Item item) {
+		String cacheFile = storePath + item.getFilename() + ".json";
+		Utils.toJsonFile(cacheFile, item);
+	}
 
 }

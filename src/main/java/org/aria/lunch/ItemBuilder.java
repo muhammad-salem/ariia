@@ -19,7 +19,6 @@ import org.aria.manager.Item;
 import org.aria.manager.MetalinkItem;
 import org.aria.okhttp.OkUtils;
 import org.aria.setting.Properties;
-import org.aria.util.R;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -94,7 +93,6 @@ public class ItemBuilder {
 		} else {
 			item.setFilename(OkUtils.Filename(item.getUrl()));
 		}
-		item.setCacheFile(R.getConfigPath(item.getFilename()) + ".json");
 		items.add(item);
 	}
 	

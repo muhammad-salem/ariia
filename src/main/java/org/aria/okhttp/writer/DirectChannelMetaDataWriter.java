@@ -14,8 +14,8 @@ public class DirectChannelMetaDataWriter extends ChannelMetaDataWriter {
 		if(writeSegment(segment)) {
 			releaseSegment(segment);
 			forceUpdate();
-			saveItem2CacheFile();
-		}else {
+//			saveItem2CacheFile();
+		} else {
 			if(raf == null || !raf.getChannel().isOpen()) {
 				initRandomAccessFile();
 				initMetaData();

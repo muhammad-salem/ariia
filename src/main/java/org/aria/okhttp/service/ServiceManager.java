@@ -70,7 +70,7 @@ public class ServiceManager implements Closeable {
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getHttpClient().proxy());
 
-		this.itemStore = ItemStore.CreateAndInitStore();
+		this.itemStore = new ItemStore();
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 	}
@@ -82,7 +82,7 @@ public class ServiceManager implements Closeable {
 		this.connectivity = new UrlConnectivity(client.getHttpClient().proxy());
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.itemStore = ItemStore.CreateAndInitStore();
+		this.itemStore = new ItemStore();
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 	}
@@ -95,7 +95,7 @@ public class ServiceManager implements Closeable {
 		this.connectivity = connectivity;
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.itemStore = ItemStore.CreateAndInitStore();
+		this.itemStore = new ItemStore();
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 	}
@@ -192,7 +192,7 @@ public class ServiceManager implements Closeable {
 
 	protected void removeItemEvent(ItemMetaData metaData) {
 		metaData.systemFlush();
-		metaData.saveItem2CacheFile();
+		itemStore.toJsonFile(metaData.getItem());
 		metaData.close();
 		downloadingList.remove(metaData);
 		reportTable.remove(metaData.getRangeMointor());
@@ -201,11 +201,12 @@ public class ServiceManager implements Closeable {
 	public void runSystemShutdownHook() {
 		for (ItemMetaData metaData : downloadingList) {
 			metaData.systemFlush();
+			itemStore.toJsonFile(metaData.getItem());
 			metaData.close();
 		}
 		
 		for (ItemMetaData metaData : wattingList) {
-			metaData.saveItem2CacheFile();
+			itemStore.toJsonFile(metaData.getItem());
 			metaData.close();
 		}
 	}
@@ -270,8 +271,9 @@ public class ServiceManager implements Closeable {
 	}
 
 	protected void systemFlushData() {
-		for (ItemMetaData placeHolder : downloadingList) {
-			placeHolder.systemFlush();
+		for (ItemMetaData metaData : downloadingList) {
+			metaData.systemFlush();
+			itemStore.toJsonFile(metaData.getItem());
 		}
 	}
 	
@@ -279,14 +281,14 @@ public class ServiceManager implements Closeable {
 
 
 	protected void saveDownloadingItemToDisk() {
-		for (ItemMetaData placeHolder : downloadingList) {
-			placeHolder.saveItem2CacheFile();
+		for (ItemMetaData metaData : downloadingList) {
+			itemStore.toJsonFile(metaData.getItem());
 		}
 	}
 
 	protected void saveWattingItemToDisk() {
-		for (ItemMetaData placeHolder : wattingList) {
-			placeHolder.saveItem2CacheFile();
+		for (ItemMetaData metaData : wattingList) {
+			itemStore.toJsonFile(metaData.getItem());
 		}
 	}
 	
