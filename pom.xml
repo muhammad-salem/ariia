@@ -11,6 +11,8 @@
 	
 	<modules>
 		<module>ariia-core</module>
+		<module>ariia-network</module>
+		<module>ariia-logger</module>
 	</modules>
 	
 	<description>Command Line Download Manager</description>
@@ -18,5 +20,47 @@
 		<url>https://github.com/salemebo/ariia.git</url>
 		<tag>http, download, manager</tag>
 	</scm>
+	
+	
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+	
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+	
 	
 </project>
