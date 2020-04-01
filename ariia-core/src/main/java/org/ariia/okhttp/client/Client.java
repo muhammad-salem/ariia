@@ -5,9 +5,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.ariia.config.OkConfig;
-import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
+import org.ariia.config.Properties;
 import org.ariia.okhttp.OkUtils;
 import org.ariia.okhttp.queue.DownloadPlane;
 import org.ariia.okhttp.request.ClientRequest;

@@ -9,11 +9,11 @@ import java.util.concurrent.Callable;
 import org.ariia.range.RangeUtil;
 import org.ariia.speed.SpeedMonitor;
 import org.ariia.util.Utils;
-import org.terminal.Ansi;
+import org.terminal.ansi.CursorControl;
+import org.terminal.ansi.Styles;
 
-public abstract class SessionMonitor extends SpeedMonitor {
+public abstract class SessionMonitor extends SpeedMonitor implements Styles, CursorControl {
 
-	protected static  Ansi ansi = Utils.ANSI;
 	protected MessageFormat format;
 	protected List<RangeUtil> rangeInfos = new LinkedList<>();
 
@@ -88,10 +88,10 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
 	}
 	protected String getRemainingTimeString() {
-		return ansi.green(ansi.underscore(Utils.timeformate(getRemainingTime())));
+		return green(underscore(Utils.timeformate(getRemainingTime())));
 	}
 	public String getTimer() {
-		return ansi.green(ansi.underscore(Utils.timeformate(timer++)));
+		return green(underscore(Utils.timeformate(timer++)));
 	}
 
 	public String getPercent() {
@@ -112,10 +112,10 @@ public abstract class SessionMonitor extends SpeedMonitor {
 		if(percent < 0) return "";
 		StringBuilder builder = new StringBuilder();
 		builder.append('[');
-		builder.append(ansi.chars('=', percent));
+		builder.append(chars('=', percent));
 		builder.append('>');
-		builder.append(ansi.redLight (Utils.getRightString(getPercent(), 9)));
-		builder.append(ansi.chars(' ', width - percent));
+		builder.append(redLight (Utils.getRightString(getPercent(), 9)));
+		builder.append(chars(' ', width - percent));
 		builder.append(']');
 		return builder.toString();
 	}

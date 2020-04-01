@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.ariia.util.Utils;
 import org.terminal.Ansi;
+import org.terminal.ansi.CursorControl;
 import org.terminal.beans.ColumnStyle;
 import org.terminal.strings.StyleBuilder;
 
@@ -38,7 +39,7 @@ import org.terminal.strings.StyleBuilder;
  * @author salem
  *
  */
-public class MiniTableMonitor implements TableMonitor {
+public class MiniTableMonitor implements TableMonitor, CursorControl {
 
 	protected Set<OneRangeMonitor> monitors;
 	protected SessionMonitor session;
@@ -187,7 +188,7 @@ public class MiniTableMonitor implements TableMonitor {
 			if(c == '\n')
 				count++;
 		}
-		message.append(Utils.ANSI.cursorUp(count));
+		message.append(cursorUp(count));
 		callSpeedForNextCycle();
 		return message.toString();
 	}

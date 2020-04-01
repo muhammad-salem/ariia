@@ -9,9 +9,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
+import org.ariia.config.Properties;
 import org.ariia.monitors.OneRangeMonitor;
 import org.ariia.okhttp.queue.DownloadPlane;
 import org.ariia.range.RangeUtil;

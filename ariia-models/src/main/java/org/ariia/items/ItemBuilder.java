@@ -1,4 +1,4 @@
-package org.ariia.lunch;
+package org.ariia.items;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,10 +15,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.ariia.args.Argument;
 import org.ariia.config.Properties;
-import org.ariia.items.Item;
-import org.ariia.items.MetalinkItem;
-import org.ariia.okhttp.OkUtils;
+import org.ariia.util.Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -90,7 +89,14 @@ public class ItemBuilder {
 		if (arguments.isFileName()) {
 			item.setFilename(arguments.getFileName());
 		} else {
-			item.setFilename(OkUtils.Filename(item.getUrl()));
+			File file = new File(url);
+			String fileName = file.getName().split("\\?")[0];
+			
+			if ("".equals(fileName)) {
+				String[] fileParts = url.split("/");
+				fileName = fileParts[fileParts.length-2].split("\\?")[0];
+			}
+			item.setFilename(fileName);
 		}
 		items.add(item);
 	}
@@ -106,7 +112,7 @@ public class ItemBuilder {
 	
 
 	private void downloadInputFile() {
-		List<String> lines = OkUtils.readLines(arguments.getInputFile());
+		List<String> lines = Utils.readLines(arguments.getInputFile());
 		Iterator<String> iterator = lines.iterator();
 		Map<String, String> headers = null;
 		while (iterator.hasNext()) {
@@ -169,7 +175,7 @@ public class ItemBuilder {
 	}
 	
 	private MetalinkItem readMetaLinkText(String metaLinkFile) {
-		List<String> urls = OkUtils.readLines(metaLinkFile);
+		List<String> urls = Utils.readLines(metaLinkFile);
 		Iterator<String> iterator = urls.iterator();
 		return readMetaLinkText(iterator);
 	}

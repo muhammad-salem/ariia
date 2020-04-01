@@ -3,11 +3,11 @@ package org.ariia.monitors;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.ariia.util.Utils;
 import org.terminal.Ansi;
+import org.terminal.ansi.CursorControl;
 import org.terminal.beans.Row;
 
-public class TableItemsMonitor implements TableMonitor {
+public class TableItemsMonitor implements TableMonitor, CursorControl {
 	
 	protected Set<OneRangeMonitor> monitors;
 	protected SessionMonitor session;
@@ -116,7 +116,7 @@ public class TableItemsMonitor implements TableMonitor {
 			if(c == '\n')
 				count++;
 		}
-		message.append(Utils.ANSI.cursorUp(count));
+		message.append(cursorUp(count));
 		callSpeedForNextCycle();
 		return message.toString();
 	}

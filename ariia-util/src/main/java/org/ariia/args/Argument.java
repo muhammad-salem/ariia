@@ -1,8 +1,5 @@
-package org.ariia.lunch;
+package org.ariia.args;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -13,12 +10,12 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.ariia.okhttp.OkUtils;
+//import org.ariia.okhttp.OkUtils;
 import org.ariia.util.R;
+import org.ariia.util.Utils;
 
 public class Argument {
 
@@ -232,17 +229,7 @@ public class Argument {
 	
 	public Map<String, String> getCookies() {
 		
-		List<String> txtCookies = new LinkedList<>();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(getCookieFile()));
-			String textCookie;
-			while ((textCookie = reader.readLine()) != null) {
-				txtCookies.add(textCookie);
-			}
-			reader.close();
-		} catch (IOException e) {
-			return Collections.emptyMap();
-		}
+		List<String> txtCookies = Utils.readLines(getCookieFile());
 		HashMap<String, String> cookies = new HashMap<>();
 		// 0 1 2 3 4 5 6
 		// .domain.com HTTPONLY / Secure ExpiryDate name value
@@ -302,21 +289,7 @@ public class Argument {
 	public int[] parseDownloadPieces() {
 		String pices = getDownloadPieces();
 		if(pices.startsWith("/") || pices.startsWith("file://")) {
-			List<String> list = OkUtils.readLines(pices);
-			
-//			List<Integer> indexs = new LinkedList<>();
-//			Iterator<String> iterator =  list.iterator();
-//			while (iterator.hasNext()) {
-//				String num = (String) iterator.next();
-//				try {
-//					Integer i = Integer.parseInt(num);
-//					indexs.add(i);
-//				} catch (Exception e) {
-//					continue;
-//				}
-//			}
-//			return (Integer[]) indexs.toArray(new Integer[indexs.size()]);
-			
+			List<String> list = Utils.readLines(pices);
 			int[] indexs = new int[list.size()];
 			for (int i = 0; i < list.size(); i++) {
 				try {

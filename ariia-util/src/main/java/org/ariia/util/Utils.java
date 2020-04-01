@@ -19,10 +19,10 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
-
-import org.terminal.Ansi;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,8 +30,6 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 public class Utils {
-	
-	public final static Ansi ANSI = new Ansi();
 
 	private static DecimalFormat decimalFormat = new DecimalFormat("0.000");
 	private static double kbyte = 1024;
@@ -540,6 +538,21 @@ public class Utils {
 			
 		} catch (IOException e) {
 			
+		}
+	}
+	
+	public static List<String> readLines(String filePath) {
+		List<String> txtCookies = new LinkedList<>();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+			String textCookie;
+			while ((textCookie = reader.readLine()) != null) {
+				txtCookies.add(textCookie);
+			}
+			reader.close();
+			return txtCookies;
+		} catch (IOException e) {
+			return Collections.emptyList();
 		}
 	}
 	

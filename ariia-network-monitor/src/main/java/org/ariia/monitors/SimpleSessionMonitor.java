@@ -26,7 +26,7 @@ public class SimpleSessionMonitor extends SessionMonitor {
 		builder.append("\r{4}");
 		builder.append( Ansi.EraseEndofLine);
 		builder.append("\n\r");
-		builder.append(ansi.cursorUp(6));
+		builder.append(cursorUp(6));
 		return builder.toString();
 	}
 
@@ -40,16 +40,16 @@ public class SimpleSessionMonitor extends SessionMonitor {
 	
 	private String firstLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.red(ansi.bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
-		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
-		builder.append(ansi.yellow(ansi.bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
+		builder.append(red(bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
+		builder.append(magentaLight(bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
+		builder.append(yellow(bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
 		return builder.toString();
 	}
 	
 	private String secondLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
+		builder.append(magentaLight(bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
+		builder.append(blue(bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "/s", 16))));
 		return builder.toString();
 	}
 	

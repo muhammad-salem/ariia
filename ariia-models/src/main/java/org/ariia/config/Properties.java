@@ -1,6 +1,6 @@
 package org.ariia.config;
 
-import org.ariia.lunch.Argument;
+import org.ariia.args.Argument;
 import org.ariia.util.R;
 
 public final class Properties {

@@ -1,4 +1,4 @@
-package org.ariia.lunch;
+package org.ariia.args;
 
 import java.util.Arrays;
 
