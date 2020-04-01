@@ -55,7 +55,7 @@ OKaria is a smart command line download manager.
 
 ### TO:DO:LIST
 
- - add SSH implemntaion
+ - add SSH implementation
 
 ### Overview
 
