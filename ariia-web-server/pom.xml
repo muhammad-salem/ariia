@@ -17,11 +17,6 @@
 	  		<artifactId>ariia-core</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
-		<dependency>
-	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-resources</artifactId>
-			<version>${project.version}</version>
-	  	</dependency>
 	</dependencies>
 	
 	<build>
