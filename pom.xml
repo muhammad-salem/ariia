@@ -18,6 +18,9 @@
 		<module>ariia-network-monitor</module>
 		<module>ariia-verfiy-data</module>
 		<module>ariia-cli</module>
+		<module>ariia-resources</module>
+		<module>ariia-web-app</module>
+		<module>ariia-web-server</module>
 	</modules>
 	
 	<description>Command Line Download Manager</description>
