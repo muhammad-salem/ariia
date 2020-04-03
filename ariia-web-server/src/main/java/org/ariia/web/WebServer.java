@@ -4,12 +4,24 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
 
+import org.ariia.web.resource.FileResourceHandler;
+import org.ariia.web.resource.InMemoryResourceHandler;
+import org.ariia.web.resource.MultiRootResourceHandler;
+import org.ariia.web.resource.ResourceHandler;
+
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 
 public class WebServer {
+	
+	enum ResourceType {
+		JAR,
+		IN_MMORY,
+		FILE,
+		JAR_MULTI
+	}
 	
 	private HttpServer server;
 	private String staticResourceHandler;
@@ -26,6 +38,10 @@ public class WebServer {
 		this(new InetSocketAddress(port), resourceLocation, inMemory);
 	}
 	
+	public WebServer(int port, String resourceLocation, int type) throws IOException {
+		this(new InetSocketAddress(port), resourceLocation, type);
+	}
+	
 	public WebServer(InetSocketAddress address) throws IOException {
 		this(address, null);
 	}
@@ -38,8 +54,26 @@ public class WebServer {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
 		if (inMemory) {
-			createInMemoryResourceContext("/", resourceLocation);
+			this.createInMemoryResourceContext("/", resourceLocation);
 		} else {
+			this.createResourceContext("/", resourceLocation);
+		}
+	}
+	
+	public WebServer(InetSocketAddress address, String resourceLocation, int type) throws IOException {
+		this.server  = HttpServer.create(address, 0);
+		this.staticResourceHandler = resourceLocation;
+		switch (type) {
+		case 1: {
+			this.createResourceContext("/", resourceLocation);
+		}
+		case 2: {
+			this.createInMemoryResourceContext("/", resourceLocation);
+		}
+		case 3: {
+			this.createFileResourceContext("/", resourceLocation);
+		}
+		default:
 			this.createResourceContext("/", resourceLocation);
 		}
 	}
@@ -85,6 +119,11 @@ public class WebServer {
 	
 	public HttpContext createInMemoryResourceContext(String path, String resourceLocation) {
 		HttpHandler handler = new InMemoryResourceHandler(resourceLocation);
+		return server.createContext(path, handler);
+	}
+	
+	public HttpContext createFileResourceContext(String path, String resourceLocation) {
+		HttpHandler handler = new FileResourceHandler(resourceLocation);
 		return server.createContext(path, handler);
 	}
 	

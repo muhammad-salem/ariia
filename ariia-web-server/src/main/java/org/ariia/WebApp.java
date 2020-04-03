@@ -9,7 +9,8 @@ public class WebApp {
 
 	public static void main(String[] args) throws IOException {
         int port = 8080;
-        WebServer server = new WebServer(port, "/static/angular", true);
+        String resourceLocation = args.length >= 1 ? args[0] : "/static/angular";
+        WebServer server = new WebServer(port, resourceLocation, 3);
         server.createContext("/iii", ex -> {
         	ex.sendResponseHeaders(200, 2);
         	ex.getResponseBody().write("hi".getBytes(StandardCharsets.UTF_8));

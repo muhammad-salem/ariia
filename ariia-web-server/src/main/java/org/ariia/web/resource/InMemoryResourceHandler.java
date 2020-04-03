@@ -1,4 +1,4 @@
-package org.ariia.web;
+package org.ariia.web.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
