@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { HomePageComponent } from './component/website/home-page/home-page.component';
 import { AboutPageComponent } from './component/website/about-page/about-page.component';
 import { LayoutComponent } from './component/structure/layout/layout.component';
@@ -24,7 +23,6 @@ import { NotificationComponent } from './component/notify/notification/notificat
 
 @NgModule({
   declarations: [
-    AppComponent,
     HomePageComponent,
     AboutPageComponent,
     LayoutComponent,
@@ -49,6 +47,6 @@ import { NotificationComponent } from './component/notify/notification/notificat
     AppRoutingModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [HomePageComponent]
 })
 export class AppModule { }
