@@ -16,9 +16,9 @@ import com.sun.net.httpserver.HttpServer;
 
 public class WebServer {
 	
-	enum ResourceType {
-		JAR,
-		IN_MMORY,
+	public enum ResourceType {
+		STREAM,
+		IN_MEMORY,
 		FILE,
 		JAR_MULTI
 	}
@@ -38,7 +38,7 @@ public class WebServer {
 		this(new InetSocketAddress(port), resourceLocation, inMemory);
 	}
 	
-	public WebServer(int port, String resourceLocation, int type) throws IOException {
+	public WebServer(int port, String resourceLocation, ResourceType type) throws IOException {
 		this(new InetSocketAddress(port), resourceLocation, type);
 	}
 	
@@ -60,21 +60,25 @@ public class WebServer {
 		}
 	}
 	
-	public WebServer(InetSocketAddress address, String resourceLocation, int type) throws IOException {
+	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type) throws IOException {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
 		switch (type) {
-		case 1: {
+			case STREAM: {
 			this.createResourceContext("/", resourceLocation);
+			break;
 		}
-		case 2: {
+			case IN_MEMORY: {
 			this.createInMemoryResourceContext("/", resourceLocation);
+			break;
 		}
-		case 3: {
+			case FILE: {
 			this.createFileResourceContext("/", resourceLocation);
+			break;
 		}
-		default:
-			this.createResourceContext("/", resourceLocation);
+			case JAR_MULTI:
+			default:
+			this.createMultiResourceContext("/", resourceLocation);
 		}
 	}
 
