@@ -18,14 +18,30 @@ public class WebServer {
 		this(new InetSocketAddress(port));
 	}
 	
+	public WebServer(int port, String resourceLocation) throws IOException {
+		this(port, resourceLocation, false);
+	}
+	
+	public WebServer(int port, String resourceLocation, boolean inMemory) throws IOException {
+		this(new InetSocketAddress(port), resourceLocation, inMemory);
+	}
+	
 	public WebServer(InetSocketAddress address) throws IOException {
 		this(address, null);
 	}
 	
 	public WebServer(InetSocketAddress address, String resourceLocation) throws IOException {
+		this(address, resourceLocation, false);
+	}
+	
+	public WebServer(InetSocketAddress address, String resourceLocation, boolean inMemory) throws IOException {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
-		this.createResourceContext("/", resourceLocation);
+		if (inMemory) {
+			createInMemoryResourceContext("/", resourceLocation);
+		} else {
+			this.createResourceContext("/", resourceLocation);
+		}
 	}
 
 	public HttpServer server() {
@@ -35,6 +51,11 @@ public class WebServer {
 	public String staticResourceHandler() {
 		return staticResourceHandler;
 	}
+	
+	public void removeResourceContext() throws IllegalArgumentException {
+		server.removeContext("/");
+	}
+	
 	
 	public void start() {
 		server.start();
@@ -54,6 +75,16 @@ public class WebServer {
 	
 	public HttpContext createResourceContext(String path, String resourceLocation) {
 		HttpHandler handler = new ResourceHandler(resourceLocation);
+		return server.createContext(path, handler);
+	}
+	
+	public HttpContext createMultiResourceContext(String path, String... resourceLocations) {
+		HttpHandler handler = new MultiRootResourceHandler(resourceLocations);
+		return server.createContext(path, handler);
+	}
+	
+	public HttpContext createInMemoryResourceContext(String path, String resourceLocation) {
+		HttpHandler handler = new InMemoryResourceHandler(resourceLocation);
 		return server.createContext(path, handler);
 	}
 	
