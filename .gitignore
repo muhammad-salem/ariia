@@ -49,3 +49,6 @@ Thumbs.db
 /bin/
 .gitignore
 ariia-web-server/src/main/resources/static/angular
+*.iml
+/ariia-*/*.iml
+
