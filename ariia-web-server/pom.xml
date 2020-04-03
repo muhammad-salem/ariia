@@ -7,6 +7,7 @@
   </parent>
   <artifactId>ariia-web-server</artifactId>
   
+
  	<properties>
 		<main.class>org.ariia.WebApp</main.class>
 	</properties>
@@ -18,6 +19,66 @@
 			<version>${project.version}</version>
 	  	</dependency>
 	</dependencies>
+	
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		
+		<profile>
+			<id>prod</id>
+			<activation>
+				 <file>
+					<missing>src/main/resources/static/angular/index.html</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<executions>
+							<execution>
+								<id>exec-npm-install</id>
+								<phase>generate-sources</phase>
+								<configuration>
+								    <workingDirectory>${project.basedir}/../webapp</workingDirectory>
+								    <executable>npm</executable>
+								    <arguments>
+									    <argument>install</argument>
+								    </arguments>
+								</configuration>
+								<goals>
+								    <goal>exec</goal>
+								</goals>
+							</execution>
+							
+							<execution>
+								<id>exec-npm-ng-build</id>
+								<phase>generate-sources</phase>
+								<configuration>
+								    <workingDirectory>${project.basedir}/../webapp</workingDirectory>
+								    <executable>ng</executable>
+								    <arguments>
+								        <argument>build</argument>
+								        <argument>--prod</argument>
+								    </arguments>
+								</configuration>
+								<goals>
+								    <goal>exec</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	
 	<build>
 		<plugins>
@@ -55,18 +116,20 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
 				<executions>
+				
 					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
+				        <goals>
+				            <goal>java</goal>
+				        </goals>
+				    </execution>
+				    
 				</executions>
-				<configuration>
-					<mainClass>${main.class}</mainClass>
-					<!-- <arguments>
-						<argument>-h</argument>
-					</arguments> -->
-				</configuration>
+					<configuration>
+						<mainClass>${main.class}</mainClass>
+						<!-- <arguments>
+							<argument>-h</argument>
+						</arguments> -->
+					</configuration>
 			</plugin>
 
 		</plugins>
