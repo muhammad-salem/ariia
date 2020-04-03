@@ -12,7 +12,8 @@ public class WebApp {
 
 	public static void main(String[] args) throws IOException {
         int port = 8080;
-        String resourceLocation = args.length > 0 ? args[0] : "/static/angular";
+        String resourceLocation = args.length > 0 ? 
+        		args[0] : "/static/angular";
         WebServer.ResourceType type = args.length > 0 ? WebServer.ResourceType.FILE
                 : isRunningFromJar() ? WebServer.ResourceType.IN_MEMORY : WebServer.ResourceType.STREAM;
         System.out.printf("port: %d, location: %s, type: %s\n", port, resourceLocation, type);
