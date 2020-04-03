@@ -20,7 +20,7 @@ public class Ariia {
 			System.out.println(TerminalArgument.Help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("OKaria version \"0.2.35\"");
+			System.out.println("Ariia version \"0.2.4\"");
 			return;
 		}
 		
