@@ -107,18 +107,14 @@ public abstract class Client implements  ClientRequest /*StreamingClientRequest*
 			long length = extracteLength(response);
 			item.setRangeInfo(new RangeInfo(length, length > 0 ? Properties.RANGE_POOL_NUM : 1));
 			
-			
-			if (item.getFilename() == null) {
-				String filename = OkUtils.Filename(usedUrl);
-				String contentDisposition = response.networkResponse().header("Content-disposition", "filename=\"" + filename + "\"");
-				if (contentDisposition.contains("filename")) {
-					String[] split = contentDisposition.split("=");
-					filename = split[split.length - 1].trim();
+			String contentDisposition = response.networkResponse().header("Content-disposition");
+			if (contentDisposition != null && contentDisposition.contains("filename")) {
+				String[] split = contentDisposition.split("=");
+					String filename = split[split.length - 1].trim();
 					filename = filename.substring(
 							filename.charAt(0) == '"' ? 1 : 0,
 							filename.charAt(filename.length()-1) == '"'
 									? filename.length()-1: filename.length());
-				}
 				item.setFilename(filename);
 			}
 		} catch (IOException e) {
