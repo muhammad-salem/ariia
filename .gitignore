@@ -48,3 +48,4 @@ Thumbs.db
 /target/
 /bin/
 .gitignore
+ariia-web-server/src/main/resources/static/angular
