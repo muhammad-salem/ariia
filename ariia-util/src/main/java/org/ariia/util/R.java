@@ -9,7 +9,7 @@ import java.util.List;
 public class R {
 
 	public static char sprtr = File.separatorChar;
-	public static String app_name = "okaria";
+	public static String app_name = "ariia";
 	public static String code_name = "و";
 	public static String UserHome = System.getProperty("user.home");
 
