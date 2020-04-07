@@ -51,4 +51,27 @@ Thumbs.db
 ariia-web-server/src/main/resources/static/angular
 *.iml
 /ariia-*/*.iml
+/ariia-*/bin
+/ariia-*/target
+/webapp/node_modules
 
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
