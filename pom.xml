@@ -6,16 +6,19 @@
 
 	<groupId>org.ariia</groupId>
 	<artifactId>ariia-pom</artifactId>
-	<version>0.2.4</version>
+	<version>0.2.5</version>
 	<packaging>pom</packaging>
 	
 	<modules>
-		<module>ariia-core</module>
 		<module>ariia-network</module>
+		<module>ariia-mvc</module>
 		<module>ariia-logger</module>
 		<module>ariia-models</module>
 		<module>ariia-util</module>
 		<module>ariia-network-monitor</module>
+		<module>ariia-core-api</module>
+		<module>ariia-okhttp</module>
+		<module>ariia-jdk14</module>
 		<module>ariia-verfiy-data</module>
 		<module>ariia-cli</module>
 		<module>ariia-web-server</module>
