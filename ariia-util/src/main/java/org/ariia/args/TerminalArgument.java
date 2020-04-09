@@ -122,7 +122,7 @@ public enum TerminalArgument{
 			return !isPair();
 		}
 		
-		public static String Help() {
+		public static String help() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("\n okaria commend line download manager\n");
 			builder.append("\n java - jar okaria.jar [-u] URL\n");
