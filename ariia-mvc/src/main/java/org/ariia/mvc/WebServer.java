@@ -1,13 +1,13 @@
-package org.ariia.web;
+package org.ariia.mvc;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
 
-import org.ariia.web.resource.FileResourceHandler;
-import org.ariia.web.resource.InMemoryResourceHandler;
-import org.ariia.web.resource.MultiRootResourceHandler;
-import org.ariia.web.resource.ResourceHandler;
+import org.ariia.mvc.resource.FileResourceHandler;
+import org.ariia.mvc.resource.InMemoryResourceHandler;
+import org.ariia.mvc.resource.MultiRootResourceHandler;
+import org.ariia.mvc.resource.ResourceHandler;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;

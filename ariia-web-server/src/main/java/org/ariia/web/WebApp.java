@@ -1,8 +1,10 @@
-package org.ariia;
+package org.ariia.web;
 
 import java.io.IOException;
 
-import org.ariia.web.WebServer;
+import org.ariia.mvc.WebServer;
+import org.ariia.mvc.model.ContextActionHandler;
+
 
 public class WebApp {
 
@@ -18,6 +20,7 @@ public class WebApp {
                 : isRunningFromJar() ? WebServer.ResourceType.IN_MEMORY : WebServer.ResourceType.STREAM;
         System.out.printf("port: %d, location: %s, type: %s\n", port, resourceLocation, type);
         WebServer server = new WebServer(port, resourceLocation, type);
+        server.createContext("/context/", new ContextActionHandler<>("/context/"));
         server.start();
     }
 
