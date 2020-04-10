@@ -1,25 +1,29 @@
-# ariia  (0.2.4)
+# ariia  (0.2.6)
 
-OKaria is a smart command line download manager.
+Ariia is a smart command line download manager. (WEB-APP.. coming soon)
+
 
 
 ## Dependency
- - okhttp (3.14.7)
- - gson (2.8.4)
- - lawnha (0.2.0)
+ - OkHttp (3.14.7) -- > for jdk8 only
+ - Gson (2.8.4)
+ - Lawnha (0.2.0)
  
  
 ## Modules
  
-- ariia-pom
-- ariia-network
-- ariia-util
-- ariia-models
-- ariia-network-monitor
-- ariia-logger
-- ariia-core
-- ariia-verfiy-data
-- ariia-cli
+- Network
+- Logger
+- Models
+- Utils
+- Network Monitor
+- Core API
+- Verify Data
+- CLI API
+- Ariia JDK 8
+- Ariia JDK 14
+- JDK 14 Restful
+- Web Server
 
 
 ### Options :
