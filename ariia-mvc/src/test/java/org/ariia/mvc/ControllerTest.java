@@ -4,13 +4,9 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
 import org.ariia.mvc.processing.ProxySwitcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class controllerTest {
-	
-	/**
-	 * repo
-	 */
+public class ControllerTest {
 	
 	
 	@Test

@@ -1,6 +1,5 @@
 package org.ariia.mvc.model;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,9 +48,9 @@ public class ListModelHandler<T> implements HttpHandler {
 
 	@Override
 	public void handle(HttpExchange exchange) {
-		String url = exchange.getRequestURI().toString();
+//		String url = exchange.getRequestURI().toString();
+//		InputStream requestBody = exchange.getRequestBody();
 		String method = exchange.getRequestMethod();
-		InputStream requestBody = exchange.getRequestBody();
 		if (method.equalsIgnoreCase("get")) {
 			get(exchange);
 		} else if (method.equalsIgnoreCase("post")) {

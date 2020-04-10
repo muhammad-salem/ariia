@@ -1,8 +1,5 @@
 package org.ariia.mvc.model;
 
-import java.io.InputStream;
-import java.net.URI;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -27,9 +24,9 @@ public class ContextActionHandler<T> implements HttpHandler {
 	public void handle(HttpExchange exchange) {
 		String uri = exchange.getRequestURI().toString();
 		System.out.println("uri: " + uri);
-		URI uri2 =  exchange.getRequestURI();
+//		URI uri2 =  exchange.getRequestURI();
+//		InputStream requestBody = exchange.getRequestBody();
 		String method = exchange.getRequestMethod();
-		InputStream requestBody = exchange.getRequestBody();
 		if (method.equalsIgnoreCase("get")) {
 			get(exchange);
 		} else if (method.equalsIgnoreCase("post")) {
