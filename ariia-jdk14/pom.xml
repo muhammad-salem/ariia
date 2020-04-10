@@ -8,6 +8,8 @@
   <artifactId>ariia-jdk14</artifactId>
   <properties>
 		<main.class>org.ariia.Ariia</main.class>
+    	<maven.compiler.source>14</maven.compiler.source>
+		<maven.compiler.target>14</maven.compiler.target>
 	</properties>
 	
 	<dependencies>
@@ -27,8 +29,8 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.1.0</version>
+			    <artifactId>maven-assembly-plugin</artifactId>
+			    <version>3.2.0</version>
 				<configuration>
 					<archive>
 						<manifest>

@@ -32,16 +32,19 @@
 	
 	
 	<properties>
-		<java.version>14</java.version>
+    	<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	
 	 <dependencies> 	
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-api</artifactId>
+		    <version>5.6.1</version>
+		    <scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	
 	
@@ -50,22 +53,21 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
+				<version>3.8.1</version>
+	            <configuration>
+	                <encoding>UTF-8</encoding>
+	            </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
+			    <artifactId>maven-jar-plugin</artifactId>
+			    <version>3.2.0</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
+			    <artifactId>maven-source-plugin</artifactId>
+			    <version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
