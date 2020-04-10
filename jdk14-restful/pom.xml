@@ -3,9 +3,9 @@
   <parent>
     <groupId>org.ariia</groupId>
     <artifactId>ariia-pom</artifactId>
-    <version>0.2.5</version>
+    <version>0.2.6</version>
   </parent>
-  <artifactId>ariia-mvc</artifactId>
+  <artifactId>jdk14-restful</artifactId>
   
   
 	<properties>

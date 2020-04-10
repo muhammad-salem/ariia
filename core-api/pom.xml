@@ -6,24 +6,24 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 	</parent>
-	<artifactId>ariia-core-api</artifactId>
+	<artifactId>core-api</artifactId>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.ariia</groupId>
-			<artifactId>ariia-network-monitor</artifactId>
+			<artifactId>network-monitor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ariia</groupId>
-			<artifactId>ariia-logger</artifactId>
+			<artifactId>logger</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ariia</groupId>
-			<artifactId>ariia-models</artifactId>
+			<artifactId>models</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

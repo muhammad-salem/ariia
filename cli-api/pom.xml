@@ -6,16 +6,16 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 	</parent>
-	<artifactId>ariia-logger</artifactId>
+	<artifactId>cli-api</artifactId>
   
 	<dependencies>
 		<dependency>
-			<groupId>org.ansi</groupId>
-			<artifactId>lawnha</artifactId>
-			<version>0.2.0</version>
-		</dependency>
+	  		<groupId>org.ariia</groupId>
+	  		<artifactId>core-api</artifactId>
+			<version>${project.version}</version>
+	  	</dependency>
 	</dependencies>
-  
+	
 </project>

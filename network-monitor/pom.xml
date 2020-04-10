@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 	</parent>
-	<artifactId>ariia-network-monitor</artifactId>
+	<artifactId>network-monitor</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -18,17 +18,17 @@
 		</dependency>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-network</artifactId>
+	  		<artifactId>network</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-util</artifactId>
+	  		<artifactId>utils</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-models</artifactId>
+	  		<artifactId>models</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 	</dependencies>	  	

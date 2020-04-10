@@ -6,22 +6,22 @@
 
 	<groupId>org.ariia</groupId>
 	<artifactId>ariia-pom</artifactId>
-	<version>0.2.5</version>
+	<version>0.2.6</version>
 	<packaging>pom</packaging>
 	
 	<modules>
-		<module>ariia-network</module>
-		<module>ariia-mvc</module>
-		<module>ariia-logger</module>
-		<module>ariia-models</module>
-		<module>ariia-util</module>
-		<module>ariia-network-monitor</module>
-		<module>ariia-core-api</module>
-		<module>ariia-okhttp</module>
+		<module>network</module>
+		<module>logger</module>
+		<module>models</module>
+		<module>utils</module>
+		<module>network-monitor</module>
+		<module>core-api</module>
+		<module>cli-api</module>
+		<module>ariia-jdk8</module>
 		<module>ariia-jdk14</module>
-		<module>ariia-verfiy-data</module>
-		<module>ariia-cli</module>
-		<module>ariia-web-server</module>
+		<module>verfiy-data</module>
+		<module>jdk14-restful</module>
+		<module>web-server</module>
 	</modules>
 	
 	<description>Command Line Download Manager</description>

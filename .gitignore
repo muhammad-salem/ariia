@@ -48,11 +48,11 @@ Thumbs.db
 /target/
 /bin/
 .gitignore
-ariia-web-server/src/main/resources/static/angular
+web-server/src/main/resources/static/angular
 *.iml
-/ariia-*/*.iml
-/ariia-*/bin
-/ariia-*/target
+/*/*.iml
+/*/bin
+/*/target
 /webapp/node_modules
 
 # Compiled class file

@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 	</parent>
-	<artifactId>ariia-web-server</artifactId>
+	<artifactId>web-server</artifactId>
   
 	<properties>
 		<main.class>org.ariia.WebApp</main.class>
@@ -24,7 +24,7 @@
 	  	</dependency>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-mvc</artifactId>
+	  		<artifactId>jdk14-restful</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 	</dependencies>

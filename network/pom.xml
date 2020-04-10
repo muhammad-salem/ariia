@@ -6,16 +6,8 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 	</parent>
-	<artifactId>ariia-models</artifactId>
-
-	<dependencies>
-		<dependency>
-	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-util</artifactId>
-			<version>${project.version}</version>
-	  	</dependency>
-	</dependencies>
-	
+	<artifactId>network</artifactId>
+  
 </project>
