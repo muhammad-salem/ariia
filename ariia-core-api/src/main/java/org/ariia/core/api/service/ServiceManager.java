@@ -101,7 +101,7 @@ public class ServiceManager implements Closeable {
 		// for each 2 second
 		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
-		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 1, 5, TimeUnit.SECONDS);
+		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 500, 200, TimeUnit.MILLISECONDS);
 	}
 
 	@Override

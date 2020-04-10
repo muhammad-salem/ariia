@@ -17,6 +17,9 @@ public class ByteBufferPool {
 //			buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
 		    buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		}
+//		else {
+//		    System.out.println("BUFFER_QUEUE.size : " + BUFFER_QUEUE.size());
+//		}
 //		Log.info(ByteBufferPool.class, "memory queue", "BUFFER_QUEUE.size : " + BUFFER_QUEUE.size() );
 		return buffer;
 	}

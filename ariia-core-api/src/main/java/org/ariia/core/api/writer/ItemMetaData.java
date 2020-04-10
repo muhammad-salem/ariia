@@ -93,14 +93,13 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	}
 	
 	private void  flush(Queue<Segment> queue) {
-		StringBuilder report = new StringBuilder();
 		Segment segment;
+		int writtenSegmentCount = 0;
 		while (!queue.isEmpty()) {
 			segment = queue.peek();
 			if(segment == null) break;
 			if(writeSegment(segment)) {
-				report.append(segment.toString());
-				report.append('\n');
+				writtenSegmentCount++;
 				queue.poll();
 				releaseSegment(segment);
 			} else {
@@ -115,8 +114,12 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 //		saveItem2CacheFile();
 		forceUpdate();
 		
-		if(report.length() > 0)
-			Log.trace(getClass(), "flush segments", report.toString());
+		if(writtenSegmentCount > 0) {
+			Log.trace(ItemMetaData.class, "flush segments",
+					String.format("File Name: %s\nWritten Segment Count: %s", 
+							item.getFilename(), writtenSegmentCount)
+			);
+		}
 	}
 	
 	
