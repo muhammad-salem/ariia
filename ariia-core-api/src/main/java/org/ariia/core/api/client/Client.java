@@ -1,5 +1,6 @@
 package org.ariia.core.api.client;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Proxy;
 import java.util.Optional;
@@ -88,6 +89,17 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 			if (! response.requestUrl().equals(item.getUrl())) {
 				Log.trace(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
 						+ "\nredirect url: \t"+ response.requestUrl() );
+				
+				String url = response.requestUrl();
+				File file = new File(url);
+				String fileName = file.getName().split("\\?")[0];
+				
+				if ("".equals(fileName)) {
+					String[] fileParts = url.split("/");
+					fileName = fileParts[fileParts.length-2].split("\\?")[0];
+				}
+				item.setFilename(fileName);
+				item.setUrl(url);
 			}
 			OptionalLong contentLength = response.firstValueAsLong("Content-Length");
 			if (contentLength.isPresent()) {

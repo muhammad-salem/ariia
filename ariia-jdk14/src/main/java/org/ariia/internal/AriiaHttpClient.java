@@ -32,7 +32,7 @@ public class AriiaHttpClient implements ClientRequest {
 		
 		client = HttpClient.newBuilder()
 //			        .version(Version.HTTP_1_1)
-			        .followRedirects(Redirect.NORMAL)
+			        .followRedirects(Redirect.ALWAYS)
 			        .connectTimeout(Duration.ofSeconds(20))
 			        .proxy(ProxySelector.of( (InetSocketAddress) proxy.address() ))
 //			        .authenticator(Authenticator.getDefault())
