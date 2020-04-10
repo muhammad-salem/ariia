@@ -7,9 +7,9 @@ import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -210,15 +210,17 @@ public class Argument {
 		return dictionary.get(TerminalArgument.Header);
 	}
 	
-	public Map<String, String> getHeaders() {
+	public Map<String, List<String>> getHeaders() {
 		if(! isHeader()) return Collections.emptyMap();
 		String value = dictionary.get(TerminalArgument.Header);
-		Map<String, String> headers = new LinkedHashMap<>();
-		if(value == null ) return headers; 
+		if(value == null ) return Collections.emptyMap(); 
 		String[] temp1 = value.split("\n");
+		Map<String, List<String>> headers = new HashMap<>(temp1.length);
 		for (String string : temp1) {
 			String[] temp2 = string.split(": ");
-			headers.put(temp2[0], temp2[1]);
+			List<String> list = headers.getOrDefault(temp2[0], new ArrayList<>(1));
+			list.add(temp2[1]);
+			headers.put(temp2[0], list);
 		}
 		return headers;
 	}

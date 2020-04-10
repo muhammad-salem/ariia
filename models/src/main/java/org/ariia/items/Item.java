@@ -1,8 +1,10 @@
 package org.ariia.items;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ariia.range.RangeInfo;
@@ -12,7 +14,7 @@ public class Item {
 	protected String url;
 	protected String filename;
 	protected String saveDir;
-	protected Map<String, String> headers;
+	protected Map<String, List<String>> headers;
 	protected RangeInfo rangeInfo;
 	
 
@@ -52,22 +54,32 @@ public class Item {
 		this.rangeInfo = rangeInfo;
 	}
 
-	public Map<String, String> getHeaders() {
+	public Map<String, List<String>> getHeaders() {
 		return headers;
 	}
 	
-	public void setHeaders(Map<String, String> headers) {
+	public void setHeaders(Map<String, List<String>> headers) {
 		this.headers = headers;
 	}
 	
-	public void addHeaders(Map<String, String> headers) {
+	public void addHeaders(Map<String, List<String>> headers) {
 		for (String name : headers.keySet()) {
 			this.headers.put(name, headers.get(name));
 		}
 	}
 	
 	public void addHeader(String name, String value) {
-		this.headers.put(name, value);
+		List<String> list = headers.getOrDefault(name, new ArrayList<>(1));
+		list.add(value);
+		this.headers.put(name, list);
+	}
+	
+	public void addHeader(String name, List<String> value) {
+		if (headers.containsKey(name)) {
+			headers.get(name).addAll(value);
+		} else {
+			this.headers.put(name, value);
+		}
 	}
 	
 	public String path() {
@@ -131,7 +143,7 @@ public class Item {
 		if(url != null ) item.url = new String(this.url);
 		if(filename != null ) item.filename = new String(this.filename);
 		if(saveDir != null ) item.saveDir = new String(this.saveDir);
-		item.headers = new HashMap<String, String>(this.headers);
+		item.headers = new HashMap<>(this.headers);
 		if(rangeInfo != null ) item.rangeInfo = new RangeInfo(this.rangeInfo.getFileLength());
 		return item;
 	}

@@ -69,17 +69,19 @@ public class ItemBuilder {
 //		}
 	}
 
-	private void addItem(String url, Map<String, String> headers) {
+	private void addItem(String url, Map<String, List<String>> headers) {
 		Item item = new Item();
 		item.setUrl(url);
 		item.setHeaders(headers);
 		if (arguments.isCookieFile()) {
 			Map<String, String> cookies = arguments.getCookies();
-			String cookie = "";
+			List<String> values = new ArrayList<>(cookies.size());
+//			String cookie = "";
 			for (Map.Entry<String, String> entry : cookies.entrySet()) {
-				cookie = entry.getKey() + '=' + entry.getValue() + "; " + cookie;
+				values.add(entry.getKey() + '=' + entry.getValue());
+//				cookie = entry.getKey() + '=' + entry.getValue() + "; " + cookie;
 			}
-			item.addHeader("Cookie", cookie);
+			item.addHeader("Cookie", values);
 		}
 		if (arguments.isSavePath())
 			item.setSaveDir(arguments.getSavePath());
@@ -114,7 +116,7 @@ public class ItemBuilder {
 	private void downloadInputFile() {
 		List<String> lines = Utils.readLines(arguments.getInputFile());
 		Iterator<String> iterator = lines.iterator();
-		Map<String, String> headers = null;
+		Map<String, List<String>> headers = null;
 		while (iterator.hasNext()) {
 			String line = iterator.next();
 			if (line.startsWith("#")) {continue;}
@@ -126,7 +128,9 @@ public class ItemBuilder {
 					|| line.startsWith(" ")
 					|| line.startsWith("	")) {
 				String[] header = line.trim().split(": ");
-				headers.put(header[0], header[1]);
+				List<String> value = headers.getOrDefault(header[0], new ArrayList<>(1));
+				value.add(header[1]);
+				headers.put(header[0], value);
 			}
 		}
 	}
@@ -182,7 +186,7 @@ public class ItemBuilder {
 	
 	private MetalinkItem readMetaLinkText(Iterator<String> iterator) {
 		MetalinkItem builder = new MetalinkItem();
-		Map<String, String> headers = new LinkedHashMap<>();
+		Map<String, List<String>> headers = new LinkedHashMap<>();
 	
 		while (iterator.hasNext()) {
 			String string = iterator.next();
@@ -192,8 +196,11 @@ public class ItemBuilder {
 				builder.addMirror(string);
 			} else if (string.startsWith("\t")) {
 				int index = string.indexOf(": ");
-				headers.put(string.substring(1, index),
-						string.substring(index + 2));
+				String headerName = string.substring(1, index);
+				String headerValue = string.substring(index + 2);
+				List<String> value = headers.getOrDefault(headerName, new ArrayList<>(1));
+				value.add(headerValue);
+				headers.put(headerName, value);
 			}
 		}
 		builder.setHeaders(headers);

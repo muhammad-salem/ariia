@@ -2,8 +2,10 @@ package org.ariia.core.api.request;
 
 import java.io.IOException;
 import java.net.Proxy;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,14 +23,14 @@ public interface ClientRequest {
 		return executeAndDebugRequest("HEAD", item.getUrl(), item.getHeaders());
 	}
 	
-    default Response head(String url, Map<String, String> headers) throws IOException {
+    default Response head(String url, Map<String, List<String>> headers) throws IOException {
     	return executeAndDebugRequest("HEAD", url, headers);
 	}
     
     default Response get(String url) throws IOException {
     	return executeAndDebugRequest("GET", url, Collections.emptyMap());
     }
-    default Response get(String url, Map<String, String> headers) throws IOException {
+    default Response get(String url, Map<String, List<String>> headers) throws IOException {
 		return executeAndDebugRequest("GET", url, headers);
 	}
 	
@@ -41,26 +43,26 @@ public interface ClientRequest {
 		return get(item.getUrl(), range[0], range[1], item.getHeaders());
 	}
 	
-	default Response get(String url, Long startRange, Long endRange, Map<String, String> headers) throws IOException {
+	default Response get(String url, Long startRange, Long endRange, Map<String, List<String>> headers) throws IOException {
 
-		Map<String, String> headersCopy = new HashMap<>(headers);
+		Map<String, List<String>> headersCopy = new HashMap<>(headers);
 		if (Objects.nonNull(startRange) || startRange > -1) {
 			if (Objects.isNull(endRange) || endRange == -1) {
-				headersCopy.put("Range", "bytes=" + startRange + "-");
+				headersCopy.put("Range", Arrays.asList("bytes=" + startRange + "-"));
 			} else {
-				headersCopy.put("Range", "bytes=" + startRange + "-" + endRange);
+				headersCopy.put("Range", Arrays.asList("bytes=" + startRange + "-" + endRange));
 			}
 		}
 		return executeAndDebugRequest("GET", url, headersCopy);
 	}
 	
-	default Response executeAndDebugRequest(String method, String url, Map<String, String> headers) throws IOException {
+	default Response executeAndDebugRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
 		Response response = executeRequest(method, url, headers);
 		debugResponse(response, headers);
 		return response;
 	}
 	
-	default void debugResponse( Response response, Map<String, String> requestHeaders ) {
+	default void debugResponse( Response response, Map<String, List<String>> requestHeaders ) {
     	StringBuilder builder = new StringBuilder();
     	builder.append("request send:\n");
     	builder.append('\n');
@@ -70,11 +72,13 @@ public interface ClientRequest {
     	builder.append(' ');
     	builder.append(response.protocol());
     	builder.append('\n');
-    	requestHeaders.forEach((name, value) -> {
-			builder.append(name);
-			builder.append(": ");
-			builder.append(value);
-			builder.append('\n');
+    	requestHeaders.forEach((headerName, valueList) -> {
+    		valueList.forEach(value -> {
+    			builder.append(headerName);
+    			builder.append(": ");
+    			builder.append(value);
+    			builder.append('\n');
+    		});
     	});
   
     	builder.append("response begin:\n");
@@ -98,6 +102,6 @@ public interface ClientRequest {
     }
 
 	
-	Response executeRequest(String method, String url, Map<String, String> headers) throws IOException;
+	Response executeRequest(String method, String url, Map<String, List<String>> headers) throws IOException;
 	Proxy proxy();
 }

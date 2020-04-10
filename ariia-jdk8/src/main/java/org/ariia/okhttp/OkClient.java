@@ -2,6 +2,7 @@ package org.ariia.okhttp;
 
 import java.io.IOException;
 import java.net.Proxy;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -9,7 +10,6 @@ import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
 
 import okhttp3.Call;
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
@@ -31,11 +31,15 @@ public class OkClient implements ClientRequest {
 	}
 
 	@Override
-	public Response executeRequest(String method, String url, Map<String, String> headers) throws IOException {
+	public Response executeRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
 		
 		Request.Builder builder = new Request.Builder();
-        if (Objects.nonNull(headers)) {
-        	builder.headers(Headers.of(headers));
+        if (Objects.nonNull(headers) || !headers.isEmpty()) {
+        	headers.forEach((headerName, valueList) -> {
+        		valueList.forEach(headerValue -> {
+        			builder.addHeader(headerName, headerValue);
+        		});
+        	});
        	}
         
         builder .method(method, null)

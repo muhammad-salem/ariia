@@ -13,7 +13,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
@@ -43,7 +45,7 @@ public class AriiaHttpClient implements ClientRequest {
 	
 
 	@Override
-	public Response executeRequest(String method, String url, Map<String, String> headers) throws IOException {
+	public Response executeRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
 		try {
 			
 			HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(new URI(url));
@@ -52,7 +54,14 @@ public class AriiaHttpClient implements ClientRequest {
 			} else if ("HEAD".equalsIgnoreCase(method)) {
 				requestBuilder.method("HEAD", HttpRequest.BodyPublishers.noBody());
 			}
-			headers.forEach(requestBuilder::header);
+			
+			if (Objects.nonNull(headers) || !headers.isEmpty()) {
+	        	headers.forEach((headerName, valueList) -> {
+	        		valueList.forEach(headerValue -> {
+	        			requestBuilder.header(headerName, headerValue);
+	        		});
+	        	});
+	       	}
 		
 		
 			HttpResponse<InputStream> response = 
