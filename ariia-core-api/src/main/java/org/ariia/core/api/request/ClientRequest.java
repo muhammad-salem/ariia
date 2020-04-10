@@ -51,18 +51,16 @@ public interface ClientRequest {
 				headersCopy.put("Range", "bytes=" + startRange + "-" + endRange);
 			}
 		}
-		return executeAndDebugRequest("GET", url, headers);
-		
+		return executeAndDebugRequest("GET", url, headersCopy);
 	}
 	
 	default Response executeAndDebugRequest(String method, String url, Map<String, String> headers) throws IOException {
 		Response response = executeRequest(method, url, headers);
-		debugResponse(response);
+		debugResponse(response, headers);
 		return response;
 	}
 	
-	default void debugResponse( Response response) {
-//    	Request request = response.networkResponse().request();
+	default void debugResponse( Response response, Map<String, String> requestHeaders ) {
     	StringBuilder builder = new StringBuilder();
     	builder.append("request send:\n");
     	builder.append('\n');
@@ -72,6 +70,12 @@ public interface ClientRequest {
     	builder.append(' ');
     	builder.append(response.protocol());
     	builder.append('\n');
+    	requestHeaders.forEach((name, value) -> {
+			builder.append(name);
+			builder.append(": ");
+			builder.append(value);
+			builder.append('\n');
+    	});
   
     	builder.append("response begin:\n");
     	builder.append('\n');
@@ -81,8 +85,8 @@ public interface ClientRequest {
     	builder.append(' ');
     	builder.append(response.responseMessage());
     	builder.append('\n');
-    	response.headers().forEach((headerName, vauleList) -> {
-    		vauleList.forEach(value -> {
+    	response.headers().forEach((headerName, valueList) -> {
+    		valueList.forEach(value -> {
     			builder.append(headerName);
     			builder.append(": ");
     			builder.append(value);
