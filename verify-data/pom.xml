@@ -8,7 +8,7 @@
 		<artifactId>ariia-pom</artifactId>
 		<version>0.2.6</version>
 	</parent>
-	<artifactId>verfiy-data</artifactId>
+	<artifactId>verify-data</artifactId>
 
 	<dependencies>
 		<dependency>

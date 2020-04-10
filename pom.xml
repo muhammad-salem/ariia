@@ -19,7 +19,7 @@
 		<module>cli-api</module>
 		<module>ariia-jdk8</module>
 		<module>ariia-jdk14</module>
-		<module>verfiy-data</module>
+		<module>verify-data</module>
 		<module>jdk14-restful</module>
 		<module>web-server</module>
 	</modules>
