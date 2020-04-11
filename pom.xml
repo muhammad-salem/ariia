@@ -20,7 +20,7 @@
 		<module>ariia-jdk8</module>
 		<module>ariia-jdk14</module>
 		<module>verify-data</module>
-		<module>jdk14-restful</module>
+		<module>restful-api</module>
 		<module>web-server</module>
 	</modules>
 	

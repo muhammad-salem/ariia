@@ -1,7 +1,8 @@
 package org.ariia.mvc.resource;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Collections;
@@ -11,27 +12,31 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-public class ResourceHandler implements HttpHandler {
+public class FileResourceHandler implements HttpHandler {
 	String resourceLocation;
 	
-	public ResourceHandler() {
+	public FileResourceHandler() {
 		this(null);
 	}
 	
-	public ResourceHandler(String resourceLocation) {
-		this.resourceLocation = Objects.requireNonNullElse(resourceLocation, "/static");
+	public FileResourceHandler(String resourceLocation) {
+		this.resourceLocation = Objects.isNull(resourceLocation)? "/static" : resourceLocation;
 	}
 	
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
+		exchange.getRequestURI();
 		URI uri = exchange.getRequestURI();
 		String filename = uri.toString();
 		if (filename.equals("/")) {
 			filename = "/index.html";
 		}
-		InputStream stream = getClass().getResourceAsStream(resourceLocation + filename);
-		if (stream == null) {
+		FileInputStream stream;
+		try {
+			stream = new FileInputStream(resourceLocation + filename);
+		} catch (FileNotFoundException e) {
 			exchange.sendResponseHeaders(404, -1);
+			exchange.close();
 			return;
 		}
 

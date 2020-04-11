@@ -5,11 +5,5 @@
     <artifactId>ariia-pom</artifactId>
     <version>0.2.6</version>
   </parent>
-  <artifactId>jdk14-restful</artifactId>
-  
-  
-	<properties>
-	   	<maven.compiler.source>14</maven.compiler.source>
-		<maven.compiler.target>14</maven.compiler.target>
-	</properties>
+  <artifactId>restful-api</artifactId>
 </project>

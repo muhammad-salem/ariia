@@ -16,7 +16,6 @@ import org.ariia.mvc.annoutation.OptionsRequest;
 import org.ariia.mvc.annoutation.PatchRequest;
 import org.ariia.mvc.annoutation.PostRequest;
 import org.ariia.mvc.annoutation.PutRequest;
-import org.ariia.mvc.annoutation.RequestMethod;
 import org.ariia.mvc.annoutation.RestContext;
 import org.ariia.mvc.annoutation.TraceRequest;
 
@@ -34,42 +33,19 @@ public class ProxySwitcher {
 		trackAnnotation.add(PatchRequest.class);
 	}
 	
-	public static class Marker {
-		RequestMethod requestMethod;
-		Method method;
-		String context;
-		String contextParamter;
-		List<String> paramter;
-		List<String> headers;
-		List<String> produces;
-				
-		public RequestMethod getRequestMethod() {return requestMethod;}
-		public String getContext() {return context;}
-		public String getContextParamter() {return contextParamter;}
-		public Method getMethod() {return method;}
-		public List<String> getHeaders() {return headers;}
-		public List<String> getProduces() {return produces;}
-		public List<String> getParamter() {return paramter;}
-		@Override
-		public String toString() {
-			return String.format("%s %s\n%s %s\n%s %s %s\n", 
-					requestMethod, method.getName(), 
-					 context, contextParamter,
-					headers, produces, paramter);
-		}
-	}
+
 	
 	private Object controller;
-	private List<Marker> markers;
+	private List<MethodIndex> methodIndexs;
 	
 	public ProxySwitcher(Object controller){
 		this.controller = controller;
-		this.markers = new ArrayList<>();
+		this.methodIndexs = new ArrayList<>();
 		initController();
 	}
 	
-	public List<Marker> getMarkers() {
-		return markers;
+	public List<MethodIndex> getMethodIndexs() {
+		return methodIndexs;
 	}
 	
 	private void initController() { 
@@ -86,20 +62,20 @@ public class ProxySwitcher {
 				if (method.isAnnotationPresent(annotationClass)) {
 					method.setAccessible(true);
 					Annotation annotation = method.getAnnotation(annotationClass);
-					markers.add(getMarker(method, annotation, context));
+					methodIndexs.add(getMethodIndex(method, annotation, context));
 				}
 			}
 		}
 	    
 	}
 	
-	private Marker getMarker(Method method, Annotation annotation, final String rootContext) {
+	private MethodIndex getMethodIndex(Method method, Annotation annotation, final String rootContext) {
 		try {
 
-			Marker marker = new Marker();
+			MethodIndex marker = new MethodIndex();
 			marker.method = method;
 			HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
-			marker.requestMethod = httpMethod.method();
+			marker.requestMethod = httpMethod.method().name();
 
 			Method pathMethod = annotation.getClass().getMethod("path");
 			Method headersMethod = annotation.getClass().getMethod("headers");

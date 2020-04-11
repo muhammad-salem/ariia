@@ -21,7 +21,7 @@ public class InMemoryResourceHandler implements HttpHandler {
 	}
 	
 	public InMemoryResourceHandler(String resourceLocation) {
-		this.resourceLocation = Objects.requireNonNullElse(resourceLocation, "/static");
+		this.resourceLocation = Objects.isNull(resourceLocation)? "/static" : resourceLocation;
 		this.memory = new HashMap<>();
 	}
 	

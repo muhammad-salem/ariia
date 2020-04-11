@@ -46,6 +46,13 @@ public class WebApp {
         WebServer server = new WebServer(port, resourceLocation, type);
         server.createContext("/context/", new ContextActionHandler<>("/context/"));
         server.start();
+        
+
+		ServiceManager manager = cli.getManager();
+//		ItemBuilder builder = new ItemBuilder(arguments);
+		String url = "http://releases.ubuntu.com/focal/ubuntu-20.04-beta-desktop-amd64.iso.torrent";
+		Builder builder = new Builder(url);
+		manager.download(builder.build());
 		
     }
 

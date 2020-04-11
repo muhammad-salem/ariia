@@ -14,6 +14,11 @@ public class ItemController {
 		return "";
 	}
 	
+	@GetRequest( path = "/{id}", produces = "application/json" )
+	public PersonTestModel getItem(@RequestParam("id") String id) {
+		return new PersonTestModel();
+	}
+	
 	@PostRequest(path = "/add")
 	public void addItem(@RequestBody String json) {
 		

@@ -13,8 +13,10 @@ public class ControllerTest {
 	public void test1() {
 		ItemController item = new ItemController();
         ProxySwitcher controller = new ProxySwitcher(item);
-        controller.getMarkers().forEach(System.out::println);
-        controller.getMarkers().forEach(m -> {
+        controller.getMethodIndexs().forEach(System.out::println);
+        controller.getMethodIndexs().forEach(m -> {
+        	System.out.println(m.getMethod().getReturnType());
+        	System.out.println(m.getMethod().getAnnotatedReturnType());
         	try {
         		for (Parameter parameter : m.getMethod().getParameters()) {
         			System.out.print(parameter.getName());
@@ -26,7 +28,8 @@ public class ControllerTest {
         			System.out.print(parameter.isSynthetic());
         			System.out.print('\n');
         		}
-//				System.out.println(m.getMethod().invoke(item, 0, new Item()));
+    			System.out.print('\n');
+//				System.out.println(m.getMethod().invoke(item, 0));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
