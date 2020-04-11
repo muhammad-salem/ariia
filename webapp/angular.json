@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../ariia-web-server/src/main/resources/static/angular",
+            "outputPath": "../web-server/src/main/resources/static/angular",
             "index": "projects/ariia/src/index.html",
             "main": "projects/ariia/src/main.ts",
             "polyfills": "projects/ariia/src/polyfills.ts",
