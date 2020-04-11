@@ -3,7 +3,6 @@ package org.ariia.items;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,7 @@ public class Item {
 
 	public Item() {
 		this.rangeInfo = new RangeInfo();
-		this.headers   = new LinkedHashMap<>();
+		this.headers   = new HashMap<>(0);
 	}
 	
 	public String getUrl() {
@@ -63,9 +62,7 @@ public class Item {
 	}
 	
 	public void addHeaders(Map<String, List<String>> headers) {
-		for (String name : headers.keySet()) {
-			this.headers.put(name, headers.get(name));
-		}
+		this.headers.putAll(headers);
 	}
 	
 	public void addHeader(String name, String value) {
@@ -155,5 +152,7 @@ public class Item {
 		this.headers   = item.headers;
 		this.rangeInfo = item.rangeInfo;
 	}
+	
+
 
 }

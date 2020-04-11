@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ByteBufferPool {
 	
-	private static final int BUFFER_SIZE = 8*1024; // AS 8 KB
+//	private static final int BUFFER_SIZE = 1572864; // (int) 1.5f*1024*1024; // 1.5MB
+	private static final int BUFFER_SIZE = 8*1024; // 8KB
+	
 //	private static final int QUEUE_MAX_SIZE = 100;
 	private static ConcurrentLinkedQueue<ByteBuffer> BUFFER_QUEUE = new ConcurrentLinkedQueue<>();
 	

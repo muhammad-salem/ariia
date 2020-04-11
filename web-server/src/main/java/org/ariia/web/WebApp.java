@@ -6,7 +6,9 @@ import org.ariia.AriiaCli;
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
 import org.ariia.core.api.client.Clients;
+import org.ariia.core.api.service.ServiceManager;
 import org.ariia.internal.AriiaHttpClient;
+import org.ariia.items.Builder;
 import org.ariia.mvc.WebServer;
 import org.ariia.mvc.model.ContextActionHandler;
 
@@ -27,6 +29,11 @@ public class WebApp {
 			return;
 		}
 		
+		AriiaCli cli = new AriiaCli((v)-> { 
+				return Clients.segmentClient(new AriiaHttpClient(arguments.getProxy()));
+			}
+		);
+		cli.lunch(arguments);
         int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
         String resourceLocation = arguments.isServerResourceLocation() ? 
         		arguments.getServerResourceLocation() : "/static/angular";
@@ -39,18 +46,7 @@ public class WebApp {
         WebServer server = new WebServer(port, resourceLocation, type);
         server.createContext("/context/", new ContextActionHandler<>("/context/"));
         server.start();
-        
 		
-		AriiaCli cli = new AriiaCli((v)-> { 
-				return Clients.segmentClient(new AriiaHttpClient(arguments.getProxy()));
-			}
-		);
-		cli.setFinishAction(() -> {
-			if (!arguments.isDaemonService()){
-				System.exit(0);
-			}
-		});
-		cli.lunch(arguments);
     }
 
 }

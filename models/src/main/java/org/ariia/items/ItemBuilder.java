@@ -3,6 +3,7 @@ package org.ariia.items;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -70,6 +71,15 @@ public class ItemBuilder {
 	}
 
 	private void addItem(String url, Map<String, List<String>> headers) {
+		Item item = builditemOf(url, headers);
+		items.add(item);
+	}
+
+	public Item builditemOf(String url) {
+		return builditemOf(url, Collections.emptyMap());
+	}
+	
+	public Item builditemOf(String url, Map<String, List<String>> headers) {
 		Item item = new Item();
 		item.setUrl(url);
 		item.setHeaders(headers);
@@ -100,7 +110,7 @@ public class ItemBuilder {
 			}
 			item.setFilename(fileName);
 		}
-		items.add(item);
+		return item;
 	}
 	
 	
