@@ -16,8 +16,8 @@ public interface DatagramSocketMonitor {
 	 * @param datagramPacket
 	 *            Sent packet.
 	 */
-	// void onSend(final DatagramPacket datagramPacket);
-	void onSend(final int len);
+//	void onSend(final DatagramPacket datagramPacket);
+	void onSend(final IntWarp len);
 
 	/**
 	 * This method will be called after
@@ -26,6 +26,6 @@ public interface DatagramSocketMonitor {
 	 * @param datagramPacket
 	 *            Received packet.
 	 */
-	// void onReceive(final DatagramPacket datagramPacket);
-	void onReceive(final int len);
+//	void onReceive(final DatagramPacket datagramPacket);
+	void onReceive(final IntWarp len);
 }

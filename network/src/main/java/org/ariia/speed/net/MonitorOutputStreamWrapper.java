@@ -100,8 +100,9 @@ public class MonitorOutputStreamWrapper extends OutputStream {
 
 	private void onWriteMonitor(int len) {
 		if (monitors != null) {
+			IntWarp intWarp = new IntWarp(len);
 			for (OutputStreamMonitor monitor : monitors) {
-				monitor.onWrite(len);
+				monitor.onWrite(intWarp);
 			}
 		}
 	}

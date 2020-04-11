@@ -1,10 +1,5 @@
 package org.ariia.speed.net;
 
-/**
- * @author Youchao Feng
- * @version 1.0
- * @date Sep 23, 2015 11:20 AM
- */
 public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor {
 
 	protected long receiveTCP = 0;
@@ -13,23 +8,23 @@ public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor {
 	protected long sendUDP = 0;
 
 	@Override
-	public void onRead(int len) {
-		receiveTCP += len;
+	public void onRead(IntWarp len) {
+		receiveTCP += len.value;
 	}
 
 	@Override
-	public void onWrite(int len) {
-		sendTCP += len;
+	public void onWrite(IntWarp len) {
+		sendTCP += len.value;
 	}
 
 	@Override
-	public void onSend(final int len) {
-		sendUDP += len;
+	public void onSend(final IntWarp len) {
+		sendUDP += len.value;
 	}
 
 	@Override
-	public void onReceive(final int len) {
-		receiveUDP += len;
+	public void onReceive(final IntWarp len) {
+		receiveUDP += len.value;
 	}
 
 	public long getTotalReceive() {

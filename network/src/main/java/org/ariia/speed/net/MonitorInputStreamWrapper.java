@@ -120,8 +120,9 @@ public class MonitorInputStreamWrapper extends InputStream {
 
 	private void onReadMonitor(int len) {
 		if (monitors != null) {
+			IntWarp intWarp = new IntWarp(len);
 			for (InputStreamMonitor monitor : monitors) {
-				monitor.onRead(len);
+				monitor.onRead(intWarp);
 			}
 		}
 	}

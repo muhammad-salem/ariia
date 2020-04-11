@@ -148,7 +148,10 @@ public class MonitorSocketChannelWrapper extends SocketChannel {
 	@Override
 	public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
 		long len = originalSocket.read(dsts, offset, length);
-		onReadMonitor((int)len);
+		onReadMonitor((int)(len%Integer.MAX_VALUE));
+		for (int i = 0; i < len/Integer.MAX_VALUE; i++) {
+			onReadMonitor(Integer.MAX_VALUE);
+		}
 		return len;
 	}
 
@@ -162,22 +165,27 @@ public class MonitorSocketChannelWrapper extends SocketChannel {
 	@Override
 	public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
 		long len = originalSocket.write(srcs, offset, length);
-		onWriteMonitor((int) len);
+		onWriteMonitor((int)(len%Integer.MAX_VALUE));
+		for (int i = 0; i < len/Integer.MAX_VALUE; i++) {
+			onWriteMonitor(Integer.MAX_VALUE);
+		}
 		return len;
 	}
 	
 	private void onReadMonitor(int len) {
 		if (monitors != null) {
+			IntWarp intWarp = new IntWarp(len);
 			for (InputStreamMonitor monitor : monitors) {
-				monitor.onRead(len);
+				monitor.onRead(intWarp);
 			}
 		}
 	}
 	
 	private void onWriteMonitor(int len) {
 		if (monitors != null) {
+			IntWarp intWarp = new IntWarp(len);
 			for (OutputStreamMonitor monitor : monitors) {
-				monitor.onWrite(len);
+				monitor.onWrite(intWarp);
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The class <code>MonitorSocketWrapper</code> is wrapper of
@@ -28,25 +29,21 @@ public class MonitorSocketWrapper extends Socket {
 	private OutputStream outputStream = null;
 
 	public MonitorSocketWrapper(Socket socket, SocketMonitor... monitors) {
-		// this.originalSocket = checkNotNull(socket, "Argument [socket] may not be
-		// null");
+		Objects.requireNonNull(socket, "Argument [socket] may not be null");
 		this.originalSocket = socket;
 		this.monitors = new ArrayList<>(monitors.length);
 		Collections.addAll(this.monitors, monitors);
 	}
 
 	public MonitorSocketWrapper(Socket socket, List<SocketMonitor> monitors) {
-		// this.originalSocket = checkNotNull(socket, "Argument [socket] may not be
-		// null");
-		// this.monitors = checkNotNull(monitors, "Arugment [monitors] may not be
-		// null");
+		Objects.requireNonNull(socket, "Argument [socket] may not be null");
+		Objects.requireNonNull(monitors, "Argument [monitors] may not be null");
 		this.originalSocket = socket;
 		this.monitors = monitors;
 	}
 
 	public MonitorSocketWrapper(Socket socket) {
-		// this.originalSocket = checkNotNull(socket, "Argument [socket] may not be
-		// null");
+		Objects.requireNonNull(socket, "Argument [socket] may not be null");
 		this.originalSocket = socket;
 	}
 

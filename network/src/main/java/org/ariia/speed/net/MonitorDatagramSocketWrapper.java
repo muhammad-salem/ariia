@@ -61,8 +61,9 @@ public class MonitorDatagramSocketWrapper extends DatagramSocket {
 	public void send(DatagramPacket p) throws IOException {
 		originalDatagramSocket.send(p);
 		if (monitors != null) {
+			IntWarp intWarp = new IntWarp(p.getLength());
 			for (DatagramSocketMonitor monitor : monitors) {
-				monitor.onSend(p.getLength());
+				monitor.onSend(intWarp);
 			}
 		}
 	}
@@ -71,8 +72,9 @@ public class MonitorDatagramSocketWrapper extends DatagramSocket {
 	public synchronized void receive(DatagramPacket p) throws IOException {
 		originalDatagramSocket.receive(p);
 		if (monitors != null) {
+			IntWarp intWarp = new IntWarp(p.getLength());
 			for (DatagramSocketMonitor monitor : monitors) {
-				monitor.onReceive(p.getLength());
+				monitor.onReceive(intWarp);
 			}
 		}
 	}
