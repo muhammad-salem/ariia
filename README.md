@@ -6,7 +6,7 @@ Ariia is a smart command line download manager. (WEB-APP.. coming soon)
 
 ## Dependency
  - OkHttp (3.14.7) -- > for jdk8 only
- - Gson (2.8.4)
+ - Gson (2.8.6)
  - Lawnha (0.2.0)
  
  
