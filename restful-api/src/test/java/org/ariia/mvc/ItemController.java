@@ -9,13 +9,20 @@ import org.ariia.mvc.annoutation.RestContext;
 @RestContext("/item")
 public class ItemController {
 	
-	@GetRequest( path = "/{id}", produces = "application/json" )
-	public String getItem(@RequestParam("id") int id) {
-		return "";
-	}
+//	@GetRequest( path = "/{id}", produces = "application/json" )
+//	public String getItemInt(@RequestParam("id") Integer id) {
+//		System.out.println("getItemInt id " + id);
+//		return "";
+//	}
 	
 	@GetRequest( path = "/{id}", produces = "application/json" )
-	public PersonTestModel getItem(@RequestParam("id") String id) {
+	public String getItemString(@RequestParam("id") String id) {
+		System.out.println("getItemString id " + id);
+		return id;
+	}
+	
+	@GetRequest( path = "/info/{id}", produces = "application/json" )
+	public PersonTestModel getItemModel(@RequestParam("id") String id) {
 		return new PersonTestModel();
 	}
 	

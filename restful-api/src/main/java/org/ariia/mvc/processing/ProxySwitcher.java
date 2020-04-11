@@ -36,6 +36,7 @@ public class ProxySwitcher {
 
 	
 	private Object controller;
+	private String controllerContext;
 	private List<MethodIndex> methodIndexs;
 	
 	public ProxySwitcher(Object controller){
@@ -48,13 +49,19 @@ public class ProxySwitcher {
 		return methodIndexs;
 	}
 	
+	public String getControllerContext() {
+		return controllerContext;
+	}
+	
 	private void initController() { 
-		String context = "";
 		Class<?> clazz = controller.getClass();
+		String context = clazz.getSimpleName();
 		if (clazz.isAnnotationPresent(RestContext.class)) {
 			RestContext restContext = clazz.getAnnotation(RestContext.class);
 			context = restContext.value();
 		}
+		controllerContext = context;
+		System.out.println("controllerContext: " + controllerContext);
 		
 		//trackAnnotation
 		for (Method method : clazz.getMethods()) {

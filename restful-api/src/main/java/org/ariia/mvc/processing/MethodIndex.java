@@ -24,9 +24,9 @@ public class MethodIndex {
 	
 	@Override
 	public String toString() {
-		return String.format("%s %s\n%s %s\n%s %s %s\n", 
+		return String.format("request\t%s %s\ncontext\t%s %s\n%s %s %s\n", 
 				requestMethod, method.getName(), 
 				 context, contextParamter,
-				headers, produces, paramter);
+				headers, paramter, produces);
 	}
 }

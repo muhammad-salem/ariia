@@ -22,7 +22,7 @@ Ariia is a smart command line download manager. (WEB-APP.. coming soon)
 - CLI API
 - Ariia JDK 8
 - Ariia JDK 14
-- JDK 14 Restful
+- Restful API
 - Web Server
 
 
