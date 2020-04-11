@@ -94,9 +94,9 @@ public class ItemBuilder {
 			item.addHeader("Cookie", values);
 		}
 		if (arguments.isSavePath())
-			item.setSaveDir(arguments.getSavePath());
+			item.setSaveDirectory(arguments.getSavePath());
 		else {
-			item.setSaveDir(Properties.Default_SAVE_DIR_PATH);
+			item.setSaveDirectory(Properties.Default_SAVE_DIR_PATH);
 		}
 		if (arguments.isFileName()) {
 			item.setFilename(arguments.getFileName());

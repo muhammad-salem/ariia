@@ -73,11 +73,11 @@ public class Builder {
 	public Item build() {
 		Item item = new Item();
 		
-		item.url	   = this.url;
-		item.filename  = this.getFileName();
-		item.saveDir   = Objects.nonNull(saveDir) ? this.saveDir : Properties.Default_SAVE_DIR_PATH;
-		item.headers   = this.headers.isEmpty() ? Collections.emptyMap() : this.headers;
-		item.rangeInfo = Objects.nonNull(rangeInfo) ? this.rangeInfo : new RangeInfo();
+		item.setUrl(this.url);
+		item.setFilename(getFileName());
+		item.setSaveDirectory(Objects.nonNull(saveDir) ? this.saveDir : Properties.Default_SAVE_DIR_PATH);
+		item.setHeaders(this.headers.isEmpty() ? Collections.emptyMap() : this.headers);
+		item.setRangeInfo(Objects.nonNull(rangeInfo) ? this.rangeInfo : new RangeInfo());
 		
 		return item;
 	} 

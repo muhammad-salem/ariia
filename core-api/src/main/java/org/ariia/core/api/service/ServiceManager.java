@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.ariia.items.DataStore;
 import org.ariia.items.Item;
 import org.ariia.items.ItemStore;
 import org.ariia.logging.Log;
@@ -45,7 +46,7 @@ public class ServiceManager implements Closeable {
 	Queue<ItemMetaData> wattingList;
 	Queue<ItemMetaData> downloadingList;
 
-	ItemStore itemStore;
+	DataStore<Item> dataStore;
 	Client client;
 	SessionMonitor sessionMonitor;
 	TableMonitor reportTable;
@@ -61,7 +62,19 @@ public class ServiceManager implements Closeable {
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getProxy());
 
-		this.itemStore = new ItemStore();
+		this.dataStore = new ItemStore();
+		this.wattingList 	= new LinkedList<>();
+		this.downloadingList = new LinkedList<>();
+	}
+	
+	public ServiceManager(Client client, DataStore<Item> dataStore) {
+		this.client = client;
+		this.sessionMonitor = new SimpleSessionMonitor(); 
+		this.reportTable = new MiniTableMonitor(sessionMonitor);
+		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
+		this.connectivity = new UrlConnectivity(client.getProxy());
+
+		this.dataStore = dataStore;
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 	}
@@ -73,7 +86,7 @@ public class ServiceManager implements Closeable {
 		this.connectivity = new UrlConnectivity(client.getProxy());
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.itemStore = new ItemStore();
+		this.dataStore = new ItemStore();
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 	}
@@ -86,7 +99,7 @@ public class ServiceManager implements Closeable {
 		this.connectivity = connectivity;
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.itemStore = new ItemStore();
+		this.dataStore = new ItemStore();
 		this.wattingList 	= new LinkedList<>();
 		this.downloadingList = new LinkedList<>();
 	}
@@ -185,7 +198,7 @@ public class ServiceManager implements Closeable {
 
 	protected void removeItemEvent(ItemMetaData metaData) {
 		metaData.systemFlush();
-		itemStore.toJsonFile(metaData.getItem());
+		dataStore.save(metaData.getItem());
 		metaData.close();
 		downloadingList.remove(metaData);
 		reportTable.remove(metaData.getRangeMointor());
@@ -194,12 +207,12 @@ public class ServiceManager implements Closeable {
 	public void runSystemShutdownHook() {
 		for (ItemMetaData metaData : downloadingList) {
 			metaData.systemFlush();
-			itemStore.toJsonFile(metaData.getItem());
+			dataStore.save(metaData.getItem());
 			metaData.close();
 		}
 		
 		for (ItemMetaData metaData : wattingList) {
-			itemStore.toJsonFile(metaData.getItem());
+			dataStore.save(metaData.getItem());
 			metaData.close();
 		}
 	}
@@ -234,12 +247,12 @@ public class ServiceManager implements Closeable {
 		this.downloadingList = downloadingList;
 	}
 
-	public ItemStore getItemStore() {
-		return itemStore;
+	public DataStore<Item> getDataStore() {
+		return dataStore;
 	}
-
-	public void setItemStore(ItemStore itemStore) {
-		this.itemStore = itemStore;
+	
+	public void setDataStore(DataStore<Item> dataStore) {
+		this.dataStore = dataStore;
 	}
 
 	public Client getClient() {
@@ -266,7 +279,7 @@ public class ServiceManager implements Closeable {
 	protected void systemFlushData() {
 		for (ItemMetaData metaData : downloadingList) {
 			metaData.systemFlush();
-			itemStore.toJsonFile(metaData.getItem());
+			dataStore.save(metaData.getItem());
 		}
 	}
 	
@@ -275,13 +288,13 @@ public class ServiceManager implements Closeable {
 
 	protected void saveDownloadingItemToDisk() {
 		for (ItemMetaData metaData : downloadingList) {
-			itemStore.toJsonFile(metaData.getItem());
+			dataStore.save(metaData.getItem());
 		}
 	}
 
 	protected void saveWattingItemToDisk() {
 		for (ItemMetaData metaData : wattingList) {
-			itemStore.toJsonFile(metaData.getItem());
+			dataStore.save(metaData.getItem());
 		}
 	}
 	
@@ -312,6 +325,7 @@ public class ServiceManager implements Closeable {
 		Log.info(getClass(), "add download item to waiting list", item.toString());
 		range.oneCycleDataUpdate();
 		wattingList.add(metaData);
+		dataStore.add(item);
 	}
 	
 	public void download(Set<Item> items) {
@@ -321,13 +335,14 @@ public class ServiceManager implements Closeable {
 	
 	public void initForDownload(Set<Item> items) {
 		items.forEach(item -> {
-			Item old = itemStore.searchByUrl(item.getUrl());
+			Item old = dataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
 			if (Objects.isNull(old)) {
 				client.updateItemOnline(item);
 			} else {
 				old.getRangeInfo().checkRanges();
 				old.addHeaders(item.getHeaders());
 				item.copy(old);
+				
 			}
 			download(item);
 		});

@@ -16,7 +16,7 @@ public class CheckManager {
 	
 	public static void CheckItem(String url, int chunkSize, ServiceManager manager) {
 		
-			Item item = manager.getItemStore().searchByUrl(url);
+			Item item = manager.getDataStore().findByUrl(url);
 			Log.trace(CheckManager.class, "found file", item.liteString());			
 			long[][] arr;
 			try {
@@ -79,7 +79,7 @@ public class CheckManager {
 			}
 		}
 		
-		Item search = manager.getItemStore().searchByUrl(url);
+		Item search = manager.getDataStore().findByUrl(url);
 		Log.trace(CheckManager.class, "found file chick", search.liteString());
 		RangeInfo info = new RangeInfo(search.getRangeInfo().getFileLength(), downoad);
 		info.oneCycleDataUpdate();

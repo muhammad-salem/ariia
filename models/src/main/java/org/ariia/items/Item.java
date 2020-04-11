@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.ariia.range.RangeInfo;
 
 public class Item {
 	
+	protected String id;
+	
 	protected String url;
 	protected String filename;
-	protected String saveDir;
+	protected String saveDirectory;
 	protected Map<String, List<String>> headers;
 	protected RangeInfo rangeInfo;
 	
@@ -20,6 +23,15 @@ public class Item {
 	public Item() {
 		this.rangeInfo = new RangeInfo();
 		this.headers   = new HashMap<>(0);
+		this.id = UUID.randomUUID().toString();
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public String getUrl() {
@@ -80,23 +92,21 @@ public class Item {
 	}
 	
 	public String path() {
-		char lastChar = saveDir.charAt(saveDir.length()-1);
+		char lastChar = saveDirectory.charAt(saveDirectory.length()-1);
 		if( lastChar == '/' || lastChar == '\\') {
-			return (saveDir + filename);
+			return (saveDirectory + filename);
 		}
 		else {
-			return (saveDir + File.separatorChar + filename);
+			return (saveDirectory + File.separatorChar + filename);
 		}
 	}
 	
-
-	
-	public String getSaveDir() {
-		return saveDir;
+	public void setSaveDirectory(String saveDirectory) {
+		this.saveDirectory = saveDirectory;
 	}
-
-	public void setSaveDir(String saveDir) {
-		this.saveDir = saveDir;
+	
+	public String getSaveDirectory() {
+		return saveDirectory;
 	}
 	
 	@Override
@@ -112,11 +122,13 @@ public class Item {
 	
 	public String liteString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(filename );
+		builder.append( filename);
+		builder.append('\t');
+		builder.append(id);
 		builder.append('\n');
 		builder.append( url);
 		builder.append('\n');
-		builder.append("Folder : " + saveDir );
+		builder.append("Directory : " + saveDirectory );
 		builder.append('\n');
 		builder.append("File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
 		builder.append(",\tDownload : " + rangeInfo.getDownloadLengthMB());
@@ -130,25 +142,26 @@ public class Item {
 		Item item =  (Item) obj;
 		return     this.url.equals(item.url)
 				&& this.filename.equals(item.filename)
-				&& this.saveDir.equals(item.saveDir)
+				&& this.saveDirectory.equals(item.saveDirectory)
 				&& this.headers.equals(item.headers)
-				&& this.rangeInfo.equals(item.rangeInfo);
+				&& this.rangeInfo.equals(item.rangeInfo)
+				&& this.id == item.id;
 	}
 	
 	public Item getCopy() {
 		Item item = new Item();
-		if(url != null ) item.url = new String(this.url);
-		if(filename != null ) item.filename = new String(this.filename);
-		if(saveDir != null ) item.saveDir = new String(this.saveDir);
+		item.setUrl(url);
+		item.setFilename(filename);
+		item.setSaveDirectory(saveDirectory);
 		item.headers = new HashMap<>(this.headers);
-		if(rangeInfo != null ) item.rangeInfo = new RangeInfo(this.rangeInfo.getFileLength());
+		item.rangeInfo = new RangeInfo(this.rangeInfo.getFileLength());
 		return item;
 	}
 	
 	public void copy(Item item) {
 		this.url	   = item.url;
 		this.filename  = item.filename;
-		this.saveDir   = item.saveDir;
+		this.saveDirectory   = item.saveDirectory;
 		this.headers   = item.headers;
 		this.rangeInfo = item.rangeInfo;
 	}
