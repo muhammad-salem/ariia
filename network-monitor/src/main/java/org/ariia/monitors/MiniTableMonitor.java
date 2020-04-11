@@ -59,13 +59,13 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 		this.format = new MessageFormat(bodyTemplete);
 	}
 	
-	void initTempletes(){
+	void initTempletes() {
 		borderStyle = new StyleBuilder();
 		borderStyle.bold().color(22, 200, 44);
 		
 		this.header = borderStyle.build(
 				"┌─┬─────────────────────────────────────────┬─────────────────┬──────────────┐\n" + 
-				"│#│                   Name                  │ Complete/Remain │  Speed/Down  │\n");
+				"│#│                   Name                  │ HD Saved/Remain │  Speed/Down  │\n");
 		this.midBorder = borderStyle.build(
 				"├─┼─────────────────────────────────────────┼─────────────────┼──────────────┤\n");
 		this.fotter 	= borderStyle.build(
