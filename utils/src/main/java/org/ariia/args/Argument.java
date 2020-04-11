@@ -60,7 +60,7 @@ public class Argument {
 				if (t.length == 1) {
 					if(argument.isPair()) {
 						addArgument(argument, args[++i]);
-					}else {
+					} else {
 						addArgument(argument, argument.getFull());
 					}
 				} else {
@@ -408,8 +408,9 @@ public class Argument {
 		return is(TerminalArgument.DownloadPieces);
 	}
 	
-	
-	
+	public boolean isDaemonService() {
+		return is(TerminalArgument.DaemonService);
+	}
 	
 	public boolean isHelp() {
 		return is(TerminalArgument.Help);
@@ -455,5 +456,31 @@ public class Argument {
 	public String getStream(){
 		return get(TerminalArgument.Stream);
 	}
+	
+	
+	public boolean isServerPort() {
+		return is(TerminalArgument.ServerPort);
+	}
+	
+	public Integer getServerPort(){
+		return Integer.valueOf(get(TerminalArgument.ServerPort));
+	}
+	
+	public boolean isServerHost() {
+		return is(TerminalArgument.ServerHost);
+	}
+	
+	public String getServerHost(){
+		return get(TerminalArgument.ServerHost);
+	}
+	
+	public boolean isServerResourceLocation() {
+		return is(TerminalArgument.ServerResourceLocation);
+	}
+	
+	public String getServerResourceLocation(){
+		return get(TerminalArgument.ServerResourceLocation);
+	}
+	
 	
 }

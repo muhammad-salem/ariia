@@ -14,7 +14,7 @@ public static void main(String[] args) {
 			System.out.println(TerminalArgument.help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("Ariia version '0.2.5'");
+			System.out.println("Ariia version '0.2.6'");
 			return;
 		}
 		
@@ -22,7 +22,11 @@ public static void main(String[] args) {
 				return Clients.segmentClient(new AriiaHttpClient(arguments.getProxy()));
 			}
 		);
-		cli.setFinishAction(() -> {System.exit(0);});
+		cli.setFinishAction(() -> {
+			if (!arguments.isDaemonService()){
+				System.exit(0);
+			}
+		});
 		cli.lunch(arguments);
 		
 	}

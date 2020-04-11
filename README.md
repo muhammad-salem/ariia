@@ -44,30 +44,41 @@ Ariia is a smart command line download manager. (WEB-APP.. coming soon)
  
  
  ```
- java -jar okaria.jar URL
-	-u		--url			[-u] add new link/url to download manager 
-	-i		--input-file		downoload from text file - list of urls
-	-m		--metalink		downoload from  metalink text/xml file - list of urls on deffrient servers for the same daownloadable file
-	-r		--http-referer		set referer header for that link
-	-H		--header		set one/multiable different header(s) for that link
-	-cf		--cookie-file		add cookie(s) from standered cookie file
-	-o		--file-name		save download link to file on hard-disk
-	-sp		--save-path		set directory of download process
-	-t		--tries			number of tries when failler, then giveup (0 for keep-try )
-	-c		--max-connection	max connection for current session for each link
-	-n		--num-downloa		number of download links in queue, if more links, will be in watting list
-	-p		--proxy			set proxy to http://host:port[8080]/, support protocols http, https ans socks4/5
+java - jar ariia.jar [-u] URL
+	-u	--url			[-u] add new link/url to download manager
+	-i	--input-file		downoload from text file - list of urls
+	-m	--metalink		downoload from  metalink text/xml file - list of urls on deffrient servers for the same daownloadable file
+	-r	--http-referer		set referer header for that link
+	-ua	--user-agent		set user-agent header while download
+	-H	--header		set one/multiable different header(s) for that link
+			add cookie(s) while download
+	-cf	--cookie-file		add cookie(s) from standered cookie file
+	-o	--file-name		save download link to file on hard-disk
+	-sp	--save-path		set directory of download process
+	-t	--tries			number of tries when failler, then giveup (0 for keep-try )
+	-c	--max-connection	max connection for current session for each link
+	-n	--num-download		number of download links in queue, if more links, will be in watting list
+	-p	--proxy			set proxy to http://host:port[8080]/, support protocols http, https ans socks4/5
 	-http	--http-proxy		use http proxy [host:port] format
 	-https	--https-proxy		use https proxy [host:port] format
 	-socks	--socks-proxy		use socks proxy [host:port] format
 	-socks4	--socks4-proxy		use socks4 proxy [host:port] format
 	-socks5	--socks5-proxy		use socks5 proxy [host:port] format
-	-s		--ssh			use ssh connection as proxy - [remotehost:port], not supported yet
-	-su		--ssh-user		set ssh user name - remote login user name
-	-sp		--ssh-pass		set remote login password, if non will be asked from terminal
-	-h		--help			print this message
-	-d		--debug-level		display logging, Levels: [off, error, debug, warning, info, fine, finer, finest, all]
-	-v		--version		display the version of okaria
+	-s	--ssh			use ssh connection as proxy - [remotehost:port], not supported yet
+	-su	--ssh-user		set ssh user name - remote login user name
+	-sp	--ssh-pass		set remote login password, if non will be asked from terminal
+	-ch	--check-file		check donload file if is complete, and try to complete it
+	-cs	--chunk-size		length of shunk/segment to check
+	-dp	--download-pieces	index of pieces which need download. it could be in formate of string as "2 52 22 783 " or a file holding the indexs separited by '\n'
+	-st	--stream		stream URL One download connection
+	-ds	--daemon-service	start ariia as daemon service
+	-port	--server-port		run web application on port (default port 8080)
+	-host	--server-host		run web application for local interface (defult is any all)
+	-rl	--resource-location	run web application with resource location directory path
+	-h	--help			print this message
+	-d	--debug-level		display logging, Levels: [off, log, error, warn, info, assertion, debug, trace, all]
+	-v	--version		display the version of ariia
+
  ```
 
 ### TO:DO:LIST

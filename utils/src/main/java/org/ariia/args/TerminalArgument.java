@@ -41,12 +41,18 @@ public enum TerminalArgument{
 		ChunkSize("-cs", "--chunk-size"),
 		DownloadPieces("-dp", "--download-pieces"),
 		
-		
 		Stream("-st", "--stream"),
+		
+		DaemonService("-ds", "--daemon-service"),
+		
+
+		ServerPort("-port", "--server-port"),
+		ServerHost("-host", "--server-host"),
+		ServerResourceLocation("-rl", "--resource-location"),
 		
 		Help("-h", "--help"),
 		Debug("-d", "--debug-level"),
-		Version("-v", "--version"), 
+		Version("-v", "--version"),
 		Chrome("-ch","--chrome");
 	
 		
@@ -111,6 +117,7 @@ public enum TerminalArgument{
 
 		public boolean isPair() {
 			switch (this) {
+			case DaemonService:
 			case Help:
 			case Version:	
 				return false;
@@ -124,8 +131,8 @@ public enum TerminalArgument{
 		
 		public static String help() {
 			StringBuilder builder = new StringBuilder();
-			builder.append("\n okaria commend line download manager\n");
-			builder.append("\n java - jar okaria.jar [-u] URL\n");
+			builder.append("\n ariia commend line download manager\n");
+			builder.append("\n java - jar ariia.jar [-u] URL\n");
 			for (TerminalArgument argument : TerminalArgument.values()) {
 				if(argument == TerminalArgument.Chrome) continue;
 				builder.append('\t');
@@ -200,14 +207,27 @@ public enum TerminalArgument{
 					return ("length of shunk/segment to check");
 				case DownloadPieces:
 					return ("index of pieces which need download. it could be in formate of string as \"2 52 22 783 \" or a file holding the indexs separited by '\\n'");
-					
+
 				case Stream:
 					return ("stream URL One download connection");
+
+					
+				case ServerPort:
+					return ("run web application on port (default port 8080)");
+				case ServerHost:
+					return ("run web application for local interface (defult is any all)");
+				case ServerResourceLocation:
+					return ("run web application with resource location directory path");
+					
+					//r
+					
+				case DaemonService:
+					return ("start ariia as daemon service");
 					
 				case Help:
 					return("print this message");
 				case Version:
-					return("display the version of okaria");
+					return("display the version of ariia");
 				case Debug:
 					return("display logging, Levels: " + Arrays.toString(Level.values()));
 					

@@ -8,15 +8,14 @@ import java.util.List;
 
 public class R {
 
-	public static char sprtr = File.separatorChar;
 	public static String app_name = "ariia";
 	public static String code_name = "و";
+	
 	public static String UserHome = System.getProperty("user.home");
-
+	public static char sprtr = File.separatorChar;
+	
 	public static String DownloadsPath = UserHome + sprtr + "Downloads" + sprtr + app_name + sprtr;
-
 	public static String ConfigPath = UserHome + sprtr + ".config" + sprtr + app_name + sprtr;
-
 	public static String CachePath = UserHome + sprtr + ".cache" + sprtr + app_name + sprtr;
 
 	public static String ConfigJsonFile;

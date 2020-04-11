@@ -2,9 +2,7 @@ package org.ariia.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -36,7 +34,8 @@ public class AriiaHttpClient implements ClientRequest {
 //			        .version(Version.HTTP_1_1)
 			        .followRedirects(Redirect.ALWAYS)
 			        .connectTimeout(Duration.ofSeconds(20))
-			        .proxy(ProxySelector.of( (InetSocketAddress) proxy.address() ))
+			        .proxy(new AriiaProxySelector(proxy))
+//			        .proxy(ProxySelector.of( (InetSocketAddress) proxy.address() ))
 //			        .authenticator(Authenticator.getDefault())
 //			        .executor(Executors.newCachedThreadPool())
 			        .build();
