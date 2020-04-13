@@ -5,6 +5,42 @@ import java.util.Arrays;
 
 public class RangeInfo implements RangeUtil {
 	
+	public static RangeInfo recomendedForLength( Long fileLength ) {
+		if (fileLength == null) {
+			return new RangeInfo();
+		}
+		if (fileLength - Integer.MAX_VALUE > 0) {		//	fileLength > 4GB
+			return RangeOf64M(fileLength);
+		}
+		else if (fileLength - 2_097_152_000 > 0) {	//	fileLength > 2GB
+			return RangeOf32M(fileLength);
+		}
+		else if (fileLength - 1_048_576_000 > 0) {	//	fileLength > 1GB
+			return RangeOf32M(fileLength);
+		}
+		else if (fileLength - 524_288_000 > 0) {	//	fileLength > 500MB
+			return RangeOf16M(fileLength);
+		}
+		else if (fileLength - 209_715_200 > 0) {	//	fileLength > 200MB
+			return RangeOf8M(fileLength);
+		}
+		else if (fileLength - 104_857_600 > 0) {	//	fileLength > 100MB
+			return RangeOf4M(fileLength);
+		}
+		else if (fileLength - 52_428_800 > 0) {		//  fileLength > 50MB
+			return RangeOf2M(fileLength);
+		}
+		else if (fileLength - 10_485_760 > 0) {		//  fileLength > 10MB
+			return RangeOf1M(fileLength);
+		}
+		else if (fileLength - 1_048_576 > 0) {		//	fileLength > 1M
+			return RangeOf512K(fileLength);
+		}
+		else if (fileLength > 0) {
+			return new RangeInfo(fileLength);
+		}
+    	return new RangeInfo();
+    }
 
     public static RangeInfo RangeOf512K( long fileLength) {
     	return RangeOfByte(fileLength, 524288/*1024×512*/);
@@ -33,9 +69,39 @@ public class RangeInfo implements RangeUtil {
     
     
     public static RangeInfo RangeOfByte( long fileLength, final int chunkLength) {
-		long[][] rangeArray = rangeArray(fileLength, chunkLength);
+		long[][] rangeArray = rangeArrayWithFrontAndBackFirst(fileLength, chunkLength);
     	return new RangeInfo(fileLength, rangeArray);
     }
+    
+	private static long[][] rangeArrayWithFrontAndBackFirst(final long fileLength, final int chunkLength) {
+		long[][] rangeArray = rangeArray(fileLength, chunkLength);
+		if(chunkLength - 8388608 <= 0) {
+			return rangeArray;
+		}
+		int length = rangeArray.length;
+		long[][] newArray = new long[length + 4][2];
+		System.arraycopy(rangeArray, 0, newArray, 2, length);
+		/**  front  **/
+		newArray[0][0] = 0;
+		newArray[0][1] = 2097152;  // 2MB
+		
+		newArray[1][0] = newArray[0][1];
+		newArray[1][1] = newArray[0][1] + 2097152;  // 2MB
+		
+		newArray[2][0] = newArray[1][1];
+		
+		/**  Back  **/
+		newArray[length+3][1] = fileLength;
+		newArray[length+3][0] = fileLength - 2097152;
+		
+		newArray[length+2][1] = newArray[length+3][0];
+		newArray[length+2][0] = newArray[length+3][0] - 2097152;
+		
+		
+		newArray[length+1][1] = newArray[length+2][0];
+		
+		return newArray;
+	}
     
 	private static long[][] rangeArray(final long fileLength, final int chunkLength) {
     	int count = (int)(fileLength / chunkLength) + ((int)(fileLength%chunkLength) > 0 ? 1:0);

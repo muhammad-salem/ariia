@@ -104,8 +104,8 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 			OptionalLong contentLength = response.firstValueAsLong("Content-Length");
 			if (contentLength.isPresent()) {
 				item.setRangeInfo(
-						new RangeInfo(contentLength.getAsLong(), contentLength.getAsLong() > 0 ? 8 : 1)
-						);
+					RangeInfo.recomendedForLength(contentLength.getAsLong())
+				);
 			}
 			
 			Optional<String> contentDisposition = response.firstValue("Content-disposition");
