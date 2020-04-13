@@ -26,14 +26,17 @@ public class WebServerTest {
 	        
 	        ItemController test = new ItemController();
 	        ProxySwitcher switcher = new ProxySwitcher(test);
+
+	        System.out.printf("context: %s\t controllerContext: %s\n", 
+	        		switcher.getContext(), switcher.getControllerContext());
 	        switcher.getMethodIndexs().stream()
-	        	.map(MethodIndex::getContextParamter).forEach(System.out::println);
-	        ControllerHandler handler = new ControllerHandler(test, switcher.getMethodIndexs());
+	        	.map(MethodIndex::context).forEach(System.out::println);
+	        ControllerHandler handler = new ControllerHandler(test, switcher);
 	        server.createContext(switcher.getControllerContext(), handler);
 	        
 	        server.start();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 	}
