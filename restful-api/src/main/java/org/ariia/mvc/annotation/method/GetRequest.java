@@ -1,4 +1,4 @@
-package org.ariia.mvc.annoutation;
+package org.ariia.mvc.annotation.method;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.METHOD;
@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 @Target({ METHOD, ANNOTATION_TYPE })
 @Documented
 
-@HttpMethod(method = RequestMethod.HEAD)
-public @interface HeadRequest {
+@HttpMethod(method = RequestMethod.GET)
+public @interface GetRequest {
 	/**
 	 * value of the context
 	 * value = "/context/a/b/c"

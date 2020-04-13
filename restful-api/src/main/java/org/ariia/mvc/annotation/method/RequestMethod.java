@@ -1,4 +1,4 @@
-package org.ariia.mvc.annoutation;
+package org.ariia.mvc.annotation.method;
 
 public enum RequestMethod {
 

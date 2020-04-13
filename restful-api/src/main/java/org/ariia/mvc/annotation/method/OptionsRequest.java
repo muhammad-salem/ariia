@@ -1,4 +1,4 @@
-package org.ariia.mvc.annoutation;
+package org.ariia.mvc.annotation.method;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.METHOD;
@@ -12,14 +12,15 @@ import java.lang.annotation.Target;
 @Target({ METHOD, ANNOTATION_TYPE })
 @Documented
 
-@HttpMethod(method = RequestMethod.POST)
-public @interface PostRequest {
+@HttpMethod(method = RequestMethod.OPTIONS)
+public @interface OptionsRequest {
 	/**
 	 * value of the context
 	 * value = "/context/a/b/c"
 	 * @return
 	 */
-	String path();
+	String value() default "";
+	String path()  default "";
 	String[] headers()  default {};
 	String[] produces() default {};
 }
