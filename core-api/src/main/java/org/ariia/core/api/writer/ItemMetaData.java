@@ -174,6 +174,16 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		}
 	}
 	
+	public void checkWhileDownloading() {
+		Iterator<Integer> iterator = downloadList.iterator();
+		while (iterator.hasNext()) {
+			Integer index = iterator.next();
+			if ( info.isFinish(index)){
+				iterator.remove();
+			}
+		}
+	}
+	
 	public void pause() {
 		downloading = false;
 		checkCompleted();
@@ -184,33 +194,25 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	private Queue<Integer> waitQueue = new LinkedList<>();
 	
 	
-	private void addToWaitQueue(int startOndex, int limitIndex) {
-		for ( ; startOndex < limitIndex; startOndex++) {
-			if (! info.isFinish(startOndex)) {
-				waitQueue.add(startOndex);
-			}
-		}
-	}
 	public void initWaitQueue() {
 		int count = info.getRangeCount();
 		if (count == 0) return;
 		waitQueue.clear();
-		if (count <= 4) {
-			addToWaitQueue(0, count);
+		for ( int index = 0 ; index < count; index++) {
+			if (! info.isFinish(index)) {
+				waitQueue.add(index);
+			}
 		}
-		else if (info.isFinish(count-1) && info.isFinish(count-2)) {
-			addToWaitQueue(0, count);
-		} else {
-			waitQueue.add(count-1);
-			waitQueue.add(count-2);
-			addToWaitQueue(0, count-2);
-		}
+	}
+	
+	public boolean isDownloadListEmpty() {
+		return downloadList.isEmpty();
 	}
 
 	public void startAndCheckDownloadQueue(ItemDownloader plane, SpeedMonitor... monitors) {
 		if (waitQueue.isEmpty()) { return; }
 		downloading = true;
-		while ( downloadList.size() < Properties.RANGE_POOL_NUM & ! waitQueue.isEmpty()) {
+		while ( downloadList.size() < Properties.RANGE_POOL_NUM & !waitQueue.isEmpty()) {
 			Integer index = waitQueue.poll();
 			if(index == null) break;
 			else {

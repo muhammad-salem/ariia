@@ -65,7 +65,7 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 		
 		this.header = borderStyle.build(
 				"┌─┬─────────────────────────────────────────┬─────────────────┬──────────────┐\n" + 
-				"│#│                   Name                  │ HD Saved/Remain │  Speed/Down  │\n");
+				"│#│                   Name                  │ Complete/Remain │  Speed/Down  │\n");
 		this.midBorder = borderStyle.build(
 				"├─┼─────────────────────────────────────────┼─────────────────┼──────────────┤\n");
 		this.fotter 	= borderStyle.build(
