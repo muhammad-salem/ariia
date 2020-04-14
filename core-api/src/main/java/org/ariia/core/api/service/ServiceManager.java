@@ -342,7 +342,6 @@ public class ServiceManager implements Closeable {
 				old.getRangeInfo().checkRanges();
 				old.addHeaders(item.getHeaders());
 				item.copy(old);
-				
 			}
 			download(item);
 		});

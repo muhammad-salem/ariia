@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.print.attribute.standard.MediaSize.Other;
 
 import org.ariia.util.R;
 import org.ariia.util.Utils;
@@ -96,10 +99,9 @@ public class ItemStore implements DataStore<Item> {
 	}
 	@Override
 	public Item findByUrlAndSaveDirectory(String url, String dir) {
-		Stream<Item> stream = streamByUrlAndDirectory(url, dir);
-		long count = stream.count();
-		if (count == 1) {
-			return stream.findAny().get();
+		List<Item> items = streamByUrlAndDirectory(url, dir).collect(Collectors.toList());
+		if (items.size() == 1) {
+			return items.get(0);
 		}
 		return null;
 	}
