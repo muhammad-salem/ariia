@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.print.attribute.standard.MediaSize.Other;
-
 import org.ariia.util.R;
 import org.ariia.util.Utils;
 

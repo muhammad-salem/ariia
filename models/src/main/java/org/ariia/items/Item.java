@@ -159,11 +159,12 @@ public class Item {
 	}
 	
 	public void copy(Item item) {
-		this.url	   = item.url;
-		this.filename  = item.filename;
-		this.saveDirectory   = item.saveDirectory;
-		this.headers   = item.headers;
-		this.rangeInfo = item.rangeInfo;
+		this.id				= item.id;
+		this.url			= item.url;
+		this.filename		= item.filename;
+		this.headers		= item.headers;
+		this.rangeInfo		= item.rangeInfo;
+		this.saveDirectory	= item.saveDirectory;
 	}
 	
 
