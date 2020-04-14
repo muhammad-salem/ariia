@@ -216,6 +216,9 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 			Integer index = waitQueue.poll();
 			if(index == null) break;
 			else {
+				if (info.isFinish(index)) {
+					continue;
+				}
 				plane.downloadPart(this, index, rangeMointor, monitors);
 				downloadList.add(index);
 			}
