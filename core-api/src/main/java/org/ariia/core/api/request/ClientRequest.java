@@ -35,12 +35,14 @@ public interface ClientRequest {
 	}
 	
 	default Response get(Item item) throws IOException {
-		return executeAndDebugRequest("GET", item.getUrl(), item.getHeaders());
+		return executeAndDebugRequest("GET", 
+				item.isRedireted() ? item.getRediretUrl() : item.getUrl(), item.getHeaders());
 	}
     
 	default Response get(Item item, int index)  throws IOException{
 		long[] range = item.getRangeInfo().indexOf(index);
-		return get(item.getUrl(), range[0], range[1], item.getHeaders());
+		return get(item.isRedireted() ? item.getRediretUrl() : item.getUrl(),
+				range[0], range[1], item.getHeaders());
 	}
 	
 	default Response get(String url, Long startRange, Long endRange, Map<String, List<String>> headers) throws IOException {

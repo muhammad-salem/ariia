@@ -14,6 +14,7 @@ public class Item {
 	protected String id;
 	
 	protected String url;
+	protected String rediretUrl;
 	protected String filename;
 	protected String saveDirectory;
 	protected Map<String, List<String>> headers;
@@ -40,6 +41,18 @@ public class Item {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public boolean isRedireted() {
+		return rediretUrl != null && !rediretUrl.equals(url);
+	}
+	
+	public String getRediretUrl() {
+		return rediretUrl;
+	}
+	
+	public void setRediretUrl(String rediretUrl) {
+		this.rediretUrl = rediretUrl;
 	}
 
 	public String getFilename() {
@@ -123,16 +136,18 @@ public class Item {
 	public String liteString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append( filename);
-		builder.append('\t');
-		builder.append(id);
-		builder.append('\n');
-		builder.append( url);
-		builder.append('\n');
-		builder.append("Directory : " + saveDirectory );
-		builder.append('\n');
-		builder.append("File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
-		builder.append(",\tDownload : " + rangeInfo.getDownloadLengthMB());
-		builder.append(",\tRemaining : " + rangeInfo.getRemainingLengthMB());
+		builder.append( '\t' );
+		builder.append( id );
+		builder.append('\n' );
+		builder.append( url );
+		builder.append('\n' );
+		builder.append( rediretUrl );
+		builder.append( '\n' );
+		builder.append( "Directory : " + saveDirectory );
+		builder.append( '\n' );
+		builder.append( "File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
+		builder.append( ",\tDownload : " + rangeInfo.getDownloadLengthMB() );
+		builder.append( ",\tRemaining : " + rangeInfo.getRemainingLengthMB() );
 		return builder.toString();
 	}
 
@@ -151,6 +166,7 @@ public class Item {
 	public Item getCopy() {
 		Item item = new Item();
 		item.setUrl(url);
+		item.setRediretUrl(rediretUrl);
 		item.setFilename(filename);
 		item.setSaveDirectory(saveDirectory);
 		item.headers = new HashMap<>(this.headers);
@@ -164,6 +180,7 @@ public class Item {
 		this.filename		= item.filename;
 		this.headers		= item.headers;
 		this.rangeInfo		= item.rangeInfo;
+		this.rediretUrl		= item.rediretUrl;
 		this.saveDirectory	= item.saveDirectory;
 	}
 	

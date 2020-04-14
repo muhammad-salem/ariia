@@ -90,16 +90,16 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 				Log.trace(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
 						+ "\nredirect url: \t"+ response.requestUrl() );
 				
-				String url = response.requestUrl();
-				File file = new File(url);
+				String rediretUrl = response.requestUrl();
+				item.setRediretUrl(rediretUrl);
+				File file = new File(rediretUrl);
 				String fileName = file.getName().split("\\?")[0];
 				
 				if ("".equals(fileName)) {
-					String[] fileParts = url.split("/");
+					String[] fileParts = rediretUrl.split("/");
 					fileName = fileParts[fileParts.length-2].split("\\?")[0];
 				}
 				item.setFilename(fileName);
-				item.setUrl(url);
 			}
 			OptionalLong contentLength = response.firstValueAsLong("Content-Length");
 			if (contentLength.isPresent()) {
