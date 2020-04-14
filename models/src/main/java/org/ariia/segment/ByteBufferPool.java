@@ -16,8 +16,8 @@ public class ByteBufferPool {
 	public static ByteBuffer acquire() {
 		ByteBuffer buffer = BUFFER_QUEUE.poll();
 		if (buffer == null) {
-//			buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
-		    buffer = ByteBuffer.allocate(BUFFER_SIZE);
+			buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
+//		    buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		}
 //		else {
 //		    System.out.println("BUFFER_QUEUE.size : " + BUFFER_QUEUE.size());
