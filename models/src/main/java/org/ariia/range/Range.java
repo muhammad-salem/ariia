@@ -37,7 +37,7 @@ public interface Range {
 	// cycle 
 	void oneCycleDataUpdate();
 
-	int getMaxRangePollNum();
+	int getMaxRangePoolNum();
 
 	boolean isStreaming();
 	boolean hadLength();

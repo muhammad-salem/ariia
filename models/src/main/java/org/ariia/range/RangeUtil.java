@@ -20,8 +20,8 @@ public interface RangeUtil extends Range {
 		if (getRangeCount() == 1)
 			return;
 		long[][] newRange = null;
-		if (getRangeCount() < getMaxRangePollNum()) {
-			newRange = new long[getMaxRangePollNum()][2];
+		if (getRangeCount() < getMaxRangePoolNum()) {
+			newRange = new long[getMaxRangePoolNum()][2];
 		} else {
 			newRange = new long[getRangeCount()][2];
 		}

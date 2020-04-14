@@ -120,7 +120,7 @@ public class RangeInfo implements RangeUtil {
 	protected long		fileLength;
 	protected long		downloadLength;
 	protected long  	remainingLength;
-	protected int		maxRangePollNum;
+	protected int		maxRangePoolNum;
 	protected long[][]	range;
 
 	/**
@@ -129,7 +129,7 @@ public class RangeInfo implements RangeUtil {
 	public RangeInfo() {
 		this.fileLength = -1l;
 	    this.range = new long[][] {{0, -1}};
-	    this.maxRangePollNum = 1;
+	    this.maxRangePoolNum = 1;
     }
 
     /**
@@ -142,15 +142,16 @@ public class RangeInfo implements RangeUtil {
     }
     
     
-    public RangeInfo(long length, int maxRangePollNum) {
+    public RangeInfo(long length, int maxRangePoolNum) {
         fileLength = length;
-        this.range = split(0, length, maxRangePollNum);
-	    this.maxRangePollNum = maxRangePollNum;
+        this.range = split(0, length, maxRangePoolNum);
+	    this.maxRangePoolNum = maxRangePoolNum;
     }
 
     public RangeInfo(long length, long[][] range) {
     	this.fileLength = length;
         this.range = range;
+        this.maxRangePoolNum = range.length;
     }
 	
 	@Override
@@ -259,8 +260,8 @@ public class RangeInfo implements RangeUtil {
 		return RangeUtil.super.updateIndexFromMaxRange(index);
 	}
 	@Override
-	public int getMaxRangePollNum() {
-		return maxRangePollNum;
+	public int getMaxRangePoolNum() {
+		return maxRangePoolNum;
 	}
 
 
