@@ -64,8 +64,9 @@ public class AriiaCli {
 		
 		Log.trace(AriiaCli.class, "Set Shutdown Hook Thread", "register shutdown thread");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+//			manager.close();
 			manager.runSystemShutdownHook();
-			manager.printReport();
+			manager.printAllReport();
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
 		

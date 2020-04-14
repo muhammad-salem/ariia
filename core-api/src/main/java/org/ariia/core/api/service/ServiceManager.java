@@ -45,6 +45,7 @@ public class ServiceManager implements Closeable {
 
 	Queue<ItemMetaData> wattingList;
 	Queue<ItemMetaData> downloadingList;
+	Queue<ItemMetaData> completeingList;
 
 	DataStore<Item> dataStore;
 	Client client;
@@ -62,9 +63,8 @@ public class ServiceManager implements Closeable {
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getProxy());
 
-		this.dataStore = new ItemStore();
-		this.wattingList 	= new LinkedList<>();
-		this.downloadingList = new LinkedList<>();
+		this.initServiceList(new ItemStore());
+		
 	}
 	
 	public ServiceManager(Client client, DataStore<Item> dataStore) {
@@ -73,10 +73,7 @@ public class ServiceManager implements Closeable {
 		this.reportTable = new MiniTableMonitor(sessionMonitor);
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getProxy());
-
-		this.dataStore = dataStore;
-		this.wattingList 	= new LinkedList<>();
-		this.downloadingList = new LinkedList<>();
+		this.initServiceList(dataStore);
 	}
 	
 	public ServiceManager(Client client, TableMonitor reportTable) {
@@ -86,9 +83,7 @@ public class ServiceManager implements Closeable {
 		this.connectivity = new UrlConnectivity(client.getProxy());
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.dataStore = new ItemStore();
-		this.wattingList 	= new LinkedList<>();
-		this.downloadingList = new LinkedList<>();
+		this.initServiceList(new ItemStore());
 	}
 	
 	public ServiceManager(Client client, SimpleSessionMonitor monitor,
@@ -99,9 +94,14 @@ public class ServiceManager implements Closeable {
 		this.connectivity = connectivity;
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
-		this.dataStore = new ItemStore();
-		this.wattingList 	= new LinkedList<>();
-		this.downloadingList = new LinkedList<>();
+		this.initServiceList(new ItemStore());
+	}
+
+	protected void initServiceList(DataStore<Item> dataStore) {
+		this.dataStore			= dataStore;
+		this.wattingList		= new LinkedList<>();
+		this.downloadingList	= new LinkedList<>();
+		this.completeingList	= new LinkedList<>();
 	}
 	
 	
@@ -173,7 +173,7 @@ public class ServiceManager implements Closeable {
 							metaData.getItem().liteString());
 					continue;
 				}
-				metaData.checkCompleted();
+				metaData.checkWhileDownloading();
 				metaData.startAndCheckDownloadQueue(client, sessionMonitor);
 			}
 			
@@ -200,6 +200,7 @@ public class ServiceManager implements Closeable {
 		metaData.close();
 		downloadingList.remove(metaData);
 		reportTable.remove(metaData.getRangeMointor());
+		completeingList.add(metaData);
 	}
 	
 	public void runSystemShutdownHook() {
@@ -271,6 +272,13 @@ public class ServiceManager implements Closeable {
 	
 	
 	public void printReport() {
+		System.out.println(reportTable.getTableReport());
+	}
+	
+	public void printAllReport() {
+		for (ItemMetaData itemMetaData : completeingList) {
+			reportTable.add(itemMetaData.getRangeMointor());
+		}
 		System.out.println(reportTable.getTableReport());
 	}
 
