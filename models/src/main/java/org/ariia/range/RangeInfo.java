@@ -75,31 +75,13 @@ public class RangeInfo implements RangeUtil {
     
 	private static long[][] rangeArrayWithFrontAndBackFirst(final long fileLength, final int chunkLength) {
 		long[][] rangeArray = rangeArray(fileLength, chunkLength);
-		if(chunkLength - 8388608 <= 0) {
+		int length = rangeArray.length;
+		if (length < 2) {
 			return rangeArray;
 		}
-		int length = rangeArray.length;
-		long[][] newArray = new long[length + 4][2];
-		System.arraycopy(rangeArray, 0, newArray, 2, length);
-		/**  front  **/
-		newArray[0][0] = 0;
-		newArray[0][1] = 2097152;  // 2MB
-		
-		newArray[1][0] = newArray[0][1];
-		newArray[1][1] = newArray[0][1] + 2097152;  // 2MB
-		
-		newArray[2][0] = newArray[1][1];
-		
-		/**  Back  **/
-		newArray[length+3][1] = fileLength;
-		newArray[length+3][0] = fileLength - 2097152;
-		
-		newArray[length+2][1] = newArray[length+3][0];
-		newArray[length+2][0] = newArray[length+3][0] - 2097152;
-		
-		
-		newArray[length+1][1] = newArray[length+2][0];
-		
+		long[][] newArray = new long[length][2];
+		System.arraycopy(rangeArray, 0, newArray, 2, length-2);
+		System.arraycopy(rangeArray, length-2, newArray, 0, 2);
 		return newArray;
 	}
     
