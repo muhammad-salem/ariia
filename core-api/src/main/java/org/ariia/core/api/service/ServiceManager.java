@@ -172,11 +172,9 @@ public class ServiceManager implements Closeable {
 					Log.info(getClass(), "Download Finish: " + metaData.getItem().getFilename(),
 							metaData.getItem().liteString());
 					continue;
-				} else if(! metaData.isDownloading()) {
-					metaData.startDownloadQueue(client, sessionMonitor);
 				}
 				metaData.checkCompleted();
-				
+				metaData.startAndCheckDownloadQueue(client, sessionMonitor);
 			}
 			
 			if (downloadingList.isEmpty() & wattingList.isEmpty()) {
@@ -191,7 +189,7 @@ public class ServiceManager implements Closeable {
 		metaData.initWaitQueue();
 		metaData.checkCompleted();
 		downloadingList.add(metaData);
-		metaData.startDownloadQueue(client, sessionMonitor);
+		metaData.startAndCheckDownloadQueue(client, sessionMonitor);
 		reportTable.add(metaData.getRangeMointor());
 		metaData.getItem().getRangeInfo().oneCycleDataUpdate();
 	}

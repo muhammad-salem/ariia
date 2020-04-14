@@ -183,31 +183,31 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	private LinkedList<Integer> downloadList = new LinkedList<>();
 	private Queue<Integer> waitQueue = new LinkedList<>();
 	
+	
+	private void addToWaitQueue(int startOndex, int limitIndex) {
+		for ( ; startOndex < limitIndex; startOndex++) {
+			if (! info.isFinish(startOndex)) {
+				waitQueue.add(startOndex);
+			}
+		}
+	}
 	public void initWaitQueue() {
 		int count = info.getRangeCount();
 		if (count == 0) return;
 		waitQueue.clear();
-		if (count <= 10 || info.limitOfIndex(count-1) != info.getFileLength()) {
-			for (int index = 0; index < count; index++) {
-				if (! info.isFinish(index)) {
-					waitQueue.add(index);
-				}
-			}
+		if (count <= 4) {
+			addToWaitQueue(0, count);
+		}
+		else if (info.isFinish(count-1) && info.isFinish(count-2)) {
+			addToWaitQueue(0, count);
 		} else {
-			for (int index = count-1, i = 0; i < 4; i++) {
-				if (! info.isFinish(index-i)) {
-					waitQueue.add(index-i);
-				}
-			}
-			for (int index = 0; index < count - 4; index++) {
-				if (! info.isFinish(index)) {
-					waitQueue.add(index);
-				}
-			}
+			waitQueue.add(count-1);
+			waitQueue.add(count-2);
+			addToWaitQueue(0, count-2);
 		}
 	}
 
-	public void startDownloadQueue(ItemDownloader plane, SpeedMonitor... monitors) {
+	public void startAndCheckDownloadQueue(ItemDownloader plane, SpeedMonitor... monitors) {
 		if (waitQueue.isEmpty()) { return; }
 		downloading = true;
 		while ( downloadList.size() < Properties.RANGE_POOL_NUM & ! waitQueue.isEmpty()) {
