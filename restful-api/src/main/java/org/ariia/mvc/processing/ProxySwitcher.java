@@ -11,7 +11,7 @@ import java.util.List;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RequestParam;
-import org.ariia.mvc.annotation.RestContext;
+import org.ariia.mvc.annotation.RestController;
 import org.ariia.mvc.annotation.method.DeleteRequest;
 import org.ariia.mvc.annotation.method.GetRequest;
 import org.ariia.mvc.annotation.method.HeadRequest;
@@ -46,6 +46,7 @@ public class ProxySwitcher {
 
 	
 	private Object controller;
+	private List<String> contextParamter;
 	private String context;
 	private String controllerContext;
 	private List<MethodIndex> methodIndexs;
@@ -60,27 +61,36 @@ public class ProxySwitcher {
 		return methodIndexs;
 	}
 	
-	public String getContext() {
-		return context;
+	public List<String> getContextParamter() {
+		return contextParamter ;
 	}
 	
 	public String getControllerContext() {
 		return controllerContext;
 	}
 	
+	public String getContext() {
+		return context;
+	}
+	
 	private void initController() { 
 		Class<?> clazz = controller.getClass();
 //		String context = clazz.getSimpleName();
-		if (clazz.isAnnotationPresent(RestContext.class)) {
-			RestContext restContext = clazz.getAnnotation(RestContext.class);
+		if (clazz.isAnnotationPresent(RestController.class)) {
+			RestController restContext = clazz.getAnnotation(RestController.class);
 			controllerContext = restContext.value();
-			int u = controllerContext.indexOf('{');
-			if (u>0) {
-				context = controllerContext.substring(0, u);
+			if (controllerContext.contains("{")) {
+				context = controllerContext.substring(0, controllerContext.indexOf('{'));
+				contextParamter = listOfPathVariavle(controllerContext);
+				
+				System.out.println("contextParamter: " + contextParamter);
 			}
 		} else {
+			// not controller
+//			return;
 			controllerContext = clazz.getSimpleName();
 			context = controllerContext;
+			contextParamter = Collections.emptyList();
 		}
 		
 		
@@ -113,24 +123,13 @@ public class ProxySwitcher {
 			Method headersMethod = annotation.getClass().getMethod("headers");
 			Method producesMethod = annotation.getClass().getMethod("produces");
 
-			indexBuilder.headers( Arrays.asList((String[]) headersMethod.invoke(annotation)) );
+			indexBuilder.headers(  Arrays.asList((String[]) headersMethod.invoke(annotation)) );
 			indexBuilder.produces( Arrays.asList((String[]) producesMethod.invoke(annotation)) );
-			indexBuilder.context( pathMethod.invoke(annotation).toString() );
 			
 			String rootContext = pathMethod.invoke(annotation).toString();
-			int index = rootContext.indexOf('{');
-			if (index > 0 ) {
-				indexBuilder.context( rootContext.substring(0, index) );
-				String temp;
-				ArrayList<String> list = new ArrayList<>(1);
-				do {
-					temp = rootContext.substring(index+1);
-					index = temp.indexOf('}');
-					list.add(temp.substring(0, index));
-					index = temp.indexOf('{');
-				} while (index > 0);
-				
-				indexBuilder.paramter(list);
+			if (rootContext.contains("{")) {
+				indexBuilder.context( rootContext.substring(0, rootContext.indexOf('{') ));
+				indexBuilder.paramter(listOfPathVariavle(rootContext));
 			} else {
 				indexBuilder.context( rootContext );
 				indexBuilder.paramter( Collections.emptyList() );
@@ -144,6 +143,18 @@ public class ProxySwitcher {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	ArrayList<String> listOfPathVariavle(String context) {
+		ArrayList<String> list = new ArrayList<>(1);
+		int index = context.indexOf('{');
+		do {
+			context = context.substring(index+1);
+			index = context.indexOf('}');
+			list.add(context.substring(0, index));
+			index = context.indexOf('{');
+		} while (index > 0);
+		return list;
 	}
 
 	private List<ParameterInfo> getParametersInfo(Method method) {

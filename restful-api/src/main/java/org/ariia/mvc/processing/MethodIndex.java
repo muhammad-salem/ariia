@@ -11,7 +11,6 @@ public class MethodIndex {
 	
 	private Method method;
 	private String context;
-//	private String contextParamter;
 	private String httpMethod;
 	private List<String> paramter;
 	private List<String> headers;
@@ -20,7 +19,6 @@ public class MethodIndex {
 	
 	public String httpMethod() {return httpMethod;}
 	public String context() {return context;}
-//	public String getContextParamter() {return contextParamter;}
 	public Method method() {return method;}
 	public List<String> headers() {return headers;}
 	public List<String> produces() {return produces;}
@@ -39,7 +37,6 @@ public class MethodIndex {
 		
 		private Method method;
 		private String context;
-//		private String contextParamter;
 		private String httpMethod;
 		private List<String> paramter;
 		private List<String> headers;
@@ -58,10 +55,6 @@ public class MethodIndex {
 			this.context = context;
 			return this;
 		}
-//		public MethodIndexBuilder setContextParamter(String contextParamter) {
-//			this.contextParamter = contextParamter;
-//			return this;
-//		}
 		public MethodIndexBuilder paramter(List<String> paramter) {
 			this.paramter = paramter;
 			return this;
@@ -84,7 +77,6 @@ public class MethodIndex {
 			methodIndex.httpMethod = this.httpMethod;
 			methodIndex.method = this.method;
 			methodIndex.context = this.context;
-//			methodIndex.contextParamter = this.contextParamter;
 			methodIndex.paramter = this.paramter;
 			methodIndex.headers = this.headers;
 			methodIndex.produces = this.produces;

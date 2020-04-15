@@ -32,7 +32,7 @@ public class WebServerTest {
 	        switcher.getMethodIndexs().stream()
 	        	.map(MethodIndex::context).forEach(System.out::println);
 	        ControllerHandler handler = new ControllerHandler(test, switcher);
-	        server.createContext(switcher.getControllerContext(), handler);
+	        server.createContext(switcher.getContext(), handler);
 	        
 	        server.start();
 		} catch (Exception e) {

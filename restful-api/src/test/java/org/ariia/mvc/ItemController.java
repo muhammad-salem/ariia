@@ -3,11 +3,11 @@ package org.ariia.mvc;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RequestParam;
-import org.ariia.mvc.annotation.RestContext;
+import org.ariia.mvc.annotation.RestController;
 import org.ariia.mvc.annotation.method.GetRequest;
 import org.ariia.mvc.annotation.method.PostRequest;
 
-@RestContext("/item")
+@RestController("/item/{itemData}/{test}")
 public class ItemController {
 	
 //	@GetRequest( path = "/{id}", produces = "application/json" )
