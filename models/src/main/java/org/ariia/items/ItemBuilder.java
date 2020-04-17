@@ -34,20 +34,29 @@ import org.xml.sax.SAXException;
 public class ItemBuilder {
 	
 	private Argument arguments;
-	private final Set<Item> items;
+	private Set<Item> items;
 	
 	public ItemBuilder(Argument arguments) {
-		this.arguments = arguments;
-		this.items = new HashSet<>();
-		initItems();
+		setArguments(arguments);
 	}
 	
 	public Set<Item> getItems() {
 		return items;
 	}
+
+	public void clear() {
+		this.items.clear();
+		this.items = null;
+	}
+	
+	public void setArguments(Argument arguments) {
+		this.arguments = arguments;
+		initItems();
+	}
+	
 	
 	private void initItems() {
-
+		this.items = new HashSet<>();
 		if (arguments.isUrl()) {
 			downloadUrl();
 		}
@@ -234,11 +243,7 @@ public class ItemBuilder {
 			}
 			Iterator<String> iterator = urls.iterator();
 			return readMetaLinkText(iterator);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
