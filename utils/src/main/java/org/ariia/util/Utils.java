@@ -118,7 +118,7 @@ public class Utils {
 	}
 
 //	protected static Gson gsonPretty = getGson(true);
-	private static Gson gson = getGson(true);
+	private static Gson gson = getGson(false);
 
 	public static Gson getGson(boolean pretty) {
 		GsonBuilder builder = new GsonBuilder();
