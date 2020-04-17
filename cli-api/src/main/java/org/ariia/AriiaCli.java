@@ -54,7 +54,7 @@ public class AriiaCli {
 		R.MK_DIRS(R.ConfigPath);
 
 		String log_level = 
-				arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
+				arguments.getOrDefault(TerminalArgument.Debug, Level.log.name());
 		Log.level(log_level);
 		Log.trace(AriiaCli.class, "Terminal Argument", Arrays.toString(arguments.getArgs()));
 		Properties.Config(arguments);
@@ -73,6 +73,7 @@ public class AriiaCli {
 		ItemBuilder builder = new ItemBuilder(arguments);
 		
 		manager.initForDownload(builder.getItems());
+		builder.clear();
 		manager.setFinishAction(finishAction);
 		manager.startScheduledService();
 	}

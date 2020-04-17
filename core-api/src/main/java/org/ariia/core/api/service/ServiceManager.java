@@ -114,7 +114,7 @@ public class ServiceManager implements Closeable {
 		// for each 2 second
 		scheduledService.scheduleWithFixedDelay(this::checkdownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
 		scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
-		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 500, 200, TimeUnit.MILLISECONDS);
+		scheduledService.scheduleWithFixedDelay(this::systemFlushData, 1, 1, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -139,13 +139,14 @@ public class ServiceManager implements Closeable {
 	
 	protected void checkdownloadList() {
 		if (isNetworkFailer()) {
-			Log.info(getClass(), "Check Network Connection",
+			Log.log(getClass(), "Check Network Connection",
 					"Network Connectivity Statues: NETWORK DISCONNECTED");
 			for (ItemMetaData item : downloadingList) {
 				item.pause();
 				downloadingList.remove(item);
 //				removeItemEvent(item);
 				wattingList.add(item);
+				dataStore.save(item.getItem());
 			}
 		} else {
 			if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
@@ -160,7 +161,7 @@ public class ServiceManager implements Closeable {
 				}
 				if(builder.length() != 0) {
 					builder.delete(builder.length()-2, builder.length());
-					Log.info(getClass(), "items added to download list", builder.toString());
+					Log.log(getClass(), "items added to download list", builder.toString());
 				}
 			}
 			
@@ -169,7 +170,7 @@ public class ServiceManager implements Closeable {
 				RangeUtil info = item.getRangeInfo();
 				if (info.isFinish()) {
 					removeItemEvent(metaData);
-					Log.info(getClass(), "Download Finish: " + metaData.getItem().getFilename(),
+					Log.log(getClass(), "Download Finish: " + metaData.getItem().getFilename(),
 							metaData.getItem().liteString());
 					continue;
 				}
@@ -186,6 +187,7 @@ public class ServiceManager implements Closeable {
 	
 	
 	protected void addItemEvent(ItemMetaData metaData) {
+		dataStore.save(metaData.getItem());
 		metaData.initWaitQueue();
 		metaData.checkCompleted();
 		downloadingList.add(metaData);
@@ -308,7 +310,7 @@ public class ServiceManager implements Closeable {
 	public void download(Item item) {
 		RangeUtil range = item.getRangeInfo();
 		if (range.isFinish()) {
-			Log.info(getClass(), "Download Finish: " + item.getFilename(), item.liteString());
+			Log.log(getClass(), "Download Finish: " + item.getFilename(), item.liteString());
 			return;
 		}
 		
@@ -328,7 +330,7 @@ public class ServiceManager implements Closeable {
 //		}
 		
 		Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " +  metaData.getClass().getSimpleName());
-		Log.info(getClass(), "add download item to waiting list", item.toString());
+		Log.log(getClass(), "add download item to waiting list", item.toString());
 		range.oneCycleDataUpdate();
 		wattingList.add(metaData);
 		dataStore.add(item);
