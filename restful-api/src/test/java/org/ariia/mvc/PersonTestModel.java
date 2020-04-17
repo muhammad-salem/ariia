@@ -1,6 +1,7 @@
 package org.ariia.mvc;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class PersonTestModel {
 	
@@ -11,6 +12,13 @@ public class PersonTestModel {
 	int salary;
 	Date modified;
 	
+	public PersonTestModel() {
+		this.id = UUID.randomUUID().toString();
+		this.firstName = "Ma";
+		this.lastName = "Jo";
+		this.salary = 7778;
+		this.modified = new Date();
+	}
 	
 	public String getId() {
 		return id;

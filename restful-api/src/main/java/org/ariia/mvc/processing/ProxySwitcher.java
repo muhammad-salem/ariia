@@ -168,9 +168,16 @@ public class ProxySwitcher {
 			builder.parameterType(parameter.getType());
 			for (Class<? extends Annotation> annotationClass : parameterAnnotation) {
 				if (parameter.isAnnotationPresent(annotationClass)) {
-					builder.annotation(parameter.getAnnotation(annotationClass));
 					builder.index(i);
-					builder.name(parameter.getName());
+					Annotation annotation = parameter.getAnnotation(annotationClass);
+					builder.annotation(annotation);
+					if (annotationClass.equals(RequestBody.class)) {
+						builder.name("@Body");
+					} else {
+						try {
+							builder.name(annotationClass.getMethod("value").invoke(annotation).toString());
+						} catch (Exception e) { }
+					}
 					break;
 				}
 			}

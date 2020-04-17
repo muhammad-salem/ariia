@@ -42,11 +42,11 @@ public class ParameterInfo {
 		return annotation.annotationType().equals(RequestParam.class);
 	}
 	
+	
 	@Override
 	public String toString() {
 		return "ParameterInfo[ " + index + ", " + name + ", " + annotation + ", " + parameterType + "]";
 	}
-	
 	
 	public static class Builder {
 		

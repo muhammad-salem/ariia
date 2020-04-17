@@ -16,17 +16,28 @@ public class ItemController {
 //		return "";
 //	}
 	
-	@GetRequest( path = "/{id}", produces = "application/json" )
-	public String getItemString(@PathVariable("id") String id) {
-		System.out.println("getItemString id " + id);
-		return id;
-	}
+//	@GetRequest( path = "/{id}", produces = "application/json" )
+//	public String getItemString(@PathVariable("id") String id) {
+//		System.out.println("getItemString id " + id);
+//		return id;
+//	}
 	
-	@GetRequest( path = "/info/{id}", produces = "application/json" )
-	public PersonTestModel getItemModel(
+	@PostRequest( path = "/info/{id}", produces = "application/json" )
+	public long postId(
 			@PathVariable("id") String id,
 			@RequestParam("name") String name,
 			@RequestBody String body) {
+		System.out.println(id + " " + name + " " + body);
+		return 4545l;
+	}
+	
+	@GetRequest( path = "/info/{id}", produces = "application/json" )
+	public PersonTestModel infoModel(
+			@PathVariable("id") String id,
+			@RequestParam("name") String name,
+			@RequestBody String body,
+			@PathVariable("itemData") String itemData) {
+		System.out.println(id + " " + name + " " + body + " " + itemData);
 		return new PersonTestModel();
 	}
 	
@@ -45,10 +56,9 @@ public class ItemController {
 	public void editItem(@RequestParam("index") int index, @RequestBody String json) {
 		
 	}
-	@PostRequest(path = "/")
-	private void ff() {
-		// TODO Auto-generated method stub
-
-	}
+	
+//	@PostRequest(path = "/")
+//	private void ff() {
+//	}
 
 }

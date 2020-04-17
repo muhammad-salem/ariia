@@ -2,6 +2,7 @@ package org.ariia.mvc.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RequestInfo {
 	
@@ -16,6 +17,9 @@ public class RequestInfo {
 	}
 	
 	public void setParamters(String query) {
+		if (Objects.isNull(query)) {
+			return;
+		}
 		for (String qu : query.split("&")) {
 			String[] values = qu.split("=", 2);
 			this.paramters.put(values[0], values[1]);
@@ -23,6 +27,10 @@ public class RequestInfo {
 	}
 	public Map<String, String> getParamters() {
 		return paramters;
+	}
+	
+	public String getParamter(String paramName) {
+		return this.paramters.get(paramName);
 	}
 	
 //	public String putParamter(String key, String value) {
@@ -35,6 +43,10 @@ public class RequestInfo {
 	
 	public Map<String, String> getPathVariable() {
 		return pathVariable;
+	}
+	
+	public String getPathVariable(String pathName) {
+		return this.pathVariable.get(pathName);
 	}
 	
 	public void setPathVariable(Map<String, String> pathVariable) {
