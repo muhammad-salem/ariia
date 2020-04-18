@@ -12,19 +12,17 @@
   
 	<properties>
 		<main.class>org.ariia.web.WebApp</main.class>
-	   	<maven.compiler.source>14</maven.compiler.source>
-		<maven.compiler.target>14</maven.compiler.target>
 	</properties>
   
 	<dependencies>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-jdk14</artifactId>
+	  		<artifactId>ariia-jdk8</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>jdk14-restful</artifactId>
+	  		<artifactId>restful-api</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 	</dependencies>
