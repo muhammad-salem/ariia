@@ -1,14 +1,16 @@
 package org.ariia.web.controller;
 
+import java.util.List;
+
 import org.ariia.items.Item;
-import org.ariia.mvc.annoutation.GetRequest;
-import org.ariia.mvc.annoutation.PostRequest;
-import org.ariia.mvc.annoutation.RequestBody;
-import org.ariia.mvc.annoutation.RequestParam;
-import org.ariia.mvc.annoutation.RestContext;
+import org.ariia.mvc.annotation.PathVariable;
+import org.ariia.mvc.annotation.RequestBody;
+import org.ariia.mvc.annotation.RestController;
+import org.ariia.mvc.annotation.method.GetRequest;
+import org.ariia.mvc.annotation.method.PostRequest;
 import org.ariia.web.services.ItemService;
 
-@RestContext("/item")
+@RestController("/items")
 public class ItemController {
 	
 	private final ItemService itemService;
@@ -17,19 +19,25 @@ public class ItemController {
 		this.itemService = itemService;
 	}
 	
+	@GetRequest(path = "/")
+	public List<Item> items() {
+		return itemService.getItems();
+	}
+	
 	@GetRequest(path = "/{id}")
-	public Item getItem(@RequestParam("id") String id) {
+	public Item getItem(@PathVariable("id") String id) {
 		return itemService.get(id);
 	}
 	
-	@PostRequest(path = "/create")
-	public String createItem(@RequestBody Item item) {
-		return itemService.create(item);
-	}
-	
-	@PostRequest(path = "/create")
+	@PostRequest(path = "/createUrl")
 	public String createItem(@RequestBody String url) {
 		return itemService.create(url);
+	}
+	
+	
+	@PostRequest(path = "/createItem")
+	public String createItem(@RequestBody Item item) {
+		return itemService.create(item);
 	}
 	
 

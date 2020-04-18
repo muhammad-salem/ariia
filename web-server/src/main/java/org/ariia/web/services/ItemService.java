@@ -1,5 +1,7 @@
 package org.ariia.web.services;
 
+import java.util.List;
+
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.items.Builder;
 import org.ariia.items.DataStore;
@@ -27,6 +29,10 @@ public class ItemService {
 	public String create(String url) {
 		Builder builder = new Builder(url);
 		return create(builder.build());
+	}
+
+	public List<Item> getItems() {
+		return dataStore.getAll();
 	}
 	
 	
