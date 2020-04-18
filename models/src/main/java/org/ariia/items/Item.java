@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.ariia.range.RangeInfo;
@@ -141,8 +142,10 @@ public class Item {
 		builder.append('\n' );
 		builder.append( url );
 		builder.append('\n' );
-		builder.append( rediretUrl );
-		builder.append( '\n' );
+		if (Objects.nonNull(rediretUrl)) {
+			builder.append( rediretUrl );
+			builder.append( '\n' );
+		}
 		builder.append( "Directory : " + saveDirectory );
 		builder.append( '\n' );
 		builder.append( "File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
