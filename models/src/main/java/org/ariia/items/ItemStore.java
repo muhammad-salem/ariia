@@ -103,5 +103,9 @@ public class ItemStore implements DataStore<Item> {
 		}
 		return null;
 	}
+	@Override
+	public List<Item> getAll() {
+		return items;
+	}
 
 }

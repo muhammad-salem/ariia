@@ -1,5 +1,6 @@
 package org.ariia.items;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface DataStore<T extends Item> {
@@ -18,5 +19,7 @@ public interface DataStore<T extends Item> {
 	
 	void save(T item);
 	void add(T item);
+	
+	List<T> getAll();
 
 }
