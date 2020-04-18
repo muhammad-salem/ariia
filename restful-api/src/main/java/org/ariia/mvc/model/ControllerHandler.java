@@ -34,7 +34,6 @@ public class ControllerHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		URI uri = exchange.getRequestURI();
-		System.out.println(exchange.getRequestMethod());
 		RequestInfo requestInfo = new RequestInfo();
 		if (exchange.getRequestBody().available() > 0) {
 			BufferedReader reader = 
@@ -42,7 +41,6 @@ public class ControllerHandler implements HttpHandler {
 							new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)
 							);
 			requestInfo.setBody(reader.lines().collect(Collectors.joining("\n")));
-			System.out.println(requestInfo.getBody());
 		}
 		String path = uri.getPath();
 		requestInfo.setParamters(uri.getQuery());
@@ -65,7 +63,7 @@ public class ControllerHandler implements HttpHandler {
 		
 		MethodIndex index = methodList.get(0);
 		
-		{
+		if(!index.context().equals(requestInfo.getMethodContext())){
 			String mContext = requestInfo.getMethodContext().split(index.context())[1];
 			for (String pathVariable : index.pathVariables()) {
 				String methodContext = mContext;
@@ -99,6 +97,9 @@ public class ControllerHandler implements HttpHandler {
 			.filter(m -> requestInfo.getMethodContext().startsWith(m.context()) )
 			.filter(m -> requestInfo.hasBody() == m.hasBodyParameter())
 			.filter(m -> {
+				if (requestInfo.getMethodContext().equals(m.context())) {
+					return true;
+				}
 				String[] mContext = requestInfo.getMethodContext().split(m.context(), 2);
 				mContext = mContext[1].split("/");
 				return mContext.length == m.pathVariables().size();

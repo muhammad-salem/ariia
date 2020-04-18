@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executor;
 
+import org.ariia.mvc.model.ControllerHandler;
+import org.ariia.mvc.processing.ProxySwitcher;
 import org.ariia.mvc.resource.FileResourceHandler;
 import org.ariia.mvc.resource.InMemoryResourceHandler;
 import org.ariia.mvc.resource.MultiRootResourceHandler;
@@ -131,8 +133,14 @@ public class WebServer {
 		return server.createContext(path, handler);
 	}
 	
-	
 	public HttpContext createContext(String path) {
 		return server.createContext(path);
 	}
+	
+	public HttpContext createControllerContext(Object controller) {
+		ProxySwitcher switcher = new ProxySwitcher(controller);
+		ControllerHandler handler = new ControllerHandler(controller, switcher);
+		return server.createContext(switcher.getContext(), handler);
+	}
+	
 }

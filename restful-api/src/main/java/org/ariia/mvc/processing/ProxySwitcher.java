@@ -82,10 +82,13 @@ public class ProxySwitcher {
 			if (controllerContext.contains("{")) {
 				context = controllerContext.substring(0, controllerContext.indexOf('{'));
 				contextParamter = listOfPathVariavle(controllerContext);
+			} else {
+				context = controllerContext;
+				contextParamter = Collections.emptyList();
 			}
 		} else {
-			// not controller
-//			return;
+			// not controller, should return or throw an exceptions, not valid controller 
+			// return;
 			controllerContext = clazz.getSimpleName();
 			context = controllerContext;
 			contextParamter = Collections.emptyList();
