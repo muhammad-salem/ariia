@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.ariia.mvc.model.ContextActionHandler;
 import org.ariia.mvc.model.ControllerHandler;
-import org.ariia.mvc.processing.MethodIndex;
 import org.ariia.mvc.processing.ProxySwitcher;
 import org.junit.jupiter.api.Test;
 
@@ -26,11 +25,6 @@ public class WebServerTest {
 	        
 	        ItemController test = new ItemController();
 	        ProxySwitcher switcher = new ProxySwitcher(test);
-
-	        System.out.printf("context: %s\t controllerContext: %s\n", 
-	        		switcher.getContext(), switcher.getControllerContext());
-	        switcher.getMethodIndexs().stream()
-	        	.map(MethodIndex::context).forEach(System.out::println);
 	        ControllerHandler handler = new ControllerHandler(test, switcher);
 	        server.createContext(switcher.getContext(), handler);
 	        

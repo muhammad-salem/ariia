@@ -10,23 +10,17 @@ import org.ariia.mvc.annotation.method.PostRequest;
 @RestController("/item/{itemData}/{test}")
 public class ItemController {
 	
-//	@GetRequest( path = "/{id}", produces = "application/json" )
-//	public String getItemInt(@PathVariable("id") Integer id) {
-//		System.out.println("getItemInt id " + id);
-//		return "";
-//	}
-	
-//	@GetRequest( path = "/{id}", produces = "application/json" )
-//	public String getItemString(@PathVariable("id") String id) {
-//		System.out.println("getItemString id " + id);
-//		return id;
-//	}
+	@GetRequest( path = "/{id}", produces = "application/json" )
+	public String getItemInt(@PathVariable("id") Integer id) {
+		System.out.println("getItemInt id " + id);
+		return "" + id;
+	}
 	
 	@PostRequest( path = "/info/{id}", produces = "application/json" )
 	public long postId(
 			@PathVariable("id") String id,
 			@RequestParam("name") String name,
-			@RequestBody String body) {
+			@RequestBody PersonTestModel body) {
 		System.out.println(id + " " + name + " " + body);
 		return 4545l;
 	}
@@ -35,9 +29,8 @@ public class ItemController {
 	public PersonTestModel infoModel(
 			@PathVariable("id") String id,
 			@RequestParam("name") String name,
-			@RequestBody String body,
 			@PathVariable("itemData") String itemData) {
-		System.out.println(id + " " + name + " " + body + " " + itemData);
+		System.out.println(id + " " + name + " " + itemData);
 		return new PersonTestModel();
 	}
 	

@@ -14,10 +14,10 @@ public class PersonTestModel {
 	
 	public PersonTestModel() {
 		this.id = UUID.randomUUID().toString();
-		this.firstName = "Ma";
-		this.lastName = "Jo";
-		this.salary = 7778;
-		this.modified = new Date();
+//		this.firstName = "Ma";
+//		this.lastName = "Jo";
+//		this.salary = 7778;
+//		this.modified = new Date();
 	}
 	
 	public String getId() {
@@ -49,6 +49,13 @@ public class PersonTestModel {
 	}
 	public void setModified(Date modified) {
 		this.modified = modified;
+	}
+
+	@Override
+	public String toString() {
+		return "PersonTestModel [id=" + id + ", firstName=" + firstName 
+				+ ", lastName=" + lastName + ", salary="
+				+ salary + ", modified=" + modified + "]";
 	}
 	
 	

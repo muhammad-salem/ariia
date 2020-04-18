@@ -66,4 +66,8 @@ public class RequestInfo {
 	public String getBody() {
 		return body;
 	}
+	public boolean hasBody() {
+		return Objects.nonNull(body);
+	}
+	
 }

@@ -82,8 +82,6 @@ public class ProxySwitcher {
 			if (controllerContext.contains("{")) {
 				context = controllerContext.substring(0, controllerContext.indexOf('{'));
 				contextParamter = listOfPathVariavle(controllerContext);
-				
-				System.out.println("contextParamter: " + contextParamter);
 			}
 		} else {
 			// not controller
@@ -92,9 +90,6 @@ public class ProxySwitcher {
 			context = controllerContext;
 			contextParamter = Collections.emptyList();
 		}
-		
-		
-		System.out.println("controllerContext: " + controllerContext);
 		
 		//trackAnnotation
 		for (Method method : clazz.getMethods()) {
@@ -129,10 +124,10 @@ public class ProxySwitcher {
 			String rootContext = pathMethod.invoke(annotation).toString();
 			if (rootContext.contains("{")) {
 				indexBuilder.context( rootContext.substring(0, rootContext.indexOf('{') ));
-				indexBuilder.paramter(listOfPathVariavle(rootContext));
+				indexBuilder.pathVariables(listOfPathVariavle(rootContext));
 			} else {
 				indexBuilder.context( rootContext );
-				indexBuilder.paramter( Collections.emptyList() );
+				indexBuilder.pathVariables( Collections.emptyList() );
 			}
 			
 			indexBuilder.parametersInfo(getParametersInfo(method));

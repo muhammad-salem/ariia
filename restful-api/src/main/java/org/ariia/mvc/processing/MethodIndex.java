@@ -12,7 +12,7 @@ public class MethodIndex {
 	private Method method;
 	private String context;
 	private String httpMethod;
-	private List<String> paramter;
+	private List<String> pathVariables;
 	private List<String> headers;
 	private List<String> produces;
 	private List<ParameterInfo> parametersInfo;
@@ -22,15 +22,19 @@ public class MethodIndex {
 	public Method method() {return method;}
 	public List<String> headers() {return headers;}
 	public List<String> produces() {return produces;}
-	public List<String> paramter() {return paramter;}
+	public List<String> pathVariables() {return pathVariables;}
 	public List<ParameterInfo> getParametersInfo() {return parametersInfo;}
+	public boolean hasBodyParameter() {
+		return parametersInfo.stream()
+				.filter(ParameterInfo::isRequestBody).findAny().isPresent();
+	}
 	
 	@Override
 	public String toString() {
 		return String.format("request\t%s %s\ncontext\t%s %s\n%s %s %s\n", 
 				httpMethod, method.getName(), 
 				context, parametersInfo,
-				headers, paramter, produces);
+				headers, pathVariables, produces);
 	}
 	
 	public static class MethodIndexBuilder {
@@ -38,7 +42,7 @@ public class MethodIndex {
 		private Method method;
 		private String context;
 		private String httpMethod;
-		private List<String> paramter;
+		private List<String> pathVariables;
 		private List<String> headers;
 		private List<String> produces;
 		private List<ParameterInfo> parametersInfo;
@@ -55,8 +59,8 @@ public class MethodIndex {
 			this.context = context;
 			return this;
 		}
-		public MethodIndexBuilder paramter(List<String> paramter) {
-			this.paramter = paramter;
+		public MethodIndexBuilder pathVariables(List<String> pathVariables) {
+			this.pathVariables = pathVariables;
 			return this;
 		}
 		public MethodIndexBuilder headers(List<String> headers) {
@@ -77,7 +81,7 @@ public class MethodIndex {
 			methodIndex.httpMethod = this.httpMethod;
 			methodIndex.method = this.method;
 			methodIndex.context = this.context;
-			methodIndex.paramter = this.paramter;
+			methodIndex.pathVariables = this.pathVariables;
 			methodIndex.headers = this.headers;
 			methodIndex.produces = this.produces;
 			methodIndex.parametersInfo = this.parametersInfo;
