@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.6</version>
+		<version>0.2.7</version>
 	</parent>
 	<artifactId>web-server</artifactId>
   
@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 	  		<groupId>org.ariia</groupId>
-	  		<artifactId>ariia-jdk8</artifactId>
+	  		<artifactId>ok-ariia</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
 		<dependency>
@@ -40,7 +40,7 @@
 			<id>npm-install</id>
 			<activation>
 				 <file>
-					<missing>../webapp/node_modules</missing>
+					<missing>../webUI/node_modules</missing>
 				</file>
 			</activation>
 			<build>
@@ -54,7 +54,7 @@
 								<id>exec-npm-install</id>
 								<phase>generate-sources</phase>
 								<configuration>
-								    <workingDirectory>${project.basedir}/../webapp</workingDirectory>
+								    <workingDirectory>${project.basedir}/../webUI</workingDirectory>
 								    <executable>npm</executable>
 								    <arguments>
 									    <argument>install</argument>
@@ -88,7 +88,7 @@
 								<id>exec-npm-ng-build</id>
 								<phase>generate-sources</phase>
 								<configuration>
-								    <workingDirectory>${project.basedir}/../webapp</workingDirectory>
+								    <workingDirectory>${project.basedir}/../webUI</workingDirectory>
 								    <executable>ng</executable>
 								    <arguments>
 								        <argument>build</argument>

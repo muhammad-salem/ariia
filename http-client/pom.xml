@@ -5,9 +5,9 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.6</version>
+		<version>0.2.7</version>
 	</parent>
-	<artifactId>ariia-jdk14</artifactId>
+	<artifactId>http-client</artifactId>
 	<properties>
 		<main.class>org.ariia.Ariia</main.class>
 		<maven.compiler.source>14</maven.compiler.source>

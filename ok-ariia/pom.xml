@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>org.ariia</groupId>
 		<artifactId>ariia-pom</artifactId>
-		<version>0.2.6</version>
+		<version>0.2.7</version>
 	</parent>
-	<artifactId>ariia-jdk8</artifactId>
+	<artifactId>ok-ariia</artifactId>
 
 	<properties>
 		<main.class>org.ariia.Ariia</main.class>

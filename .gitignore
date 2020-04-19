@@ -53,7 +53,7 @@ web-server/src/main/resources/static/angular
 /*/*.iml
 /*/bin
 /*/target
-/webapp/node_modules
+/webUI/node_modules
 
 # Compiled class file
 *.class

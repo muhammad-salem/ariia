@@ -1,4 +1,4 @@
-# ariia  (0.2.6)
+# ariia  (0.2.7)
 
 Ariia is a smart command line download manager. (WEB-APP.. coming soon)
 
