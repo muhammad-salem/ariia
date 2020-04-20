@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.ariia.mvc.processing.MethodIndex;
 import org.ariia.mvc.processing.ProxySwitcher;
+import org.ariia.mvc.resource.MimeType;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
@@ -32,55 +33,72 @@ public class ControllerHandler implements HttpHandler {
 	}
 	
 	@Override
-	public void handle(HttpExchange exchange) throws IOException {
-		URI uri = exchange.getRequestURI();
-		RequestInfo requestInfo = new RequestInfo();
-		if (exchange.getRequestBody().available() > 0) {
-			BufferedReader reader = 
-					new BufferedReader(
-							new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)
-							);
-			requestInfo.setBody(reader.lines().collect(Collectors.joining("\n")));
-		}
-		String path = uri.getPath();
-		requestInfo.setParamters(uri.getQuery());
-		requestInfo.setMethodContext(path.split(switcher.getContext(), 2)[1]);
-		if (switcher.getContextParamter().size() > 0) {
-			for (String param : switcher.getContextParamter()) {
-				String methodContext = requestInfo.getMethodContext();
-				int i = methodContext.indexOf('/');
-				requestInfo.putPathVariable(param, methodContext.substring(0, i));
-				requestInfo.setMethodContext(methodContext.substring(i+1));
-			}
-			requestInfo.setMethodContext('/' + requestInfo.getMethodContext());
-		}
-		
-		List<MethodIndex> methodList = filterMethods(requestInfo, exchange.getRequestMethod());
-		if (methodList.isEmpty()) {
-			exchange.sendResponseHeaders(500, -1);
-			return;
-		}
-		
-		MethodIndex index = methodList.get(0);
-		
-		if(!index.context().equals(requestInfo.getMethodContext())){
-			String mContext = requestInfo.getMethodContext().split(index.context())[1];
-			for (String pathVariable : index.pathVariables()) {
-				String methodContext = mContext;
-				int i = methodContext.indexOf('/');
-				if (i == -1) {
-					requestInfo.putPathVariable(pathVariable, methodContext);
-					break;
-				}
-				requestInfo.putPathVariable(pathVariable, methodContext.substring(0, i));
-				mContext = methodContext.substring(i+1);
-			}
-		}
-		
+	public void handle(HttpExchange exchange) throws IOException{
 		try {
-			executeMathod(exchange, index, requestInfo);
-		} catch (Exception e) {
+			URI uri = exchange.getRequestURI();
+			RequestInfo requestInfo = new RequestInfo();
+			if (exchange.getRequestBody().available() > 0) {
+				BufferedReader reader = 
+						new BufferedReader(
+								new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)
+								);
+				requestInfo.setBody(reader.lines().collect(Collectors.joining("\n")));
+			}
+			String path = uri.getPath();
+			requestInfo.setParamters(uri.getQuery());
+			requestInfo.setMethodContext(path.split(switcher.getContext(), 2)[1]);
+			if (switcher.getContextParamter().size() > 0) {
+				for (String param : switcher.getContextParamter()) {
+					String methodContext = requestInfo.getMethodContext();
+					int i = methodContext.indexOf('/');
+					requestInfo.putPathVariable(param, methodContext.substring(0, i));
+					requestInfo.setMethodContext(methodContext.substring(i+1));
+				}
+				requestInfo.setMethodContext('/' + requestInfo.getMethodContext());
+			}
+			
+			List<MethodIndex> methodList = filterMethods(requestInfo, exchange.getRequestMethod());
+			if (methodList.isEmpty()) {
+				exchange.sendResponseHeaders(500, -1);
+				return;
+			}
+			MethodIndex methodIndex = methodList.get(0);
+//			MethodIndex methodIndex = null;
+//			for (int i = 0; i < methodList.size(); i++) {
+//				if (path.equals(switcher.getContext().concat(methodList.get(i).context()))) {
+//					methodIndex = methodList.get(i);
+//					break;
+//				}
+//			}
+//			if (Objects.isNull(methodIndex)) {
+//				methodIndex = methodList.get(0);
+//			}
+			
+			
+			if(!methodIndex.context().equals(requestInfo.getMethodContext())){
+				String mContext = requestInfo.getMethodContext().split(methodIndex.context())[1];
+				for (String pathVariable : methodIndex.pathVariables()) {
+					String methodContext = mContext;
+					int i = methodContext.indexOf('/');
+					if (i == -1) {
+						requestInfo.putPathVariable(pathVariable, methodContext);
+						break;
+					}
+					requestInfo.putPathVariable(pathVariable, methodContext.substring(0, i));
+					mContext = methodContext.substring(i+1);
+				}
+			}
+			
+			try {
+				executeMathod(exchange, methodIndex, requestInfo);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new IOException(e);
+			}
+			
+		} catch (IOException e) {
 			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -144,6 +162,10 @@ public class ControllerHandler implements HttpHandler {
 		} else {
 			String responseBody = gson.toJson(object);
 			byte[] bodyBytes =  responseBody.getBytes(StandardCharsets.UTF_8);
+			if (responseBody.startsWith("{") || responseBody.startsWith("[")) {
+				exchange.getResponseHeaders().add("Content-Type", MimeType.mime("json"));
+			}
+			
 			exchange.sendResponseHeaders(200, bodyBytes.length);
 			exchange.getResponseBody().write(bodyBytes);
 			exchange.close();
