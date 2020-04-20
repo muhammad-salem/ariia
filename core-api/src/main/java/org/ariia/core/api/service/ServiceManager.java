@@ -1,7 +1,10 @@
 package org.ariia.core.api.service;
 
 import java.io.Closeable;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -9,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.ariia.items.Builder;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
 import org.ariia.items.ItemStore;
@@ -304,6 +308,21 @@ public class ServiceManager implements Closeable {
 		for (ItemMetaData metaData : wattingList) {
 			dataStore.save(metaData.getItem());
 		}
+	}
+	
+	public String download(String url) {
+		return this.download(url, Collections.emptyMap());
+	}
+	
+	public String download(String url, Map<String, List<String>> headers) {
+		Builder builder = new Builder(url);
+		builder.addHeaders(headers);
+		Item item = builder.build();
+		this.scheduledService.execute(()-> {
+			this.client.updateItemOnline(item);
+			this.download(item);
+		});
+		return item.getId();
 	}
 	
 	

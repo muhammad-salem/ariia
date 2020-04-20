@@ -14,10 +14,11 @@ public class Ariia {
 			System.out.println(TerminalArgument.help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("Ariia version '0.2.6'");
+			System.out.println("Ariia version '0.2.7'");
 			return;
 		}
-		
+
+		AriiaCli.initLogServices(arguments);
 		AriiaCli cli = new AriiaCli((v)-> { 
 				return Clients.segmentClient(new OkClient(arguments.getProxy()));
 			}
