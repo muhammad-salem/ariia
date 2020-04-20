@@ -10,13 +10,15 @@ public class Ariia {
 public static void main(String[] args) {
 		
 		Argument arguments = new Argument(args);
+		
 		if (arguments.isEmpty() || arguments.isHelp()) {
 			System.out.println(TerminalArgument.help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("Ariia version '0.2.6'");
+			System.out.println("Ariia version '0.2.7'");
 			return;
 		}
+		AriiaCli.initLogServices(arguments);
 		
 		AriiaCli cli = new AriiaCli((v)-> { 
 				return Clients.segmentClient(new AriiaHttpClient(arguments.getProxy()));

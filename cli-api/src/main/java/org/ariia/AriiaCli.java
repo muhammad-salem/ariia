@@ -52,11 +52,6 @@ public class AriiaCli {
 		
 		
 		R.MK_DIRS(R.ConfigPath);
-
-		String log_level = 
-				arguments.getOrDefault(TerminalArgument.Debug, Level.log.name());
-		Log.level(log_level);
-		Log.trace(AriiaCli.class, "Terminal Argument", Arrays.toString(arguments.getArgs()));
 		Properties.Config(arguments);
 
 		client = clientIfNeeded.apply(null);
@@ -76,6 +71,13 @@ public class AriiaCli {
 		builder.clear();
 		manager.setFinishAction(finishAction);
 		manager.startScheduledService();
+	}
+
+	public static void initLogServices(Argument arguments) {
+		String log_level = 
+				arguments.getOrDefault(TerminalArgument.Debug, Level.log.name());
+		Log.level(log_level);
+		Log.trace(AriiaCli.class, "Terminal Argument", Arrays.toString(arguments.getArgs()));
 	}
 
 }
