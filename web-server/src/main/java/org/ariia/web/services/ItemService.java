@@ -3,7 +3,6 @@ package org.ariia.web.services;
 import java.util.List;
 
 import org.ariia.core.api.service.ServiceManager;
-import org.ariia.items.Builder;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
 
@@ -23,12 +22,11 @@ public class ItemService {
 
 	public String create(Item item) {
 		this.serviceManager.download(item);
-		return this.dataStore.getId(item.getUrl());
+		return item.getId();
 	}
 	
 	public String create(String url) {
-		Builder builder = new Builder(url);
-		return create(builder.build());
+		return this.serviceManager.download(url);
 	}
 
 	public List<Item> getItems() {
