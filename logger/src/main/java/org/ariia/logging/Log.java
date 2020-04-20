@@ -70,9 +70,9 @@ public final class Log {
 	}
 
 	public static void log(String message) {
-		if (logger.isAllowed(Level.log)) {
+//		if (logger.isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, message));
-		}
+//		}
 	}
 
 	public static void error(String message) {
@@ -112,9 +112,9 @@ public final class Log {
 	}
 
 	public static void log(Class<?> classname, String message) {
-		if (logger.isAllowed(Level.log)) {
+//		if (logger.isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, classname, message));
-		}
+//		}
 	}
 
 	public static void error(Class<?> classname, String message) {
@@ -154,9 +154,9 @@ public final class Log {
 	}
 
 	public static void log(String title, String message) {
-		if (logger.isAllowed(Level.log)) {
+//		if (logger.isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, title, message));
-		}
+//		}
 	}
 
 	public static void error(String title, String message) {
@@ -196,9 +196,9 @@ public final class Log {
 	}
 
 	public static void log(Class<?> classname, String title, String message) {
-		if (logger.isAllowed(Level.log)) {
+//		if (logger.isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, classname, title, message));
-		}
+//		}
 	}
 
 	public static void error(Class<?> classname, String title, String message) {
