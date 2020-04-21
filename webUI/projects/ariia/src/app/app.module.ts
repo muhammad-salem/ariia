@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { HomePageComponent } from './component/website/home-page/home-page.component';
@@ -20,6 +22,7 @@ import { AddLinkComponent } from './component/downloads/add-link/add-link.compon
 import { SiteSettingComponent } from './component/server/site-setting/site-setting.component';
 import { ServerSettingComponent } from './component/server/server-setting/server-setting.component';
 import { NotificationComponent } from './component/notify/notification/notification.component';
+
 
 @NgModule({
   declarations: [
@@ -44,7 +47,9 @@ import { NotificationComponent } from './component/notify/notification/notificat
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [HomePageComponent]
