@@ -135,32 +135,20 @@ public class ControllerHandler implements HttpHandler {
 	private void executeMathod(HttpExchange exchange, MethodIndex methodIndex, RequestInfo requestInfo )
 			throws IllegalAccessException, InvocationTargetException, IOException {
 		
-		Object[] objects = new Object[methodIndex.getParametersInfo().size()];
-		for (int i = 0; i < objects.length; i++) {
-			ParameterInfo info = methodIndex.getParametersInfo().get(i);
-			if (info.isRequestBody()) {
-				objects[i] = toObject(
-						info.getParameterType(),
-						requestInfo.getBody());
-			}
-			else if (info.isPathVariable()) {
-				objects[i] = toObject(
-						info.getParameterType(),
-						requestInfo.getPathVariable(info.name()));
-			}
-			else if (info.isRequestParam()) {
-				objects[i] = toObject(
-						info.getParameterType(),
-						requestInfo.getParamter(info.name()));
-			}
+		int paramterLength = methodIndex.getParametersInfo().size();
+		Object returnObject = null;
+		if (paramterLength == 0) {
+			returnObject = methodIndex.method().invoke(controller);
+		} else {
+			Object[] parameters = getParamters(methodIndex, requestInfo);
+			returnObject = methodIndex.method().invoke(controller, parameters);
 		}
-		
-		Object object = methodIndex.method().invoke(controller, objects);
-		if (Objects.isNull(object)) {
+		// check void
+		if (Objects.isNull(returnObject)) {
 			exchange.sendResponseHeaders(200, -1);
 			exchange.close();
 		} else {
-			String responseBody = gson.toJson(object);
+			String responseBody = gson.toJson(returnObject);
 			byte[] bodyBytes =  responseBody.getBytes(StandardCharsets.UTF_8);
 			if (responseBody.startsWith("{") || responseBody.startsWith("[")) {
 				exchange.getResponseHeaders().add("Content-Type", MimeType.mime("json"));
@@ -171,15 +159,30 @@ public class ControllerHandler implements HttpHandler {
 			exchange.close();
 		}
 	}
+
+	private static Object[] getParamters(MethodIndex methodIndex, RequestInfo requestInfo) {
+		Object[] parameters = new Object[methodIndex.getParametersInfo().size()];
+		for (int i = 0; i < parameters.length; i++) {
+			ParameterInfo info = methodIndex.getParametersInfo().get(i);
+			if (info.isRequestBody()) {
+				parameters[i] = toObject(
+						info.getParameterType(),
+						requestInfo.getBody());
+			}
+			else if (info.isPathVariable()) {
+				parameters[i] = toObject(
+						info.getParameterType(),
+						requestInfo.getPathVariable(info.name()));
+			}
+			else if (info.isRequestParam()) {
+				parameters[i] = toObject(
+						info.getParameterType(),
+						requestInfo.getParamter(info.name()));
+			}
+		}
+		return parameters;
+	}
 	
-//	private static Object getMethodArgs(Class<?> clazz, String value) {
-//		if (clazz.isPrimitive() || String.class.equals(clazz) ) {
-//			return toObject(clazz, value);
-//		} else if (value.charAt(0) == '{') {
-//			return gson.fromJson(value, clazz);
-//		}
-//		return null;
-//	}
 	
 	private static Object toObject( Class<?> clazz, String value ) {
 	    if( Boolean.class == clazz || Boolean.TYPE == clazz ) return Boolean.parseBoolean( value );
