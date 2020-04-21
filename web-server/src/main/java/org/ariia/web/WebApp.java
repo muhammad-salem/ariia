@@ -45,9 +45,9 @@ public class WebApp {
         		arguments.getServerResourceLocation() : "/static/angular";
         WebServer.ResourceType type = arguments.isServerResourceLocation() ?
         		WebServer.ResourceType.FILE : 
-        			isRunningFromJar() ? 
-        					WebServer.ResourceType.IN_MEMORY 
-        					: WebServer.ResourceType.STREAM;
+//        			isRunningFromJar() ? 
+//        					WebServer.ResourceType.IN_MEMORY : 
+        			WebServer.ResourceType.STREAM;
         Log.log(WebApp.class, "Running Web Server", String.format("start Port: %d, Path: %s, Resource Location type: %s\n", port, resourceLocation, type));
         WebServer server = new WebServer(port, resourceLocation, type);
         
