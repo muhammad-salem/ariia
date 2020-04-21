@@ -13,14 +13,11 @@ import org.ariia.okhttp.OkClient;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.services.ItemService;
 
-import com.sun.net.httpserver.HttpContext;
-
-
 public class WebApp {
 
-   public static boolean isRunningFromJar(){
-       return WebApp.class.getResource("WebApp.class").getProtocol().equalsIgnoreCase("jar");
-   }
+	public static boolean isRunningFromJar() {
+		return WebApp.class.getResource("WebApp.class").getProtocol().equalsIgnoreCase("jar");
+	}
 
 	public static void main(String[] args) throws IOException {
 		Argument arguments = new Argument(args);
@@ -33,30 +30,27 @@ public class WebApp {
 		}
 
 		AriiaCli.initLogServices(arguments);
-		AriiaCli cli = new AriiaCli((v)-> { 
-				return Clients.segmentClient(new OkClient(arguments.getProxy()));
-			}
-		);
+		AriiaCli cli = new AriiaCli((v) -> {
+			return Clients.segmentClient(new OkClient(arguments.getProxy()));
+		});
 		cli.lunch(arguments);
-		
-		
-        int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
-        String resourceLocation = arguments.isServerResourceLocation() ? 
-        		arguments.getServerResourceLocation() : "/static/angular";
-        WebServer.ResourceType type = arguments.isServerResourceLocation() ?
-        		WebServer.ResourceType.FILE : 
+
+		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
+		String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
+				: "/static/angular";
+		WebServer.ResourceType type = arguments.isServerResourceLocation() ? WebServer.ResourceType.FILE :
 //        			isRunningFromJar() ? 
 //        					WebServer.ResourceType.IN_MEMORY : 
-        			WebServer.ResourceType.STREAM;
-        Log.log(WebApp.class, "Running Web Server", String.format("start Port: %d, Path: %s, Resource Location type: %s\n", port, resourceLocation, type));
-        WebServer server = new WebServer(port, resourceLocation, type);
-        
+				WebServer.ResourceType.STREAM;
+		Log.log(WebApp.class, "Running Web Server",
+				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
+		WebServer server = new WebServer(port, resourceLocation, type);
+
 		ServiceManager manager = cli.getManager();
 		ItemController controller = new ItemController(new ItemService(manager));
-		HttpContext context  = server.createControllerContext(controller);
-		Log.info(server.getClass(), "create controller context", context.getPath());
+		server.createControllerContext(controller);
 		server.start();
-		
-    }
+
+	}
 
 }
