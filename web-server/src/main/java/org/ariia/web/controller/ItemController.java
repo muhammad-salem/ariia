@@ -19,7 +19,7 @@ public class ItemController {
 		this.itemService = itemService;
 	}
 	
-	@GetRequest(path = "/all")
+	@GetRequest(path = "")
 	public List<Item> items() {
 		return itemService.getItems();
 	}
