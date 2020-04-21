@@ -2,7 +2,6 @@ package org.ariia.items;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +75,13 @@ public class Builder {
 		item.setUrl(this.url);
 		item.setFilename(getFileName());
 		item.setSaveDirectory(Objects.nonNull(saveDir) ? this.saveDir : Properties.Default_SAVE_DIR_PATH);
-		item.setHeaders(this.headers.isEmpty() ? Collections.emptyMap() : this.headers);
-		item.setRangeInfo(Objects.nonNull(rangeInfo) ? this.rangeInfo : new RangeInfo());
+		
+		if(Objects.nonNull(headers)) {
+			item.setHeaders(this.headers);
+		}
+		if(Objects.nonNull(rangeInfo)) {
+			item.setRangeInfo(this.rangeInfo);
+		}
 		
 		return item;
 	} 
