@@ -10,12 +10,12 @@ export class ItemService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getItem(id: string): Observable<Item>  {
-    return this.httpClient.get<Item>('/items/' + id);
+  getAllItems(): Observable<Item[]>  {
+    return this.httpClient.get<Item[]>('/items');
   }
 
-  getAllItems(): Observable<Item[]>  {
-    return this.httpClient.get<Item[]>('/items/all');
+  getItem(id: string): Observable<Item>  {
+    return this.httpClient.get<Item>('/items/' + id);
   }
 
   downloadUrl(url: string): Observable<string> {

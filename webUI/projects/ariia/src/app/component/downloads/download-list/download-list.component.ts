@@ -10,25 +10,28 @@ import { Item } from '../../../model/item';
 export class DownloadListComponent implements OnInit {
 
   downloadList: Item[];
-  watingList: 	Item[];
+  watingList: Item[];
   completeList: Item[];
 
   constructor(private itemService: ItemService) {
     this.initLists();
-   }
-   
-   initLists() {
-   	this.downloadList = [];
-    this.watingList   = [];
+  }
+
+  initLists(): void {
+    this.downloadList = [];
+    this.watingList = [];
     this.completeList = [];
-   }
+  }
 
   ngOnInit(): void {
     this.itemService.getAllItems().subscribe(items => {
       console.log(items);
+      if (items === null) {
+        return;
+      }
       this.initLists();
       items.forEach(item => {
-        if (item.rangeInfo.remainingLength == 0) {
+        if (item.rangeInfo.remainingLength === 0) {
           this.downloadList.push(item);
         } else {
           this.watingList.push(item);
