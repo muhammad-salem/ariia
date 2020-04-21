@@ -3,7 +3,6 @@ package org.ariia.items;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,18 +29,20 @@ public class ItemStore implements DataStore<Item> {
 		File dir = new File( storePath );
 		File[] files = dir.listFiles();
 		for (File file : files) {
-			if(file.getName().contains(".json~")) {
+			if(file.getName().endsWith(".json~")) {
 				file.delete();
+				continue;
 			}
-			Item item = Utils.fromJson(file, Item.class);
-			if(Objects.nonNull(item)) {
-				if (item.isFinish()) {
-					// clean cache files
-					file.delete();
-				} else {
-					items.add(item);
-				}
-			}
+			items.add(Utils.fromJson(file, Item.class));
+//			Item item = Utils.fromJson(file, Item.class);
+//			if(Objects.nonNull(item)) {
+//				if (item.isFinish()) {
+//					// clean cache files
+//					file.delete();
+//				} else {
+//					items.add(item);
+//				}
+//			}
 		}
 	}
 	
