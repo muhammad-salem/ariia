@@ -15,7 +15,7 @@ public class Item {
 	protected String id;
 	
 	protected String url;
-	protected String rediretUrl;
+	protected String redirectUrl;
 	protected String filename;
 	protected String saveDirectory;
 	protected Map<String, List<String>> headers;
@@ -44,16 +44,16 @@ public class Item {
 		this.url = url;
 	}
 	
-	public boolean isRedireted() {
-		return rediretUrl != null && !rediretUrl.equals(url);
+	public boolean isRedirected() {
+		return redirectUrl != null && !redirectUrl.equals(url);
 	}
 	
-	public String getRediretUrl() {
-		return rediretUrl;
+	public String getRedirectUrl() {
+		return redirectUrl;
 	}
 	
-	public void setRediretUrl(String rediretUrl) {
-		this.rediretUrl = rediretUrl;
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
 	}
 
 	public String getFilename() {
@@ -142,11 +142,12 @@ public class Item {
 		builder.append('\n' );
 		builder.append( url );
 		builder.append('\n' );
-		if (Objects.nonNull(rediretUrl)) {
-			builder.append( rediretUrl );
+		if (Objects.nonNull(redirectUrl)) {
+			builder.append( redirectUrl );
 			builder.append( '\n' );
 		}
-		builder.append( "Directory : " + saveDirectory );
+		builder.append( "Directory : " );
+		builder.append( saveDirectory );
 		builder.append( '\n' );
 		builder.append( "File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
 		builder.append( ",\tDownload : " + rangeInfo.getDownloadLengthMB() );
@@ -169,7 +170,7 @@ public class Item {
 	public Item getCopy() {
 		Item item = new Item();
 		item.setUrl(url);
-		item.setRediretUrl(rediretUrl);
+		item.setRedirectUrl(redirectUrl);
 		item.setFilename(filename);
 		item.setSaveDirectory(saveDirectory);
 		item.headers = new HashMap<>(this.headers);
@@ -183,7 +184,7 @@ public class Item {
 		this.filename		= item.filename;
 		this.headers		= item.headers;
 		this.rangeInfo		= item.rangeInfo;
-		this.rediretUrl		= item.rediretUrl;
+		this.redirectUrl		= item.redirectUrl;
 		this.saveDirectory	= item.saveDirectory;
 	}
 	

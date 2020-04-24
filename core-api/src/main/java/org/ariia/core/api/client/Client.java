@@ -91,7 +91,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 						+ "\nredirect url: \t"+ response.requestUrl() );
 				
 				String rediretUrl = response.requestUrl();
-				item.setRediretUrl(rediretUrl);
+				item.setRedirectUrl(rediretUrl);
 				File file = new File(rediretUrl);
 				String fileName = file.getName().split("\\?")[0];
 				

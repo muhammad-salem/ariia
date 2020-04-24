@@ -36,12 +36,12 @@ public interface ClientRequest {
 	
 	default Response get(Item item) throws IOException {
 		return executeAndDebugRequest("GET", 
-				item.isRedireted() ? item.getRediretUrl() : item.getUrl(), item.getHeaders());
+				item.isRedirected() ? item.getRedirectUrl() : item.getUrl(), item.getHeaders());
 	}
     
 	default Response get(Item item, int index)  throws IOException{
 		long[] range = item.getRangeInfo().indexOf(index);
-		return get(item.isRedireted() ? item.getRediretUrl() : item.getUrl(),
+		return get(item.isRedirected() ? item.getRedirectUrl() : item.getUrl(),
 				range[0], range[1], item.getHeaders());
 	}
 	
