@@ -15,7 +15,7 @@ export class ItemService {
   }
 
   getItem(id: string): Observable<Item>  {
-    return this.httpClient.get<Item>('/items/' + id);
+    return this.httpClient.get<Item>('/items/info/' + id);
   }
 
   downloadUrl(url: string): Observable<string> {
