@@ -1,2 +1,2 @@
-export class ServerSeting {
+export class ServerSetting {
 }
