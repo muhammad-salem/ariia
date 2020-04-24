@@ -143,10 +143,16 @@ public class ItemBuilder {
 				headers = new LinkedHashMap<>();
 				addItem(line.trim(), headers);
 			}
+			else if (line.equals("\t")) {
+				continue;
+			}
 			else if (line.startsWith("\\t") 
 					|| line.startsWith(" ")
 					|| line.startsWith("	")) {
 				String[] header = line.trim().split(": ");
+				if (header.length == 1) {
+					continue;
+				}
 				List<String> value = headers.getOrDefault(header[0], new ArrayList<>(1));
 				value.add(header[1]);
 				headers.put(header[0], value);
