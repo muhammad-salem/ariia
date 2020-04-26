@@ -1,47 +1,52 @@
-package org.ariia;
+package org.ariia.cli;
 
-import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.ariia.args.Argument;
-import org.ariia.args.TerminalArgument;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.items.ItemBuilder;
 import org.ariia.logging.Log;
 import org.ariia.util.R;
-import org.terminal.console.log.Level;
 
 public class AriiaCli {
-	
-	private ServiceManager manager;
-	private Function<Void, Client> clientIfNeeded;
+
 	private Client client;
+	private ServiceManager serviceManager;
+	private Function<Void, Client> clientResolver;
+	private Function<Void, ServiceManager> serviceManagerResolver;
 	private Runnable finishAction = () -> {};
 	
-	public AriiaCli(Function<Void, Client> clientIfNeeded) {
-		this.clientIfNeeded = clientIfNeeded;
+	public AriiaCli(Function<Void, Client> clientResolver) {
+		this.clientResolver = Objects.requireNonNull(clientResolver);
 	}
 	
-	public void setClientIfNeeded(Function<Void, Client> clientIfNeeded) {
-		this.clientIfNeeded = clientIfNeeded;
+	public AriiaCli(Function<Void, ServiceManager> serviceManagerResolver, Void v) {
+		this.serviceManagerResolver = Objects.requireNonNull(serviceManagerResolver);
 	}
 	
-	public Function<Void, Client> getClientIfNeeded() {
-		return clientIfNeeded;
+	public AriiaCli(Function<Void, Client> clientResolver, Runnable finishAction) {
+		this.clientResolver = Objects.requireNonNull(clientResolver);
+		this.finishAction = Objects.requireNonNull(finishAction);
 	}
 	
-	public ServiceManager getManager() {
-		return manager;
+	public AriiaCli(Function<Void, ServiceManager> serviceManagerResolver, Runnable finishAction, Void v) {
+		this.serviceManagerResolver = Objects.requireNonNull(serviceManagerResolver);
+		this.finishAction = Objects.requireNonNull(finishAction);
+	}
+	
+	public Client getClient() {
+		return client;
+	}
+	
+	public ServiceManager getServiceManager() {
+		return serviceManager;
 	}
 	
 	public Runnable getFinishAction() {
 		return finishAction;
-	}
-	
-	public void setFinishAction(Runnable finishAction) {
-		this.finishAction = finishAction;
 	}
 	
 	public void lunch(String[] args) {
@@ -50,34 +55,31 @@ public class AriiaCli {
 
 	public void lunch(Argument arguments ) {
 		
-		
-		R.MK_DIRS(R.ConfigPath);
+		R.MK_DIRS(R.CachePath);
 		Properties.Config(arguments);
-
-		client = clientIfNeeded.apply(null);
-		manager = new ServiceManager(client);
+		
+		if (Objects.isNull(serviceManagerResolver)) {
+			client = clientResolver.apply(null);
+			serviceManager = new ServiceManager(client);
+		} else {
+			serviceManager = serviceManagerResolver.apply(null);
+			client = serviceManager.getClient();
+		}
 		
 		Log.trace(AriiaCli.class, "Set Shutdown Hook Thread", "register shutdown thread");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 //			manager.close();
-			manager.runSystemShutdownHook();
-			manager.printAllReport();
+			serviceManager.runSystemShutdownHook();
+			serviceManager.printAllReport();
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
 		
 		ItemBuilder builder = new ItemBuilder(arguments);
 		
-		manager.initForDownload(builder.getItems());
+		serviceManager.initForDownload(builder.getItems());
 		builder.clear();
-		manager.setFinishAction(finishAction);
-		manager.startScheduledService();
-	}
-
-	public static void initLogServices(Argument arguments) {
-		String log_level = 
-				arguments.getOrDefault(TerminalArgument.Debug, Level.log.name());
-		Log.level(log_level);
-		Log.trace(AriiaCli.class, "Terminal Argument", Arrays.toString(arguments.getArgs()));
+		serviceManager.setFinishAction(finishAction);
+		serviceManager.startScheduledService();
 	}
 
 }
