@@ -4,13 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,13 +33,13 @@ import org.xml.sax.SAXException;
 public class ItemBuilder {
 	
 	private Argument arguments;
-	private Set<Item> items;
+	private List<Item> items;
 	
 	public ItemBuilder(Argument arguments) {
 		setArguments(arguments);
 	}
 	
-	public Set<Item> getItems() {
+	public List<Item> getItems() {
 		return items;
 	}
 
@@ -56,7 +55,7 @@ public class ItemBuilder {
 	
 	
 	private void initItems() {
-		this.items = new HashSet<>();
+		this.items = new LinkedList<>();
 		if (arguments.isUrl()) {
 			downloadUrl();
 		}
