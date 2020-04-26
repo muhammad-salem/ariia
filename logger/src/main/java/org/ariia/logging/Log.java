@@ -69,6 +69,23 @@ public final class Log {
 		initService();
 	}
 
+	public static void setLogger(LevelLoggerImpl logger) {
+		Level oldLevel = Log.logger.getLevel();
+		Log.logger = logger;
+		logger.setLevel(oldLevel);
+	}
+	
+	public static void setLogger(LevelLoggerImpl logger, String levelName) {
+		setLogger(logger, Level.valueOf(levelName));
+	}
+	
+	public static void setLogger(LevelLoggerImpl logger, Level level) {
+		Log.logger = logger;
+		logger.setLevel(level);
+	}
+	
+	
+	
 	public static void log(String message) {
 //		if (logger.isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, message));
