@@ -16,7 +16,7 @@ public class ItemStore implements DataStore<Item> {
 	private String storePath;
 	
 	public ItemStore() {
-		this(R.getConfigDirectory());
+		this(R.CachePath + R.sprtr + "item-store"+ R.sprtr );
 	}
 	public ItemStore(String storePath) {
 		items = new ArrayList<>();
