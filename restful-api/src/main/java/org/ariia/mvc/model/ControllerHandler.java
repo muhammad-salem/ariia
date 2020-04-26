@@ -2,7 +2,9 @@ package org.ariia.mvc.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -140,7 +142,7 @@ public class ControllerHandler implements HttpHandler {
 		if (paramterLength == 0) {
 			returnObject = methodIndex.method().invoke(controller);
 		} else {
-			Object[] parameters = getParamters(methodIndex, requestInfo);
+			Object[] parameters = getParamters(exchange ,methodIndex, requestInfo);
 			returnObject = methodIndex.method().invoke(controller, parameters);
 		}
 		// check void
@@ -160,7 +162,7 @@ public class ControllerHandler implements HttpHandler {
 		}
 	}
 
-	private static Object[] getParamters(MethodIndex methodIndex, RequestInfo requestInfo) {
+	private static Object[] getParamters(HttpExchange exchange, MethodIndex methodIndex, RequestInfo requestInfo) {
 		Object[] parameters = new Object[methodIndex.getParametersInfo().size()];
 		for (int i = 0; i < parameters.length; i++) {
 			ParameterInfo info = methodIndex.getParametersInfo().get(i);
@@ -178,6 +180,15 @@ public class ControllerHandler implements HttpHandler {
 				parameters[i] = toObject(
 						info.getParameterType(),
 						requestInfo.getParamter(info.name()));
+			}
+			else if (info.getParameterType().equals(HttpExchange.class)) {
+				parameters[i] = exchange;
+			}
+			else if (info.getParameterType().equals(OutputStream.class)) {
+				parameters[i] = exchange.getResponseBody();
+			}
+			else if (info.getParameterType().equals(InputStream.class)) {
+				parameters[i] = exchange.getRequestBody();
 			}
 		}
 		return parameters;
