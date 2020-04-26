@@ -17,6 +17,7 @@ public class Item {
 	protected String url;
 	protected String redirectUrl;
 	protected String filename;
+	protected ItemState state;
 	protected String saveDirectory;
 	protected Map<String, List<String>> headers;
 	protected RangeInfo rangeInfo;
@@ -26,6 +27,7 @@ public class Item {
 		this.rangeInfo = new RangeInfo();
 		this.headers   = new HashMap<>(0);
 		this.id = UUID.randomUUID().toString();
+		this.state = ItemState.INIT;
 	}
 	
 	public String getId() {
@@ -62,6 +64,14 @@ public class Item {
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+	
+	public ItemState getState() {
+		return state;
+	}
+	
+	public void setState(ItemState state) {
+		this.state = state;
 	}
 
 	public RangeInfo getRangeInfo() {
@@ -123,17 +133,6 @@ public class Item {
 		return saveDirectory;
 	}
 	
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(liteString());
-		builder.append('\n');
-		builder.append("Headers Size : " + headers.size() );
-		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
-		builder.append('\n');
-		builder.append(rangeInfo.toString());
-		return builder.toString();
-	}
-	
 	public String liteString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append( filename);
@@ -146,6 +145,8 @@ public class Item {
 			builder.append( redirectUrl );
 			builder.append( '\n' );
 		}
+		builder.append( '\t' );
+		builder.append( state.toString() );
 		builder.append( "Directory : " );
 		builder.append( saveDirectory );
 		builder.append( '\n' );
@@ -154,13 +155,24 @@ public class Item {
 		builder.append( ",\tRemaining : " + rangeInfo.getRemainingLengthMB() );
 		return builder.toString();
 	}
-
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder(liteString());
+		builder.append('\n');
+		builder.append("Headers Size : " + headers.size() );
+		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
+		builder.append('\n');
+		builder.append(rangeInfo.toString());
+		return builder.toString();
+	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		Item item =  (Item) obj;
 		return     this.url.equals(item.url)
 				&& this.filename.equals(item.filename)
+				&& this.state.equals(item.state)
 				&& this.saveDirectory.equals(item.saveDirectory)
 				&& this.headers.equals(item.headers)
 				&& this.rangeInfo.equals(item.rangeInfo)
@@ -172,6 +184,7 @@ public class Item {
 		item.setUrl(url);
 		item.setRedirectUrl(redirectUrl);
 		item.setFilename(filename);
+		item.setState(state);
 		item.setSaveDirectory(saveDirectory);
 		item.headers = new HashMap<>(this.headers);
 		item.rangeInfo = new RangeInfo(this.rangeInfo.getFileLength());
@@ -182,6 +195,7 @@ public class Item {
 		this.id				= item.id;
 		this.url			= item.url;
 		this.filename		= item.filename;
+		this.state			= item.state;
 		this.headers		= item.headers;
 		this.rangeInfo		= item.rangeInfo;
 		this.redirectUrl		= item.redirectUrl;
