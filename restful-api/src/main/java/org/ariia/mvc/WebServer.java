@@ -10,6 +10,8 @@ import org.ariia.mvc.resource.FileResourceHandler;
 import org.ariia.mvc.resource.InMemoryResourceHandler;
 import org.ariia.mvc.resource.MultiRootResourceHandler;
 import org.ariia.mvc.resource.ResourceHandler;
+import org.ariia.mvc.sse.ServerSideEventHandler;
+import org.ariia.mvc.sse.SourceEvent;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
@@ -141,6 +143,20 @@ public class WebServer {
 		ProxySwitcher switcher = new ProxySwitcher(controller);
 		ControllerHandler handler = new ControllerHandler(controller, switcher);
 		return server.createContext(switcher.getContext(), handler);
+	}
+	
+	public HttpContext createServerSideEventContext(String path, ServerSideEventHandler handler) {
+		return server.createContext(path, handler);
+	}
+	
+	/**
+	 * @param path server context
+	 * @param event an EventBroadcast
+	 * @return HttpContext
+	 */
+	public HttpContext createServerSideEventContext(String path, SourceEvent event) {
+		ServerSideEventHandler handler = new ServerSideEventHandler(event);
+		return server.createContext(path, handler);
 	}
 	
 }
