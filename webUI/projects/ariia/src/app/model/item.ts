@@ -4,6 +4,7 @@ export class Item {
   url: string;
   redirectUrl: string;
   filename: string;
+  state: string;
   saveDirectory: string;
   headers: Map<string, string[]>;
   rangeInfo: RangeInfo;
