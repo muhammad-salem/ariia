@@ -146,7 +146,7 @@ public class Item {
 			builder.append( '\n' );
 		}
 		builder.append( '\t' );
-		builder.append( state.toString() );
+		builder.append( state.toLowerString() );
 		builder.append( "Directory : " );
 		builder.append( saveDirectory );
 		builder.append( '\n' );

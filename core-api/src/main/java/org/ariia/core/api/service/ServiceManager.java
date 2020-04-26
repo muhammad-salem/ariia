@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import org.ariia.items.Builder;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
+import org.ariia.items.ItemState;
 import org.ariia.items.ItemStore;
 import org.ariia.logging.Log;
 import org.ariia.config.Properties;
@@ -145,12 +145,13 @@ public class ServiceManager implements Closeable {
 		if (isNetworkFailer()) {
 			Log.log(getClass(), "Check Network Connection",
 					"Network Connectivity Statues: NETWORK DISCONNECTED");
-			for (ItemMetaData item : downloadingList) {
-				item.pause();
-				downloadingList.remove(item);
+			for (ItemMetaData metaData : downloadingList) {
+				metaData.pause();
+				downloadingList.remove(metaData);
 //				removeItemEvent(item);
-				wattingList.add(item);
-				dataStore.save(item.getItem());
+				wattingList.add(metaData);
+				metaData.getItem().setState(ItemState.PAUSE);
+				dataStore.save(metaData.getItem());
 			}
 		} else {
 			if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
@@ -195,6 +196,7 @@ public class ServiceManager implements Closeable {
 		metaData.initWaitQueue();
 		metaData.checkCompleted();
 		downloadingList.add(metaData);
+		metaData.getItem().setState(ItemState.DOWNLOADING);
 		metaData.startAndCheckDownloadQueue(client, sessionMonitor);
 		reportTable.add(metaData.getRangeMointor());
 		metaData.getItem().getRangeInfo().oneCycleDataUpdate();
@@ -207,6 +209,7 @@ public class ServiceManager implements Closeable {
 		downloadingList.remove(metaData);
 		reportTable.remove(metaData.getRangeMointor());
 		completeingList.add(metaData);
+		metaData.getItem().setState(ItemState.COMPLETE);
 	}
 	
 	public void runSystemShutdownHook() {
@@ -347,20 +350,22 @@ public class ServiceManager implements Closeable {
 //		} else {
 //			metaData = new LargeMappedMetaDataWriter(item);
 //		}
-		
+
+		item.setState(ItemState.INIT_FILE);
 		Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " +  metaData.getClass().getSimpleName());
 		Log.log(getClass(), "add download item to waiting list", item.toString());
 		range.oneCycleDataUpdate();
 		wattingList.add(metaData);
+		item.setState(ItemState.WAITING);
 		dataStore.add(item);
 	}
 	
-	public void download(Set<Item> items) {
+	public void download(List<Item> items) {
 		items.forEach(this:: download);
 	}
 	
 	
-	public void initForDownload(Set<Item> items) {
+	public void initForDownload(List<Item> items) {
 		items.forEach(item -> {
 			Item old = dataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
 			if (Objects.isNull(old)) {

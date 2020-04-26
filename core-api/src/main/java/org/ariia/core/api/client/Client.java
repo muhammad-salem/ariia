@@ -15,6 +15,7 @@ import org.ariia.core.api.response.ContentLength;
 import org.ariia.core.api.response.Downloader;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
+import org.ariia.items.ItemState;
 import org.ariia.logging.Log;
 import org.ariia.range.RangeInfo;
 import org.ariia.speed.SpeedMonitor;
@@ -64,6 +65,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 	
 	public  final void updateItemOnline(Item item) {
 		
+		item.setState(ItemState.INIT_HTTP);
 		for (int i = 0; i < 5; i++) {
 			try {
 				updateItemOnline(item, false);

@@ -2,10 +2,9 @@ package org.ariia.items;
 
 public enum ItemState {
 	
-	INIT, WAITING, DOWNLOADING, PAUSE, COMPLETE;
+	INIT, INIT_HTTP, INIT_FILE, WAITING, DOWNLOADING, PAUSE, COMPLETE;
 	
-	@Override
-	public String toString() {
+	public String toLowerString() {
 		return name().toLowerCase();
 	}
 
