@@ -2,8 +2,11 @@ package org.ariia;
 
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
+import org.ariia.cli.AriiaCli;
+import org.ariia.cli.LogCli;
 import org.ariia.core.api.client.Clients;
 import org.ariia.okhttp.OkClient;
+import org.terminal.console.log.Level;
 
 public class Ariia {
 
@@ -17,17 +20,15 @@ public class Ariia {
 			System.out.println("Ariia version '0.2.7'");
 			return;
 		}
-
-		AriiaCli.initLogServices(arguments);
-		AriiaCli cli = new AriiaCli((v)-> { 
-				return Clients.segmentClient(new OkClient(arguments.getProxy()));
-			}
-		);
-		cli.setFinishAction(() -> {
-			if (!arguments.isDaemonService()){
-				System.exit(0);
-			}
-		});
+		
+		LogCli.initLogServices(arguments, Level.log);
+		AriiaCli cli = new AriiaCli( 
+				(v)-> Clients.segmentClient(new OkClient(arguments.getProxy())), 
+				()-> {
+					if (!arguments.isDaemonService()){
+						System.exit(0);
+					}
+				});
 		cli.lunch(arguments);
 		
 	}

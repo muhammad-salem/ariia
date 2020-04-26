@@ -2,9 +2,10 @@ package org.ariia.web;
 
 import java.io.IOException;
 
-import org.ariia.AriiaCli;
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
+import org.ariia.cli.AriiaCli;
+import org.ariia.cli.LogCli;
 import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.logging.Log;
@@ -12,6 +13,7 @@ import org.ariia.mvc.WebServer;
 import org.ariia.okhttp.OkClient;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.services.ItemService;
+import org.terminal.console.log.Level;
 
 public class WebApp {
 
@@ -29,10 +31,9 @@ public class WebApp {
 			return;
 		}
 
-		AriiaCli.initLogServices(arguments);
-		AriiaCli cli = new AriiaCli((v) -> {
-			return Clients.segmentClient(new OkClient(arguments.getProxy()));
-		});
+		LogCli.initLogServices(arguments, Level.info);
+		AriiaCli cli = new AriiaCli( 
+				(v)-> Clients.segmentClient(new OkClient(arguments.getProxy())));
 		cli.lunch(arguments);
 
 		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
@@ -46,7 +47,7 @@ public class WebApp {
 				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
 		WebServer server = new WebServer(port, resourceLocation, type);
 
-		ServiceManager manager = cli.getManager();
+		ServiceManager manager = cli.getServiceManager();
 		ItemController controller = new ItemController(new ItemService(manager));
 		server.createControllerContext(controller);
 		server.start();
