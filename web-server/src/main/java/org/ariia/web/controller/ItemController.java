@@ -24,18 +24,18 @@ public class ItemController {
 		return itemService.getItems();
 	}
 	
-	@GetRequest(path = "/{id}")
+	@GetRequest(path = "/info/{id}")
 	public Item getItem(@PathVariable("id") String id) {
 		return itemService.get(id);
 	}
 	
-	@PostRequest(path = "/createUrl")
+	@PostRequest(path = "/create/url")
 	public String createItem(@RequestBody String url) {
 		return itemService.create(url);
 	}
 	
 	
-	@PostRequest(path = "/createItem")
+	@PostRequest(path = "/create/item")
 	public String createItem(@RequestBody Item item) {
 		return itemService.create(item);
 	}
