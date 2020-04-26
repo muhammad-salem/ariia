@@ -16,7 +16,7 @@ public class ItemStore implements DataStore<Item> {
 	private String storePath;
 	
 	public ItemStore() {
-		this(R.CachePath + R.sprtr + "item-store"+ R.sprtr );
+		this(R.CachePath + "item-store"+ R.sprtr );
 	}
 	public ItemStore(String storePath) {
 		items = new ArrayList<>();
@@ -26,6 +26,7 @@ public class ItemStore implements DataStore<Item> {
 			
 	public void refreshStore() {
 		items.clear();
+		R.MK_DIRS(storePath);
 		File dir = new File( storePath );
 		File[] files = dir.listFiles();
 		for (File file : files) {
