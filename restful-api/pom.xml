@@ -8,6 +8,10 @@
 		<version>0.2.7</version>
 	</parent>
 	<artifactId>restful-api</artifactId>
+<!-- 	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+	</properties> -->
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
