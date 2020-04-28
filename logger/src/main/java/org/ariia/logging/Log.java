@@ -248,7 +248,7 @@ public final class Log {
 
 	public static void trace(Class<?> classname, String title, String message) {
 		if (isAllowed(Level.trace)) {
-			queue.add(new Message(Level.trace, title, message));
+			queue.add(new Message(Level.trace, classname, title, message));
 		}
 	}
 }
