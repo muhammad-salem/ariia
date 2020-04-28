@@ -1,19 +1,20 @@
 package org.ariia.web;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
 import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCli;
 import org.ariia.core.api.client.Clients;
+import org.ariia.core.api.client.SegmentClient;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
 import org.ariia.mvc.sse.EventBroadcast;
 import org.ariia.okhttp.OkClient;
 import org.ariia.web.app.WebLoggerPrinter;
+import org.ariia.web.app.WebServiceManager;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.services.ItemService;
 import org.terminal.console.log.Level;
@@ -39,8 +40,10 @@ public class WebApp {
 		WebLoggerPrinter printer = new WebLoggerPrinter(mainBroadcast);
 		LogCli.initLogServicesNoStart(arguments, printer, Level.info);
 		
-		AriiaCli cli = new AriiaCli( 
-				(v)-> Clients.segmentClient(new OkClient(arguments.getProxy())));
+		AriiaCli cli = new AriiaCli((v)-> {
+			SegmentClient client = Clients.segmentClient(new OkClient(arguments.getProxy()));
+			return new WebServiceManager(client, mainBroadcast);
+		},(Void) null) ;
 		cli.lunch(arguments);
 
 		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
