@@ -6,7 +6,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.terminal.console.log.Level;
-import org.terminal.console.log.impl.LevelLoggerImpl;
+import org.terminal.console.log.api.Printer;
+import org.terminal.console.log.impl.Message;
+import org.terminal.console.log.impl.PrinterImpl;
 
 public final class Log {
 	private Log() {
@@ -17,10 +19,11 @@ public final class Log {
 	public static boolean isActive() {
 		return active;
 	}
-
-	private static LevelLoggerImpl logger = new LevelLoggerImpl();
-	private static ConcurrentLinkedQueue<Message> queue;
-	private static ScheduledExecutorService ex;
+	
+	private static Level level = Level.info;
+	private static Printer printer = new PrinterImpl(System.out);
+	private static ConcurrentLinkedQueue<Message> queue = new ConcurrentLinkedQueue<>();
+	private static ScheduledExecutorService ex = new ScheduledThreadPoolExecutor(1);
 
 	public static void stopLogging() {
 		if (!queue.isEmpty()) {
@@ -39,11 +42,7 @@ public final class Log {
 	}
 
 	public static void initService() {
-		if (queue == null)
-			queue = new ConcurrentLinkedQueue<>();
-		// else queue.clear();
-		if (ex == null) {
-			ex = new ScheduledThreadPoolExecutor(1);
+		if (!active) {
 			startLogging();
 		}
 		active = true;
@@ -53,59 +52,58 @@ public final class Log {
 		while (!queue.isEmpty()) {
 			try {
 				Message message = queue.remove();
-//				if(logger.isAllowed(message.getLevel()) ){
-				logger.getPrinter().print(message.getLevel(), message.getClassname(), message.getTitle(),
-						message.getMessage());
-//				}
-//				logger.log(queue.remove());
+				printer.print(message);
 			} catch (Exception e) {
 
 			}
 		}
 	}
-
+	
 	public static void level(String levelName) {
-		logger.setLevel(Level.valueOf(levelName));
-		initService();
+		level(Level.valueOf(levelName));
 	}
-
-	public static void setLogger(LevelLoggerImpl logger) {
-		Level oldLevel = Log.logger.getLevel();
-		Log.logger = logger;
-		logger.setLevel(oldLevel);
+	public static void level(Level level) {
+		Log.level = level;
 	}
 	
-	public static void setLogger(LevelLoggerImpl logger, String levelName) {
-		setLogger(logger, Level.valueOf(levelName));
+	public static void printer(Printer printer) {
+		Log.printer = printer;
 	}
 	
-	public static void setLogger(LevelLoggerImpl logger, Level level) {
-		Log.logger = logger;
-		logger.setLevel(level);
+	public static void printer(Printer printer, String levelName) {
+		printer(printer, Level.valueOf(levelName));
 	}
 	
+	public static void printer(Printer printer, Level level) {
+		Log.printer = printer;
+		Log.level = level;
+	}
+	
+	private static boolean isAllowed(Level level) {
+		return level.ordinal() <= Log.level.ordinal();
+	}
 	
 	
 	public static void log(String message) {
-//		if (logger.isAllowed(Level.log)) {
+//		if (isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, message));
 //		}
 	}
 
 	public static void error(String message) {
-		if (logger.isAllowed(Level.error)) {
+		if (isAllowed(Level.error)) {
 			queue.add(new Message(Level.error, message));
 		}
 	}
 
 	public static void warn(String message) {
-		if (logger.isAllowed(Level.warn)) {
+		if (isAllowed(Level.warn)) {
 			queue.add(new Message(Level.warn, message));
 		}
 	}
 
 	public static void info(String message) {
-		if (logger.isAllowed(Level.info)) {
+		if (isAllowed(Level.info)) {
 			queue.add(new Message(Level.info, message));
 		}
 	}
@@ -117,37 +115,37 @@ public final class Log {
 	}
 
 	public static void debug(String message) {
-		if (logger.isAllowed(Level.debug)) {
+		if (isAllowed(Level.debug)) {
 			queue.add(new Message(Level.debug, message));
 		}
 	}
 
 	public static void trace(String message) {
-		if (logger.isAllowed(Level.trace)) {
+		if (isAllowed(Level.trace)) {
 			queue.add(new Message(Level.trace, message));
 		}
 	}
 
 	public static void log(Class<?> classname, String message) {
-//		if (logger.isAllowed(Level.log)) {
+//		if (isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, classname, message));
 //		}
 	}
 
 	public static void error(Class<?> classname, String message) {
-		if (logger.isAllowed(Level.error)) {
+		if (isAllowed(Level.error)) {
 			queue.add(new Message(Level.error, classname, message));
 		}
 	}
 
 	public static void warn(Class<?> classname, String message) {
-		if (logger.isAllowed(Level.warn)) {
+		if (isAllowed(Level.warn)) {
 			queue.add(new Message(Level.warn, classname, message));
 		}
 	}
 
 	public static void info(Class<?> classname, String message) {
-		if (logger.isAllowed(Level.info)) {
+		if (isAllowed(Level.info)) {
 			queue.add(new Message(Level.info, classname, message));
 		}
 	}
@@ -159,37 +157,37 @@ public final class Log {
 	}
 
 	public static void debug(Class<?> classname, String message) {
-		if (logger.isAllowed(Level.debug)) {
+		if (isAllowed(Level.debug)) {
 			queue.add(new Message(Level.debug, classname, message));
 		}
 	}
 
 	public static void trace(Class<?> classname, String message) {
-		if (logger.isAllowed(Level.trace)) {
+		if (isAllowed(Level.trace)) {
 			queue.add(new Message(Level.trace, classname, message));
 		}
 	}
 
 	public static void log(String title, String message) {
-//		if (logger.isAllowed(Level.log)) {
+//		if (isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, title, message));
 //		}
 	}
 
 	public static void error(String title, String message) {
-		if (logger.isAllowed(Level.error)) {
+		if (isAllowed(Level.error)) {
 			queue.add(new Message(Level.error, title, message));
 		}
 	}
 
 	public static void warn(String title, String message) {
-		if (logger.isAllowed(Level.warn)) {
+		if (isAllowed(Level.warn)) {
 			queue.add(new Message(Level.warn, title, message));
 		}
 	}
 
 	public static void info(String title, String message) {
-		if (logger.isAllowed(Level.info)) {
+		if (isAllowed(Level.info)) {
 			queue.add(new Message(Level.info, title, message));
 		}
 	}
@@ -201,37 +199,37 @@ public final class Log {
 	}
 
 	public static void debug(String title, String message) {
-		if (logger.isAllowed(Level.debug)) {
+		if (isAllowed(Level.debug)) {
 			queue.add(new Message(Level.debug, title, message));
 		}
 	}
 
 	public static void trace(String title, String message) {
-		if (logger.isAllowed(Level.trace)) {
+		if (isAllowed(Level.trace)) {
 			queue.add(new Message(Level.trace, title, message));
 		}
 	}
 
 	public static void log(Class<?> classname, String title, String message) {
-//		if (logger.isAllowed(Level.log)) {
+//		if (isAllowed(Level.log)) {
 			queue.add(new Message(Level.log, classname, title, message));
 //		}
 	}
 
 	public static void error(Class<?> classname, String title, String message) {
-		if (logger.isAllowed(Level.error)) {
+		if (isAllowed(Level.error)) {
 			queue.add(new Message(Level.error, classname, title, message));
 		}
 	}
 
 	public static void warn(Class<?> classname, String title, String message) {
-		if (logger.isAllowed(Level.warn)) {
+		if (isAllowed(Level.warn)) {
 			queue.add(new Message(Level.warn, classname, title, message));
 		}
 	}
 
 	public static void info(Class<?> classname, String title, String message) {
-		if (logger.isAllowed(Level.info)) {
+		if (isAllowed(Level.info)) {
 			queue.add(new Message(Level.info, classname, title, message));
 		}
 	}
@@ -243,13 +241,13 @@ public final class Log {
 	}
 
 	public static void debug(Class<?> classname, String title, String message) {
-		if (logger.isAllowed(Level.debug)) {
+		if (isAllowed(Level.debug)) {
 			queue.add(new Message(Level.debug, classname, title, message));
 		}
 	}
 
 	public static void trace(Class<?> classname, String title, String message) {
-		if (logger.isAllowed(Level.trace)) {
+		if (isAllowed(Level.trace)) {
 			queue.add(new Message(Level.trace, title, message));
 		}
 	}
