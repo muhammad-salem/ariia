@@ -45,17 +45,17 @@ public class ServiceManager implements Closeable {
 	public final static int SCHEDULE_TIME = 1;
 	public final static int SCHEDULE_POOL = 10;
 
-	ScheduledExecutorService scheduledService;
+	protected ScheduledExecutorService scheduledService;
 
-	Queue<ItemMetaData> wattingList;
-	Queue<ItemMetaData> downloadingList;
-	Queue<ItemMetaData> completeingList;
+	protected Queue<ItemMetaData> wattingList;
+	protected Queue<ItemMetaData> downloadingList;
+	protected Queue<ItemMetaData> completeingList;
 
-	DataStore<Item> dataStore;
-	Client client;
-	SessionMonitor sessionMonitor;
-	TableMonitor reportTable;
-	ConnectivityCheck connectivity;
+	protected DataStore<Item> dataStore;
+	protected Client client;
+	protected SessionMonitor sessionMonitor;
+	protected TableMonitor reportTable;
+	protected ConnectivityCheck connectivity;
 	
 
 	private Runnable finishAction = ()->{};
@@ -90,7 +90,11 @@ public class ServiceManager implements Closeable {
 		this.initServiceList(new ItemStore());
 	}
 	
-	public ServiceManager(Client client, SimpleSessionMonitor monitor,
+	public ServiceManager(Client client, SessionMonitor monitor, TableMonitor reportTable) {
+		this(client, monitor, new UrlConnectivity(client.getProxy()), reportTable);
+	}
+	
+	public ServiceManager(Client client, SessionMonitor monitor,
 			ConnectivityCheck connectivity, TableMonitor reportTable) {
 		this.client = client;
 		this.sessionMonitor = monitor; 
