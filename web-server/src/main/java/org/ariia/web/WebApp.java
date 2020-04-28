@@ -1,6 +1,7 @@
 package org.ariia.web;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
@@ -10,7 +11,9 @@ import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
+import org.ariia.mvc.sse.EventBroadcast;
 import org.ariia.okhttp.OkClient;
+import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.services.ItemService;
 import org.terminal.console.log.Level;
@@ -31,7 +34,11 @@ public class WebApp {
 			return;
 		}
 
-		LogCli.initLogServices(arguments, Level.info);
+		
+		EventBroadcast mainBroadcast = new EventBroadcast();
+		WebLoggerPrinter printer = new WebLoggerPrinter(mainBroadcast);
+		LogCli.initLogServicesNoStart(arguments, printer, Level.info);
+		
 		AriiaCli cli = new AriiaCli( 
 				(v)-> Clients.segmentClient(new OkClient(arguments.getProxy())));
 		cli.lunch(arguments);
@@ -50,7 +57,11 @@ public class WebApp {
 		ServiceManager manager = cli.getServiceManager();
 		ItemController controller = new ItemController(new ItemService(manager));
 		server.createControllerContext(controller);
+		
+		
+		server.createServerSideEventContext("/sse", mainBroadcast);
 		server.start();
+		LogCli.startLogService();
 
 	}
 
