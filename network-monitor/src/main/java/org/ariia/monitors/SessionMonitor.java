@@ -14,8 +14,8 @@ import org.terminal.ansi.Styles;
 
 public abstract class SessionMonitor extends SpeedMonitor implements Styles, CursorControl {
 
-	protected MessageFormat format;
-	protected List<RangeUtil> rangeInfos = new LinkedList<>();
+	protected transient  MessageFormat format;
+	protected transient List<RangeUtil> rangeInfos = new LinkedList<>();
 
 	public SessionMonitor() {
 		rangeInfos = new LinkedList<>();
