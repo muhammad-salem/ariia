@@ -19,11 +19,11 @@ export class ItemService {
   }
 
   downloadUrl(url: string): Observable<string> {
-    return this.httpClient.post<string>('/items/createUrl', url);
+    return this.httpClient.post<string>('/items/create/url', url);
   }
 
   downloadItem(item: Item): Observable<string> {
-    return this.httpClient.post<string>('/items/createItem', item);
+    return this.httpClient.post<string>('/items/create/url', item);
   }
 
 }
