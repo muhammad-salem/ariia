@@ -32,7 +32,7 @@ public class SimpleSessionMonitor extends SessionMonitor {
 
 	@Override
 	protected Callable<String> updateDataCallable() {
-		return()->{
+		return () -> {
 			Object[] args = { getTimer(), firstLine(), getRemainingTimeString(), secondLine(), progressLine(78) };
 			return format.format(args);
 		};
