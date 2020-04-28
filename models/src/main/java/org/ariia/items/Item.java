@@ -145,8 +145,6 @@ public class Item {
 			builder.append( redirectUrl );
 			builder.append( '\n' );
 		}
-		builder.append( '\t' );
-		builder.append( state.toLowerString() );
 		builder.append( "Directory : " );
 		builder.append( saveDirectory );
 		builder.append( '\n' );
@@ -162,6 +160,7 @@ public class Item {
 		builder.append('\n');
 		builder.append("Headers Size : " + headers.size() );
 		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
+		builder.append(",\tState : " + state.toLowerString() );
 		builder.append('\n');
 		builder.append(rangeInfo.toString());
 		return builder.toString();
