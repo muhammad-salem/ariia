@@ -8,7 +8,6 @@ import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCli;
 import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.client.SegmentClient;
-import org.ariia.core.api.service.ServiceManager;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
 import org.ariia.mvc.sse.EventBroadcast;
@@ -34,17 +33,12 @@ public class WebApp {
 			System.out.println("Ariia WEB APP version '0.2.7'");
 			return;
 		}
-
 		
 		EventBroadcast mainBroadcast = new EventBroadcast();
 		WebLoggerPrinter printer = new WebLoggerPrinter(mainBroadcast);
 		LogCli.initLogServicesNoStart(arguments, printer, Level.info);
 		
-		AriiaCli cli = new AriiaCli((v)-> {
-			SegmentClient client = Clients.segmentClient(new OkClient(arguments.getProxy()));
-			return new WebServiceManager(client, mainBroadcast);
-		},(Void) null) ;
-		cli.lunch(arguments);
+		
 
 		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
 		String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
@@ -53,18 +47,25 @@ public class WebApp {
 //        			isRunningFromJar() ? 
 //        					WebServer.ResourceType.IN_MEMORY : 
 				WebServer.ResourceType.STREAM;
-		Log.log(WebApp.class, "Running Web Server",
-				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
 		WebServer server = new WebServer(port, resourceLocation, type);
 
-		ServiceManager manager = cli.getServiceManager();
-		ItemController controller = new ItemController(new ItemService(manager));
+		SegmentClient client = Clients.segmentClient(new OkClient(arguments.getProxy()));
+		WebServiceManager serviceManager = new WebServiceManager(client, mainBroadcast);
+		AriiaCli cli = new AriiaCli(serviceManager) ;
+		
+		
+		ItemController controller = new ItemController(new ItemService(serviceManager));
+		
+		
 		server.createControllerContext(controller);
 		
-		
-		server.createServerSideEventContext("/sse", mainBroadcast);
-		server.start();
+		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
 		LogCli.startLogService();
+		cli.lunch(arguments);
+		server.start();
+		Log.log(WebApp.class, "Running Web Server",
+				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
+		
 
 	}
 

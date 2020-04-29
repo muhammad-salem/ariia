@@ -22,13 +22,15 @@ public class Ariia {
 		}
 		
 		LogCli.initLogServices(arguments, Level.log);
-		AriiaCli cli = new AriiaCli( 
-				(v)-> Clients.segmentClient(new OkClient(arguments.getProxy())), 
-				()-> {
-					if (!arguments.isDaemonService()){
-						System.exit(0);
-					}
-				});
+
+		Runnable onComplete = ()-> {
+			if (!arguments.isDaemonService()){
+				System.exit(0);
+			}
+		};
+		AriiaCli cli = new AriiaCli(
+				Clients.segmentClient(new OkClient(arguments.getProxy())), 
+				onComplete);
 		cli.lunch(arguments);
 		
 	}

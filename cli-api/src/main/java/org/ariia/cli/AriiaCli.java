@@ -1,7 +1,6 @@
 package org.ariia.cli;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.ariia.args.Argument;
 import org.ariia.config.Properties;
@@ -15,25 +14,23 @@ public class AriiaCli {
 
 	private Client client;
 	private ServiceManager serviceManager;
-	private Function<Void, Client> clientResolver;
-	private Function<Void, ServiceManager> serviceManagerResolver;
 	private Runnable finishAction = () -> {};
 	
-	public AriiaCli(Function<Void, Client> clientResolver) {
-		this.clientResolver = Objects.requireNonNull(clientResolver);
+	public AriiaCli(Client client) {
+		this.client = Objects.requireNonNull(client);
 	}
 	
-	public AriiaCli(Function<Void, ServiceManager> serviceManagerResolver, Void v) {
-		this.serviceManagerResolver = Objects.requireNonNull(serviceManagerResolver);
+	public AriiaCli(ServiceManager serviceManager ) {
+		this.serviceManager = Objects.requireNonNull(serviceManager);
 	}
 	
-	public AriiaCli(Function<Void, Client> clientResolver, Runnable finishAction) {
-		this.clientResolver = Objects.requireNonNull(clientResolver);
+	public AriiaCli(Client client, Runnable finishAction) {
+		this.client = Objects.requireNonNull(client);
 		this.finishAction = Objects.requireNonNull(finishAction);
 	}
 	
-	public AriiaCli(Function<Void, ServiceManager> serviceManagerResolver, Runnable finishAction, Void v) {
-		this.serviceManagerResolver = Objects.requireNonNull(serviceManagerResolver);
+	public AriiaCli(ServiceManager serviceManager, Runnable finishAction, Void v) {
+		this.serviceManager = Objects.requireNonNull(serviceManager);
 		this.finishAction = Objects.requireNonNull(finishAction);
 	}
 	
@@ -58,11 +55,9 @@ public class AriiaCli {
 		R.MK_DIRS(R.CachePath);
 		Properties.Config(arguments);
 		
-		if (Objects.isNull(serviceManagerResolver)) {
-			client = clientResolver.apply(null);
+		if (Objects.isNull(serviceManager)) {
 			serviceManager = new ServiceManager(client);
 		} else {
-			serviceManager = serviceManagerResolver.apply(null);
 			client = serviceManager.getClient();
 		}
 		
