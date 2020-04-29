@@ -196,11 +196,11 @@ public class ServiceManager implements Closeable {
 	
 	
 	protected void addItemEvent(ItemMetaData metaData) {
+		metaData.getItem().setState(ItemState.DOWNLOADING);
 		dataStore.save(metaData.getItem());
 		metaData.initWaitQueue();
 		metaData.checkCompleted();
 		downloadingList.add(metaData);
-		metaData.getItem().setState(ItemState.DOWNLOADING);
 		metaData.startAndCheckDownloadQueue(client, sessionMonitor);
 		reportTable.add(metaData.getRangeMointor());
 		metaData.getItem().getRangeInfo().oneCycleDataUpdate();
@@ -208,12 +208,12 @@ public class ServiceManager implements Closeable {
 
 	protected void removeItemEvent(ItemMetaData metaData) {
 		metaData.systemFlush();
+		metaData.getItem().setState(ItemState.COMPLETE);
 		dataStore.save(metaData.getItem());
 		metaData.close();
 		downloadingList.remove(metaData);
 		reportTable.remove(metaData.getRangeMointor());
 		completeingList.add(metaData);
-		metaData.getItem().setState(ItemState.COMPLETE);
 	}
 	
 	public void runSystemShutdownHook() {
