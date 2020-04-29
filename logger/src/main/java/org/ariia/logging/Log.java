@@ -13,12 +13,6 @@ import org.terminal.console.log.impl.PrinterImpl;
 public final class Log {
 	private Log() {
 	}
-
-	private static boolean active = false;
-
-	public static boolean isActive() {
-		return active;
-	}
 	
 	private static Level level = Level.info;
 	private static Printer printer = new PrinterImpl(System.out);
@@ -37,15 +31,8 @@ public final class Log {
 		queue.clear();
 	}
 
-	static void startLogging() {
-		ex.scheduleAtFixedRate(Log::scheduleLoggingTask, 0, 100, TimeUnit.MILLISECONDS);
-	}
-
 	public static void initService() {
-		if (!active) {
-			startLogging();
-		}
-		active = true;
+		ex.scheduleAtFixedRate(Log::scheduleLoggingTask, 0, 100, TimeUnit.MILLISECONDS);
 	}
 
 	private static void scheduleLoggingTask() {
@@ -54,7 +41,7 @@ public final class Log {
 				Message message = queue.remove();
 				printer.print(message);
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			}
 		}
 	}

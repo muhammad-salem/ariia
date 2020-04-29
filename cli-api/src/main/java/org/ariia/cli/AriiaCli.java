@@ -61,7 +61,7 @@ public class AriiaCli {
 			client = serviceManager.getClient();
 		}
 		
-		Log.trace(AriiaCli.class, "Set Shutdown Hook Thread", "register shutdown thread");
+		Log.trace(getClass(), "Set Shutdown Hook Thread", "register shutdown thread");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 //			manager.close();
 			serviceManager.runSystemShutdownHook();
