@@ -34,12 +34,13 @@ public class WebApp {
 			return;
 		}
 		
+		// setup logging service
 		EventBroadcast mainBroadcast = new EventBroadcast();
-		WebLoggerPrinter printer = new WebLoggerPrinter(mainBroadcast);
-		LogCli.initLogServicesNoStart(arguments, printer, Level.info);
+		WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast);
+		LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
 		
 		
-
+		// setup web server
 		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
 		String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
 				: "/static/angular";
@@ -49,20 +50,20 @@ public class WebApp {
 				WebServer.ResourceType.STREAM;
 		WebServer server = new WebServer(port, resourceLocation, type);
 
+		// setup download manager service
 		SegmentClient client = Clients.segmentClient(new OkClient(arguments.getProxy()));
 		WebServiceManager serviceManager = new WebServiceManager(client, mainBroadcast);
-		AriiaCli cli = new AriiaCli(serviceManager) ;
+		AriiaCli cli = new AriiaCli(serviceManager);
 		
 		
 		ItemController controller = new ItemController(new ItemService(serviceManager));
-		
-		
 		server.createControllerContext(controller);
 		
 		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
-		LogCli.startLogService();
+		
 		cli.lunch(arguments);
 		server.start();
+		LogCli.startLogService();
 		Log.log(WebApp.class, "Running Web Server",
 				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
 		
