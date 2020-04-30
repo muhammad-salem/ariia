@@ -3,6 +3,8 @@ package org.ariia.web.app.model;
 import org.terminal.console.log.Level;
 
 public class WebMessage {
+	
+	long timeMillis;
 	Level level;
 	String classname;
 	String title;
@@ -10,7 +12,7 @@ public class WebMessage {
 	
 	
 	public WebMessage(Level level, String classname, String title, String message) {
-		super();
+		this.timeMillis = System.currentTimeMillis();
 		this.level = level;
 		this.classname = classname;
 		this.title = title;
