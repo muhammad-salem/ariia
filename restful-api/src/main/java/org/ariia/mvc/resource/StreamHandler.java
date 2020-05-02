@@ -10,6 +10,8 @@ import com.sun.net.httpserver.HttpExchange;
 
 public interface StreamHandler {
 	
+	
+	
 	default void handelStream(HttpExchange exchange, String filename, InputStream stream) throws IOException {
 		Headers headers = exchange.getResponseHeaders();
 	    headers.put("Content-Type", Collections.singletonList(MimeType.getMimeForFileName(filename)));

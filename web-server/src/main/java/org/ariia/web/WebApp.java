@@ -48,7 +48,7 @@ public class WebApp {
 //        			isRunningFromJar() ? 
 //        					WebServer.ResourceType.IN_MEMORY : 
 				WebServer.ResourceType.STREAM;
-		WebServer server = new WebServer(port, resourceLocation, type);
+		WebServer server = new WebServer(port, resourceLocation, type, true);
 
 		// setup download manager service
 		SegmentClient client = Clients.segmentClient(new OkClient(arguments.getProxy()));

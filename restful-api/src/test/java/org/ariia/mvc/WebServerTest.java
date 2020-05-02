@@ -20,7 +20,7 @@ public class WebServerTest {
 	        String resourceLocation =  "/static/angular";
 	        WebServer.ResourceType type = WebServer.ResourceType.FILE ;
 	        System.out.printf("port: %d, location: %s, type: %s\n", port, resourceLocation, type);
-	        WebServer server = new WebServer(port, resourceLocation, type);
+	        WebServer server = new WebServer(port, resourceLocation, type, false);
 	        server.createContext("/context/", new ContextActionHandler<>("/context/"));
 	        
 	        ItemController test = new ItemController();

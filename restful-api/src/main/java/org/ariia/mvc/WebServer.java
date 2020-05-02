@@ -6,8 +6,10 @@ import java.util.concurrent.Executor;
 
 import org.ariia.mvc.model.ControllerHandler;
 import org.ariia.mvc.processing.ProxySwitcher;
+import org.ariia.mvc.resource.FileRedirectResourceHandler;
 import org.ariia.mvc.resource.FileResourceHandler;
 import org.ariia.mvc.resource.MultiRootResourceHandler;
+import org.ariia.mvc.resource.RedirectResourceHandler;
 import org.ariia.mvc.resource.ResourceHandler;
 import org.ariia.mvc.sse.ServerSideEventHandler;
 import org.ariia.mvc.sse.SourceEvent;
@@ -36,8 +38,8 @@ public class WebServer {
 		this(new InetSocketAddress(port), resourceLocation);
 	}
 	
-	public WebServer(int port, String resourceLocation, ResourceType type) throws IOException {
-		this(new InetSocketAddress(port), resourceLocation, type);
+	public WebServer(int port, String resourceLocation, ResourceType type, boolean redirect) throws IOException {
+		this(new InetSocketAddress(port), resourceLocation, type, redirect);
 	}
 	
 	public WebServer(InetSocketAddress address) throws IOException {
@@ -50,21 +52,30 @@ public class WebServer {
 		this.createResourceContext("/", resourceLocation);
 	}
 	
-	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type) throws IOException {
+	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type, boolean redirect) throws IOException {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
 		switch (type) {
 			case STREAM: {
-			this.createResourceContext("/", resourceLocation);
-			break;
-		}
+				if (redirect) {
+					this.createRedirectResourceHandlerContext("/", resourceLocation);
+				} else {
+					this.createResourceContext("/", resourceLocation);
+				}
+				break;
+			}
 			case FILE: {
-			this.createFileResourceContext("/", resourceLocation);
-			break;
-		}
+				if (redirect) {
+					this.createFileRedirectResourceHandlerContext("/", resourceLocation);
+				} else {
+					this.createFileResourceContext("/", resourceLocation);
+					}
+				break;
+			}
 			case JAR_MULTI:
-			default:
-			this.createMultiResourceContext("/", resourceLocation);
+			default: {
+				this.createMultiResourceContext("/", resourceLocation);
+			}
 		}
 	}
 
@@ -109,6 +120,16 @@ public class WebServer {
 	
 	public HttpContext createFileResourceContext(String path, String resourceLocation) {
 		HttpHandler handler = new FileResourceHandler(resourceLocation);
+		return server.createContext(path, handler);
+	}
+	
+	public HttpContext createRedirectResourceHandlerContext(String path, String resourceLocation) {
+		HttpHandler handler = new RedirectResourceHandler(resourceLocation);
+		return server.createContext(path, handler);
+	}
+	
+	public HttpContext createFileRedirectResourceHandlerContext(String path, String resourceLocation) {
+		HttpHandler handler = new FileRedirectResourceHandler(resourceLocation);
 		return server.createContext(path, handler);
 	}
 	
