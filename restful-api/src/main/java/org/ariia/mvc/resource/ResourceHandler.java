@@ -11,7 +11,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-public class ResourceHandler implements HttpHandler {
+public class ResourceHandler implements HttpHandler, StreamHandler {
 	String resourceLocation;
 	
 	public ResourceHandler() {
@@ -25,7 +25,7 @@ public class ResourceHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		URI uri = exchange.getRequestURI();
-		String filename = uri.toString();
+		String filename = uri.getPath();
 		if (filename.equals("/")) {
 			filename = "/index.html";
 		}
@@ -35,19 +35,7 @@ public class ResourceHandler implements HttpHandler {
 			return;
 		}
 
-	    Headers headers = exchange.getResponseHeaders();
-	    headers.put("Content-Type", Collections.singletonList(MimeType.getMimeForFileName(filename)));
-	    
-	    int responseLength = stream.available();
-	    byte[] bs = new byte[1024];
-	    int read = 0;
-	    exchange.sendResponseHeaders(200, responseLength);
-		final OutputStream responseBody = exchange.getResponseBody();
-	    while ( (read = stream.read(bs)) > 0) {
-			responseBody.write(bs, 0, read);
-		}
-	    responseBody.flush();
-	    stream.close();
-	    exchange.close();
+	    handelStream(exchange, filename, stream);
 	}
+
 }

@@ -18,7 +18,7 @@ public class WebServerTest {
 		try {
 			int port = 8080;
 	        String resourceLocation =  "/static/angular";
-	        WebServer.ResourceType type = WebServer.ResourceType.IN_MEMORY ;
+	        WebServer.ResourceType type = WebServer.ResourceType.FILE ;
 	        System.out.printf("port: %d, location: %s, type: %s\n", port, resourceLocation, type);
 	        WebServer server = new WebServer(port, resourceLocation, type);
 	        server.createContext("/context/", new ContextActionHandler<>("/context/"));

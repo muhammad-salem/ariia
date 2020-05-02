@@ -7,7 +7,6 @@ import java.util.concurrent.Executor;
 import org.ariia.mvc.model.ControllerHandler;
 import org.ariia.mvc.processing.ProxySwitcher;
 import org.ariia.mvc.resource.FileResourceHandler;
-import org.ariia.mvc.resource.InMemoryResourceHandler;
 import org.ariia.mvc.resource.MultiRootResourceHandler;
 import org.ariia.mvc.resource.ResourceHandler;
 import org.ariia.mvc.sse.ServerSideEventHandler;
@@ -22,7 +21,6 @@ public class WebServer {
 	
 	public enum ResourceType {
 		STREAM,
-		IN_MEMORY,
 		FILE,
 		JAR_MULTI
 	}
@@ -35,11 +33,7 @@ public class WebServer {
 	}
 	
 	public WebServer(int port, String resourceLocation) throws IOException {
-		this(port, resourceLocation, false);
-	}
-	
-	public WebServer(int port, String resourceLocation, boolean inMemory) throws IOException {
-		this(new InetSocketAddress(port), resourceLocation, inMemory);
+		this(new InetSocketAddress(port), resourceLocation);
 	}
 	
 	public WebServer(int port, String resourceLocation, ResourceType type) throws IOException {
@@ -51,17 +45,9 @@ public class WebServer {
 	}
 	
 	public WebServer(InetSocketAddress address, String resourceLocation) throws IOException {
-		this(address, resourceLocation, false);
-	}
-	
-	public WebServer(InetSocketAddress address, String resourceLocation, boolean inMemory) throws IOException {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
-		if (inMemory) {
-			this.createInMemoryResourceContext("/", resourceLocation);
-		} else {
-			this.createResourceContext("/", resourceLocation);
-		}
+		this.createResourceContext("/", resourceLocation);
 	}
 	
 	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type) throws IOException {
@@ -70,10 +56,6 @@ public class WebServer {
 		switch (type) {
 			case STREAM: {
 			this.createResourceContext("/", resourceLocation);
-			break;
-		}
-			case IN_MEMORY: {
-			this.createInMemoryResourceContext("/", resourceLocation);
 			break;
 		}
 			case FILE: {
@@ -122,11 +104,6 @@ public class WebServer {
 	
 	public HttpContext createMultiResourceContext(String path, String... resourceLocations) {
 		HttpHandler handler = new MultiRootResourceHandler(resourceLocations);
-		return server.createContext(path, handler);
-	}
-	
-	public HttpContext createInMemoryResourceContext(String path, String resourceLocation) {
-		HttpHandler handler = new InMemoryResourceHandler(resourceLocation);
 		return server.createContext(path, handler);
 	}
 	
