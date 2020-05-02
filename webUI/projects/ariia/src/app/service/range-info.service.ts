@@ -50,7 +50,7 @@ export class RangeInfoService {
 		return rangeInfo.range[index][0];
 	}
 	
-	limitOfIndex(rangeInfo: RangeInfo, index: number): number { {
+	limitOfIndex(rangeInfo: RangeInfo, index: number): number {
 		return rangeInfo.range[index][1];
 	}
 	

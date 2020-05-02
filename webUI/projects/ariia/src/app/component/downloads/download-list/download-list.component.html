@@ -3,15 +3,6 @@
     <ariia-add-link (newID)="getItem($event)" ></ariia-add-link>
   </div>
   <div class="container-fluid">
-    <h1>Download List {{downloadList.length}}</h1>
-    <ariia-item *ngFor="let item of downloadList" [item]="item"></ariia-item>
-  </div>
-  <div class="container-fluid">
-    <h1>Wating List {{watingList.length}}</h1>
-    <ariia-item *ngFor="let item of watingList" [item]="item"></ariia-item>
-  </div>
-  <div class="container-fluid">
-    <h1>Complete List {{completeList.length}}</h1>
-    <ariia-item *ngFor="let item of completeList" [item]="item"></ariia-item>
+    <ariia-item *ngFor="let item of items" [item]="item"></ariia-item>
   </div>
 </div>

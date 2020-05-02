@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ItemService } from '../../../service/item.service';
 import { Item } from '../../../model/item';
+import { BackboneService } from '../../../service/backbone.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'ariia-download-list',
@@ -9,42 +11,25 @@ import { Item } from '../../../model/item';
 })
 export class DownloadListComponent implements OnInit {
 
-  downloadList: Item[];
-  watingList: Item[];
-  completeList: Item[];
+//  downloadList: Item[];
+//  watingList: Item[];
+//  completeList: Item[];
 
-  constructor(private itemService: ItemService) {
-    this.initLists();
-  }
+  items: Item[];
 
-  initLists(): void {
-    this.downloadList = [];
-    this.watingList = [];
-    this.completeList = [];
+  constructor(private itemService: ItemService, private backboneService: BackboneService ) {
   }
 
   ngOnInit(): void {
+    this.items = this.backboneService.items;
     this.itemService.getAllItems().subscribe(items => {
-      console.log(items);
-      if (items === null) {
-        return;
-      }
-      this.initLists();
-      items.forEach(item => {
-        if (item.rangeInfo.remainingLength === 0) {
-          this.downloadList.push(item);
-        } else {
-          this.watingList.push(item);
-        }
-      });
-      console.log(this.downloadList);
-      console.log(this.watingList);
+      this.backboneService.items = items;
     });
   }
 
   getItem(url: string){
     //console.log('event', url);
-    this.ngOnInit();
+    //this.ngOnInit();
     //this.itemService.getItem(url).subscribe(this.watingList.push);
   }
 

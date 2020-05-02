@@ -11,6 +11,7 @@ export class Backbone {
 	logging: Message[];
 
 	session: NetworkSession;
+	sessionHistory: NetworkSession[];
 
 	constructor(){
 		this.items = [];
@@ -19,5 +20,6 @@ export class Backbone {
 		// this.completeingItem = [];
 		this.logging = [];
 		this.session = new NetworkSession();
+		this.sessionHistory = [];
 	}
 }

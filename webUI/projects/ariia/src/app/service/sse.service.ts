@@ -25,7 +25,7 @@ export class SseService {
 	});
   }
 
-  subscribe(eventName: string){
+  forEvent(eventName: string){
 	return new Observable<MessageEvent>(subscriber => {
 		this.eventSource.addEventListener(eventName, (data: MessageEvent)=>{
 			this._ngZone.run(()=>{

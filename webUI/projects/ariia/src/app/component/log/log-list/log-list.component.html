@@ -1,0 +1,30 @@
+<div class="table-responsive-lg">
+    <table class="table table-dark table-hover table-sm">
+        <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Level</th>
+              <th scope="col">From</th>
+              <th scope="col">Title</th>
+              <th scope="col">Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let message of messages" [ngClass]="{
+              '': message.level === 'log',
+              'bg-danger': message.level === 'error',
+              'bg-warning': message.level === 'warn',
+              'bg-info':  message.level === 'info' || message.level === 'assertion',
+              'bg-primary': message.level === 'debug',
+              'bg-success': message.level === 'trace'
+            }" >
+              <th scope="row">{{message.timeMillis | date:'mediumTime'}}</th>
+              <td>{{message.level | uppercase}}</td>
+              <td>{{message.classname}}</td>
+              <td>{{message.title}}</td>
+              <td>{{message.message}}</td>
+              <!-- <td colspan="2">{{message.message}}</td> -->
+            </tr>
+          </tbody>
+    </table>
+  </div>

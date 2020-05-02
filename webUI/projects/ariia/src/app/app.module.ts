@@ -22,7 +22,13 @@ import { AddLinkComponent } from './component/downloads/add-link/add-link.compon
 import { SiteSettingComponent } from './component/server/site-setting/site-setting.component';
 import { ServerSettingComponent } from './component/server/server-setting/server-setting.component';
 import { NotificationComponent } from './component/notify/notification/notification.component';
+import { LogListComponent } from './component/log/log-list/log-list.component';
+import { LogViewComponent } from './component/log/log-view/log-view.component';
+import { NetworkMonitorChartComponent } from './component/session/network-monitor-chart/network-monitor-chart.component';
+import { NetworkMonitorComponent } from './component/session/network-monitor/network-monitor.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [
@@ -43,13 +49,19 @@ import { NotificationComponent } from './component/notify/notification/notificat
     AddLinkComponent,
     SiteSettingComponent,
     ServerSettingComponent,
-    NotificationComponent
+    NotificationComponent,
+    LogListComponent,
+    LogViewComponent,
+    NetworkMonitorChartComponent,
+    NetworkMonitorComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    BsDropdownModule.forRoot()
   ],
   providers: [],
   bootstrap: [HomePageComponent]
