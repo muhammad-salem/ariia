@@ -26,7 +26,7 @@ public class WebLoggerPrinter implements Printer {
 	
 	@Override
 	public void print(Message message) {
-		this.logMessaage(new WebMessage(message.getLevel(), message.getClassname().getSimpleName(), message.getTitle(), message.getTitle()));
+		this.logMessaage(new WebMessage(message.getLevel(), message.getClassname().getSimpleName(), message.getTitle(), message.getMessage()));
 	}
 	
 	public void logMessaage(WebMessage message) {
