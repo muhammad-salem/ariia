@@ -137,7 +137,8 @@ public class ServiceManager implements Closeable {
 		} else {
 			NetworkReport report = connectivity.networkReport();
 			Log.trace(connectivity.getClass(), report.getTitle(), report.getMessage());
-			if (NetworkStatus.Connected.equals(report.getNetworkStatus())) {
+			//if (NetworkStatus.Connected.equals(report.getNetworkStatus())) {
+			if(report.isConnected()) {
 				return false;
 			} else {
 				return true;

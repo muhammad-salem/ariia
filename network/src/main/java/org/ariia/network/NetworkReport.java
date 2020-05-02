@@ -13,12 +13,7 @@ public class NetworkReport {
 	}
 	
 	public NetworkReport(NetworkStatus networkStatus, String message) {
-		this.networkStatus =networkStatus;
-		this.message = message;
-	}
-	
-	public NetworkReport(String title, String message) {
-		this.title = title;
+		this.networkStatus = networkStatus;
 		this.message = message;
 	}
 	
@@ -32,6 +27,18 @@ public class NetworkReport {
 		
 	public NetworkStatus getNetworkStatus() {
 		return networkStatus;
+	}
+	
+	public boolean isConnected() {
+		return NetworkStatus.Connected.equals(networkStatus);
+	}
+	
+	public boolean isRedirected() {
+		return NetworkStatus.Redirected.equals(networkStatus);
+	}
+	
+	public boolean isDisconnected() {
+		return NetworkStatus.Disconnected.equals(networkStatus);
 	}
 
 }

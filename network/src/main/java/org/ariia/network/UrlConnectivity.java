@@ -66,8 +66,7 @@ public class UrlConnectivity implements ConnectivityCheck {
 					isRedirect(connection.getResponseCode()) ? 
 							NetworkStatus.Redirected : NetworkStatus.Connected,
 					server.serverName(),
-					connection.getResponseCode() + " " + 
-					connection.getResponseMessage());
+					connection.getResponseCode() + " " + connection.getResponseMessage());
 		} catch (IOException e) {
 			return new NetworkReport(
 					NetworkStatus.Disconnected,
