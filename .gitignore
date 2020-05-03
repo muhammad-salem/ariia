@@ -53,8 +53,8 @@ web-server/src/main/resources/static/angular
 /*/*.iml
 /*/bin
 /*/target
-/webUI/node_modules
-
+/*/node_modules
+/*/package-lock.json
 # Compiled class file
 *.class
 

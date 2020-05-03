@@ -1,0 +1,133 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ariia": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/ariia",
+      "sourceRoot": "projects/ariia/src",
+      "prefix": "ariia",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "../web-server/src/main/resources/static/angular",
+            "index": "projects/ariia/src/index.html",
+            "main": "projects/ariia/src/main.ts",
+            "polyfills": "projects/ariia/src/polyfills.ts",
+            "tsConfig": "projects/ariia/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/ariia/src/favicon.ico",
+              "projects/ariia/src/assets"
+            ],
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "projects/ariia/src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+            	"node_modules/chart.js/dist/Chart.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ariia/src/environments/environment.ts",
+                  "with": "projects/ariia/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ariia:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ariia:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ariia:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ariia/src/test.ts",
+            "polyfills": "projects/ariia/src/polyfills.ts",
+            "tsConfig": "projects/ariia/tsconfig.spec.json",
+            "karmaConfig": "projects/ariia/karma.conf.js",
+            "assets": [
+              "projects/ariia/src/favicon.ico",
+              "projects/ariia/src/assets"
+            ],
+            "styles": [
+              "projects/ariia/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ariia/tsconfig.app.json",
+              "projects/ariia/tsconfig.spec.json",
+              "projects/ariia/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/ariia/e2e/protractor.conf.js",
+            "devServerTarget": "ariia:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ariia:serve:production"
+            }
+          }
+        }
+      }
+    }},
+  "defaultProject": "ariia"
+}

@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row my-2">
+
+    </div>
+    <div class="row my-2">
+        <div class="col-12">
+            <table class="table table-sm table-borderless table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">From</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let message of messages">
+                        <th scope="row">{{message.timeMillis|date:'mediumTime'}}</th>
+                        <td>{{message.level}}</td>
+                        <td>{{message.classname}}</td>
+                        <td>{{message.title}}</td>
+                        <td colspan="2">{{message.message}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

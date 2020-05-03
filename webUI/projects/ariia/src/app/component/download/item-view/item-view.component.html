@@ -1,0 +1,61 @@
+<div class="card my-1 py-1">
+    <div class="card-header">
+        <div>
+            {{item.filename}}
+            <div class="progress" style="height: 1px;">
+                <div class="progress-bar" role="progressbar"
+                    [ngStyle]="{'width': itemPercent()}" 
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{item.state | lowercase}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{item.id}}</h6>
+      <p class="card-text">{{item.saveDirectory }}</p>
+      <a href="#" class="card-link">{{item.url}}</a>
+      <a href="#" *ngIf="item.redirectUrl">{{item.redirectUrl}}</a>
+      <div class="progress">
+        <div class="progress-bar" role="progressbar"
+            [ngStyle]="{'width': itemPercent()}" 
+            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            {{itemPercent()}}
+        </div>
+    </div>
+      <!-- <div class="container" *ngIf="item.rangeInfo?.range?.length > 1"> -->
+        
+          <!-- <div class="row">
+              <div class="col-3 py-1" *ngFor="let range of item.rangeInfo.range, index as i">
+                    <div class="progress" >
+                        <div  class="progress-bar" role="progressbar"
+                            [ngStyle]="{'width': rangePercent(i)}"
+                            [ngClass]="{
+                                'bg-light text-black-50': i%4===0,
+                                'bg-secondary': i%4===1,
+                                'bg-info': i%4===2,
+                                'bg-dark': i%4===3
+                            }"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                        >{{rangePercent(i)}}</div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- <div class="row">
+                <div class="col-12 py-1" >
+                      <div class="progress" *ngFor="let range of item.rangeInfo.range, index as i">
+                          <div  class="progress-bar" role="progressbar"
+                              [ngStyle]="{'width': rangePercent(i)}"
+                              [ngClass]="{
+                                  'bg-light text-black-50': i%4===0,
+                                  'bg-secondary': i%4===1,
+                                  'bg-info': i%4===2,
+                                  'bg-dark': i%4===3
+                              }"
+                              aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                          >{{rangePercent(i)}}</div>
+                      </div>
+                  </div>
+              </div>
+        </div> -->
+    <!-- </div> -->
+</div>

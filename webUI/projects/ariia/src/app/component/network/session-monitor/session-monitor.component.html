@@ -1,0 +1,32 @@
+<ul class="list-group list-group-flush list-group-horizontal-sm">
+    <li class="list-group-item">
+        Up Time
+        <span class="badge badge-primary badge-pill">{{session.timer|uptime}}</span>
+    </li>
+    <li class="list-group-item">
+        Total Length
+        <span class="badge badge-primary badge-pill">{{session.totalLength/1024/1024 | number}} MB</span>
+    </li>
+    <li class="list-group-item">
+        Download Length
+        <span class="badge badge-primary badge-pill">{{session.downloadLength/1024/1024 | number}} MB</span>
+    </li>
+    <li class="list-group-item">
+        Session State
+        <span class="badge badge-primary badge-pill">
+            {{session.downloading? 'Downloading':'Ready'}}
+        </span>
+    </li>
+    <li class="list-group-item">
+        Speed:
+        <span class="badge badge-primary badge-pill">
+            {{(session.receiveTCP - session.receiveTCP_old)/1024 | number}} KB/s
+        </span>
+    </li>
+    <li class="list-group-item">
+        Percent:
+        <span class="badge badge-primary badge-pill">
+            {{ (session.downloadLength/session.totalLength) *100 | number}} %
+        </span>
+    </li>
+</ul>
