@@ -3,6 +3,7 @@ package org.ariia.items;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,8 +20,8 @@ public class ItemStore implements DataStore<Item> {
 		this(R.CachePath + "item-store"+ R.sprtr );
 	}
 	public ItemStore(String storePath) {
+		this.storePath = Objects.requireNonNull(storePath);
 		items = new ArrayList<>();
-		this.storePath = storePath;
 		refreshStore();
 	}
 			
@@ -108,6 +109,12 @@ public class ItemStore implements DataStore<Item> {
 	@Override
 	public List<Item> getAll() {
 		return items;
+	}
+	
+	@Override
+	public boolean remove(Item item) {
+		String cacheFile = storePath + item.getId() + '-' + item.getFilename() + ".json";
+		return new File(cacheFile).delete() && items.remove(item);
 	}
 
 }

@@ -21,5 +21,7 @@ public interface DataStore<T extends Item> {
 	void add(T item);
 	
 	List<T> getAll();
+	
+	boolean remove(T item);
 
 }
