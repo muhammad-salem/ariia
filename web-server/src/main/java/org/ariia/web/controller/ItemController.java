@@ -6,6 +6,7 @@ import org.ariia.items.Item;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RestController;
+import org.ariia.mvc.annotation.method.DeleteRequest;
 import org.ariia.mvc.annotation.method.GetRequest;
 import org.ariia.mvc.annotation.method.PostRequest;
 import org.ariia.web.services.ItemService;
@@ -40,5 +41,19 @@ public class ItemController {
 		return itemService.create(item);
 	}
 	
+	@DeleteRequest(path = "/delete/{id}")
+	public boolean delete(@PathVariable("id") String id) {
+		return this.itemService.delete(id);
+	}
+	
+	@PostRequest(path = "/pause/{id}")
+	public boolean pause(@PathVariable("id") String id) {
+		return this.itemService.pause(id);
+	}
+	
+	@PostRequest(path = "/start/{id}")
+	public boolean start(@PathVariable("id") String id) {
+		return this.itemService.start(id);
+	}
 
 }

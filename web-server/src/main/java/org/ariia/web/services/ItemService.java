@@ -2,16 +2,16 @@ package org.ariia.web.services;
 
 import java.util.List;
 
-import org.ariia.core.api.service.ServiceManager;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
+import org.ariia.web.app.WebServiceManager;
 
 public class ItemService {
 	
-	private ServiceManager serviceManager;
+	private WebServiceManager serviceManager;
 	private DataStore<Item> dataStore;
 	
-	public ItemService(ServiceManager serviceManager) {
+	public ItemService(WebServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
 		this.dataStore = this.serviceManager.getDataStore();
 	}
@@ -33,6 +33,18 @@ public class ItemService {
 		return dataStore.getAll();
 	}
 	
+	
+	public boolean delete(String id) {
+		return this.serviceManager.deleteAndRemoveItem(id);
+	}
+	
+	public boolean pause(String id) {
+		return this.serviceManager.pauseItem(id);
+	}
+	
+	public boolean start(String id) {
+		return this.serviceManager.startItem(id);
+	}
 	
 
 }

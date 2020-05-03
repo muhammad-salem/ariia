@@ -28,7 +28,6 @@ import org.ariia.monitors.SimpleSessionMonitor;
 import org.ariia.monitors.TableMonitor;
 import org.ariia.network.ConnectivityCheck;
 import org.ariia.network.NetworkReport;
-import org.ariia.network.NetworkStatus;
 import org.ariia.network.UrlConnectivity;
 import org.ariia.range.RangeUtil;
 
