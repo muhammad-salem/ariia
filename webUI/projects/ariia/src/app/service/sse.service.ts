@@ -32,4 +32,8 @@ export class SseService {
       });
     });
   }
+
+  destroy(){
+    this.eventSource.close();
+  }
 }

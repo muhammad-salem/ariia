@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faHome, faTerminal, faWifi,faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faTerminal, faWifi, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'ariia-nav',

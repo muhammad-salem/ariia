@@ -1,6 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Item } from '../../../model/item';
 import { RangeInfoService } from '../../../service/range-info.service';
+import { ItemService } from '../../../service/item.service';
+import { faTrash, faDownload, faPauseCircle } from '@fortawesome/free-solid-svg-icons';
+
 
 @Component({
   selector: 'ariia-item-view',
@@ -13,16 +16,38 @@ import { RangeInfoService } from '../../../service/range-info.service';
 export class ItemViewComponent implements OnInit {
 
   @Input() item: Item;
+  @Output() delete: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(private rangeInfoService: RangeInfoService) { }
+  faTrash = faTrash;
+  faDownload = faDownload;
+  faPauseCircle = faPauseCircle;
+  
+
+  constructor(private rangeInfoService: RangeInfoService, private itemService: ItemService) { }
 
   ngOnInit(): void {
     this.rangeInfoService.initRangeInfo(this.item.rangeInfo);
   }
 
+  deleteItem(){
+    return this.itemService.deleteItem(this.item.id).subscribe(deleted => {
+      if (deleted) {
+        this.delete.emit();
+      }
+    });
+  }
+  
+  startItem(){
+    return this.itemService.startItem(this.item.id).subscribe();
+  }
+
+  pauseItem(){
+    return this.itemService.pauseItem(this.item.id).subscribe();
+  }
+
+
   itemPercent(): string {
     return `${this.rangeInfoService.percent()}%`;
-    // return `50%`;
   }
 
   rangePercent(index: number): string {

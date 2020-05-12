@@ -18,4 +18,9 @@ export class ItemListComponent implements OnInit {
     this.items = this.dataService.items;
   }
 
+  onItemDelete(item: Item) {
+    // this.dataService.initItems();
+    this.dataService.deleteItem(item);
+  }
+
 }

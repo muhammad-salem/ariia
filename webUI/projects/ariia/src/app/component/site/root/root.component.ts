@@ -13,6 +13,11 @@ export class RootComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.initItems();
     this.dataService.initDataService();
+
+    window.onbeforeunload = () => {
+      this.dataService.destroy();
+    };
+
   }
 
 }

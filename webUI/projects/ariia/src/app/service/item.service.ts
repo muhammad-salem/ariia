@@ -26,4 +26,16 @@ export class ItemService {
     return this.httpClient.post<string>('/items/create/url', item);
   }
 
+  deleteItem(id: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>('/items/delete/' + id);
+  }
+  
+  startItem(id: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>('/items/start/' + id);
+  }
+
+  pauseItem(id: string): Observable<boolean> {
+    return this.httpClient.delete<boolean>('/items/pause/' + id);
+  }
+
 }
