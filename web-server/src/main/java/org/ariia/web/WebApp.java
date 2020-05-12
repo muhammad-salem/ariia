@@ -15,8 +15,11 @@ import org.ariia.okhttp.OkClient;
 import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.app.WebServiceManager;
 import org.ariia.web.controller.ItemController;
+import org.ariia.web.controller.LogLevelController;
 import org.ariia.web.services.ItemService;
 import org.terminal.console.log.Level;
+import org.terminal.console.log.api.Printer;
+import org.terminal.console.log.impl.PrinterImpl;
 
 public class WebApp {
 
@@ -36,7 +39,8 @@ public class WebApp {
 		
 		// setup logging service
 		EventBroadcast mainBroadcast = new EventBroadcast();
-		WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast);
+		Printer printer = new PrinterImpl(System.out);
+		WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
 		LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
 		
 		
@@ -56,8 +60,10 @@ public class WebApp {
 		AriiaCli cli = new AriiaCli(serviceManager);
 		
 		
-		ItemController controller = new ItemController(new ItemService(serviceManager));
-		server.createControllerContext(controller);
+		ItemController itemController = new ItemController(new ItemService(serviceManager));
+		server.createControllerContext(itemController);
+		LogLevelController logLevelController = new LogLevelController();
+		server.createControllerContext(logLevelController);
 		
 		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
 		
