@@ -15,21 +15,27 @@ public class WebLoggerPrinter implements Printer {
 
 	
 	private EventProvider provider;
-	public WebLoggerPrinter(SourceEvent sourceEvent) {
+	private Printer terminalPrinter;
+	
+	public WebLoggerPrinter(SourceEvent sourceEvent, Printer terminalPrinter) {
 		this.provider = new EventProvider("logging", Objects.requireNonNull(sourceEvent));
+		this.terminalPrinter = Objects.requireNonNull(terminalPrinter);
 	}
 	
 	@Override
 	public void print(Level level, Class<?> classname, String title, String message) {
+		terminalPrinter.print(level, classname, title, message);
 		this.logMessaage(new WebMessage(level, classname.getSimpleName(), title, message));
 	}
 	
 	@Override
 	public void print(Message message) {
+		terminalPrinter.print(message);
 		this.logMessaage(new WebMessage(message.getLevel(), message.getClassname().getSimpleName(), message.getTitle(), message.getMessage()));
 	}
 	
 	public void logMessaage(WebMessage message) {
+		
 		provider.send(Utils.toJson(message));
 	}
 }
