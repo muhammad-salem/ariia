@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'logging', component: LogListComponent},
   { path: 'network', component: NetworkChartComponent},
   { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: 'redirect/home',   redirectTo: 'home', pathMatch: 'full' },
   { path: 'redirect/download',   redirectTo: 'download', pathMatch: 'full' },
   { path: 'redirect/logging',   redirectTo: 'logging', pathMatch: 'full' },
   { path: 'redirect/network',   redirectTo: 'network', pathMatch: 'full' },
