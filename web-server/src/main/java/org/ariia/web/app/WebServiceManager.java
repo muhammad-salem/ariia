@@ -99,10 +99,13 @@ public class WebServiceManager extends ServiceManager {
 	
 	public boolean deleteAndRemoveItem(String id) {
 		ItemMetaData metaData = findAndPause(id);
-		if (metaData == null) {
-			return false;
+		if (metaData != null) {
+			//return false;
+			return dataStore.remove(metaData.getItem());
+		} else {
+			return dataStore.remove(dataStore.findById(id));
 		}
-		return dataStore.remove(metaData.getItem());
+		
 	}
 	
 	public boolean pauseItem(String id) {
