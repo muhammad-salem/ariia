@@ -3,10 +3,7 @@ package org.ariia.mvc.resource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
-import java.util.Collections;
 import java.util.Objects;
 
 import com.sun.net.httpserver.Headers;
