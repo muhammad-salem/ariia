@@ -38,4 +38,9 @@ export class ItemService {
     return this.httpClient.delete<boolean>('/items/pause/' + id);
   }
 
+  // never/should not been called
+  downloadFile(id: string): Observable<any>  {
+    return this.httpClient.get<any>('/items/download/' + id);
+  }
+
 }
