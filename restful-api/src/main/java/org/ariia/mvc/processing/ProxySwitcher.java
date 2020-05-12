@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.ariia.mvc.annotation.DoExchange;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RequestParam;
@@ -113,6 +114,7 @@ public class ProxySwitcher {
 
 			MethodIndex.MethodIndexBuilder indexBuilder = new MethodIndex.MethodIndexBuilder();
 			indexBuilder.method(method);
+			indexBuilder.canDoExchange(method.isAnnotationPresent(DoExchange.class));
 			
 			HttpMethod httpMethod = annotation.annotationType().getAnnotation(HttpMethod.class);
 			indexBuilder.httpMethod(httpMethod.method().name());

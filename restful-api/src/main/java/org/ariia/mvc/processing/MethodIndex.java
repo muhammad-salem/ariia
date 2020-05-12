@@ -12,6 +12,7 @@ public class MethodIndex {
 	private Method method;
 	private String context;
 	private String httpMethod;
+	private boolean canDoExchange;
 	private List<String> pathVariables;
 	private List<String> headers;
 	private List<String> produces;
@@ -20,6 +21,7 @@ public class MethodIndex {
 	public String httpMethod() {return httpMethod;}
 	public String context() {return context;}
 	public Method method() {return method;}
+	public boolean canDoExchange() { return canDoExchange;}
 	public List<String> headers() {return headers;}
 	public List<String> produces() {return produces;}
 	public List<String> pathVariables() {return pathVariables;}
@@ -42,6 +44,7 @@ public class MethodIndex {
 		private Method method;
 		private String context;
 		private String httpMethod;
+		private boolean canDoExchange;
 		private List<String> pathVariables;
 		private List<String> headers;
 		private List<String> produces;
@@ -53,6 +56,10 @@ public class MethodIndex {
 		}
 		public MethodIndexBuilder method(Method method) {
 			this.method = method;
+			return this;
+		}
+		public MethodIndexBuilder canDoExchange(boolean canDoExchange) {
+			this.canDoExchange = canDoExchange;
 			return this;
 		}
 		public MethodIndexBuilder context(String context) {
@@ -81,6 +88,7 @@ public class MethodIndex {
 			methodIndex.httpMethod = this.httpMethod;
 			methodIndex.method = this.method;
 			methodIndex.context = this.context;
+			methodIndex.canDoExchange = this.canDoExchange;
 			methodIndex.pathVariables = this.pathVariables;
 			methodIndex.headers = this.headers;
 			methodIndex.produces = this.produces;

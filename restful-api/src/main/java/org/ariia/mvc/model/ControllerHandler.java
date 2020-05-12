@@ -35,7 +35,7 @@ public class ControllerHandler implements HttpHandler {
 	}
 	
 	@Override
-	public void handle(HttpExchange exchange) throws IOException{
+	public void handle(HttpExchange exchange) throws IOException {
 		try {
 			URI uri = exchange.getRequestURI();
 			RequestInfo requestInfo = new RequestInfo();
@@ -145,10 +145,21 @@ public class ControllerHandler implements HttpHandler {
 			Object[] parameters = getParamters(exchange ,methodIndex, requestInfo);
 			returnObject = methodIndex.method().invoke(controller, parameters);
 		}
+		
+		// check if exchange is closed, that mean the the invoker
+		// get the exchange as a paramter and handel it self,
+		// the return type of the invoker method is void.
+		// method should had Annotation DoExchange
+		
+		
 		// check void
 		if (Objects.isNull(returnObject)) {
-			exchange.sendResponseHeaders(200, -1);
-			exchange.close();
+			if(methodIndex.canDoExchange()){
+				return;
+			} else {
+				exchange.sendResponseHeaders(200, -1);
+				exchange.close();
+			}			
 		} else {
 			String responseBody = gson.toJson(returnObject);
 			byte[] bodyBytes =  responseBody.getBytes(StandardCharsets.UTF_8);
@@ -196,14 +207,14 @@ public class ControllerHandler implements HttpHandler {
 	
 	
 	private static Object toObject( Class<?> clazz, String value ) {
-	    if( Boolean.class == clazz || Boolean.TYPE == clazz ) return Boolean.parseBoolean( value );
-	    if( Byte.class == clazz || Byte.TYPE == clazz) return Byte.parseByte( value );
-	    if( Short.class == clazz || Short.TYPE == clazz) return Short.parseShort( value );
-	    if( Integer.class == clazz || Integer.TYPE == clazz) return Integer.parseInt( value );
-	    if( Long.class == clazz || Long.TYPE == clazz) return Long.parseLong( value );
-	    if( Float.class == clazz || Float.TYPE == clazz) return Float.parseFloat( value );
-	    if( Double.class == clazz || Double.TYPE == clazz) return Double.parseDouble( value );
-	    if( String.class == clazz ) return value;
+	    if( String.class == clazz )								return value;
+	    if( Boolean.class == clazz	|| Boolean.TYPE == clazz ) 	return Boolean.parseBoolean( value );
+	    if( Byte.class == clazz		|| Byte.TYPE == clazz)		return Byte.parseByte( value );
+	    if( Short.class == clazz	|| Short.TYPE == clazz)		return Short.parseShort( value );
+	    if( Integer.class == clazz	|| Integer.TYPE == clazz)	return Integer.parseInt( value );
+	    if( Long.class == clazz		|| Long.TYPE == clazz)		return Long.parseLong( value );
+	    if( Float.class == clazz	|| Float.TYPE == clazz)		return Float.parseFloat( value );
+	    if( Double.class == clazz	|| Double.TYPE == clazz)	return Double.parseDouble( value );
 	    return gson.fromJson(value, clazz);
 	}
 
