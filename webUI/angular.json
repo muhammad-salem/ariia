@@ -28,13 +28,10 @@
               "projects/ariia/src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "projects/ariia/src/styles.scss"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-            	"node_modules/chart.js/dist/Chart.js"
+            	"node_modules/chart.js/dist/Chart.bundle.min.js"
             ]
           },
           "configurations": {
