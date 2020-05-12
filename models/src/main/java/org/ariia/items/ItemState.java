@@ -7,5 +7,9 @@ public enum ItemState {
 	public String toLowerString() {
 		return name().toLowerCase();
 	}
+	
+	public boolean isComplete() {
+		return this.equals(COMPLETE);
+	}
 
 }
