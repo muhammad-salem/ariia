@@ -34,6 +34,8 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
+			        <finalName>${app.name}-http-client-11</finalName>
+    			    <appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
 							<mainClass>${main.class}</mainClass>
