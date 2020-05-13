@@ -3,6 +3,7 @@ package org.ariia.mvc.model;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
+import org.ariia.mvc.annotation.HeaderValue;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RequestParam;
@@ -29,6 +30,9 @@ public class ParameterInfo {
 	public RequestParam asRequestParam() {
 		return (RequestParam) annotation;
 	}
+	public HeaderValue asHeaderValue() {
+		return (HeaderValue) annotation;
+	}
 	public Class<?> getParameterType() {
 		return parameterType;
 	}
@@ -45,6 +49,9 @@ public class ParameterInfo {
 	}
 	public boolean isRequestParam() {
 		return hasAnnotationType(RequestParam.class);
+	}
+	public boolean isHeaderValue() {
+		return hasAnnotationType(HeaderValue.class);
 	}
 	
 	

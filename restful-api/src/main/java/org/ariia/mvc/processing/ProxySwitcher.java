@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.ariia.mvc.annotation.DoExchange;
+import org.ariia.mvc.annotation.HeaderValue;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RequestParam;
@@ -44,6 +45,7 @@ public class ProxySwitcher {
 		parameterAnnotation.add(PathVariable.class);
 		parameterAnnotation.add(RequestParam.class);
 		parameterAnnotation.add(RequestBody.class);
+		parameterAnnotation.add(HeaderValue.class);
 	}
 	
 

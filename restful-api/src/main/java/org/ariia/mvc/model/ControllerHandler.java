@@ -18,6 +18,7 @@ import org.ariia.mvc.processing.ProxySwitcher;
 import org.ariia.mvc.resource.MimeType;
 
 import com.google.gson.Gson;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -60,7 +61,11 @@ public class ControllerHandler implements HttpHandler {
 				requestInfo.setMethodContext('/' + requestInfo.getMethodContext());
 			}
 			
-			Optional<MethodIndex> optional = filterMethods(requestInfo, exchange.getRequestMethod(), path);
+			Optional<MethodIndex> optional = filterMethods (
+					requestInfo, 
+					exchange.getRequestMethod(), 
+					path,
+					exchange.getRequestHeaders());
 			if (!optional.isPresent()) {
 				exchange.sendResponseHeaders(500, -1);
 				return;
@@ -101,15 +106,31 @@ public class ControllerHandler implements HttpHandler {
 	}
 
 
-	Optional<MethodIndex> filterMethods(RequestInfo requestInfo, String method, String path) {
-		return methodIndexs.stream()
+	Optional<MethodIndex> filterMethods(RequestInfo requestInfo, String method, String path, Headers requestHeaders) {
+		List<MethodIndex> base =  methodIndexs.stream()
 			.filter(m -> method.equalsIgnoreCase(m.httpMethod()))
 			.filter(m -> requestInfo.getMethodContext().startsWith(m.context()) )
 			.filter(m -> requestInfo.hasBody() == m.hasBodyParameter())
 			.filter(m -> path.matches(m.getRegexPattern()))
 //			.filter(this::printMethodIndex)
-			.findFirst();
-//			.collect(Collectors.toList());
+			.collect(Collectors.toList());
+		
+		List<MethodIndex> headerFilter = base.stream()
+			.filter(m -> {
+				boolean hasAll = m.headers().isEmpty() ? false : true;				
+				for (String header : m.headers()) {
+					hasAll &= requestHeaders.containsKey(header);
+				}
+				return hasAll;
+			})
+//			.filter(this::printMethodIndex)
+			.collect(Collectors.toList());
+		
+		if (!headerFilter.isEmpty()) {
+			return headerFilter.stream().findFirst();
+		} else {
+			return base.stream().findFirst();
+		}
 	}
 
 
@@ -174,6 +195,11 @@ public class ControllerHandler implements HttpHandler {
 				parameters[i] = toObject(
 						info.getParameterType(),
 						requestInfo.getParamter(info.name()));
+			}
+			else if (info.isHeaderValue()) {
+				parameters[i] = toObject(
+						info.getParameterType(),
+						exchange.getRequestHeaders().getFirst(info.name()));
 			}
 			else if (info.getParameterType().equals(HttpExchange.class)) {
 				parameters[i] = exchange;
