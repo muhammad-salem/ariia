@@ -74,7 +74,7 @@ public class RangeResponseHeader {
 
 	@Override
 	public String toString() {
-		return type.name() + " " + start + "-" + end + "/" + length;
+		return type.name() + "=" + start + "-" + end + "/" + length;
 	}
 
 	public String toRequestRange() {
