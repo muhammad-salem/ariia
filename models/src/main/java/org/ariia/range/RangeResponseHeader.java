@@ -55,7 +55,7 @@ public class RangeResponseHeader {
 			length = -1;
 			return;
 		}
-		String[] temp = contentRange.split(" ");
+		String[] temp = contentRange.split("=");
 		type = temp[0].equals("bytes") ? Type.bytes : Type.non;
 		if (temp[1].equals("*")) {
 			length = Long.valueOf(temp[2].substring(1));
@@ -66,7 +66,10 @@ public class RangeResponseHeader {
 		start = Long.valueOf(temp[0]);
 		temp = temp[1].split("/");
 		end = Long.valueOf(temp[0]);
-		length = Long.valueOf(temp[1]);
+		if (temp.length >1) {
+			length = Long.valueOf(temp[1]);
+		}
+		
 	}
 
 	@Override
