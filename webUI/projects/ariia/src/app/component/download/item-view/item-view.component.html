@@ -31,29 +31,6 @@
                       </button>
                     </div>
                 </div>
-
-                <!-- <div class="row">
-                    <div class="col-sm-4">
-                        <a class="badge badge-pill badge-primary" (click)="startItem()">
-                            
-                        </a>
-                    </div>
-                    <div class="col-sm-4">
-                        <a class="badge badge-success" (click)="pauseItem()">
-                            
-                        </a>
-                    </div>
-                    <div class="col-sm-4">
-                        <a class="badge badge-danger" (click)="deleteItem()">
-                            <span>
-                                <fa-icon [icon]="faTrash" [size]="'sm'"></fa-icon>
-                            </span>
-                        </a>
-                    </div>
-                </div> -->
-                
-                
-                
             </div>
         </div>
     </div>
@@ -61,6 +38,14 @@
       <h5 class="card-title">{{item.state | lowercase}}</h5>
       <h6 class="card-subtitle mb-2 text-muted">{{item.id}}</h6>
       <p class="card-text">{{item.saveDirectory }}</p>
+      <a href="/items/download/{{item.id}}/{{item.filename}}"
+          *ngIf="item.state === 'COMPLETE'" 
+          download class="card-link">
+      		{{item.filename}}
+      		<span>
+                <fa-icon [icon]="faCloudDownloadAlt" [size]="'sm'"></fa-icon>
+          </span>
+      </a>
       <a href="#" class="card-link">{{item.url}}</a>
       <a href="#" *ngIf="item.redirectUrl">{{item.redirectUrl}}</a>
       <div class="progress">
