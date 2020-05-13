@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Item } from '../../../model/item';
 import { RangeInfoService } from '../../../service/range-info.service';
 import { ItemService } from '../../../service/item.service';
-import { faTrash, faDownload, faPauseCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faDownload, faPauseCircle, faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -21,6 +21,7 @@ export class ItemViewComponent implements OnInit {
   faTrash = faTrash;
   faDownload = faDownload;
   faPauseCircle = faPauseCircle;
+  faCloudDownloadAlt = faCloudDownloadAlt;
   
 
   constructor(private rangeInfoService: RangeInfoService, private itemService: ItemService) { }
