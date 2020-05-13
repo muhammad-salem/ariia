@@ -16,15 +16,36 @@ public interface StreamHandler {
 	
 	default void handelStreamAndSetFileName(HttpExchange exchange, String filename, InputStream stream) throws IOException {
 		Headers responseHeaders = exchange.getResponseHeaders();
+		setFileName(responseHeaders, filename);
+		handelStream(exchange, filename, stream);
+	}
+	
+	default void setFileName(Headers responseHeaders, String filename) throws IOException {
 		filename = "attachment; filename=\"" + filename + "\"";
 		responseHeaders.put("Content-Disposition", Collections.singletonList(filename));
-		
-		handelStream(exchange, filename, stream);
+	}
+	
+	default void setContentType(Headers responseHeaders, String filename) throws IOException {
+		responseHeaders.put("Content-Type", Collections.singletonList(MimeType.getMimeForFileName(filename)));
+	}
+	
+	default void setContentLength(Headers responseHeaders, long start, long end, long length) throws IOException {
+		String contentLength = "bytes " + start + "-" + end + "/" + length;
+		responseHeaders.set("Content-Length", contentLength);
+	}
+	
+	default void handelPlaneStream(HttpExchange exchange, String filename, InputStream stream) throws IOException {
+		Headers responseHeaders = exchange.getResponseHeaders();
+		setFileName(responseHeaders, filename);
+		setContentType(responseHeaders, filename);
+		writeToOutputStream(exchange, stream);
+	    stream.close();
+	    exchange.close();
 	}
 	
 	default void handelStream(HttpExchange exchange, String filename, InputStream stream) throws IOException {
 		Headers responseHeaders = exchange.getResponseHeaders();
-		responseHeaders.put("Content-Type", Collections.singletonList(MimeType.getMimeForFileName(filename)));
+		setContentType(responseHeaders, filename);
 	    
 		Headers requestHeaders = exchange.getRequestHeaders();
 		final OutputStream responseBody = exchange.getResponseBody();
@@ -93,5 +114,25 @@ public interface StreamHandler {
 		}
 	    gzip.close();
 	}
+	
+	default void handelPartStream(HttpExchange exchange, String filename, InputStream stream, long start, long end, long length) throws IOException {
+		Headers responseHeaders = exchange.getResponseHeaders();
+		setFileName(responseHeaders, filename);
+		setContentType(responseHeaders, filename);
+		setContentLength(responseHeaders, start, end, length);
+		
+		//HTTP_PARTIAL = 206;
+		exchange.sendResponseHeaders(206, end - start);
+			byte[] bs = new byte[512];
+		    int read = 0;
+		    while ( (read = stream.read(bs)) > 0) {
+		    	exchange.getResponseBody().write(bs, 0, read);
+			}
+		    exchange.getResponseBody().flush();
+		    
+	    stream.close();
+	    exchange.close();
+	}
+	
 
 }
