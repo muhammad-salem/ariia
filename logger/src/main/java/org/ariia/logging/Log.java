@@ -1,9 +1,11 @@
 package org.ariia.logging;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.terminal.console.log.Level;
 import org.terminal.console.log.api.Printer;
@@ -236,6 +238,48 @@ public final class Log {
 	public static void trace(Class<?> classname, String title, String message) {
 		if (isAllowed(Level.trace)) {
 			queue.add(new Message(Level.trace, classname, title, message));
+		}
+	}
+	
+	public static void log(Class<?> classname, String title, String... message) {
+//		if (isAllowed(Level.log)) {
+			queue.add(new Message(Level.log, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
+//		}
+	}
+
+	public static void error(Class<?> classname, String title, String... message) {
+		if (isAllowed(Level.error)) {
+			queue.add(new Message(Level.error, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
+		}
+	}
+
+	public static void warn(Class<?> classname, String title, String... message) {
+		if (isAllowed(Level.warn)) {
+			queue.add(new Message(Level.warn, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
+		}
+	}
+
+	public static void info(Class<?> classname, String title, String... message) {
+		if (isAllowed(Level.info)) {
+			queue.add(new Message(Level.info, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
+		}
+	}
+
+	public static void assertions(Boolean assertions, Class<?> classname, String title, String...message) {
+		if (!assertions) {
+			queue.add(new Message(Level.assertion, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
+		}
+	}
+
+	public static void debug(Class<?> classname, String title, String... message) {
+		if (isAllowed(Level.debug)) {
+			queue.add(new Message(Level.debug, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
+		}
+	}
+	
+	public static void trace(Class<?> classname, String title, String... message) {
+		if (isAllowed(Level.trace)) {
+			queue.add(new Message(Level.trace, classname, title, Arrays.asList(message).stream().collect(Collectors.joining("\n"))));
 		}
 	}
 }
