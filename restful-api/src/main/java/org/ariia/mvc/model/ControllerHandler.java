@@ -10,6 +10,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.ariia.mvc.processing.MethodIndex;
@@ -59,23 +60,12 @@ public class ControllerHandler implements HttpHandler {
 				requestInfo.setMethodContext('/' + requestInfo.getMethodContext());
 			}
 			
-			List<MethodIndex> methodList = filterMethods(requestInfo, exchange.getRequestMethod());
-			if (methodList.isEmpty()) {
+			Optional<MethodIndex> optional = filterMethods(requestInfo, exchange.getRequestMethod(), path);
+			if (!optional.isPresent()) {
 				exchange.sendResponseHeaders(500, -1);
 				return;
 			}
-			MethodIndex methodIndex = methodList.get(0);
-//			MethodIndex methodIndex = null;
-//			for (int i = 0; i < methodList.size(); i++) {
-//				if (path.equals(switcher.getContext().concat(methodList.get(i).context()))) {
-//					methodIndex = methodList.get(i);
-//					break;
-//				}
-//			}
-//			if (Objects.isNull(methodIndex)) {
-//				methodIndex = methodList.get(0);
-//			}
-			
+			MethodIndex methodIndex = optional.get();
 			
 			if(!methodIndex.context().equals(requestInfo.getMethodContext())){
 				String mContext = requestInfo.getMethodContext().split(methodIndex.context())[1];
@@ -105,28 +95,21 @@ public class ControllerHandler implements HttpHandler {
 	}
 
 	
-//	private boolean printMethodIndex(MethodIndex method) {
-//		System.out.println(method);
-//		return true;
-//	}
+	boolean printMethodIndex(MethodIndex method) {
+		System.out.println(method);
+		return true;
+	}
 
 
-	List<MethodIndex> filterMethods(RequestInfo requestInfo, String method) {
-		List<MethodIndex> methodList = methodIndexs.stream()
+	Optional<MethodIndex> filterMethods(RequestInfo requestInfo, String method, String path) {
+		return methodIndexs.stream()
 			.filter(m -> method.equalsIgnoreCase(m.httpMethod()))
 			.filter(m -> requestInfo.getMethodContext().startsWith(m.context()) )
 			.filter(m -> requestInfo.hasBody() == m.hasBodyParameter())
-			.filter(m -> {
-				if (requestInfo.getMethodContext().equals(m.context())) {
-					return true;
-				}
-				String[] mContext = requestInfo.getMethodContext().split(m.context(), 2);
-				mContext = mContext[1].split("/");
-				return mContext.length == m.pathVariables().size();
-			})
+			.filter(m -> path.matches(m.getRegexPattern()))
 //			.filter(this::printMethodIndex)
-			.collect(Collectors.toList());
-		return methodList;
+			.findFirst();
+//			.collect(Collectors.toList());
 	}
 
 

@@ -1,6 +1,7 @@
 package org.ariia.mvc.model;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
@@ -32,14 +33,18 @@ public class ParameterInfo {
 		return parameterType;
 	}
 	
+	private boolean hasAnnotationType(Class<? extends Annotation> annotationClass) {
+		return Objects.nonNull(annotation) && annotation.annotationType().equals(annotationClass);
+	}
+	
 	public boolean isPathVariable() {
-		return annotation.annotationType().equals(PathVariable.class);
+		return hasAnnotationType(PathVariable.class);
 	}
 	public boolean isRequestBody() {
-		return annotation.annotationType().equals(RequestBody.class);
+		return hasAnnotationType(RequestBody.class);
 	}
 	public boolean isRequestParam() {
-		return annotation.annotationType().equals(RequestParam.class);
+		return hasAnnotationType(RequestParam.class);
 	}
 	
 	

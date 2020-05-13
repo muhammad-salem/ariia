@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.ariia.mvc.annotation.DoExchange;
 import org.ariia.mvc.annotation.PathVariable;
@@ -126,17 +128,20 @@ public class ProxySwitcher {
 			indexBuilder.headers(  Arrays.asList((String[]) headersMethod.invoke(annotation)) );
 			indexBuilder.produces( Arrays.asList((String[]) producesMethod.invoke(annotation)) );
 			
-			String rootContext = pathMethod.invoke(annotation).toString();
-			if (rootContext.contains("{")) {
-				indexBuilder.context( rootContext.substring(0, rootContext.indexOf('{') ));
-				indexBuilder.pathVariables(listOfPathVariavle(rootContext));
+			String methodPathContext = pathMethod.invoke(annotation).toString();
+//			String fullPath = controllerContext +  methodPathContext;
+			
+			if (methodPathContext.contains("{")) {
+				indexBuilder.context( methodPathContext.substring(0, methodPathContext.indexOf('{') ));
+				indexBuilder.pathVariables(listOfPathVariavle(methodPathContext));
 			} else {
-				indexBuilder.context( rootContext );
+				indexBuilder.context( methodPathContext );
 				indexBuilder.pathVariables( Collections.emptyList() );
 			}
 			
+//			indexBuilder.pathVariables(listOfPathVariavle(methodPathContext));
+			indexBuilder.regexPattern(setupRegxPattern(controllerContext + methodPathContext));
 			indexBuilder.parametersInfo(getParametersInfo(method));
-			
 			return indexBuilder.build();
 			
 		} catch (Exception e) {
@@ -145,16 +150,38 @@ public class ProxySwitcher {
 		return null;
 	}
 
-	ArrayList<String> listOfPathVariavle(String context) {
-		ArrayList<String> list = new ArrayList<>(1);
-		int index = context.indexOf('{');
-		do {
-			context = context.substring(index+1);
-			index = context.indexOf('}');
-			list.add(context.substring(0, index));
-			index = context.indexOf('{');
-		} while (index > 0);
+	String setupRegxPattern(String pattern) {
+		return '^' + pattern.replaceAll("\\{(?:.[a-zA-Z0-9]*)\\}", "(?:.*)");
+	}
+	
+	String removeBraces(String string) {
+		return string.substring(1, string.length()-1);
+	}
+	
+	ArrayList<String> listOfPathVariavle(String path){
+		ArrayList<String> list = new ArrayList<>(3);
+		Matcher matcher = Pattern.compile("\\{(?:.[a-zA-Z0-9]*)\\}").matcher(path);
+		while (matcher.find()) {
+			list.add(removeBraces(matcher.group()));
+		}
 		return list;
+	}
+
+	
+	String getPattern(String pathContext) {
+		StringBuilder pattern = new StringBuilder();
+		pattern.append('^');
+		
+		
+		int mark = 0, start = 0, end = 0;
+		do {
+			start = pathContext.indexOf('{', mark);
+			end   = pathContext.indexOf("}", start);
+			pattern.append(pathContext.subSequence(mark, start));
+			pattern.append("(?:.*)");
+			mark = end + 1;
+		} while (mark < pathContext.length());
+		return pattern.toString();
 	}
 
 	private List<ParameterInfo> getParametersInfo(Method method) {
