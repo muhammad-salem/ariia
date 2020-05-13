@@ -5,6 +5,7 @@ import java.util.List;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.mvc.annotation.DoExchange;
+import org.ariia.mvc.annotation.HeaderValue;
 import org.ariia.mvc.annotation.PathVariable;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RestController;
@@ -76,6 +77,17 @@ public class ItemController {
 			HttpExchange exchange) {
 		Log.trace(getClass(), "Download Request", "id: " + id + " filename: " + filename);
 		this.itemService.downloadItem(id, exchange);
+	}
+	
+	@GetRequest(path = "/download/{id}/{filename}", headers = {"Range"})
+	@DoExchange
+	public void downloadItemParts (
+			@PathVariable("id") String id,
+			@PathVariable("filename") String filename,
+			@HeaderValue("Range") String range, 
+			HttpExchange exchange) {
+		Log.trace(getClass(), "Download Request", "id: " + id + "\nfilename: " + filename + "\nRange: " + range);
+		this.itemService.downloadItemParts(id, exchange, range);
 	}
 
 }
