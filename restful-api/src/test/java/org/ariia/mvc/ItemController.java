@@ -50,6 +50,16 @@ public class ItemController {
 		
 	}
 	
+	@PostRequest(path = "/edit/{index}-{id}")
+	public void nextToNext(@RequestParam("index") int index, @RequestBody String json) {
+		
+	}
+	
+	@PostRequest(path = "/edit/{index}{error}")
+	public void nextError(@RequestParam("index") int index, @RequestBody String json) {
+		
+	}
+	
 //	@PostRequest(path = "/")
 //	private void ff() {
 //	}
