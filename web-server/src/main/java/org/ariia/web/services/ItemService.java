@@ -52,6 +52,7 @@ public class ItemService implements StreamHandler {
 	}
 	
 	public void downloadItem(String id, HttpExchange exchange) {
+		Log.info(getClass(), "Download Item", "item id: " + id );
 		Item item =  dataStore.findById(id);
 		try {
 			if(item.getState().isComplete()) {
@@ -63,7 +64,7 @@ public class ItemService implements StreamHandler {
 				exchange.close();
 			}
 		} catch (Exception e) {
-			Log.error(getClass(), "Download Item", e.getMessage());
+			Log.error(getClass(), "Download Item", "item id: " + id + "\n" + e.getMessage());
 		}
 	}
 	
