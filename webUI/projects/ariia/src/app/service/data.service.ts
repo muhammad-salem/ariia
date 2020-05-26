@@ -68,6 +68,17 @@ export class DataService {
 	}
 
 	initDataService() {
+		let date = new Date();
+		for (let i = 59; i >= 0 ; i--) {
+			let xDate = new Date();
+			xDate.setSeconds(date.getSeconds() - i);
+			this.data.sessionHistory.push({
+				x: xDate,
+				y: 0, 
+				session: null
+			});
+		}
+
 
 		this.sseService.initSseEvent("/backbone-broadcast").subscribe(()=> {
 		  this.sseService.forEvent("logging").subscribe((messageEvent)=> {
