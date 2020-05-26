@@ -31,11 +31,11 @@ export class ItemService {
   }
   
   startItem(id: string): Observable<boolean> {
-    return this.httpClient.delete<boolean>('/items/start/' + id);
+    return this.httpClient.post<boolean>('/items/start/' + id, null);
   }
 
   pauseItem(id: string): Observable<boolean> {
-    return this.httpClient.delete<boolean>('/items/pause/' + id);
+    return this.httpClient.post<boolean>('/items/pause/' + id, null);
   }
 
   // never/should not been called
