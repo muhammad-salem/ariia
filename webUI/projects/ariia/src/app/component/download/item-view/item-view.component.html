@@ -1,4 +1,4 @@
-<div class="card my-1 py-1 border-info">
+<div class="card my-1 py-1 border-info shadow p-3 mb-5 bg-white rounded">
     <div class="card-header">
         <div class="row">
             <div class="col-md-10">
@@ -12,12 +12,12 @@
             <div class="col-md-2">
                 <div class="btn-toolbar" role="toolbar" aria-label="Item Actions">
                     <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Download">
-                      <button type="button" class="btn btn-link text-info">
+                      <button type="button" class="btn btn-link text-info" (click)="startItem()">
                         <span>
                             <fa-icon [icon]="faDownload" [size]="'sm'"></fa-icon>
                         </span>
                       </button>
-                      <button type="button" class="btn btn-link text-success">
+                      <button type="button" class="btn btn-link text-success" (click)="pauseItem()">
                         <span>
                             <fa-icon [icon]="faPauseCircle" [size]="'sm'"></fa-icon>
                         </span>
@@ -46,6 +46,7 @@
                 <fa-icon [icon]="faCloudDownloadAlt" [size]="'sm'"></fa-icon>
           </span>
       </a>
+      <br>
       <a href="#" class="card-link">{{item.url}}</a>
       <a href="#" *ngIf="item.redirectUrl">{{item.redirectUrl}}</a>
       <div class="progress">

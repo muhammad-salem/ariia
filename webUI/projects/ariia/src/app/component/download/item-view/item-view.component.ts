@@ -39,11 +39,19 @@ export class ItemViewComponent implements OnInit {
   }
   
   startItem(){
-    return this.itemService.startItem(this.item.id).subscribe();
+    return this.itemService.startItem(this.item.id).subscribe(start =>{
+      if(start){
+        console.info(`start download item ${this.item}`);
+      }
+    });
   }
 
   pauseItem(){
-    return this.itemService.pauseItem(this.item.id).subscribe();
+    return this.itemService.pauseItem(this.item.id).subscribe(pause =>{
+      if(pause){
+        console.info(`pause download item ${this.item}`);
+      }
+    });
   }
 
 
