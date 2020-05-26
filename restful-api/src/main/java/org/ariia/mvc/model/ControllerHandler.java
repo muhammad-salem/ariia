@@ -124,12 +124,13 @@ public class ControllerHandler implements HttpHandler {
 				return hasAll;
 			})
 //			.filter(this::printMethodIndex)
+			.limit(1l)
 			.collect(Collectors.toList());
 		
 		if (!headerFilter.isEmpty()) {
 			return headerFilter.stream().findFirst();
 		} else {
-			return base.stream().findFirst();
+			return base.stream().limit(1l).findFirst();
 		}
 	}
 
