@@ -1,6 +1,7 @@
 package org.ariia.items;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +95,8 @@ public class Builder {
 			String[] fileParts = url.split("/");
 			fileName = fileParts[fileParts.length-2].split("\\?")[0];
 		}
+		byte[] bytes = fileName.getBytes(StandardCharsets.UTF_8);
+		fileName = new String(bytes, StandardCharsets.UTF_8);
 		return fileName;
 	}
 }

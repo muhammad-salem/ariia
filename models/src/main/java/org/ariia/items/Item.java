@@ -1,6 +1,7 @@
 package org.ariia.items;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +64,8 @@ public class Item {
 	}
 
 	public void setFilename(String filename) {
+		byte[] bytes = filename.getBytes(StandardCharsets.UTF_8);
+		filename = new String(bytes, StandardCharsets.UTF_8);
 		this.filename = filename;
 	}
 	
