@@ -45,7 +45,10 @@ export class NetworkChartComponent implements OnInit, AfterViewInit, OnDestroy {
       yAxes: [{
         gridLines: {
           drawBorder: false
-        }
+        },
+        ticks: {
+          min: 0
+      }
       }]
     }
   };
