@@ -8,7 +8,7 @@
 		<version>0.2.7</version>
 	</parent>
 	<artifactId>restful-api</artifactId>
-<!-- 	<properties>
+ 	<!-- <properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 	</properties> -->
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.8.6</version>
+			<version>${gson.version}</version>
 		</dependency>
 	</dependencies>
 </project>
