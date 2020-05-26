@@ -28,4 +28,8 @@ export class Item {
             this.headers.set(keys, item.headers[keys]);
         });
     }
+
+    toString(): string {
+        return `${this.filename} - ${this.rangeInfo.fileLength} - ${this.state}`;
+    }
 }
