@@ -8,9 +8,12 @@ import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.ariia.items.DataStore;
+import org.ariia.items.Item;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.core.api.writer.ItemMetaData;
+import org.ariia.core.api.writer.ItemMetaDataCompleteWarpper;
 import org.ariia.mvc.sse.EventProvider;
 import org.ariia.mvc.sse.SourceEvent;
 import org.ariia.util.Utils;
@@ -41,6 +44,18 @@ public class WebServiceManager extends ServiceManager {
 		this.queues.add(wattingList);
 		this.queues.add(downloadingList);
 		this.queues.add(completeingList);
+	}
+	
+	@Override
+	protected void initServiceList(DataStore<Item> dataStore) {
+		super.initServiceList(dataStore);
+		dataStore.getAll().forEach(item -> {
+			if(item.getState().isComplete()){
+				completeingList.add(new ItemMetaDataCompleteWarpper(item));
+			} else {
+				download(item);
+			}
+		});
 	}
 	
 	@Override
@@ -116,7 +131,13 @@ public class WebServiceManager extends ServiceManager {
 	public boolean startItem(String id) {
 		ItemMetaData metaData = find(id);
 		if (Objects.isNull(metaData)) {
-			return false;
+			//return false;
+			Item item = dataStore.findById(id);
+			if(Objects.isNull(item)){
+				return false;
+			}
+			download(item);
+			return true;
 		}
 		if (metaData.isDownloading() || metaData.getRangeInfo().isFinish()) {
 			return true;
