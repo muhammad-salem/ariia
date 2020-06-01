@@ -18,5 +18,12 @@ export class SessionMonitorComponent implements OnInit {
   ngOnInit(): void {
     this.session = this.dataService.networkSession;
   }
+  
+  sessionPercent(): string {
+  	if(this.session.totalLength){
+  		return `${((this.session.downloadLength/this.session.totalLength) *100 ).toFixed(2)}%`;
+  	}
+  	return `100%`;
+  }
 
 }
