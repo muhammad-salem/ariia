@@ -17,7 +17,7 @@ export class DataService {
 
 	historySubject: BehaviorSubject<void> = new BehaviorSubject<void>(null);
 
-	constructor(private sseService: SseService, private itemService: ItemService,) { 
+	constructor(private sseService: SseService, private itemService: ItemService) { 
 		this.data = new Data();
 	}
 
@@ -57,12 +57,15 @@ export class DataService {
 	private update(dataService: DataService, messageEvent: MessageEvent) {
 		const items: Item[] = JSON.parse(messageEvent.data);
 		items.forEach(item => {
-		  const oldItem = dataService.data.items.find(i => item['itemId'] === i.id);
+		  const oldItem = dataService.data.items.find(searchItem => item['itemId'] === searchItem.id);
 		  if(oldItem){
 			oldItem.state = item.state;
 			oldItem.rangeInfo.update(item.rangeInfo);
 		  } else {
-			dataService.itemService.getItem(item['itemId']).subscribe(dataService.data.items.push);
+			//dataService.itemService.getItem(item['itemId']).subscribe(dataService.data.items.push);
+			dataService.itemService.getItem(item['itemId']).subscribe((item: Item) => {
+				dataService.addItem(item);
+			});
 		  }
 		});
 	}
