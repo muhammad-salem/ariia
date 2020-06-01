@@ -8,7 +8,22 @@
     <div class="input-group-append">
       <button class="btn btn-outline-secondary" 
             type="button" id="button-add-link"
-            (click)="addLink(linkUrl.value)"
+            (click)="addLink(linkUrl.value);linkUrl.value = '';"
             >Download Link</button>
     </div>
+</div>
+
+<div class="input-group mb-3">
+        <input type="text" class="form-control" 
+                placeholder="Meta Link for Download" 
+                aria-label="Meta Link for Download" 
+                aria-describedby="button-add-meta-link"
+                #metaLinkUrl
+                >
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" 
+                type="button" id="button-add-meta-link"
+                (click)="addLink(metaLinkUrl.value);metaLinkUrl.value = '';"
+                >Download Meta Link</button>
+        </div>
 </div>
