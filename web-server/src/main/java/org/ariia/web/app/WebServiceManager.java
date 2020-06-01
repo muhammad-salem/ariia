@@ -116,6 +116,7 @@ public class WebServiceManager extends ServiceManager {
 		ItemMetaData metaData = findAndPause(id);
 		if (metaData != null) {
 			//return false;
+			removeItemEvent(metaData);
 			return dataStore.remove(metaData.getItem());
 		} else {
 			return dataStore.remove(dataStore.findById(id));
