@@ -66,7 +66,7 @@ export class RangeInfoService {
 	}
 
 	percent(): number {
-		return (this.rangeInfo.downloadLength / this.rangeInfo.fileLength)*100;
+		return (this.rangeInfo.downloadLength / this.rangeInfo.fileLength) * 100;
 	}
 
 	rangePercent(index: number): number {
