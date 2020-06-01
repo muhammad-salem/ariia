@@ -69,8 +69,8 @@ public interface SpeedReport extends SpeedTotal, CalculateSpeed {
 	// ******************Utils*******************//
 
 	DecimalFormat decFormat = new DecimalFormat("0.00");
-	float KBytes = 1024f;	// = 1000f;		// use (10^3) instead of (2^10)
-	float KBites = 1000f;	// = 1024f;		// use (10^3) instead of (2^10)
+	float KBytes = 1024f;	// use (2^10)
+	float KBites = 1000f;	// use (10^3)
 	default String toUnitLengthBytes(long length) {
 		return toUnitLength(length, true, KBytes);
 	}

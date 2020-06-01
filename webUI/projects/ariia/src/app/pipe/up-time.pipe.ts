@@ -13,7 +13,7 @@ export class UpTimePipe implements PipeTransform {
     hh = hh % 60;
     mm = mm % 60;
     ss = seconds % 60;
-		return `${hh?hh:0}:${mm?mm:0}:${ss}`;
+	return `${hh?hh:0}:${mm?mm:0}:${ss}`;
   }
 
 }

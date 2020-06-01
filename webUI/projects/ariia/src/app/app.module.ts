@@ -20,6 +20,7 @@ import { FooterComponent } from './component/site/footer/footer.component';
 import { RootComponent } from './component/site/root/root.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UpTimePipe } from './pipe/up-time.pipe';
+import { LengthUnitPipe } from './pipe/length-unit.pipe';
 import { AddLinkComponent } from './component/link/add-link/add-link.component';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { AddLinkComponent } from './component/link/add-link/add-link.component';
     FooterComponent,
     RootComponent,
     UpTimePipe,
+    LengthUnitPipe,
     AddLinkComponent
   ],
   imports: [
