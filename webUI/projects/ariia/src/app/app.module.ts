@@ -22,6 +22,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UpTimePipe } from './pipe/up-time.pipe';
 import { LengthUnitPipe } from './pipe/length-unit.pipe';
 import { AddLinkComponent } from './component/link/add-link/add-link.component';
+import { CircularProgressComponent } from './component/utils/circular-progress/circular-progress.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { AddLinkComponent } from './component/link/add-link/add-link.component';
     RootComponent,
     UpTimePipe,
     LengthUnitPipe,
-    AddLinkComponent
+    AddLinkComponent,
+    CircularProgressComponent
   ],
   imports: [
     BrowserModule,
