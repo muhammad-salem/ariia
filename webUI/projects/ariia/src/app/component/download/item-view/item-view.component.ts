@@ -56,11 +56,11 @@ export class ItemViewComponent implements OnInit {
 
 
   itemPercent(): string {
-    return `${this.rangeInfoService.percent()}%`;
+    return `${this.rangeInfoService.percent().toFixed(3)}%`;
   }
 
   rangePercent(index: number): string {
-    return `${this.rangeInfoService.rangePercent(index)}%`;
+    return `${this.rangeInfoService.rangePercent(index).toFixed(3)}%`;
   }
 
   startPercent(index: number): string {

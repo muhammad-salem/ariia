@@ -3,6 +3,8 @@
         <div class="row">
             <div class="col-md-10">
                 {{item.filename}}
+                ---
+                {{item.rangeInfo.downloadLength | lengthUnit:true}} of {{item.rangeInfo.fileLength | lengthUnit:true}}
                 <div class="progress" style="height: 1px;">
                     <div class="progress-bar" role="progressbar"
                         [ngStyle]="{'width': itemPercent()}" 
