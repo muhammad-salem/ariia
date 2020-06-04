@@ -7,11 +7,11 @@ import org.ariia.util.R;
 
 public class Properties {
 	
-	public int retries = 0;
-	public String defaultSaveDirectory = R.CurrentDirectory();
-	public int maxActiveDownloadPool = 4;
-	public int rangePoolNum = 8;
-	public int maxBufferPool = 64;		//	8 * 4 * 2
+	private int retries = 0;
+	private String defaultSaveDirectory = R.CurrentDirectory();
+	private int maxActiveDownloadPool = 4;
+	private int rangePoolNum = 8;
+	private int maxBufferPool = 64;		//	8 * 4 * 2
 
 	public Properties() {}
 	
@@ -26,10 +26,8 @@ public class Properties {
 		this.maxActiveDownloadPool = Objects.requireNonNull(properties.maxActiveDownloadPool, "maxActiveDownloadPool is null");
 		this.maxBufferPool = Objects.requireNonNull(properties.maxBufferPool, "maxBufferPool is null");
 		this.rangePoolNum = Objects.requireNonNull(properties.rangePoolNum, "rangePoolNum is null");
-		this.retries = Objects.requireNonNull(properties.retries, "retries is null");		
+		this.retries = Objects.requireNonNull(properties.retries, "retries is null");
 	}
-	
-	
 	
 	public void setupConfig(Argument arguments) {
 		if(arguments.isTries()) {
@@ -62,7 +60,7 @@ public class Properties {
 	public int getMaxBufferPool() {
 		return maxBufferPool;
 	}
-
+	
 	public void setRetries(int retries) {
 		this.retries = retries;
 	}
@@ -82,7 +80,5 @@ public class Properties {
 	public void setMaxBufferPool(int maxBufferPool) {
 		this.maxBufferPool = maxBufferPool;
 	}
-
-	
 	
 }
