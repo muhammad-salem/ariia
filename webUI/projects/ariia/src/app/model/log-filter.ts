@@ -1,8 +1,5 @@
-import { LogLevel } from './log-level.enum';
 
-export class LogFilter {
-    level: LogLevel;
+export interface LogFilter {
+    level: string,
     classname: string;
-    from: number;
-    to: number;
 }
