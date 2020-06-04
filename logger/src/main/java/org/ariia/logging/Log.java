@@ -55,6 +55,10 @@ public final class Log {
 		Log.level = level;
 	}
 	
+	public static Level getLevel() {
+		return Log.level;
+	}
+	
 	public static void printer(Printer printer) {
 		Log.printer = printer;
 	}
