@@ -9,12 +9,12 @@ import { NetworkChartComponent } from './component/network/network-chart/network
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'download', component: ItemListComponent},
-  { path: 'logging', component: LogListComponent},
+  { path: 'logview', component: LogListComponent},
   { path: 'network', component: NetworkChartComponent},
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   { path: 'redirect/home',   redirectTo: 'home', pathMatch: 'full' },
   { path: 'redirect/download',   redirectTo: 'download', pathMatch: 'full' },
-  { path: 'redirect/logging',   redirectTo: 'logging', pathMatch: 'full' },
+  { path: 'redirect/logview',   redirectTo: 'logview', pathMatch: 'full' },
   { path: 'redirect/network',   redirectTo: 'network', pathMatch: 'full' },
   { path: '**', component: HomeComponent }
 ];
