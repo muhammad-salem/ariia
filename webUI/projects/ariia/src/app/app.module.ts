@@ -9,11 +9,9 @@ import { ItemFilterPipe } from './pipe/item-filter.pipe';
 import { ItemListComponent } from './component/download/item-list/item-list.component';
 import { ItemViewComponent } from './component/download/item-view/item-view.component';
 import { LogListComponent } from './component/log/log-list/log-list.component';
-import { LogViewComponent } from './component/log/log-view/log-view.component';
 import { SessionMonitorComponent } from './component/network/session-monitor/session-monitor.component';
 import { NetworkChartComponent } from './component/network/network-chart/network-chart.component';
 import { HeaderComponent } from './component/site/header/header.component';
-import { LogFilterPipe } from './pipe/log-filter.pipe';
 import { HomeComponent } from './component/site/home/home.component';
 import { NavComponent } from './component/site/nav/nav.component';
 import { FooterComponent } from './component/site/footer/footer.component';
@@ -23,6 +21,8 @@ import { UpTimePipe } from './pipe/up-time.pipe';
 import { LengthUnitPipe } from './pipe/length-unit.pipe';
 import { AddLinkComponent } from './component/link/add-link/add-link.component';
 import { CircularProgressComponent } from './component/utils/circular-progress/circular-progress.component';
+import { ServerPropertiesComponent } from './component/setting/server-properties/server-properties.component';
+import { SiteSettingsComponent } from './component/setting/site-settings/site-settings.component';
 
 @NgModule({
   declarations: [
@@ -30,11 +30,9 @@ import { CircularProgressComponent } from './component/utils/circular-progress/c
     ItemListComponent,
     ItemViewComponent,
     LogListComponent,
-    LogViewComponent,
     SessionMonitorComponent,
     NetworkChartComponent,
     HeaderComponent,
-    LogFilterPipe,
     HomeComponent,
     NavComponent,
     FooterComponent,
@@ -42,7 +40,9 @@ import { CircularProgressComponent } from './component/utils/circular-progress/c
     UpTimePipe,
     LengthUnitPipe,
     AddLinkComponent,
-    CircularProgressComponent
+    CircularProgressComponent,
+    ServerPropertiesComponent,
+    SiteSettingsComponent
   ],
   imports: [
     BrowserModule,
