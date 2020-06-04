@@ -2,6 +2,8 @@ package org.ariia.mvc;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import org.ariia.mvc.model.ControllerHandler;
@@ -30,6 +32,8 @@ public class WebServer {
 	private HttpServer server;
 	private String staticResourceHandler;
 	
+	private List<ControllerHandler> controllerHandlers;
+	
 	public WebServer(int port) throws IOException {
 		this(new InetSocketAddress(port));
 	}
@@ -50,6 +54,7 @@ public class WebServer {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
 		this.createResourceContext("/", resourceLocation);
+		this.controllerHandlers = new ArrayList<>();
 	}
 	
 	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type, boolean redirect) throws IOException {
@@ -77,6 +82,7 @@ public class WebServer {
 				this.createMultiResourceContext("/", resourceLocation);
 			}
 		}
+		this.controllerHandlers = new ArrayList<>();
 	}
 
 	public HttpServer server() {
@@ -140,6 +146,7 @@ public class WebServer {
 	public HttpContext createControllerContext(Object controller) {
 		ProxySwitcher switcher = new ProxySwitcher(controller);
 		ControllerHandler handler = new ControllerHandler(controller, switcher);
+		controllerHandlers.add(handler);
 		return server.createContext(switcher.getContext(), handler);
 	}
 	

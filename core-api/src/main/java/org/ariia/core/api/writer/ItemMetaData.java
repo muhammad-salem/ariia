@@ -29,12 +29,14 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	
 	protected RandomAccessFile raf;
 	private   ConcurrentLinkedQueue<Segment> segments;
+	protected Properties properties;
 	
-	public ItemMetaData(Item item) {
+	public ItemMetaData(Item item, Properties properties) {
 		this.item 			= item;
 		this.info 			= item.getRangeInfo();
 		this.rangeMointor	= new OneRangeMonitor(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
+		this.properties		= properties;
 		initRandomAccessFile();
 		initMetaData();
 	}
@@ -140,8 +142,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return item;
 	}
 
-	public void setItem(Item item) {
-		this.item = item;
+	public Properties getProperties() {
+		return properties;
 	}
 	
 	public RangeUtil getRangeInfo() {
@@ -212,7 +214,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	public void startAndCheckDownloadQueue(ItemDownloader plane, SpeedMonitor... monitors) {
 		if (waitQueue.isEmpty()) { return; }
 		downloading = true;
-		while ( downloadList.size() < Properties.RANGE_POOL_NUM & !waitQueue.isEmpty()) {
+		while ( downloadList.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
 			Integer index = waitQueue.poll();
 			if(index == null) break;
 			else {

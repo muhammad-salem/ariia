@@ -3,6 +3,7 @@ package org.ariia.core.api.writer;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.segment.Segment;
@@ -11,8 +12,8 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 
 
 	protected FileChannel channel;
-	public ChannelMetaDataWriter(Item item) {
-		super(item);
+	public ChannelMetaDataWriter(Item item, Properties properties) {
+		super(item, properties);
 	}
 	
 	@Override

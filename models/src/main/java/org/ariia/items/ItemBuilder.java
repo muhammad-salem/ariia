@@ -33,9 +33,11 @@ import org.xml.sax.SAXException;
 public class ItemBuilder {
 	
 	private Argument arguments;
+	private Properties properties;
 	private List<Item> items;
 	
-	public ItemBuilder(Argument arguments) {
+	public ItemBuilder(Argument arguments, Properties properties) {
+		this.properties = properties;
 		setArguments(arguments);
 	}
 	
@@ -104,7 +106,7 @@ public class ItemBuilder {
 		if (arguments.isSavePath())
 			item.setSaveDirectory(arguments.getSavePath());
 		else {
-			item.setSaveDirectory(Properties.Default_SAVE_DIR_PATH);
+			item.setSaveDirectory(properties.getDefaultSaveDirectory());
 		}
 		if (arguments.isFileName()) {
 			item.setFilename(arguments.getFileName());

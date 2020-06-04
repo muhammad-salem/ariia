@@ -8,6 +8,7 @@ import java.util.OptionalLong;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import org.ariia.config.Properties;
 import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
@@ -22,20 +23,22 @@ import org.ariia.speed.SpeedMonitor;
 
 public abstract class Client implements Downloader, ItemDownloader, ContentLength {
 
-	protected int retries;
+//	protected int retries;
+	protected Properties properties;
 	protected ClientRequest clientRequest;
 	protected ExecutorService executor;
 	
-	public Client(int retries, ClientRequest clientRequest, ExecutorService executor) {
+	public Client(Properties properties, ClientRequest clientRequest, ExecutorService executor) {
 		super();
-		this.retries = retries;
+		this.properties = properties;
 		this.clientRequest = clientRequest;
 		this.executor = executor;
 	}
 
 	public Proxy getProxy() { return clientRequest.proxy(); }
+	public Properties getProperties() { return properties; }
 
-	public int getRetries() { return retries; }
+	public int getRetries() { return properties.getRetries(); }
 	public ClientRequest getClientRequest() { return clientRequest;}
 	public ExecutorService getExecutor() { return executor; }
 	
@@ -46,7 +49,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 	
 	@Override
 	public Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
-		if (retries == 0) {
+		if (getRetries() == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
 				while (!finsh && metaData.isDownloading()) {
@@ -56,7 +59,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 		} else {
 			return executor.submit(() -> {
 				boolean finised = false;
-				for (int i = 0; (i < retries && !finised && metaData.isDownloading()); i++) {
+				for (int i = 0; (i < getRetries() && !finised && metaData.isDownloading()); i++) {
 					finised = downloadTask(metaData, index, monitors);
 				}
 			});

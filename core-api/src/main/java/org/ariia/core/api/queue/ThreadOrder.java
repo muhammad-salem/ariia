@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.ariia.config.Properties.RANGE_POOL_NUM;
-
 public interface ThreadOrder {
 	
+	int getRangePoolNum();
 	
 	default List<Integer> threadDownloadOrder(int count){
 		if(count <= 0) return Collections.emptyList();
@@ -15,17 +14,17 @@ public interface ThreadOrder {
 		if(count == 1) {
 			indexs.add(0);
 		}
-		else if(count < RANGE_POOL_NUM) {
+		else if(count < getRangePoolNum()) {
 			indexs.add(0);
 			indexs.add(count-1);
 			for (int i = 1; i < count-1; i++) {
 				indexs.add(i);
 			}
 		}
-		else if(count >=  RANGE_POOL_NUM) {
+		else if(count >=  getRangePoolNum()) {
 			indexs.add(0);
-			indexs.add(RANGE_POOL_NUM-1);
-			for (int i = 1; i < RANGE_POOL_NUM-1; i++) {
+			indexs.add(getRangePoolNum()-1);
+			for (int i = 1; i < getRangePoolNum()-1; i++) {
 				indexs.add(i);
 			}
 		}

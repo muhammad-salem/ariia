@@ -56,6 +56,7 @@ public class ServiceManager implements Closeable {
 	protected TableMonitor reportTable;
 	protected ConnectivityCheck connectivity;
 	
+	protected Properties properties;
 
 	private Runnable finishAction = ()->{};
 	
@@ -65,7 +66,6 @@ public class ServiceManager implements Closeable {
 		this.reportTable = new MiniTableMonitor(sessionMonitor);
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getProxy());
-
 		this.initServiceList(new ItemStore());
 		
 	}
@@ -109,6 +109,7 @@ public class ServiceManager implements Closeable {
 		this.wattingList		= new LinkedList<>();
 		this.downloadingList	= new LinkedList<>();
 		this.completeingList	= new LinkedList<>();
+		this.properties = client.getProperties();
 	}
 	
 	
@@ -158,9 +159,9 @@ public class ServiceManager implements Closeable {
 				dataStore.save(metaData.getItem());
 			}
 		} else {
-			if(downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL) {
+			if(downloadingList.size() < properties.getMaxActiveDownloadPool()) {
 				StringBuilder builder = new StringBuilder();
-				while (downloadingList.size() < Properties.MAX_ACTIVE_DOWNLOAD_POOL && !wattingList.isEmpty()) {
+				while (downloadingList.size() < properties.getMaxActiveDownloadPool() && !wattingList.isEmpty()) {
 					ItemMetaData metaData = wattingList.poll();
 					addItemEvent(metaData);
 					builder.append(metaData.getItem().getFilename());
@@ -343,16 +344,16 @@ public class ServiceManager implements Closeable {
 		sessionMonitor.add(range);
 		ItemMetaData metaData = null;
 		if(range.isStreaming()) {
-			metaData = new StreamMetaDataWriter(item);
+			metaData = new StreamMetaDataWriter(item, properties);
 		}
 		else {
-			metaData = new ChannelMetaDataWriter(item);
+			metaData = new ChannelMetaDataWriter(item, properties);
 		}
 		
 //		else if(Integer.MAX_VALUE  > range.getFileLength()) {
-//			metaData = new SimpleMappedMetaDataWriter(item);
+//			metaData = new SimpleMappedMetaDataWriter(item, properties);
 //		} else {
-//			metaData = new LargeMappedMetaDataWriter(item);
+//			metaData = new LargeMappedMetaDataWriter(item, properties);
 //		}
 
 		item.setState(ItemState.INIT_FILE);

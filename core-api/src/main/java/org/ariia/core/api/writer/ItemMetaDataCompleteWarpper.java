@@ -1,5 +1,6 @@
 package org.ariia.core.api.writer;
 
+import org.ariia.config.Properties;
 import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.items.Item;
 import org.ariia.segment.Segment;
@@ -7,8 +8,8 @@ import org.ariia.speed.SpeedMonitor;
 
 public class ItemMetaDataCompleteWarpper extends ItemMetaData {
 
-	public ItemMetaDataCompleteWarpper(Item item) {
-		super(item);
+	public ItemMetaDataCompleteWarpper(Item item, Properties properties) {
+		super(item, properties);
 	}
 
 	@Override

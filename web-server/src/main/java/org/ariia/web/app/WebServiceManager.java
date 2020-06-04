@@ -51,7 +51,7 @@ public class WebServiceManager extends ServiceManager {
 		super.initServiceList(dataStore);
 		dataStore.getAll().forEach(item -> {
 			if(item.getState().isComplete()){
-				completeingList.add(new ItemMetaDataCompleteWarpper(item));
+				completeingList.add(new ItemMetaDataCompleteWarpper(item, properties));
 			} else {
 				download(item);
 			}

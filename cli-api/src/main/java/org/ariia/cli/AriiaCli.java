@@ -47,13 +47,13 @@ public class AriiaCli {
 	}
 	
 	public void lunch(String[] args) {
-		lunch(new Argument(args));
+		lunch(new Argument(args), new Properties());
 	}
 
-	public void lunch(Argument arguments ) {
+	public void lunch(Argument arguments, Properties properties) {
 		
 		R.MK_DIRS(R.CachePath);
-		Properties.Config(arguments);
+		properties.setupConfig(arguments);
 		
 		if (Objects.isNull(serviceManager)) {
 			serviceManager = new ServiceManager(client);
@@ -69,7 +69,7 @@ public class AriiaCli {
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
 		
-		ItemBuilder builder = new ItemBuilder(arguments);
+		ItemBuilder builder = new ItemBuilder(arguments, properties);
 		
 		serviceManager.initForDownload(builder.getItems());
 		builder.clear();

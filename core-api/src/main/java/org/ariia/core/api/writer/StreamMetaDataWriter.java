@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
+import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.segment.Segment;
@@ -13,8 +14,8 @@ import org.ariia.util.R;
 public class StreamMetaDataWriter extends ItemMetaData {
 	
 	private FileChannel channel;
-	public StreamMetaDataWriter(Item item) {
-		super(item);
+	public StreamMetaDataWriter(Item item, Properties properties) {
+		super(item, properties);
 	}
 	
 	@Override

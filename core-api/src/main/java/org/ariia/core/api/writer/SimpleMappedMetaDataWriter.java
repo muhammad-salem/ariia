@@ -5,6 +5,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
+import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.segment.Segment;
@@ -13,8 +14,8 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
 
 	protected MappedByteBuffer mappedBuffer;
 	protected FileChannel  channel;
-	public SimpleMappedMetaDataWriter(Item item) {
-		super(item);
+	public SimpleMappedMetaDataWriter(Item item, Properties properties) {
+		super(item, properties);
 	}
 	@Override
 	protected void initMetaData() {

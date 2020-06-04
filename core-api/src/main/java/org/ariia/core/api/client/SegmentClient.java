@@ -3,6 +3,7 @@ package org.ariia.core.api.client;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.ariia.config.Properties;
 import org.ariia.core.api.queue.StreamOrder;
 import org.ariia.core.api.queue.ThreadOrder;
 import org.ariia.core.api.request.ClientRequest;
@@ -15,26 +16,26 @@ public class SegmentClient extends Client implements StreamOrder, ThreadOrder  {
 
 	SegmentDownloader segmentDownloader;
 	
-	public SegmentClient(int retries, ClientRequest clientRequest) {
-		this(retries, clientRequest, Executors.newCachedThreadPool(),
+	public SegmentClient(Properties properties, ClientRequest clientRequest) {
+		this(properties, clientRequest, Executors.newCachedThreadPool(),
 				new SegmentDownloader(clientRequest, new SegmentWriter(){}) );
 	}
 	
-	public SegmentClient(int retries, ClientRequest clientRequest, ExecutorService executor) {
-		this(retries, clientRequest, executor,
+	public SegmentClient(Properties properties, ClientRequest clientRequest, ExecutorService executor) {
+		this(properties, clientRequest, executor,
 				new SegmentDownloader(clientRequest, new SegmentWriter() {} ));
 	}
 	
 	
-	public SegmentClient(int retries, ClientRequest clientRequest, ExecutorService executor,
+	public SegmentClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,
 			SegmentWriter segmentWriter) {
-		this(retries, clientRequest, executor,
+		this(properties, clientRequest, executor,
 				new SegmentDownloader(clientRequest, segmentWriter));
 	}
 	
-	public SegmentClient(int retries, ClientRequest clientRequest, ExecutorService executor,
+	public SegmentClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,
 			SegmentDownloader segmentDownloader) {
-		super(retries, clientRequest, executor);
+		super(properties, clientRequest, executor);
 		this.segmentDownloader = segmentDownloader;
 	}
 	
@@ -42,6 +43,11 @@ public class SegmentClient extends Client implements StreamOrder, ThreadOrder  {
 	public boolean downloadTask(ItemMetaData metaData, int index,
 			SpeedMonitor... monitors) {
 		return segmentDownloader.downloadTask(metaData, index, monitors);
+	}
+
+	@Override
+	public int getRangePoolNum() {
+		return properties.getRangePoolNum();
 	}
 
 }

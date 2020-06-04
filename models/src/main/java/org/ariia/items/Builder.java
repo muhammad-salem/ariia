@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.ariia.config.Properties;
 import org.ariia.range.RangeInfo;
+import org.ariia.util.R;
 
 
 public class Builder {
@@ -18,7 +18,10 @@ public class Builder {
 	protected Map<String, List<String>> headers;
 	protected RangeInfo rangeInfo;
 	
-	public Builder() { this.headers = new HashMap<>(0);}
+	
+	public Builder() {
+		this.headers = new HashMap<>(0);
+	}
 	
 	public Builder(String url) {
 		this(url, new HashMap<>(0));
@@ -75,7 +78,7 @@ public class Builder {
 		
 		item.setUrl(this.url);
 		item.setFilename(getFileName());
-		item.setSaveDirectory(Objects.nonNull(saveDir) ? this.saveDir : Properties.Default_SAVE_DIR_PATH);
+		item.setSaveDirectory(Objects.nonNull(saveDir) ? this.saveDir : R.CurrentDirectory());
 		
 		if(Objects.nonNull(headers)) {
 			item.setHeaders(this.headers);

@@ -3,41 +3,50 @@ package org.ariia.config;
 import org.ariia.args.Argument;
 import org.ariia.util.R;
 
-public final class Properties {
-	private Properties() {}
+public class Properties {
 	
-	public static int RETRIES = 0;
-	
-	public static String Default_SAVE_DIR_PATH = R.CurrentDirectory();
-	
-	public static int MAX_ACTIVE_DOWNLOAD_POOL = 4;
-	
-	public static int RANGE_POOL_NUM = 8;
-	
-	public static int MAX_BUFFER_POOL = 64;		//	8 * 4 * 5
+	public int retries = 0;
+	public String defaultSaveDirectory = R.CurrentDirectory();
+	public int maxActiveDownloadPool = 4;
+	public int rangePoolNum = 8;
+	public int maxBufferPool = 64;		//	8 * 4 * 2
 
-
-	public static void Config(Argument arguments) {
+	public Properties() {}
+	
+	public Properties(Argument arguments) {
+		setupConfig(arguments);
+	}
+	
+	public void setupConfig(Argument arguments) {
 		if(arguments.isTries()) {
-			RETRIES = arguments.getTries();
+			retries = arguments.getTries();
 		}
-		
 		if(arguments.isConnection()) {
-			RANGE_POOL_NUM = arguments.getNumberOfConnection();
+			rangePoolNum = arguments.getNumberOfConnection();
 		}
-		
-		if(arguments.isSavePath()) {
-			Default_SAVE_DIR_PATH = arguments.getSavePath();
-			
-		}
-		R.MK_DIRS(Default_SAVE_DIR_PATH);
-		
-		
 		if(arguments.isMaxItem()) {
-			MAX_ACTIVE_DOWNLOAD_POOL = arguments.getMaxItem();
+			maxActiveDownloadPool = arguments.getMaxItem();
 		}
-		
-		MAX_BUFFER_POOL = MAX_ACTIVE_DOWNLOAD_POOL * RANGE_POOL_NUM * 2;
+		maxBufferPool = maxActiveDownloadPool * rangePoolNum * 2;
+		if(arguments.isSavePath()) {
+			defaultSaveDirectory = arguments.getSavePath();
+		}
+		R.MK_DIRS(defaultSaveDirectory);
+	}
+	public int getRetries() {
+		return retries;
+	}
+	public String getDefaultSaveDirectory() {
+		return defaultSaveDirectory;
+	}
+	public int getMaxActiveDownloadPool() {
+		return maxActiveDownloadPool;
+	}
+	public int getRangePoolNum() {
+		return rangePoolNum;
+	}
+	public int getMaxBufferPool() {
+		return maxBufferPool;
 	}
 
 	

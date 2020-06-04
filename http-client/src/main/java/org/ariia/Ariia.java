@@ -4,6 +4,7 @@ import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
 import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCli;
+import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.internal.AriiaHttpClient;
 import org.terminal.console.log.Level;
@@ -22,15 +23,16 @@ public static void main(String[] args) {
 		}
 		
 		LogCli.initLogServices(arguments, Level.log);
+		Properties properties = new Properties(arguments);
 		Runnable onComplete = ()-> {
 			if (!arguments.isDaemonService()){
 				System.exit(0);
 			}
 		};
 		AriiaCli cli = new AriiaCli(
-				Clients.segmentClient(new AriiaHttpClient(arguments.getProxy())), 
+				Clients.segmentClient(properties, new AriiaHttpClient(arguments.getProxy())), 
 				onComplete);
-		cli.lunch(arguments);
+		cli.lunch(arguments, properties);
 		
 	}
 

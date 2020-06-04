@@ -6,6 +6,7 @@ import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
 import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCli;
+import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.client.SegmentClient;
 import org.ariia.logging.Log;
@@ -42,7 +43,7 @@ public class WebApp {
 		Printer printer = new PrinterImpl(System.out);
 		WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
 		LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
-		
+		Properties properties = new Properties(arguments);
 		
 		// setup web server
 		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
@@ -55,7 +56,7 @@ public class WebApp {
 		WebServer server = new WebServer(port, resourceLocation, type, true);
 
 		// setup download manager service
-		SegmentClient client = Clients.segmentClient(new OkClient(arguments.getProxy()));
+		SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));
 		WebServiceManager serviceManager = new WebServiceManager(client, mainBroadcast);
 		AriiaCli cli = new AriiaCli(serviceManager);
 		
@@ -67,7 +68,7 @@ public class WebApp {
 		
 		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
 		
-		cli.lunch(arguments);
+		cli.lunch(arguments, properties);
 		server.start();
 		LogCli.startLogService();
 		Log.log(WebApp.class, "Running Web Server",

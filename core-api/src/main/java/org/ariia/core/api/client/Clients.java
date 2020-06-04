@@ -6,18 +6,12 @@ import org.ariia.core.api.writer.ClinetWriter;
 
 public class Clients {
 	
-	public static SegmentClient segmentClient(ClientRequest request) {
-		SegmentClient client = new SegmentClient(Properties.RETRIES, request);
-		
-		return client;
+	public static SegmentClient segmentClient(Properties properties, ClientRequest request) {
+		return new SegmentClient(properties, request);
 	}
 	
-	public static ChannelClient channelClient(ClientRequest request, ClinetWriter clinetWriter) {
-		ChannelClient client = new ChannelClient(Properties.RETRIES,request, clinetWriter);
-		return client;
+	public static ChannelClient channelClient(Properties properties, ClientRequest request, ClinetWriter clinetWriter) {
+		return new ChannelClient(properties, request, clinetWriter);
 	}
-	
-	
-	
 
 }

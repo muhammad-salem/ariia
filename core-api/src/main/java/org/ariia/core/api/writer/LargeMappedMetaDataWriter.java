@@ -7,6 +7,7 @@ import java.nio.channels.FileChannel.MapMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ariia.config.Properties;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.segment.Segment;
@@ -31,8 +32,9 @@ public class LargeMappedMetaDataWriter extends ItemMetaData{
 	}
 	
 	Map<Pair, MappedByteBuffer> mappedBuffers;
-	public LargeMappedMetaDataWriter(Item item) {
-		super(item);
+	
+	public LargeMappedMetaDataWriter(Item item, Properties properties) {
+		super(item, properties);
 	}
 	
 	@Override
