@@ -85,9 +85,12 @@ export class DataService {
 
 		this.sseService.initSseEvent("/backbone-broadcast").subscribe(()=> {
 		  this.sseService.forEvent("logging").subscribe((messageEvent)=> {
-			this.data.logging.push(JSON.parse(messageEvent.data));
+			// this.data.logging.push(JSON.parse(messageEvent.data));
+			const message: LogMessage = JSON.parse(messageEvent.data);
+			this.data.logging.splice(0, 0, message);
 			if(this.data.logging.length > 60){
-				this.data.logging.splice(0, this.data.logging.length-60);
+				// this.data.logging.splice(0, this.data.logging.length-60);
+				this.data.logging.splice(60, this.data.logging.length-60);
 			}
 		  });
 
