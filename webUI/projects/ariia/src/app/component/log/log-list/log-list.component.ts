@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { LogMessage } from '../../../model/log-message';
-import { LogLevel } from '../../../model/log-level.enum';
 import { DataService } from '../../../service/data.service';
 import { LogFilter } from '../../../model/log-filter';
+import { LogService } from '../../../service/log.service';
 
 @Component({
   selector: 'ariia-log-list',
@@ -14,18 +14,28 @@ export class LogListComponent implements OnInit {
   filter: LogFilter;
   messages: LogMessage[];
 
-  constructor(private dataService: DataService) {
+  logLevels: string[] = [];
+
+  constructor(private dataService: DataService, private logService: LogService) {
     this.messages = [];
     this.filter = {
-      level: LogLevel.info,
-      classname: '*',
-      from: 0,
-      to: 0
+      level: 'all',
+      classname: '*'
     }
    }
 
   ngOnInit(): void {
     this.messages = this.dataService.loggingMessage;
+    this.logService.levelValues().subscribe(values => this.logLevels = values);
+    this.logService.getLevel().subscribe(level => this.filter.level = level);
+  }
+
+  setLevel(level: string) {
+    this.logService.setLevel(level).subscribe(isDone => {
+      if (isDone){
+        this.filter.level = level;
+      }
+    });
   }
 
 }

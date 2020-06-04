@@ -1,29 +1,46 @@
-<div class="container">
-    <div class="row my-2">
-
+<div class="row my-2">
+    <div class="col-12">
+        <form class="needs-validation" novalidate>
+            <div class="form-row">
+                <div class="col-md-3 col-sm-12">
+                    <label for="validationTooltip04">Log Level</label>
+                    <select class="custom-select" id="validationTooltip04" 
+                        (change)="setLevel($event.target.value)"
+                    >
+                        <option *ngFor="let level of logLevels"
+                                [ngValue]="level"
+                                [selected]="filter.level === level"
+                                >{{level}}</option>
+                    </select>
+                    <div class="invalid-tooltip">
+                      Please select a valid state.
+                    </div>
+                  </div>
+            </div>
+        </form>
     </div>
-    <div class="row my-2">
-        <div class="col-12">
-            <table class="table table-sm table-borderless table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Level</th>
-                    <th scope="col">From</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Message</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let message of messages">
-                        <th scope="row">{{message.timeMillis|date:'mediumTime'}}</th>
-                        <td>{{message.level}}</td>
-                        <td>{{message.classname}}</td>
-                        <td>{{message.title}}</td>
-                        <td colspan="2">{{message.message}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+</div>
+<div class="row my-2">
+    <div class="col-12">
+        <table class="table table-sm table-borderless table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Level</th>
+                <th scope="col">From</th>
+                <th scope="col">Title</th>
+                <th scope="col">Message</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let message of messages">
+                    <th scope="row">{{message.timeMillis|date:'mediumTime'}}</th>
+                    <td>{{message.level}}</td>
+                    <td>{{message.classname}}</td>
+                    <td>{{message.title}}</td>
+                    <td colspan="2">{{message.message}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
