@@ -3,20 +3,23 @@
         <form class="needs-validation" novalidate>
             <div class="form-row">
                 <div class="col-md-3 col-sm-12">
-                    <label for="validationTooltip04">Log Level</label>
-                    <select class="custom-select" id="validationTooltip04" 
+                    <label for="logLevel">Server Log Level:</label>
+                    <select class="custom-select custom-select-sm" id="logLevel" 
                         (change)="setLevel($event.target.value)"
                     >
                         <option *ngFor="let level of logLevels"
-                                [ngValue]="level"
+                                [value]="level"
                                 [selected]="filter.level === level"
                                 >{{level}}</option>
                     </select>
-                    <div class="invalid-tooltip">
-                      Please select a valid state.
-                    </div>
-                  </div>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <label for="className">Filter: Class Name</label>
+                    <input type="text" class="form-control" id="className" 
+                            [value]="filter.classname">
+                </div>
             </div>
+           
         </form>
     </div>
 </div>
