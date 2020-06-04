@@ -32,7 +32,23 @@ import com.google.gson.reflect.TypeToken;
 public class Utils {
 
 	private static DecimalFormat decimalFormat = new DecimalFormat("0.000");
-	private static double kbyte = 1024;
+	/**
+	* Base 2 (1024 bytes)
+	* The kibibyte is a multiple of the unit byte for digital information.
+	* The binary prefix kibi means 2^10, or 1024; therefore, 1 kibibyte is 1024 bytes.
+	* The unit symbol for the kibibyte is KiB.
+	*/
+	private static double kibibyte = 1024;
+	
+	/**
+	* Base 10 (1000 bytes)
+	* The prefix kilo means 1000 (103); therefore, one kilobyte is 1000 bytes.
+	* The unit symbol is kB.
+	* 
+	*/
+	private static double kilobyte = 1000;
+	
+	
 	
 	/**
 	 * concate " " to string
@@ -308,145 +324,45 @@ public class Utils {
 	 * @param length
 	 *            file path to read from.
 	 */
-	public static String sizeLengthFormate0_0(double length) {
-		return sizeLengthFormate(length, 1);
-	}
-	public static String sizeLengthFormate0_00(double length) {
-		return sizeLengthFormate(length, 2);
-	}
-	
-	public static String sizeLengthFormate(double length, int percentNum) {
-		String hrSize = "";
-		String percent = "0.";
-		for (int i = 0; i < percentNum; i++) {
-			percent += '0';
-		}
-		DecimalFormat dec = new DecimalFormat(percent);
+	public static String fileLengthUnite(double length, boolean isBinary) {
 		
-
-		// use (10^3) instead of (2^10)
-//		double kbyte = 1000.0; // = 1024;
-		double b = length;
-		double k = b / kbyte;
-		double m = k / kbyte;
-		double g = m / kbyte;
-		double t = g / kbyte;
-		
-
-		if (t >= 1) {
-			hrSize = dec.format(t).concat(" TB");
-		} else if (g >= 1) {
-			hrSize = dec.format(g).concat(" GB");
-		} else if (m >= 1) {
-			hrSize = dec.format(m).concat(" MB");
-		} else if (k >= 1) {
-			hrSize = dec.format(k).concat(" KB");
+		double kilo = isBinary ? kibibyte : kilobyte;
+		double k = length / kilo;
+		if(k < 1){
+			return length + (isBinary ? " B" : " b");
+		}
+		double m = k / kilo;
+		if(m < 1){
+			if (isBinary){
+				return decimalFormat.format(k).concat(" KB");
+			} else {
+				return decimalFormat.format(k*8).concat(" Kb");
+			}
+		}
+		double g = m / kilo;
+		if(g < 1){
+			if (isBinary){
+				return decimalFormat.format(m).concat(" MB");
+			} else {
+				return decimalFormat.format(m*8).concat(" Mb");
+			}
+		}
+		double t = g / kilo;
+		if(t < 1){
+			if (isBinary){
+				return decimalFormat.format(g).concat(" GB");
+			} else {
+				return decimalFormat.format(g*8).concat(" Gb");
+			}
 		} else {
-			hrSize = dec.format(b).concat(" Bytes");
+			if (isBinary){
+				return decimalFormat.format(t).concat(" TB");
+			} else {
+				return decimalFormat.format(t*8).concat(" Tb");
+			}
 		}
-
-		return hrSize;
 	}
 
-	/**
-	 * @param length
-	 *            file path to read from.
-	 */
-	public static String getLengthFor(double length) {
-		return fileLengthUnite(length);
-	}
-
-	/**
-	 * @param length
-	 *            file path to read from.
-	 */
-	public static String fileLengthUnite(double length) {
-		String hrSize = "";
-		//DecimalFormat dec = new DecimalFormat("0.00");
-
-		// use (10^3) instead of (2^10)
-//		double kbyte = 1000.0; // = 1024;
-		double b = length;
-		double k = b / kbyte;
-		double m = k / kbyte;
-		double g = m / kbyte;
-		double t = g / kbyte;
-
-		if (t >= 1) {
-			hrSize = decimalFormat.format(t).concat(" TB");
-		} else if (g >= 1) {
-			hrSize = decimalFormat.format(g).concat(" GB");
-		} else if (m >= 1) {
-			hrSize = decimalFormat.format(m).concat(" MB");
-		} else if (k >= 1) {
-			hrSize = decimalFormat.format(k).concat(" KB");
-		} else {
-			hrSize = decimalFormat.format(b).concat(" Bytes");
-		}
-
-		return hrSize;
-	}
-
-	public static double fileLength(long length) {
-		// use (10^3) instead of (2^10)
-//		double kbyte = 1000.0; // = 1024;
-		double b = length;
-		double k = b / kbyte;
-		double m = k / kbyte;
-		double g = m / kbyte;
-		double t = g / kbyte;
-
-		if (t > 1) {
-			return t;
-		} else if (g > 1) {
-			return g;
-		} else if (m > 1) {
-			return m;
-		} else if (k > 1) {
-			return k;
-		}
-		return length;
-	}
-
-	public static int gusslChunkesNum(long length) {
-		// double k = length / 1024.0;
-
-		if (length <= 0) {
-			return 1;
-		}
-		// use (10^3) instead of (2^10)
-//		double kbyte = 1000.0; // = 1024;
-		double b = length;
-		double k = b / kbyte;
-		double m = k / kbyte;
-		double g = m / kbyte;
-		double t = g / kbyte;
-
-		if (t > 1) {
-			return 32;
-		} else if (g > 1) {
-			return 16;
-		} else if (m >= 700) {
-			return 10;
-		} else if (m < 700 && m >= 500) {
-			return 8;
-		} else if (m < 500 && m >= 250) {
-			return 6;
-		} else if (m < 250 && m >= 200) {
-			return 5;
-		} else if (m < 200 && m >= 100) {
-			return 4;
-		} else if (m < 100 && m >= 10) {
-			return 3;
-		} else if (m < 10 && m >= 4) {
-			return 2;
-		}
-		/*
-		 * else if (m < 5 && m >= 1 ) { return 1; } else if (k > 1) { return 1; }
-		 */
-
-		return 1;
-	}
 
 	static DecimalFormat decPercentage = new DecimalFormat("#0.00# %");
 	public static String percent(long downloaded, long size) {
@@ -456,10 +372,6 @@ public class Utils {
 
 	public static double percent(double downloaded, double size) {
 		return downloaded / size;
-	}
-
-	public static String fileLengthUnite(double progress, final long length) {
-		return fileLengthUnite(progress * length);
 	}
 
 	public static String getTime(long date) {
