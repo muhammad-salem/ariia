@@ -1,9 +1,8 @@
-import { LogLevel } from './log-level.enum';
 
-export class LogMessage {
-    timeMillis: number;
-    level: LogLevel;
-    classname: string;
-    title: string;
+export interface LogMessage {
+    timeMillis: number,
+    level: string,
+    classname: string,
+    title: string,
     message: string;
 }
