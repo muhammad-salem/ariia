@@ -5,24 +5,24 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class LengthUnitPipe implements PipeTransform {
 
-	kBites: number = 1000;	// use (10^3)
-	kBytes: number = 1024;	// use (2^10)
+	kilobyte: number = 1000;	// use (10^3)
+	kibibyte: number = 1024;	// use (2^10)
 
-  transform(length: number, isByte: boolean): string {
+  transform(length: number, isBinary: boolean): string {
     var k, m, g, t, kilo;
-    if(isByte) {
-    	kilo = this.kBytes;
+    if(isBinary) {
+    	kilo = this.kibibyte;
     } else {
-    	kilo = this.kBites;
-    	isByte = false;
+    	kilo = this.kilobyte;
+    	isBinary = false;
     }
 	k = length / kilo;
 	if(k < 1){
-		return length + (isByte ? ' B' : ' b');
+		return length + (isBinary ? ' B' : ' b');
 	}
 	m = k / kilo;
 	if(m < 1){
-		if (isByte){
+		if (isBinary){
 			return `${k.toFixed(3)} KB`;
 		} else {
 			return `${(k*8).toFixed(3)} Kb`;
@@ -30,7 +30,7 @@ export class LengthUnitPipe implements PipeTransform {
 	}
 	g = m / kilo;
 	if(g < 1){
-		if (isByte){
+		if (isBinary){
 			return `${m.toFixed(3)} MB`;
 		} else {
 			return `${(m*8).toFixed(3)} Mb`;
@@ -38,13 +38,13 @@ export class LengthUnitPipe implements PipeTransform {
 	}
 	t = g / kilo;
 	if(t < 1){
-		if (isByte){
+		if (isBinary){
 			return `${g.toFixed(3)} GB`;
 		} else {
 			return `${(g*8).toFixed(3)} Gb`;
 		}
 	} else {	
-		if (isByte){
+		if (isBinary){
 			return `${t.toFixed(3)} TB`;
 		} else {
 			return `${(t*8).toFixed(3)} Tb`;
