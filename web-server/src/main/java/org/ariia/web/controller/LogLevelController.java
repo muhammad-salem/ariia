@@ -1,7 +1,5 @@
 package org.ariia.web.controller;
 
-import java.util.Objects;
-
 import org.ariia.logging.Log;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RestController;
@@ -13,13 +11,10 @@ public class LogLevelController {
 	
 		
 	@PostRequest(path = "/set")
-	public boolean createItem(@RequestBody String levelName) {
+	public boolean setLevel(@RequestBody String levelName) {
 		Level level = Level.valueOf(levelName);
-		if (Objects.nonNull(level)) {
-			Log.level(level);
-			return true;
-		}
-		return false;
+		Log.level(level);
+		return true;
 	}
 
 }
