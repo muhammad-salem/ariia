@@ -1,5 +1,7 @@
 package org.ariia.config;
 
+import java.util.Objects;
+
 import org.ariia.args.Argument;
 import org.ariia.util.R;
 
@@ -16,6 +18,18 @@ public class Properties {
 	public Properties(Argument arguments) {
 		setupConfig(arguments);
 	}
+	
+	public void updateProperties(Properties properties) {
+		properties = Objects.requireNonNull(properties, "properties is null");
+		R.MK_DIRS(properties.defaultSaveDirectory);
+		this.defaultSaveDirectory = Objects.requireNonNull(properties.defaultSaveDirectory, "defaultSaveDirectory is null");
+		this.maxActiveDownloadPool = Objects.requireNonNull(properties.maxActiveDownloadPool, "maxActiveDownloadPool is null");
+		this.maxBufferPool = Objects.requireNonNull(properties.maxBufferPool, "maxBufferPool is null");
+		this.rangePoolNum = Objects.requireNonNull(properties.rangePoolNum, "rangePoolNum is null");
+		this.retries = Objects.requireNonNull(properties.retries, "retries is null");		
+	}
+	
+	
 	
 	public void setupConfig(Argument arguments) {
 		if(arguments.isTries()) {
@@ -47,6 +61,26 @@ public class Properties {
 	}
 	public int getMaxBufferPool() {
 		return maxBufferPool;
+	}
+
+	public void setRetries(int retries) {
+		this.retries = retries;
+	}
+
+	public void setDefaultSaveDirectory(String defaultSaveDirectory) {
+		this.defaultSaveDirectory = defaultSaveDirectory;
+	}
+
+	public void setMaxActiveDownloadPool(int maxActiveDownloadPool) {
+		this.maxActiveDownloadPool = maxActiveDownloadPool;
+	}
+
+	public void setRangePoolNum(int rangePoolNum) {
+		this.rangePoolNum = rangePoolNum;
+	}
+
+	public void setMaxBufferPool(int maxBufferPool) {
+		this.maxBufferPool = maxBufferPool;
 	}
 
 	
