@@ -28,6 +28,8 @@
               "projects/ariia/src/assets"
             ],
             "styles": [
+              "projects/ariia/src/style/bootstrap.dark.min.css",
+              "node_modules/ngx-toastr/toastr.css",
               "projects/ariia/src/styles.scss"
             ],
             "scripts": [
