@@ -23,6 +23,7 @@ import { AddLinkComponent } from './component/link/add-link/add-link.component';
 import { CircularProgressComponent } from './component/utils/circular-progress/circular-progress.component';
 import { ServerPropertiesComponent } from './component/setting/server-properties/server-properties.component';
 import { SiteSettingsComponent } from './component/setting/site-settings/site-settings.component';
+import { LogFilterPipe } from './pipe/log-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SiteSettingsComponent } from './component/setting/site-settings/site-se
     AddLinkComponent,
     CircularProgressComponent,
     ServerPropertiesComponent,
-    SiteSettingsComponent
+    SiteSettingsComponent,
+    LogFilterPipe
   ],
   imports: [
     BrowserModule,
