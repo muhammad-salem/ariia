@@ -1,23 +1,30 @@
 <div class="row my-2">
     <div class="col-12">
-        <form class="needs-validation" novalidate>
-            <div class="form-row">
-                <div class="col-md-3 col-sm-12">
-                    <label for="logLevel">Server Log Level:</label>
-                    <select class="custom-select custom-select-sm" id="logLevel" 
-                        (change)="setLevel($event.target.value)"
-                    >
-                        <option *ngFor="let level of logLevels"
-                                [value]="level"
-                                [selected]="filter.level === level"
-                                >{{level}}</option>
-                    </select>
-                </div>
-                <div class="col-md-3 col-sm-12">
-                    <label for="className">Filter: Class Name</label>
-                    <input type="text" class="form-control" id="className" 
-                            [value]="filter.classname">
-                </div>
+        <form #form class="needs-validation" novalidate>
+            <div class="form-inline align-items-center">
+                <label class="my-1 mr-sm-2" for="logLevel">Server Log Level:</label>
+                <select class="custom-select custom-select-sm my-1 mr-sm-2"
+                		name="logLevel" id="logLevel"
+                		[(ngModel)]="filterLog.level"
+                    (change)="setLevel()"
+                >
+                    <option *ngFor="let level of logLevels"
+                            [value]="level"
+                            [selected]="filterLog.level === level"
+                            >{{level}}</option>
+                </select>
+                
+                <label for="className" class="my-1 mr-sm-2">Filter By Class Name</label>
+                <input type="text" class="form-control form-control-sm my-1 mr-sm-2"
+                		name="className" id="className"
+                		[(ngModel)]="filterLog.classname">
+                        
+                <button type="button" class="btn btn-link text-info mb-2" (click)="clearLogMessages()" >
+		            <span>
+		                <fa-icon [icon]="faTrash" [size]="'sm'"></fa-icon>
+		            </span>
+		            Delete All Logs
+		        </button>
             </div>
            
         </form>
@@ -30,19 +37,23 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Level</th>
-                <th scope="col">From</th>
+                <th scope="col">Class Name</th>
                 <th scope="col">Title</th>
                 <th scope="col">Message</th>
               </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let message of messages">
-                    <th scope="row">{{message.timeMillis|date:'mediumTime'}}</th>
-                    <td>{{message.level}}</td>
-                    <td>{{message.classname}}</td>
-                    <td>{{message.title}}</td>
-                    <td colspan="2">{{message.message}}</td>
-                </tr>
+            	<ng-container *ngFor="let message of messages | logFilter:filterLog">
+            		<tr *ngIf="message.showMsg"
+		            	(click)="selectMessage(message)" 
+		            	[ngClass]="{'text-dark bg-success shadow p-3 mb-5 rounded': message.clicked}">
+			        	<td >{{message.timeMillis|date:'mediumTime'}}</td>
+			            <td>{{message.level}}</td>
+			            <td>{{message.classname}}</td>
+			            <td>{{message.title}}</td>
+			            <td colspan="2">{{message.message}}</td>
+		            </tr>
+            	</ng-container>
             </tbody>
         </table>
     </div>
