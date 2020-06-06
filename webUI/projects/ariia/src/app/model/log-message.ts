@@ -4,5 +4,7 @@ export interface LogMessage {
     level: string,
     classname: string,
     title: string,
-    message: string;
+    message: string,
+    showMsg: boolean
+    clicked: boolean;
 }
