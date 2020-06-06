@@ -87,6 +87,8 @@ export class DataService {
 		  this.sseService.forEvent("logging").subscribe((messageEvent)=> {
 			// this.data.logging.push(JSON.parse(messageEvent.data));
 			const message: LogMessage = JSON.parse(messageEvent.data);
+			message.showMsg = true;
+			message.clicked = false;
 			this.data.logging.splice(0, 0, message);
 			if(this.data.logging.length > 60){
 				// this.data.logging.splice(0, this.data.logging.length-60);
