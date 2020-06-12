@@ -48,7 +48,7 @@ public class SpeedMonitor extends NetworkMonitor implements SocketMonitor, Datag
 	}
 
 	/**
-	 * Call this method to snapshot old vale of send/received tcp/udp represents.
+	 * Call this method to snapshot old vales of Send and Received of TCP and UDP transfer.
 	 */
 	@Override
 	public void demondSpeedNow() {

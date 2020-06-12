@@ -54,7 +54,8 @@ public abstract class SessionMonitor extends SpeedMonitor implements Styles, Cur
 	private long totalLength = 0;
 	private long downloadLength = 0;
 	private long remainigLength = 0;
-	
+
+	protected long remainingTime = 0;
 	private boolean downloading = false;
 
 	protected synchronized void rangeInfoUpdateData() {
@@ -85,7 +86,8 @@ public abstract class SessionMonitor extends SpeedMonitor implements Styles, Cur
 	public String getRemainingLengthMB() { return toUnitLengthBytes(remainigLength); }
 	
 	protected long getRemainingTime() {
-		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
+		remainingTime = (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
+		return remainingTime;
 	}
 	protected String getRemainingTimeString() {
 		return green(underscore(Utils.timeformate(getRemainingTime())));
@@ -120,7 +122,6 @@ public abstract class SessionMonitor extends SpeedMonitor implements Styles, Cur
 		return builder.toString();
 	}
 	
-
 	public void printMointorReport() {
 		printMointorReport(System.out);
 	}
@@ -136,13 +137,10 @@ public abstract class SessionMonitor extends SpeedMonitor implements Styles, Cur
 			t = callable.call();
 		} catch (Exception e) {
 			e.printStackTrace();
-//			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
 		}
 		demondSpeedNow();
 		return t;
 	}
-
-
 
 	public boolean isDownloading() {
 		return downloading;
