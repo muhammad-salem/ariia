@@ -59,9 +59,9 @@ public class WebServiceManager extends ServiceManager {
 	}
 	
 	@Override
-	public void startScheduledService() {
-		super.startScheduledService();
-		scheduledService.scheduleWithFixedDelay(this::sendwebReport, 1, 1, TimeUnit.SECONDS);
+	public void printReport() {
+		super.printReport();
+		this.sendwebReport();
 	}
 	
 	private void sendwebReport() {
@@ -117,6 +117,7 @@ public class WebServiceManager extends ServiceManager {
 		if (metaData != null) {
 			//return false;
 			removeItemEvent(metaData);
+			completeingList.remove(metaData);
 			return dataStore.remove(metaData.getItem());
 		} else {
 			return dataStore.remove(dataStore.findById(id));
@@ -149,6 +150,4 @@ public class WebServiceManager extends ServiceManager {
 		return Objects.nonNull(metaData);
 	}
 	
-	
-
 }
