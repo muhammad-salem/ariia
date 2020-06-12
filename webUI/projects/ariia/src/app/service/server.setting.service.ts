@@ -10,11 +10,11 @@ export class ServerSettingService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getLevel(): Observable<Properties>  {
+  getProperties(): Observable<Properties>  {
     return this.httpClient.get<Properties>('/setting/');
   }
 
-  setLevel(properties: Properties): Observable<boolean> {
+  updateProperties(properties: Properties): Observable<boolean> {
     return this.httpClient.post<boolean>('/setting/update', properties);
   }
 
