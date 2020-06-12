@@ -10,6 +10,9 @@ export class LengthUnitPipe implements PipeTransform {
 
   transform(length: number, isBinary: boolean): string {
     var k, m, g, t, kilo;
+    if(Number.isNaN(length)){
+    	return '0';
+    }
     if(isBinary) {
     	kilo = this.kibibyte;
     } else {
