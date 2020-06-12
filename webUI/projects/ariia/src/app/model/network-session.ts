@@ -1,52 +1,53 @@
 export class NetworkSession {
-    timer: number;
-    remainingTime: number;
-    totalLength: number;
-    downloadLength: number;
-    remainigLength: number;
-    downloading: boolean;
-    receiveTCP_old: number;
-    receiveUDP_old: number;
-    sendTCP_old: number;
-    sendUDP_old: number;
-    receiveTCP: number;
-    receiveUDP: number;
-    sendTCP: number;
-    sendUDP: number;
+
+	timer = 0;
+	remainingTime = 0;
+	
+	downloading = false;
+	
+	totalLength = 0;
+	downloadLength = 0;
+	remainigLength = 0;
+	speedOfTCPReceive = 0;
+	speedOfTCPSend = 0;
+	speedOfUDPReceive = 0;
+	speedOfUDPSend = 0;
+	
+	receiveTCP = 0;
+	receiveUDP = 0;
+	sendTCP = 0;
+	sendUDP = 0;
+	
+	totalReceive = 0;
+	totalSend = 0;
+	total = 0;
     
-    constructor() {
-        this.timer = 0;
-        this.remainingTime = 0;
-        this.totalLength = 0;
-        this.downloadLength = 0;
-        this.remainigLength = 0;
-        this.downloading = false;
-        this.receiveTCP_old = 0;
-        this.receiveUDP_old = 0;
-        this.sendTCP_old = 0;
-        this.sendUDP_old = 0;
-        this.receiveTCP = 0;
-        this.receiveUDP = 0;
-        this.sendTCP = 0;
-        this.sendUDP = 0;
-    }
 
     update(session: NetworkSession) {
     	if(session){
-			this.timer = session.timer;
-		    this.remainingTime = session.remainingTime;
-		    this.totalLength = session.totalLength;
-		    this.downloadLength = session.downloadLength;
-		    this.remainigLength = session.remainigLength;
-		    this.downloading = session.downloading;
-		    this.receiveTCP_old = session.receiveTCP_old;
-		    this.receiveUDP_old = session.receiveUDP_old;
-		    this.sendTCP_old = session.sendTCP_old;
-		    this.sendUDP_old = session.sendUDP_old;
-		    this.receiveTCP = session.receiveTCP;
-		    this.receiveUDP = session.receiveUDP;
-		    this.sendTCP = session.sendTCP;
-		    this.sendUDP = session.sendUDP;
+    		this.timer = session.timer ;
+			this.remainingTime = session.remainingTime ;
+			
+			this.downloading = session.downloading;
+			
+			this.totalLength = session.totalLength;
+			this.downloadLength = session.downloadLength;
+			this.remainigLength = session.remainigLength;
+			
+			this.speedOfTCPReceive = session.speedOfTCPReceive ;
+			this.speedOfTCPSend = session.speedOfTCPSend;
+			this.speedOfUDPReceive = session.speedOfUDPReceive ;
+			this.speedOfUDPSend = session.speedOfUDPSend ;
+			
+			this.receiveTCP = session.receiveTCP;
+			this.receiveUDP = session.receiveUDP;
+			this.sendTCP = session.sendTCP;
+			this.sendUDP = session.sendUDP ;
+			
+			this.totalReceive = session.totalReceive;
+			this.totalSend = session.totalSend;
+			this.total = session.total ;
+			
     	}
     }
 }
