@@ -15,6 +15,12 @@
 				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
+				Total Length:
+				<span class="badge badge-primary badge-pill">
+					{{session.totalLength | lengthUnit:isBinary}}
+				</span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Download Length:
 				<span class="badge badge-primary badge-pill">
 					{{session.downloadLength | lengthUnit:isBinary}}
@@ -23,13 +29,7 @@
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Remainig Length:
 				<span class="badge badge-primary badge-pill">
-					{{session.totalLength-session.downloadLength | lengthUnit:isBinary}}
-				</span>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
-				Total Length:
-				<span class="badge badge-primary badge-pill">
-					{{session.totalLength | lengthUnit:isBinary}}
+					{{session.remainigLength | lengthUnit:isBinary}}
 				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
@@ -41,7 +41,7 @@
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Speed:
 				<span class="badge badge-primary badge-pill">
-				    {{(session.receiveTCP - session.receiveTCP_old) | lengthUnit:isBinary}}/s
+				    {{(session.speedOfTCPReceive) | lengthUnit:isBinary}}/s
 				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
