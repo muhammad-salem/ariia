@@ -16,6 +16,7 @@ import org.ariia.items.DataStore;
 import org.ariia.items.Item;
 import org.ariia.items.ItemState;
 import org.ariia.items.ItemStore;
+import org.ariia.items.MetalinkItem;
 import org.ariia.logging.Log;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
@@ -331,6 +332,22 @@ public class ServiceManager implements Closeable {
 			this.download(item);
 		});
 		return item.getId();
+	}
+	
+	public String downloadMetalink(String[] urls) {
+		return this.downloadMetalink(urls, Collections.emptyMap());
+	}
+	public String downloadMetalink(String[] urls, Map<String, List<String>> headers) {
+		MetalinkItem metalinkItem = new MetalinkItem();
+		metalinkItem.addHeaders(headers);
+		for (String string : urls) {
+			metalinkItem.addMirror(string);
+		}
+		this.scheduledService.execute(()-> {
+			this.client.updateItemOnline(metalinkItem);
+			this.download(metalinkItem);
+		});
+		return metalinkItem.getId();
 	}
 	
 	
