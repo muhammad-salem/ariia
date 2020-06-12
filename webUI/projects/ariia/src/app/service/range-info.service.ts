@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RangeInfo } from '../model/range-info';
+import { RangeService } from './range.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,84 +8,61 @@ import { RangeInfo } from '../model/range-info';
 export class RangeInfoService {
 	rangeInfo: RangeInfo;
 	// chunkLength: number;
-	constructor() { }
+	constructor(private rangeService: RangeService) { }
 
 	initRangeInfo(rangeInfo: RangeInfo) {
 		this.rangeInfo = rangeInfo;
-		// if (this.rangeInfo.range.length > 2) {
-		// 	this.chunkLength = this.limitOfIndex(2);
-		// } else {
-		// 	this.chunkLength = this.limitOfIndex(1);
-		// }
 	}
 
 	indexOf(index: number): number[] {
-		return this.rangeInfo.range[index];
+		return this.rangeService.indexOf(this.rangeInfo, index);
 	}
-	/**
-	 * 
-	 */
+	
 	remainLengthOf(index: number): number {
-		return this.rangeInfo.range[index][1] - this.rangeInfo.range[index][0];
+		return this.rangeService.remainLengthOf(this.rangeInfo, index);
 	}
 
-
-	private isArrayFinish(ls: number[]): boolean {
-		return (ls[1] != -1) && (ls[0] - ls[1] >= 0);
-	}
 	isFinish(index: number): boolean {
-		return this.isArrayFinish(this.indexOf(index));
+		return this.rangeService.isFinish(this.rangeInfo, index);
 	}
 
 	isRangeFinish(): boolean {
-		for ( var index = 0; index < this.rangeInfo.range.length; index++) {
-			if (!this.isFinish(index)){
-				return false; // at least one array not yet had finished
-			}
-		}
-		return true;
+		return this.rangeService.isRangeFinish(this.rangeInfo);
 	}
   
 	isStreaming(): boolean {
-		return (this.rangeInfo.range.length === 1) && (this.rangeInfo.range[0][0] >= 0);
+		return this.rangeService.isStreaming(this.rangeInfo);
 	}
 
 	hadLength(): boolean {
-		return this.rangeInfo.range.length == 1 && this.rangeInfo.range[0][1] == -1;
+		return this.rangeService.hadLength(this.rangeInfo);
 	}
 	
 	getIJ(i: number, j: number): number {
-		return this.rangeInfo.range[i][j];
+		return this.rangeService.getIJ(this.rangeInfo, i, j);
 	}
 
 	startOfIndex(index: number): number {
-		return this.rangeInfo.range[index][0];
+		return this.rangeService.startOfIndex(this.rangeInfo, index);
 	}
 
 	limitOfIndex(index: number): number {
-		return this.rangeInfo.range[index][1];
+		return this.rangeService.limitOfIndex(this.rangeInfo, index);
 	}
 
 	percent(): number {
-		return (this.rangeInfo.downloadLength / this.rangeInfo.fileLength) * 100;
+		return this.rangeService.percent(this.rangeInfo);
 	}
 
 	rangePercent(index: number): number {
-		let limit = 0;
-		if (index < 2) {
-			limit = this.limitOfIndex(this.rangeInfo.range.length - 2 + index);// * this.chunkLength;
-		} else if (index > 2) {
-			limit = this.limitOfIndex(index-3 ); // * this.chunkLength;
-		}
-		const range = this.indexOf(index);
-		return ((range[0]-limit) / (range[1]-limit))*100;
+		return this.rangeService.rangePercent(this.rangeInfo, index);
 	}
 
 	rangeStartPercent(index: number): number {
-		return (this.startOfIndex(index) / this.rangeInfo.fileLength)*100;
+		return this.rangeService.rangeStartPercent(this.rangeInfo, index);
 	}
 
 	rangeEndPercent(index: number): number {
-		return (this.limitOfIndex(index)  / this.rangeInfo.fileLength)*100;
+		return this.rangeService.rangeEndPercent(this.rangeInfo, index);
 	}
 }
