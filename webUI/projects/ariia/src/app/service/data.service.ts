@@ -7,6 +7,7 @@ import { SseService } from './sse.service';
 import { ItemService } from './item.service';
 import { SessionHistory } from '../model/session-history';
 import { BehaviorSubject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,9 @@ export class DataService {
 
 	historySubject: BehaviorSubject<void> = new BehaviorSubject<void>(null);
 
-	constructor(private sseService: SseService, private itemService: ItemService) { 
+	constructor(private sseService: SseService,
+		private itemService: ItemService,
+		private toastr: ToastrService) { 
 		this.data = new Data();
 	}
 
@@ -62,9 +65,9 @@ export class DataService {
 			oldItem.state = item.state;
 			oldItem.rangeInfo.update(item.rangeInfo);
 		  } else {
-			//dataService.itemService.getItem(item['itemId']).subscribe(dataService.data.items.push);
 			dataService.itemService.getItem(item['itemId']).subscribe((item: Item) => {
 				dataService.addItem(item);
+				this.toastr.success('New Item',`${item.filename}\n${item.url}\n${item.state}`);
 			});
 		  }
 		});
