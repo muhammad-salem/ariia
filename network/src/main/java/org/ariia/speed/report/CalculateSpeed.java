@@ -2,7 +2,9 @@ package org.ariia.speed.report;
 
 public interface CalculateSpeed {
 
-	void demondSpeedNow();
+	void snapshotLength();
+	
+	void snapshotSpeed();
 
 	long speedOfTCPSend();
 
