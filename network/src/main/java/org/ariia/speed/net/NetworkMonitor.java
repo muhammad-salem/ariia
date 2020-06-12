@@ -6,6 +6,10 @@ public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor {
 	protected long receiveUDP = 0;
 	protected long sendTCP = 0;
 	protected long sendUDP = 0;
+	
+	protected long totalReceive;
+	protected long totalSend;
+	protected long total;
 
 	@Override
 	public void onRead(IntWarp len) {
@@ -26,17 +30,23 @@ public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor {
 	public void onReceive(final IntWarp len) {
 		receiveUDP += len.value;
 	}
+	
+	public void updateTotal(){
+		totalReceive = receiveTCP + receiveUDP;
+		totalSend = sendTCP + sendUDP;
+		total = totalReceive + totalSend;
+	}
 
 	public long getTotalReceive() {
-		return receiveTCP + receiveUDP;
+		return totalReceive;
 	}
 
 	public long getTotalSend() {
-		return sendTCP + sendUDP;
+		return totalSend;
 	}
 
 	public long getTotal() {
-		return getTotalReceive() + getTotalSend();
+		return total;
 	}
 
 	public long getReceiveTCP() {
