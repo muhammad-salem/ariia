@@ -10,7 +10,7 @@ export class MetalinkItem extends Item {
         }
     }
 
-    update(item: Item) {
+    update(item: MetalinkItem) {
         super.update(item);
         this.mirrors = item.mirrors;
     }
