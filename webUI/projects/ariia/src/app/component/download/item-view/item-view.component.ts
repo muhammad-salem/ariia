@@ -28,10 +28,6 @@ export class ItemViewComponent implements OnInit {
   constructor(private rangeInfoService: RangeInfoService, private itemService: ItemService) { }
 
   ngOnInit(): void {
-  	const arr = JSON.parse(JSON.stringify(this.item.rangeInfo.range));
-  	arr.forEach(ls => {
-  		this.item.rangeInfo.range.push(ls);
-  	});
     this.rangeInfoService.initRangeInfo(this.item.rangeInfo);
   }
 
