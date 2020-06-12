@@ -23,7 +23,8 @@ import { AddLinkComponent } from './component/link/add-link/add-link.component';
 import { CircularProgressComponent } from './component/utils/circular-progress/circular-progress.component';
 import { ServerPropertiesComponent } from './component/setting/server-properties/server-properties.component';
 import { SiteSettingsComponent } from './component/setting/site-settings/site-settings.component';
-import { LogFilterPipe } from './pipe/log-filter.pipe';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { SearchLogPipe } from './pipe/search-log.pipe';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import { LogFilterPipe } from './pipe/log-filter.pipe';
     CircularProgressComponent,
     ServerPropertiesComponent,
     SiteSettingsComponent,
-    LogFilterPipe
+    SearchLogPipe
   ],
   imports: [
     BrowserModule,
@@ -52,9 +53,12 @@ import { LogFilterPipe } from './pipe/log-filter.pipe';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    { provide: ToastrService, useClass: ToastrService }
+  ],
   bootstrap: [RootComponent]
 })
 export class AppModule { }
