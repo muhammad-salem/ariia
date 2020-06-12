@@ -1,5 +1,5 @@
 
 export interface LogFilter {
     level: string,
-    classname: string;
+    search: string;
 }
