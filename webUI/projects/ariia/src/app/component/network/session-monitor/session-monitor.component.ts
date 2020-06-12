@@ -10,6 +10,7 @@ import { DataService } from '../../../service/data.service';
 export class SessionMonitorComponent implements OnInit {
 
   session: NetworkSession;
+  isBinary: boolean = true;
 
   constructor(private dataService: DataService) { 
     this.session = new NetworkSession();
@@ -24,6 +25,13 @@ export class SessionMonitorComponent implements OnInit {
   		return `${((this.session.downloadLength/this.session.totalLength) *100 ).toFixed(2)}%`;
   	}
   	return `100%`;
+  }
+
+  sessionProgress(): number {
+  	if(this.session.totalLength){
+  		return +(((this.session.downloadLength/this.session.totalLength) *100 ).toFixed(2));
+  	}
+  	return 100;
   }
 
 }

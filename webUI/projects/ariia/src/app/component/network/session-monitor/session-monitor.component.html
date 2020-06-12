@@ -1,22 +1,30 @@
 <div class="row pt-5">
-	<div class="col-xl-3 col-lg-6 mb-4">
+	<div class="col-xl-4 col-lg-6 mb-4">
 		<div class="bg-white rounded-lg p-3 shadow">
 		<ul class="list-group">
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Up Time:
-				<span class="badge badge-primary badge-pill">{{session.timer | uptime}}</span>
+				<span class="badge badge-primary badge-pill">
+					{{session.timer | uptime}}
+				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Download Length:
-				<span class="badge badge-primary badge-pill">{{session.downloadLength | lengthUnit:true}}</span>
+				<span class="badge badge-primary badge-pill">
+					{{session.downloadLength | lengthUnit:isBinary}}
+				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Remainig Length:
-				<span class="badge badge-primary badge-pill">{{session.totalLength-session.downloadLength | lengthUnit:true}}</span>
+				<span class="badge badge-primary badge-pill">
+					{{session.totalLength-session.downloadLength | lengthUnit:isBinary}}
+				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Total Length:
-				<span class="badge badge-primary badge-pill">{{session.totalLength | lengthUnit:true}}</span>
+				<span class="badge badge-primary badge-pill">
+					{{session.totalLength | lengthUnit:isBinary}}
+				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Session State:
@@ -27,7 +35,7 @@
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
 				Speed:
 				<span class="badge badge-primary badge-pill">
-				    {{(session.receiveTCP - session.receiveTCP_old) | lengthUnit:true}}/s
+				    {{(session.receiveTCP - session.receiveTCP_old) | lengthUnit:isBinary}}/s
 				</span>
 			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center flex-fill">
@@ -43,13 +51,19 @@
 	  <div class="bg-white rounded-lg p-5 shadow">
 		<h2 class="h6 font-weight-bold text-center mb-4">Overall progress</h2>
 
-		<ariia-circular-progress [dataValue]="40" > </ariia-circular-progress>
+		<ariia-circular-progress [dataValue]="sessionProgress()" > </ariia-circular-progress>
 		<div class="row text-center mt-4">
 		  <div class="col-6 border-right">
-		    <div class="h4 font-weight-bold mb-0">28%</div><span class="small text-gray">Last week</span>
+			<div class="h4 font-weight-bold mb-0">
+				{{session.downloadLength | lengthUnit:isBinary}}
+			</div>
+			<span class="small text-gray">Download Length</span>
 		  </div>
 		  <div class="col-6">
-		    <div class="h4 font-weight-bold mb-0">60%</div><span class="small text-gray">Last month</span>
+			<div class="h4 font-weight-bold mb-0">
+				{{session.remainigLength | lengthUnit:isBinary}}
+			</div>
+			<span class="small text-gray">Remainig Length</span>
 		  </div>
 		</div>
 	  </div>
