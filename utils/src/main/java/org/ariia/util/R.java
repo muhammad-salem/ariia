@@ -102,7 +102,7 @@ public class R {
 		return filename;
 	}
 	
-	public static String getDownloadsFile() {
+	public static String getDownloadDirectory() {
 		return DownloadsPath;
 	}
 	public static String getDownloadsFile(String filename) {
@@ -225,7 +225,7 @@ public class R {
 			return path;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return getDownloadsFile();
+			return getDownloadDirectory();
 		}
 		
 	}
