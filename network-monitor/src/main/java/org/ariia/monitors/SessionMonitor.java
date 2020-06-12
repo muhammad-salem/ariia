@@ -68,6 +68,8 @@ public abstract class SessionMonitor extends SpeedMonitor implements Styles, Cur
 			downloadLength += info.getDownloadLength();
 			remainigLength += info.getRemainingLength();
 		});
+		snapshotSpeed();
+		updateTotal();
 		downloading = speedOfTCPReceive() > 0;
 	}
 
@@ -138,7 +140,7 @@ public abstract class SessionMonitor extends SpeedMonitor implements Styles, Cur
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		demondSpeedNow();
+		snapshotLength();
 		return t;
 	}
 

@@ -209,7 +209,7 @@ public class RangesInfoMonitor extends SpeedMonitor {
 			e.printStackTrace();
 //			Log.error(getClass(), e.getClass().getName(), e.getMessage());
 		}
-		demondSpeedNow();
+		snapshotLength();
 		return t;
 	}
 	

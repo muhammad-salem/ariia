@@ -8,7 +8,7 @@ public class OneRangeMonitor extends SpeedMonitor {
 	
 	protected RangeUtil info;
 	protected String    name;
-	
+	protected long reminningTime;
 	
 	public OneRangeMonitor(RangeUtil info, String name) {
 		this.info = info;
@@ -24,7 +24,10 @@ public class OneRangeMonitor extends SpeedMonitor {
 	}
 	
 	public void updateData() {
+		snapshotSpeed();
+		updateTotal();
 		info.oneCycleDataUpdate();
+		reminningTime = (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
 	}
 
 	public long getTotalLength() {
@@ -44,7 +47,7 @@ public class OneRangeMonitor extends SpeedMonitor {
 	}
 
 	public long getReminningTime() {
-		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
+		return reminningTime;
 	}
 
 	public String getReminningTimeString() {
@@ -65,9 +68,5 @@ public class OneRangeMonitor extends SpeedMonitor {
 	protected float percent() {
 		return (float) getDownloadLength() /  getTotalLength();
 	}
-	
-//	public String getTimer() {
-//		return Utils.timeformate(timer);
-//	}
 	
 }

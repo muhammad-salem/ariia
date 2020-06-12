@@ -43,11 +43,10 @@ public class TableItemsMonitor implements TableMonitor, CursorControl {
 	
 
 	private void callSpeedForNextCycle() {
-		
 		for (OneRangeMonitor mointor : monitors) {
-			mointor.demondSpeedNow();
+			mointor.snapshotLength();
 		}
-		session.demondSpeedNow();
+		session.snapshotLength();
 	}
 	
 	private void updateInfo() {
