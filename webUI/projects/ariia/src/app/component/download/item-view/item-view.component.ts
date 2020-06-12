@@ -55,18 +55,20 @@ export class ItemViewComponent implements OnInit {
     });
   }
 
-
+  private percent(): string {
+    return this.rangeInfoService.percent().toFixed(2);
+  }
+  
   itemPercent(): string {
-    return `${this.rangeInfoService.percent().toFixed(3)}%`;
+    return `${this.percent()}%`;
   }
   
   itemProgress(): number {
-    return Number(this.rangeInfoService.percent().toFixed(3));
+    return +this.percent();
   }
 
-
   rangePercent(index: number): string {
-    return `${this.rangeInfoService.rangePercent(index).toFixed(3)}%`;
+    return `${this.rangeInfoService.rangePercent(index).toFixed(2)}%`;
   }
 
   startPercent(index: number): string {
