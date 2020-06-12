@@ -62,8 +62,7 @@ export class DataService {
 		items.forEach(item => {
 		  const oldItem = dataService.data.items.find(searchItem => item['itemId'] === searchItem.id);
 		  if(oldItem){
-			oldItem.state = item.state;
-			oldItem.rangeInfo.update(item.rangeInfo);
+		  	oldItem.netwotkUpdate(item);
 		  } else {
 			dataService.itemService.getItem(item['itemId']).subscribe((item: Item) => {
 				dataService.addItem(item);
@@ -104,7 +103,7 @@ export class DataService {
 			this.data.session.update(session);
 			this.data.sessionHistory.push({
 				x: new Date(),
-				y: (session.receiveTCP - session.receiveTCP_old) / 1024, 
+				y: (session.speedOfTCPReceive) / 1024, 
 				session: session 
 			});
 			if(this.data.sessionHistory.length > 60){
