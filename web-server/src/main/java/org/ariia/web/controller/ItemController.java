@@ -1,8 +1,10 @@
 package org.ariia.web.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.ariia.items.Item;
+import org.ariia.items.MetalinkItem;
 import org.ariia.logging.Log;
 import org.ariia.mvc.annotation.DoExchange;
 import org.ariia.mvc.annotation.HeaderValue;
@@ -43,10 +45,22 @@ public class ItemController {
 		return itemService.create(url);
 	}
 	
+	@PostRequest(path = "/create/metaLink")
+	public String createMetaLink(@RequestBody String[] urls) {
+		Log.trace(getClass(), "Create new MetaLink Item", "urls: " + Arrays.toString(urls));
+		return itemService.createMetaLink(urls);
+	}
+	
 	
 	@PostRequest(path = "/create/item")
 	public String createItem(@RequestBody Item item) {
 		Log.trace(getClass(), "Create new Item", "item: " + item);
+		return itemService.create(item);
+	}
+	
+	@PostRequest(path = "/create/metaLinkItem")
+	public String createMetaLink(@RequestBody MetalinkItem item) {
+		Log.trace(getClass(), "Create new MetaLink Item", "MetaLink: " + item);
 		return itemService.create(item);
 	}
 	

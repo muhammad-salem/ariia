@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
+import { MetalinkItem } from '../model/metalink-item';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,14 @@ export class ItemService {
   // never/should not been called
   downloadFile(id: string): Observable<any>  {
     return this.httpClient.get<any>('/items/download/' + id);
+  }
+  
+  createMetaLinkUrl(urls: string[]): Observable<string> {
+    return this.httpClient.post<string>('/items/create/metaLink', urls);
+  }
+
+  createMetaLinkItem(item: MetalinkItem): Observable<string> {
+    return this.httpClient.post<string>('/items/create/metaLinkItem', item);
   }
 
 }

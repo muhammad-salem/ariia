@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.util.List;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
+import org.ariia.items.MetalinkItem;
 import org.ariia.logging.Log;
 import org.ariia.mvc.resource.StreamHandler;
 import org.ariia.range.RangeResponseHeader;
@@ -103,6 +104,10 @@ public class ItemService implements StreamHandler {
 		} catch (Exception e) {
 			Log.error(getClass(), "Download Item", "item id: " + id + "\n" + e.getMessage());
 		}
+	}
+
+	public String createMetaLink(String[] urls) {
+		return this.serviceManager.downloadMetalink(urls);
 	}
 	
 
