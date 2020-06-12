@@ -25,6 +25,7 @@ import { ServerPropertiesComponent } from './component/setting/server-properties
 import { SiteSettingsComponent } from './component/setting/site-settings/site-settings.component';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { SearchLogPipe } from './pipe/search-log.pipe';
+import { ItemTableComponent } from './component/download/item-table/item-table.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { SearchLogPipe } from './pipe/search-log.pipe';
     CircularProgressComponent,
     ServerPropertiesComponent,
     SiteSettingsComponent,
-    SearchLogPipe
+    SearchLogPipe,
+    ItemTableComponent
   ],
   imports: [
     BrowserModule,
