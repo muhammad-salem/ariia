@@ -325,6 +325,7 @@ public class ServiceManager implements Closeable {
 	
 	public String download(String url, Map<String, List<String>> headers) {
 		Builder builder = new Builder(url);
+		builder.saveDir(properties.getDefaultSaveDirectory());
 		builder.addHeaders(headers);
 		Item item = builder.build();
 		this.scheduledService.execute(()-> {
@@ -339,6 +340,7 @@ public class ServiceManager implements Closeable {
 	}
 	public String downloadMetalink(String[] urls, Map<String, List<String>> headers) {
 		MetalinkItem metalinkItem = new MetalinkItem();
+		metalinkItem.setSaveDirectory(properties.getDefaultSaveDirectory());
 		metalinkItem.addHeaders(headers);
 		for (String string : urls) {
 			metalinkItem.addMirror(string);
