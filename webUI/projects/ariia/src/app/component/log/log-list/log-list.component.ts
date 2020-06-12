@@ -1,16 +1,17 @@
-import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { LogMessage } from '../../../model/log-message';
 import { DataService } from '../../../service/data.service';
 import { LogFilter } from '../../../model/log-filter';
 import { LogService } from '../../../service/log.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'ariia-log-list',
   templateUrl: './log-list.component.html',
   styleUrls: ['./log-list.component.scss']
 })
-export class LogListComponent implements OnInit, OnChanges {
+export class LogListComponent implements OnInit {
 
   filterLog: LogFilter;
   messages: LogMessage[];
@@ -19,11 +20,12 @@ export class LogListComponent implements OnInit, OnChanges {
   
   faTrash = faTrash;
 
-  constructor(private dataService: DataService, private logService: LogService) {
+  constructor(private dataService: DataService, private logService: LogService,
+      private toastr: ToastrService) {
     this.messages = [];
     this.filterLog = {
       level: 'all',
-      classname: ''
+      search: ''
     }
    }
 
@@ -36,7 +38,9 @@ export class LogListComponent implements OnInit, OnChanges {
   setLevel() {
     this.logService.setLevel(this.filterLog.level).subscribe(isDone => {
       if (isDone){
-        // toster
+        this.toastr.success(`set server log level to ${this.filterLog.level}`, 'successful');
+      } else {
+        this.toastr.error('server internal error', 'set log level');
       }
     });
   }
@@ -48,9 +52,5 @@ export class LogListComponent implements OnInit, OnChanges {
   
   clearLogMessages() {
   	this.messages.splice(0, this.messages.length);
-  }
-  
-  ngOnChanges(changes: SimpleChanges): void {
-  	console.log('changes', changes);
   }
 }
