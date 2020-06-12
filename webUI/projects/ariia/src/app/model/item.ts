@@ -10,7 +10,8 @@ export class Item {
     saveDirectory: string = '';
     headers: Map<string, string[]> = new Map();
     rangeInfo: RangeInfo = new RangeInfo();
-    monitor: NetworkSession = new NetworkSession();
+    speedOfTCPReceive: number = 0;
+    reminningTime: number = 0;
 
     constructor(item: Item) {
         if (item) {
@@ -26,12 +27,20 @@ export class Item {
         this.state = item.state;
         this.saveDirectory = item.saveDirectory;
         this.rangeInfo.update(item.rangeInfo);
-        this.monitor.update(item.monitor);
+        this.speedOfTCPReceive = item.speedOfTCPReceive;
+        this.reminningTime = item.reminningTime;
         Object.keys(item.headers).forEach((keys) => {
             this.headers.set(keys, item.headers[keys]);
         });
     }
-
+    
+    netwotkUpdate(item: Item) {
+        this.state = item.state;
+        this.rangeInfo.update(item.rangeInfo);
+        this.speedOfTCPReceive = item.speedOfTCPReceive;
+        this.reminningTime = item.reminningTime;
+    }
+    
     toString(): string {
         return `${this.filename} - ${this.rangeInfo.fileLength} - ${this.state}`;
     }
