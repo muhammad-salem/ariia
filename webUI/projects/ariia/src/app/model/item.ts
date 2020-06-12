@@ -1,4 +1,5 @@
 import { RangeInfo } from './range-info';
+import { NetworkSession } from './network-session';
 
 export class Item {
     id: string = '';
@@ -9,6 +10,7 @@ export class Item {
     saveDirectory: string = '';
     headers: Map<string, string[]> = new Map();
     rangeInfo: RangeInfo = new RangeInfo();
+    monitor: NetworkSession = new NetworkSession();
 
     constructor(item: Item) {
         if (item) {
@@ -24,6 +26,7 @@ export class Item {
         this.state = item.state;
         this.saveDirectory = item.saveDirectory;
         this.rangeInfo.update(item.rangeInfo);
+        this.monitor.update(item.monitor);
         Object.keys(item.headers).forEach((keys) => {
             this.headers.set(keys, item.headers[keys]);
         });
