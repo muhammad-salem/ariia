@@ -11,6 +11,7 @@ import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.client.SegmentClient;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
+import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
 import org.ariia.okhttp.OkClient;
 import org.ariia.web.app.WebLoggerPrinter;
@@ -53,7 +54,18 @@ public class WebApp {
 //        			isRunningFromJar() ? 
 //        					WebServer.ResourceType.IN_MEMORY : 
 				WebServer.ResourceType.STREAM;
-		WebServer server = new WebServer(port, resourceLocation, type, true);
+		
+		Routes rootRoutes = new Routes("/");
+		Routes homeRoutes = new Routes("home");
+		Routes dashboardRoutes = new Routes("dashboard");
+		Routes downloadRoutes = new Routes("download", "table");
+		Routes networkRoutes = new Routes("network", "chart");
+		Routes settingkRoutes = new Routes("setting");
+		Routes logviewRoutes = new Routes("logview");
+		
+		rootRoutes.routes(homeRoutes, dashboardRoutes, downloadRoutes, networkRoutes, settingkRoutes, logviewRoutes);
+		
+		WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
 
 		// setup download manager service
 		SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));

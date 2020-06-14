@@ -8,11 +8,9 @@ import java.util.concurrent.Executor;
 
 import org.ariia.mvc.model.ControllerHandler;
 import org.ariia.mvc.processing.ProxySwitcher;
-import org.ariia.mvc.resource.FileRedirectResourceHandler;
 import org.ariia.mvc.resource.FileResourceHandler;
-import org.ariia.mvc.resource.MultiRootResourceHandler;
-import org.ariia.mvc.resource.RedirectResourceHandler;
-import org.ariia.mvc.resource.ResourceHandler;
+import org.ariia.mvc.resource.StreamResourceHandler;
+import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.ServerSideEventHandler;
 import org.ariia.mvc.sse.SourceEvent;
 
@@ -24,9 +22,7 @@ import com.sun.net.httpserver.HttpServer;
 public class WebServer {
 	
 	public enum ResourceType {
-		STREAM,
-		FILE,
-		JAR_MULTI
+		FILE, STREAM
 	}
 	
 	private HttpServer server;
@@ -34,52 +30,26 @@ public class WebServer {
 	
 	private List<ControllerHandler> controllerHandlers;
 	
-	public WebServer(int port) throws IOException {
-		this(new InetSocketAddress(port));
+	public WebServer(int port, String resourceLocation, ResourceType type) throws IOException {
+		this(new InetSocketAddress(port), resourceLocation, type, new Routes("/"));
 	}
 	
-	public WebServer(int port, String resourceLocation) throws IOException {
-		this(new InetSocketAddress(port), resourceLocation);
+	public WebServer(int port, String resourceLocation, ResourceType type, Routes rootRoutes) throws IOException {
+		this(new InetSocketAddress(port), resourceLocation, type, rootRoutes);
 	}
-	
-	public WebServer(int port, String resourceLocation, ResourceType type, boolean redirect) throws IOException {
-		this(new InetSocketAddress(port), resourceLocation, type, redirect);
-	}
-	
-	public WebServer(InetSocketAddress address) throws IOException {
-		this(address, null);
-	}
-	
-	public WebServer(InetSocketAddress address, String resourceLocation) throws IOException {
-		this.server  = HttpServer.create(address, 0);
-		this.staticResourceHandler = resourceLocation;
-		this.createResourceContext("/", resourceLocation);
-		this.controllerHandlers = new ArrayList<>();
-	}
-	
-	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type, boolean redirect) throws IOException {
+
+	public WebServer(InetSocketAddress address, String resourceLocation, ResourceType type, Routes rootRoutes) throws IOException {
 		this.server  = HttpServer.create(address, 0);
 		this.staticResourceHandler = resourceLocation;
 		switch (type) {
-			case STREAM: {
-				if (redirect) {
-					this.createRedirectResourceHandlerContext("/", resourceLocation);
-				} else {
-					this.createResourceContext("/", resourceLocation);
-				}
-				break;
-			}
 			case FILE: {
-				if (redirect) {
-					this.createFileRedirectResourceHandlerContext("/", resourceLocation);
-				} else {
-					this.createFileResourceContext("/", resourceLocation);
-					}
+				this.createFileResourceHandlerContext("/", resourceLocation, rootRoutes);
 				break;
 			}
-			case JAR_MULTI:
+			case STREAM:
 			default: {
-				this.createMultiResourceContext("/", resourceLocation);
+				this.createStreamResourceHandlerContext("/", resourceLocation, rootRoutes);
+				break;
 			}
 		}
 		this.controllerHandlers = new ArrayList<>();
@@ -114,28 +84,13 @@ public class WebServer {
 		return server.createContext(path, handler);
 	}
 	
-	public HttpContext createResourceContext(String path, String resourceLocation) {
-		HttpHandler handler = new ResourceHandler(resourceLocation);
+	public HttpContext createStreamResourceHandlerContext(String path, String resourceLocation, Routes rootRoutes) {
+		HttpHandler handler = new StreamResourceHandler(resourceLocation, rootRoutes);
 		return server.createContext(path, handler);
 	}
 	
-	public HttpContext createMultiResourceContext(String path, String... resourceLocations) {
-		HttpHandler handler = new MultiRootResourceHandler(resourceLocations);
-		return server.createContext(path, handler);
-	}
-	
-	public HttpContext createFileResourceContext(String path, String resourceLocation) {
-		HttpHandler handler = new FileResourceHandler(resourceLocation);
-		return server.createContext(path, handler);
-	}
-	
-	public HttpContext createRedirectResourceHandlerContext(String path, String resourceLocation) {
-		HttpHandler handler = new RedirectResourceHandler(resourceLocation);
-		return server.createContext(path, handler);
-	}
-	
-	public HttpContext createFileRedirectResourceHandlerContext(String path, String resourceLocation) {
-		HttpHandler handler = new FileRedirectResourceHandler(resourceLocation);
+	public HttpContext createFileResourceHandlerContext(String path, String resourceLocation, Routes rootRoutes) {
+		HttpHandler handler = new FileResourceHandler(resourceLocation, rootRoutes);
 		return server.createContext(path, handler);
 	}
 	
