@@ -69,6 +69,7 @@
   			<ariia-circular-progress [dataValue]="itemProgress()" > </ariia-circular-progress>
   		</div>
   	</div>
+  	<div> 1 Pieces x 8 MB Complete</div>
 	<svg [attr.height]="getSvgHeight()" class="w-100 mt-2">
 	  <g>
 		<rect *ngFor="let range of item.rangeInfo.range; index as i" [id]="i" width="12" height="12" [attr.x]="getX(i)" [attr.y]="getY(i)" [attr.fill]="svgFill(i)"></rect>

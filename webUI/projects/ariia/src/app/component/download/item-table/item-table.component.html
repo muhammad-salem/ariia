@@ -33,7 +33,7 @@
 			            </td>
 			        	<td >{{item.state | lowercase}}</td>
 			        	<td >{{item.rangeInfo.remainingLength | lengthUnit:true}}</td>
-			        	<td >{{item.reminningTime}}</td>
+			        	<td >{{item.reminningTime|uptime}}</td>
 		            </tr>
             	</ng-container>
             </tbody>
