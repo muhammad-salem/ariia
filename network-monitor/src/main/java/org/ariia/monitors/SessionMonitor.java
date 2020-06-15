@@ -81,7 +81,6 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 			downloadLength += info.getDownloadLength();
 			remainigLength += info.getRemainingLength();
 		});
-		snapshotSpeed();
 		downloading = getTcpDownloadSpeed() > 0;
 	}
 
