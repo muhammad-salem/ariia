@@ -12,7 +12,7 @@ import org.ariia.core.api.writer.ClinetWriter;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 
 public class ChannelDownloader implements Downloader, ContentLength {

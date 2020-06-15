@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 public interface ItemDownloader {
 	

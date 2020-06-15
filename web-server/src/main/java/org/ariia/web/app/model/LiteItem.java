@@ -2,7 +2,7 @@ package org.ariia.web.app.model;
 
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.ItemState;
-import org.ariia.monitors.OneRangeMonitor;
+import org.ariia.monitors.RangeMonitor;
 import org.ariia.range.RangeUtil;
 
 public class LiteItem {
@@ -13,16 +13,16 @@ public class LiteItem {
 	
 	protected String itemId;
 	protected ItemState state;
-	protected long reminningTime;
+	protected long remainingTime;
 	protected long speedOfTCPReceive;
 	protected RangeUtil rangeInfo;
 	
-	public LiteItem(String itemId, ItemState state, RangeUtil rangeInfo, OneRangeMonitor monitor) {
+	public LiteItem(String itemId, ItemState state, RangeUtil rangeInfo, RangeMonitor monitor) {
 		super();
 		this.itemId = itemId;
 		this.state = state;
-		this.speedOfTCPReceive = monitor.speedOfTCPReceive();
-		this.reminningTime = monitor.getReminningTime();
+		this.speedOfTCPReceive = monitor.getSpeedReport().getMointor().getTcpDownloadSpeed();
+		this.remainingTime = monitor.getRemainingTime();
 		this.rangeInfo = rangeInfo;
 	}
 	

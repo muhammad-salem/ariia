@@ -10,7 +10,7 @@ import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.core.api.writer.SegmentWriter;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 
 public class SegmentDownloader implements Downloader, ContentLength {

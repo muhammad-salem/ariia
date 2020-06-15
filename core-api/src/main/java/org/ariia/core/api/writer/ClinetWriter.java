@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 
-import org.ariia.speed.SpeedMonitor;
 import org.ariia.speed.net.MonitorInputStreamWrapper;
+import org.ariia.speed.report.SpeedMonitor;
 
 public interface ClinetWriter {
 	

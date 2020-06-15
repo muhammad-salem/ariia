@@ -2,9 +2,9 @@ package org.ariia.monitors;
 
 public interface TableMonitor {
 
-	boolean add(OneRangeMonitor monitor);
+	boolean add(RangeMonitor monitor);
 
-	void remove(OneRangeMonitor monitor);
+	void remove(RangeMonitor monitor);
 
 	void clear();
 

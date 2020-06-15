@@ -11,7 +11,7 @@ import org.ariia.core.api.response.ChannelDownloader;
 import org.ariia.core.api.writer.ClientChannelWriter;
 import org.ariia.core.api.writer.ClinetWriter;
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 public class ChannelClient extends Client implements StreamOrder, ThreadOrder {
 	

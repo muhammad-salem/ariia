@@ -8,8 +8,8 @@ import java.nio.channels.ReadableByteChannel;
 
 import org.ariia.segment.Segment;
 import org.ariia.segment.Segment.OfferSegment;
-import org.ariia.speed.SpeedMonitor;
 import org.ariia.speed.net.MonitorInputStreamWrapper;
+import org.ariia.speed.report.SpeedMonitor;
 
 public interface SegmentWriter {
 	

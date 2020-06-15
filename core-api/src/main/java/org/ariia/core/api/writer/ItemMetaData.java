@@ -12,11 +12,11 @@ import org.ariia.config.Properties;
 import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.monitors.OneRangeMonitor;
+import org.ariia.monitors.RangeMonitor;
 import org.ariia.range.RangeUtil;
 import org.ariia.segment.Segment;
 import org.ariia.segment.Segment.OfferSegment;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 import org.ariia.util.R;
 
 public abstract class ItemMetaData implements OfferSegment, Closeable {
@@ -25,7 +25,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	protected RangeUtil info;
 	
 	protected boolean downloading = false;
-	protected OneRangeMonitor rangeMointor;
+	protected RangeMonitor rangeMointor;
 	
 	protected RandomAccessFile raf;
 	private   ConcurrentLinkedQueue<Segment> segments;
@@ -34,7 +34,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	public ItemMetaData(Item item, Properties properties) {
 		this.item 			= item;
 		this.info 			= item.getRangeInfo();
-		this.rangeMointor	= new OneRangeMonitor(info, item.getFilename());
+		this.rangeMointor	= new RangeMonitor(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
 		this.properties		= properties;
 		initRandomAccessFile();
@@ -150,7 +150,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return info;
 	}
 	
-	public OneRangeMonitor getRangeMointor() {
+	public RangeMonitor getRangeMointor() {
 		return rangeMointor;
 	}
 	

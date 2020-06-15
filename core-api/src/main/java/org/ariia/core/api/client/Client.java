@@ -19,7 +19,7 @@ import org.ariia.items.Item;
 import org.ariia.items.ItemState;
 import org.ariia.logging.Log;
 import org.ariia.range.RangeInfo;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 public abstract class Client implements Downloader, ItemDownloader, ContentLength {
 

@@ -9,7 +9,7 @@ import org.terminal.beans.Row;
 
 public class TableItemsMonitor implements TableMonitor, CursorControl {
 	
-	protected Set<OneRangeMonitor> monitors;
+	protected Set<RangeMonitor> monitors;
 	protected SessionMonitor session;
 	protected TableItems table;
 	
@@ -22,12 +22,12 @@ public class TableItemsMonitor implements TableMonitor, CursorControl {
 	
 	
 	@Override
-	public boolean add(OneRangeMonitor mointor) {
+	public boolean add(RangeMonitor mointor) {
 		return monitors.add(mointor);
 	}
 
 	@Override
-	public void remove(OneRangeMonitor mointor) {
+	public void remove(RangeMonitor mointor) {
 		monitors.remove(mointor);
 	}
 	
@@ -43,45 +43,51 @@ public class TableItemsMonitor implements TableMonitor, CursorControl {
 	
 
 	private void callSpeedForNextCycle() {
-		for (OneRangeMonitor mointor : monitors) {
-			mointor.snapshotLength();
+		for (RangeMonitor mointor : monitors) {
+			mointor.snapshotPoint();
 		}
-		session.snapshotLength();
+		session.snapshotPoint();
 	}
 	
 	private void updateInfo() {
-		for (OneRangeMonitor mointor : monitors) {
-			mointor.updateData();
+		for (RangeMonitor mointor : monitors) {
+			mointor.snapshotSpeed();;
 		}
-		session.rangeInfoUpdateData();
+		session.snapshotSpeed();
 	}
 	
 	private void updateTable() {
 		table.getRows().clear();
 		//table.head("name", "Length", "TD", "Remain", "Down", "Speed", "100%");
 		int index = 0;
-		for (OneRangeMonitor mointor : monitors) {
+		for (RangeMonitor mointor : monitors) {
 			Row<String> row = table.createRow();
 			row.add(++index + "");
 			row.add(mointor.getName());
 			row.add(mointor.getTotalLengthMB());
-			
+
 			row.add(mointor.getDownloadLengthMB());
 			row.add(mointor.getRemainingLengthMB());
-			row.add(mointor.getTotalReceiveMB());
-			row.add(mointor.getSpeedTCPReceiveMB() + "ps");
+			row.add(mointor.getSpeedReport().getTcpDownloadSpeed() + "ps");
+//			row.add(mointor.getTotalReceiveMB());
+//			row.add(mointor.getSpeedTCPReceiveMB() + "ps");
+
+			row.add(mointor.getSpeedReport().getTcpDownload());
 			row.add(mointor.getPercent());	
 		}
 		if( ! table.getRows().isEmpty() & table.getRows().size() != 1) {
 			Row<String> row = table.createRow();
 			row.add("#");
 			row.add("session (" + session.size() +")");
+			
 			row.add(session.getTotalLengthMB());
 			
 			row.add(session.getDownloadLengthMB());
 			row.add(session.getRemainingLengthMB());
-			row.add(session.getTotalReceiveMB());
-			row.add(session.getSpeedTCPReceiveMB() + "ps");
+//			row.add(session.getTotalReceiveMB());
+//			row.add(session.getSpeedTCPReceiveMB() + "ps");
+			row.add(session.getSpeedReport().getTcpDownload());
+			row.add(session.getSpeedReport().getTcpDownloadSpeed() + "ps");
 			row.add(session.getPercent());	
 		}
 		

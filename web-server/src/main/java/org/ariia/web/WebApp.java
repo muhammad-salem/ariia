@@ -58,7 +58,7 @@ public class WebApp {
 		Routes rootRoutes = new Routes("/");
 		Routes homeRoutes = new Routes("home");
 		Routes dashboardRoutes = new Routes("dashboard");
-		Routes downloadRoutes = new Routes("download", "table");
+		Routes downloadRoutes = new Routes("download", "table", "list");
 		Routes networkRoutes = new Routes("network", "chart");
 		Routes settingkRoutes = new Routes("setting");
 		Routes logviewRoutes = new Routes("logview");

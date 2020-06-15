@@ -4,7 +4,7 @@ import org.ariia.config.Properties;
 import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.items.Item;
 import org.ariia.segment.Segment;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 public class ItemMetaDataCompleteWarpper extends ItemMetaData {
 

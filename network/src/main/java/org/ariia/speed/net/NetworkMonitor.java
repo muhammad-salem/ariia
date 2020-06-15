@@ -1,73 +1,53 @@
 package org.ariia.speed.net;
 
-public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor {
+import org.ariia.speed.report.DownloadUpload;
 
-	protected long receiveTCP = 0;
-	protected long receiveUDP = 0;
-	protected long sendTCP = 0;
-	protected long sendUDP = 0;
+public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor, DownloadUpload {
 	
-	protected long totalReceive;
-	protected long totalSend;
-	protected long total;
+	protected long tcpDownload = 0;
+	protected long tcpUpload = 0;
+	protected long udpDownload = 0;
+	protected long udpUpload = 0;
+	
 
 	@Override
 	public void onRead(IntWarp len) {
-		receiveTCP += len.value;
+		tcpDownload += len.value;
 	}
 
 	@Override
 	public void onWrite(IntWarp len) {
-		sendTCP += len.value;
+		tcpUpload += len.value;
+	}
+	
+	@Override
+	public void onReceive(final IntWarp len) {
+		udpDownload += len.value;
 	}
 
 	@Override
 	public void onSend(final IntWarp len) {
-		sendUDP += len.value;
+		udpUpload += len.value;
 	}
 
 	@Override
-	public void onReceive(final IntWarp len) {
-		receiveUDP += len.value;
+	public long getTcpDownload() {
+		return tcpDownload;
+	}
+
+	@Override
+	public long getTcpUpload() {
+		return tcpUpload;
+	}
+
+	@Override
+	public long getUdpDownload() {
+		return udpDownload;
+	}
+
+	@Override
+	public long getUdpUpload() {
+		return udpUpload;
 	}
 	
-	public void updateTotal(){
-		totalReceive = receiveTCP + receiveUDP;
-		totalSend = sendTCP + sendUDP;
-		total = totalReceive + totalSend;
-	}
-
-	public long getTotalReceive() {
-		return totalReceive;
-	}
-
-	public long getTotalSend() {
-		return totalSend;
-	}
-
-	public long getTotal() {
-		return total;
-	}
-
-	public long getReceiveTCP() {
-		return receiveTCP;
-	}
-
-	public long getReceiveUDP() {
-		return receiveUDP;
-	}
-
-	public long getSendTCP() {
-		return sendTCP;
-	}
-
-	public long getSendUDP() {
-		return sendUDP;
-	}
-
-	@Override
-	public String toString() {
-		return "NetworkMonitor{" + "sendTCP=" + sendTCP + ", receiveTCP=" + receiveTCP + ", sendUDP=" + sendUDP
-				+ ", receiveUDP=" + receiveUDP + '}';
-	}
 }

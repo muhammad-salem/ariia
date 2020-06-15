@@ -6,19 +6,24 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.ariia.range.RangeInfo;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.TotalSpeedMonitor;
+import org.ariia.speed.report.TotalSpeedReport;
 import org.ariia.util.Utils;
 import org.terminal.Ansi;
 
-public class RangesInfoMonitor extends SpeedMonitor {
+public class RangesInfoMonitor extends TotalSpeedMonitor {
 
 	private static  Ansi ansi = new Ansi();
+	
 	protected MessageFormat format;
 	protected List<RangeInfo> rangeInfos;
+	
+	protected TotalSpeedReport<TotalSpeedMonitor> totalSpeedReport;
 
 	public RangesInfoMonitor() {
-		rangeInfos = new LinkedList<>();
-		format = new MessageFormat(newFormatMessage());
+		this.totalSpeedReport = new TotalSpeedReport<TotalSpeedMonitor>(this);
+		this.rangeInfos = new LinkedList<>();
+		this.format = new MessageFormat(newFormatMessage());
 	}
 	public int size() {
 		return rangeInfos.size();
@@ -49,8 +54,14 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	private long totalLength = 0;
 	private long downloadLength = 0;
 	private long remainingLength = 0;
+	
+	@Override
+	public void snapshotSpeed() {
+		super.snapshotSpeed();
+		updateRangeInfoData();
+	}
 
-	protected void updateRangeInfoData() {
+	private void updateRangeInfoData() {
 		totalLength = 0;
 		downloadLength = 0;
 		remainingLength = 0;
@@ -72,12 +83,12 @@ public class RangesInfoMonitor extends SpeedMonitor {
 		return remainingLength;
 	}
 
-	public String getTotalLengthMB() { return toUnitLengthBytes(totalLength); }
-	public String getDownloadLengthMB() { return toUnitLengthBytes(downloadLength); }
-	public String getRemainingLengthMB() { return toUnitLengthBytes(remainingLength); }
+	public String getTotalLengthMB() { return totalSpeedReport.unitLength(totalLength); }
+	public String getDownloadLengthMB() { return totalSpeedReport.unitLength(downloadLength); }
+	public String getRemainingLengthMB() { return totalSpeedReport.unitLength(remainingLength); }
 	
 	protected long getRemainingTime() {
-		return (getRemainingLength() + 1) / (speedOfTCPReceive() + 1);
+		return (getRemainingLength() + 1) / (totalSpeedReport.getMointor().getTcpDownloadSpeed() + 1);
 	}
 	protected String getRemainingTimeString() {
 		return ansi.green(ansi.underscore(Utils.timeformate(getRemainingTime())));
@@ -146,8 +157,8 @@ public class RangesInfoMonitor extends SpeedMonitor {
 		builder.append(ansi.red(ansi.bold(Utils.getStringWidth("T: " + getTotalLengthMB(), 16))));
 		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth("Down: " + getDownloadLengthMB(), 19))));
 		builder.append(ansi.yellow(ansi.bold(Utils.getStringWidth("Remain: " + getRemainingLengthMB(), 19))));
-		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
+		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + totalSpeedReport.getTotalDownload(), 15))));
+		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + totalSpeedReport.getTcpDownloadSpeed() + "ps", 16))));
 		builder.append(getRemainingTimeString());
 		return builder.toString();
 	}
@@ -194,8 +205,8 @@ public class RangesInfoMonitor extends SpeedMonitor {
 	
 	private String secondLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + getTotalReceiveMB(), 15))));
-		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + getSpeedTCPReceiveMB() + "ps", 16))));
+		builder.append(ansi.magentaLight(ansi.bold(Utils.getStringWidth( "⇩ " + totalSpeedReport.getTotalDownload(), 15))));
+		builder.append(ansi.blue(ansi.bold(Utils.getStringWidth("↓ " + totalSpeedReport.getTcpDownloadSpeed() + "ps", 16))));
 		return builder.toString();
 	}
 	
@@ -207,18 +218,10 @@ public class RangesInfoMonitor extends SpeedMonitor {
 			t = callable.call();
 		} catch (Exception e) {
 			e.printStackTrace();
-//			Log.error(getClass(), e.getClass().getName(), e.getMessage());
 		}
-		snapshotLength();
+		snapshotPoint();
 		return t;
 	}
-	
-//	public String getMointorPrintMessage() {
-//		updateRangeInfoData();
-//		String message = formateReport();
-//		demondSpeedNow();
-//		return message;
-//	}
 
 
 }

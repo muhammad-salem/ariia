@@ -10,7 +10,7 @@ import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.response.SegmentDownloader;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.core.api.writer.SegmentWriter;
-import org.ariia.speed.SpeedMonitor;
+import org.ariia.speed.report.SpeedMonitor;
 
 public class SegmentClient extends Client implements StreamOrder, ThreadOrder  {
 
