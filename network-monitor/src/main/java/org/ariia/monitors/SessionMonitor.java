@@ -18,7 +18,7 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 	protected transient  MessageFormat format;
 	protected transient List<RangeUtil> rangeInfos = new LinkedList<>();
 	
-	protected TotalSpeedReport<TotalSpeedMonitor> speedReport;
+	protected transient TotalSpeedReport<TotalSpeedMonitor> speedReport;
 
 	public SessionMonitor() {
 		this.speedReport = new TotalSpeedReport<>(this);
@@ -67,11 +67,8 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 	private boolean downloading = false;
 
 	@Override
-	public void snapshotSpeed() {
+	public synchronized void snapshotSpeed() {
 		super.snapshotSpeed();
-		rangeInfoUpdate();
-	}
-	protected synchronized void rangeInfoUpdate() {
 		totalLength = 0;
 		downloadLength = 0;
 		remainigLength = 0;

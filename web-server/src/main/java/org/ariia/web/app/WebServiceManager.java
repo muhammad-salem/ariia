@@ -13,6 +13,7 @@ import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.core.api.writer.ItemMetaDataCompleteWarpper;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
+import org.ariia.logging.Log;
 import org.ariia.mvc.sse.EventProvider;
 import org.ariia.mvc.sse.SourceEvent;
 import org.ariia.util.Utils;
@@ -64,17 +65,21 @@ public class WebServiceManager extends ServiceManager {
 	}
 	
 	private void sendwebReport() {
-		sessionProvider.send(Utils.toJson(sessionMonitor));
-		if (wattingList.size() != trackWating) {
-			wattingItemProvider.send(Utils.toJson(wattingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
-			trackWating = wattingList.size();
-		}
-		if (!downloadingList.isEmpty()) {
-			downloadingItemProvider.send(Utils.toJson(downloadingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
-		}
-		if (completeingList.size() != trackComplete) {
-			completeingItemProvider.send(Utils.toJson(completeingList.stream().map(LiteItem::bind).collect(Collectors.toList())));			
-			trackComplete = completeingList.size();
+		try {
+			sessionProvider.send(Utils.toJson(sessionMonitor));
+			if (wattingList.size() != trackWating) {
+				wattingItemProvider.send(Utils.toJson(wattingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
+				trackWating = wattingList.size();
+			}
+			if (!downloadingList.isEmpty()) {
+				downloadingItemProvider.send(Utils.toJson(downloadingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
+			}
+			if (completeingList.size() != trackComplete) {
+				completeingItemProvider.send(Utils.toJson(completeingList.stream().map(LiteItem::bind).collect(Collectors.toList())));			
+				trackComplete = completeingList.size();
+			}
+		} catch (Exception e) {
+			Log.error(getClass(), "Send web Report Error", e.getMessage());
 		}
 	}
 	
