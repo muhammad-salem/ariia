@@ -7,13 +7,13 @@ import org.ariia.speed.report.SpeedMonitor;
 import org.ariia.speed.report.SpeedReport;
 import org.ariia.util.Utils;
 
-public class RangeMonitor extends  SpeedMonitor {
+public class RangeMonitor extends SpeedMonitor {
 	
 	protected RangeUtil info;
 	protected String    name;
 	protected long remainingTime;
 	
-	protected SpeedReport<SpeedMonitor> speedReport;
+	protected transient SpeedReport<SpeedMonitor> speedReport;
 	
 	public RangeMonitor(RangeUtil info, String name) {
 		this.info = Objects.requireNonNull(info);
