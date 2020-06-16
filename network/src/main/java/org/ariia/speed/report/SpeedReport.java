@@ -64,8 +64,8 @@ public class SpeedReport<T extends SpeedMonitor> implements MonitorReport {
 	}
 	
 	protected T mointor;
-	protected boolean isBinary;
-	protected boolean isByte;
+	protected transient boolean isBinary;
+	protected transient boolean isByte;
 	
 	public SpeedReport(T mointor) {
 		this(mointor, true, true);
