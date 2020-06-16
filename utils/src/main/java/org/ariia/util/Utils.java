@@ -48,6 +48,67 @@ public class Utils {
 	*/
 	private static double kilobyte = 1000;
 	
+	public static String unitLength(double length) {
+		return unitLength(length, true, true);
+	}
+	public static String unitLength(double length, boolean isBinary, boolean isByte) {
+		
+		double kilo = isBinary ? kibibyte : kilobyte;
+		double k = length / kilo;
+		if(k < 1){
+			return length + (isBinary ? " B" : " b");
+		}
+		double m = k / kilo;
+		if(m < 1){
+			if (isByte){
+				return decimalFormat.format(k).concat(" KB");
+			} else {
+				return decimalFormat.format(k*8).concat(" Kb");
+			}
+		}
+		double g = m / kilo;
+		if(g < 1){
+			if (isByte){
+				return decimalFormat.format(m).concat(" MB");
+			} else {
+				return decimalFormat.format(m*8).concat(" Mb");
+			}
+		}
+		double t = g / kilo;
+		if(t < 1){
+			if (isByte){
+				return decimalFormat.format(g).concat(" GB");
+			} else {
+				return decimalFormat.format(g*8).concat(" Gb");
+			}
+		} else {
+			if (isByte){
+				return decimalFormat.format(t).concat(" TB");
+			} else {
+				return decimalFormat.format(t*8).concat(" Tb");
+			}
+		}
+	}
+	
+
+	static DecimalFormat decPercentage = new DecimalFormat("#0.00# %");
+	public static String percent(long downloaded, long size) {
+		return decPercentage.format(( (float) (downloaded+1) / (size+1) ));
+	}
+
+	public static String getTime(long date) {
+		long rmnd = 0;
+		long ss = date % 60;
+		rmnd = date / 60; // minute
+		long mm = rmnd % 60;
+		rmnd /= 60; // hours
+		long hh = rmnd % 60;
+		rmnd /= 60; // days
+		long dd = rmnd % 24;
+		return dd + ":" + hh + ":" + mm + ":" + ss;
+	}
+
+	
 	
 	
 	/**
@@ -320,71 +381,6 @@ public class Utils {
 		return string;
 	}
 
-	/**
-	 * @param length
-	 *            file path to read from.
-	 */
-	public static String fileLengthUnite(double length, boolean isBinary) {
-		
-		double kilo = isBinary ? kibibyte : kilobyte;
-		double k = length / kilo;
-		if(k < 1){
-			return length + (isBinary ? " B" : " b");
-		}
-		double m = k / kilo;
-		if(m < 1){
-			if (isBinary){
-				return decimalFormat.format(k).concat(" KB");
-			} else {
-				return decimalFormat.format(k*8).concat(" Kb");
-			}
-		}
-		double g = m / kilo;
-		if(g < 1){
-			if (isBinary){
-				return decimalFormat.format(m).concat(" MB");
-			} else {
-				return decimalFormat.format(m*8).concat(" Mb");
-			}
-		}
-		double t = g / kilo;
-		if(t < 1){
-			if (isBinary){
-				return decimalFormat.format(g).concat(" GB");
-			} else {
-				return decimalFormat.format(g*8).concat(" Gb");
-			}
-		} else {
-			if (isBinary){
-				return decimalFormat.format(t).concat(" TB");
-			} else {
-				return decimalFormat.format(t*8).concat(" Tb");
-			}
-		}
-	}
-
-
-	static DecimalFormat decPercentage = new DecimalFormat("#0.00# %");
-	public static String percent(long downloaded, long size) {
-//		System.out.println(downloaded +", "+ size);
-		return decPercentage.format(( (float) (downloaded+1) / (size+1) ));
-	}
-
-	public static double percent(double downloaded, double size) {
-		return downloaded / size;
-	}
-
-	public static String getTime(long date) {
-		long rmnd = 0;
-		long ss = date % 60;
-		rmnd = date / 60; // minute
-		long mm = rmnd % 60;
-		rmnd /= 60; // hours
-		long hh = rmnd % 60;
-		rmnd /= 60; // days
-		long dd = rmnd % 24;
-		return dd + ":" + hh + ":" + mm + ":" + ss;
-	}
 
 	public static boolean isAnyNetWorkInterfaceUp() {
 		try {
