@@ -16,14 +16,14 @@ public class LiteItem {
 	protected String itemId;
 	protected ItemState state;
 	protected long remainingTime;
-	protected long speedOfTCPReceive;
+	protected long tcpDownloadSpeed;
 	protected RangeUtil rangeInfo;
 	
 	public LiteItem(String itemId, ItemState state, RangeUtil rangeInfo, RangeReport monitor) {
 		super();
 		this.itemId = itemId;
 		this.state = state;
-		this.speedOfTCPReceive = monitor.getMointor().getTcpDownloadSpeed();
+		this.tcpDownloadSpeed = monitor.getMointor().getTcpDownloadSpeed();
 		this.remainingTime = monitor.getRemainingTime();
 		this.rangeInfo = rangeInfo;
 	}
