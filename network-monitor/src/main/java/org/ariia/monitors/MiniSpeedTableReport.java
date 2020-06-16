@@ -39,10 +39,10 @@ import org.terminal.strings.StyleBuilder;
  * @author salem
  *
  */
-public class MiniTableMonitor implements TableMonitor, CursorControl {
+public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 
-	protected Set<RangeMonitor> monitors;
-	protected SessionMonitor session;
+	protected Set<RangeReport> monitors;
+	protected SessionReport session;
 	
 	String header, midBorder, bodyTemplete, fotter;
 	
@@ -51,7 +51,7 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 	MessageFormat format;
 	
 	
-	public MiniTableMonitor(SessionMonitor session) {
+	public MiniSpeedTableReport(SessionReport session) {
 		this.session = session;
 		this.monitors = new HashSet<>();
 		initColumnStyle();
@@ -148,12 +148,12 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 	}
 	
 	@Override
-	public boolean add(RangeMonitor monitor) {
+	public boolean add(RangeReport monitor) {
 		return monitors.add(monitor);
 	}
 
 	@Override
-	public void remove(RangeMonitor monitor) {
+	public void remove(RangeReport monitor) {
 		monitors.remove(monitor);
 	}
 
@@ -196,14 +196,14 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 	
 	private void callSpeedForNextCycle() {
 		
-		for (RangeMonitor mointor : monitors) {
+		for (RangeReport mointor : monitors) {
 			mointor.snapshotPoint();
 		}
 		session.snapshotPoint();
 	}
 	
 	private void updateInfo() {
-		for (RangeMonitor mointor : monitors) {
+		for (RangeReport mointor : monitors) {
 			mointor.snapshotSpeed();
 		}
 		session.snapshotSpeed();
@@ -214,36 +214,32 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 		
 		message.append(header);
 		int index = 0;
-		for (RangeMonitor mointor : monitors) {
+		for (RangeReport mointor : monitors) {
 			Object[] obj = new Object[8];
 			obj[0] = ++index + "";
 			obj[1] = Utils.middleMaxLength(mointor.getName(), 41);
-			obj[2] = Utils.middleMaxLength(mointor.getDownloadLengthMB(), 17);
-//			obj[3] = Utils.middleMaxLength(mointor.getSpeedTCPReceiveMB() + "ps", 14);
-			obj[3] = Utils.middleMaxLength(mointor.getSpeedReport().getTcpDownloadSpeed() + "ps", 14);
+			obj[2] = Utils.middleMaxLength(mointor.getDownloadLength(), 17);
+			obj[3] = Utils.middleMaxLength(mointor.getTcpDownloadSpeed() + "/s", 14);
 			
-			obj[4] = Utils.middleMaxLength(mointor.getTotalLengthMB(), 10);
+			obj[4] = Utils.middleMaxLength(mointor.getFileLength(), 10);
 			obj[5] = Utils.middleMaxLength(mointor.getPercent(), 10);
-			obj[6] = Utils.middleMaxLength(mointor.getRemainingLengthMB(), 17);
-//			obj[7] = Utils.middleMaxLength(mointor.getTotalReceiveMB(), 14);
-			obj[7] = Utils.middleMaxLength(mointor.getSpeedReport().getTcpDownload(), 14);
+			obj[6] = Utils.middleMaxLength(mointor.getRemainingLength(), 17);
+			obj[7] = Utils.middleMaxLength(mointor.getTcpDownload(), 14);
 			
 			message.append(midBorder);
 			message.append(format.format(obj));
 		}
-		if(session.size() != 1) {
+		if(session.rangeCount() != 1) {
 			Object[] obj = new Object[8];
 			obj[0] = "#";
-			obj[1] = Utils.middleMaxLength("Session (" + session.size() +")", 41);
+			obj[1] = Utils.middleMaxLength("Session (" + session.rangeCount() +")", 41);
 			obj[2] = Utils.middleMaxLength(session.getDownloadLengthMB(), 17);
-//			obj[3] = Utils.middleMaxLength(session.getSpeedTCPReceiveMB() + "ps", 14);
-			obj[3] = Utils.middleMaxLength(session.getSpeedReport().getTcpDownloadSpeed() + "ps", 14);
+			obj[3] = Utils.middleMaxLength(session.getTcpDownloadSpeed() + "/s", 14);
 			
 			obj[4] = Utils.middleMaxLength(session.getTotalLengthMB(), 10);
 			obj[5] = Utils.middleMaxLength(session.getPercent(), 10);
 			obj[6] = Utils.middleMaxLength(session.getRemainingLengthMB(), 17);
-//			obj[7] = Utils.middleMaxLength(session.getTotalReceiveMB(), 14);
-			obj[7] = Utils.middleMaxLength(session.getSpeedReport().getTcpDownload(), 14);
+			obj[7] = Utils.middleMaxLength(session.getTcpDownload(), 14);
 			
 			message.append(midBorder);
 			message.append(format.format(obj));
@@ -253,7 +249,7 @@ public class MiniTableMonitor implements TableMonitor, CursorControl {
 	}
 
 	@Override
-	public SessionMonitor getSessionMonitor() {
+	public SessionReport getSessionMonitor() {
 		return session;
 	}
 

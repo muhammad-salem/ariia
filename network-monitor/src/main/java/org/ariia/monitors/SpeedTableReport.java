@@ -1,15 +1,15 @@
 package org.ariia.monitors;
 
-public interface TableMonitor {
+public interface SpeedTableReport {
 
-	boolean add(RangeMonitor monitor);
+	boolean add(RangeReport monitor);
 
-	void remove(RangeMonitor monitor);
+	void remove(RangeReport monitor);
 
 	void clear();
 
 	String getTableReport();
 	
-	SessionMonitor getSessionMonitor();
+	SessionReport getSessionMonitor();
 
 }

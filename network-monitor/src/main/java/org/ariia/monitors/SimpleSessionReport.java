@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 import org.ariia.util.Utils;
 import org.terminal.Ansi;
 
-public class SimpleSessionMonitor extends SessionMonitor {
+public class SimpleSessionReport extends SessionReport {
 
 
 	@Override
@@ -41,16 +41,16 @@ public class SimpleSessionMonitor extends SessionMonitor {
 	
 	private String firstLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(red(bold(Utils.getStringWidth("T: " + speedReport.unitLength(totalLength), 16))));
-		builder.append(magentaLight(bold(Utils.getStringWidth("Down: " + speedReport.unitLength(downloadLength), 19))));
-		builder.append(yellow(bold(Utils.getStringWidth("Remain: " + speedReport.unitLength(remainigLength) , 19))));
+		builder.append(red(bold(Utils.getStringWidth("T: " + unitLength(totalLength), 16))));
+		builder.append(magentaLight(bold(Utils.getStringWidth("Down: " + unitLength(downloadLength), 19))));
+		builder.append(yellow(bold(Utils.getStringWidth("Remain: " + unitLength(remainigLength) , 19))));
 		return builder.toString();
 	}
 	
 	private String secondLine() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(magentaLight(bold(Utils.getStringWidth( "⇩ " + speedReport.getTotalDownload(), 15))));
-		builder.append(blue(bold(Utils.getStringWidth("↓ " + speedReport.getTcpDownloadSpeed() + "/s", 16))));
+		builder.append(magentaLight(bold(Utils.getStringWidth( "⇩ " + getTotalDownload(), 15))));
+		builder.append(blue(bold(Utils.getStringWidth("↓ " + getTcpDownloadSpeed() + "/s", 16))));
 		return builder.toString();
 	}
 

@@ -5,22 +5,20 @@ import java.util.Objects;
 import org.ariia.range.RangeUtil;
 import org.ariia.speed.report.SpeedMonitor;
 import org.ariia.speed.report.SpeedReport;
+import org.ariia.speed.report.SpeedSnapshot;
 import org.ariia.util.Utils;
 
-public class RangeMonitor extends SpeedMonitor {
+public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnapshot {
 	
 	protected RangeUtil info;
 	protected String    name;
 	protected long remainingTime;
 	
-	protected transient SpeedReport<SpeedMonitor> speedReport;
-	
-	public RangeMonitor(RangeUtil info, String name) {
+	public RangeReport(RangeUtil info, String name) {
+		super(new SpeedMonitor());
 		this.info = Objects.requireNonNull(info);
 		this.name = Objects.requireNonNull(name);
-		this.speedReport = new SpeedReport<SpeedMonitor>(this);
 	}
-	
 	
 	public String getName() {
 		return name;
@@ -29,55 +27,44 @@ public class RangeMonitor extends SpeedMonitor {
 	public RangeUtil getRangeUtil() {
 		return info;
 	}
-	
-	public SpeedReport<SpeedMonitor> getSpeedReport() {
-		return speedReport;
+
+	@Override
+	public void snapshotPoint() {
+		this.mointor.snapshotPoint();
 	}
 	
 	@Override
 	public void snapshotSpeed() {
-		super.snapshotSpeed();
+		this.mointor.snapshotSpeed();
 		info.oneCycleDataUpdate();
-		remainingTime = (info.getRemainingLength() + 1) / (speedReport.getMointor().getTcpDownloadSpeed() + 1);
+		remainingTime = (info.getRemainingLength() + 1) / (this.mointor.getTcpDownloadSpeed() + 1);
 	}
 
 	public long getRemainingTime() {
 		return remainingTime;
 	}
-
-	public long getRemainingLength() {
-		return info.getRemainingLength();
-	}
-
-	public long getTotalLength() {
-		return info.getFileLength();
-	}
-
-	public long getDownloadLength() {
-		return info.getDownloadLength();
-	}
-
-	public String getTotalLengthMB() {
-		return speedReport.unitLength(info.getFileLength());
-	}
-
-	public String getDownloadLengthMB() {
-		return speedReport.unitLength(info.getDownloadLength());
-	}
-
-	public String getRemainingLengthMB() {
-		return speedReport.unitLength(info.getRemainingLength());
-	}
-
+	
 	public String getRemainingTimeString() {
 		return Utils.timeformate(getRemainingTime());
 	}
-	
+
+	public String getFileLength() {
+		return unitLength(info.getFileLength());
+	}
+
+	public String getDownloadLength() {
+		return unitLength(info.getDownloadLength());
+	}
+
+	public String getRemainingLength() {
+		return unitLength(info.getRemainingLength());
+	}
+
 	public String getPercent() {
 		return Utils.percent(info.getDownloadLength(), info.getFileLength());
 	}
 	protected float percent() {
-		return (float) info.getDownloadLength() /  info.getFileLength();
+		return (float) (info.getDownloadLength() + 1) /  (info.getFileLength() + 1);
 	}
-	
+
 }

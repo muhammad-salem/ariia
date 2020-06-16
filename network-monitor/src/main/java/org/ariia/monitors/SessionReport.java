@@ -7,21 +7,28 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.ariia.range.RangeUtil;
+import org.ariia.speed.report.SpeedSnapshot;
 import org.ariia.speed.report.TotalSpeedMonitor;
 import org.ariia.speed.report.TotalSpeedReport;
 import org.ariia.util.Utils;
 import org.terminal.ansi.CursorControl;
 import org.terminal.ansi.Styles;
 
-public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles, CursorControl {
+public abstract class SessionReport extends TotalSpeedReport<TotalSpeedMonitor> implements SpeedSnapshot, Styles, CursorControl {
 
 	protected transient  MessageFormat format;
-	protected transient List<RangeUtil> rangeInfos = new LinkedList<>();
-	
-	protected transient TotalSpeedReport<TotalSpeedMonitor> speedReport;
+	protected transient List<RangeUtil> rangeInfos;
 
-	public SessionMonitor() {
-		this.speedReport = new TotalSpeedReport<>(this);
+	protected long timer = 0;
+	protected long totalLength = 0;
+	protected long downloadLength = 0;
+	protected long remainigLength = 0;
+
+	protected long remainingTime = 0;
+	private boolean downloading = false;
+	
+	public SessionReport() {
+		super(new TotalSpeedMonitor());
 		this.rangeInfos = new LinkedList<>();
 		this.format = new MessageFormat(pattern());
 	}
@@ -29,20 +36,13 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 	protected abstract String pattern();
 	protected abstract Callable<String> updateDataCallable();
 	
-	public TotalSpeedReport<TotalSpeedMonitor> getSpeedReport() {
-		return speedReport;
-	}
-	
-	public int size() {
+	public int rangeCount() {
 		return rangeInfos.size();
 	}
-	public boolean isEmpty() {
-		return rangeInfos.isEmpty();
-	}
-	public boolean add(RangeUtil e) {
+	public boolean addRange(RangeUtil e) {
 		return rangeInfos.add(e);
 	}
-	public boolean remove(Object o) {
+	public boolean removeRange(RangeUtil o) {
 		return rangeInfos.remove(o);
 	}
 	public void clear() {
@@ -57,18 +57,17 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 
 	/*************************************/
 	//////////////////////////////////////
+	
 
-	protected long timer = 0;
-	protected long totalLength = 0;
-	protected long downloadLength = 0;
-	protected long remainigLength = 0;
 
-	protected long remainingTime = 0;
-	private boolean downloading = false;
+	@Override
+	public void snapshotPoint() {
+		this.mointor.snapshotPoint();
+	}
 
 	@Override
 	public synchronized void snapshotSpeed() {
-		super.snapshotSpeed();
+		this.mointor.snapshotSpeed();
 		totalLength = 0;
 		downloadLength = 0;
 		remainigLength = 0;
@@ -78,7 +77,7 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 			downloadLength += info.getDownloadLength();
 			remainigLength += info.getRemainingLength();
 		});
-		downloading = getTcpDownloadSpeed() > 0;
+		downloading = this.mointor.getTcpDownloadSpeed() > 0;
 	}
 
 	protected long getTotalLength() {
@@ -91,12 +90,12 @@ public abstract class SessionMonitor extends TotalSpeedMonitor implements Styles
 		return remainigLength;
 	}
 
-	public String getTotalLengthMB() { return speedReport.unitLength(totalLength); }
-	public String getDownloadLengthMB() { return speedReport.unitLength(downloadLength); }
-	public String getRemainingLengthMB() { return speedReport.unitLength(remainigLength); }
+	public String getTotalLengthMB() { return unitLength(totalLength); }
+	public String getDownloadLengthMB() { return unitLength(downloadLength); }
+	public String getRemainingLengthMB() { return unitLength(remainigLength); }
 	
 	protected long getRemainingTime() {
-		remainingTime = (getRemainingLength() + 1) / (getTcpDownloadSpeed() + 1);
+		remainingTime = (getRemainingLength() + 1) / (this.mointor.getTcpDownloadSpeed() + 1);
 		return remainingTime;
 	}
 	protected String getRemainingTimeString() {
