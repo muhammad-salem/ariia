@@ -18,6 +18,12 @@ import org.ariia.util.R;
 import org.ariia.util.Utils;
 
 public class Argument {
+	
+	private String version = "Ariia version (0.2.8)";
+	
+	public String getVersion() {
+		return version;
+	}
 
 	transient private String[] args;
 	private Map<TerminalArgument, String> dictionary;

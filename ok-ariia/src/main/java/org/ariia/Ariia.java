@@ -18,7 +18,7 @@ public class Ariia {
 			System.out.println(TerminalArgument.help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("Ariia version '0.2.7'");
+			System.out.println(arguments.getVersion() + " - OkHttp (3.14.7)");
 			return;
 		}
 		

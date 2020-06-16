@@ -35,7 +35,7 @@ public class WebApp {
 			System.out.println(TerminalArgument.help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("Ariia WEB APP version '0.2.7'");
+			System.out.println(arguments.getVersion() + " - Angular Material (9.1.11)");
 			return;
 		}
 		

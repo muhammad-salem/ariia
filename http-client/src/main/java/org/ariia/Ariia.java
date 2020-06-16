@@ -18,7 +18,7 @@ public static void main(String[] args) {
 			System.out.println(TerminalArgument.help());
 			return;
 		} else if (arguments.isVersion()) {
-			System.out.println("Ariia version '0.2.7'");
+			System.out.println(arguments.getVersion() + " - JDK (11+)");
 			return;
 		}
 		
