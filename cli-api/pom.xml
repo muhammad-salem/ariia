@@ -16,6 +16,12 @@
 	  		<artifactId>core-api</artifactId>
 			<version>${project.version}</version>
 	  	</dependency>
+		<dependency>
+		    <groupId>org.fusesource.jansi</groupId>
+		    <artifactId>jansi</artifactId>
+		    <version>${ansi.version}</version>
+		</dependency>
+	  	
 	</dependencies>
 	
 </project>

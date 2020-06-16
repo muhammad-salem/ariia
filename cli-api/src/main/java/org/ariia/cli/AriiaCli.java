@@ -8,7 +8,9 @@ import org.ariia.core.api.client.Client;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.items.ItemBuilder;
 import org.ariia.logging.Log;
+import org.ariia.util.PlatformUtil;
 import org.ariia.util.R;
+import org.fusesource.jansi.AnsiConsole;
 
 public class AriiaCli {
 
@@ -51,7 +53,7 @@ public class AriiaCli {
 	}
 
 	public void lunch(Argument arguments, Properties properties) {
-		
+		initSystemIO();
 		R.MK_DIRS(R.CachePath);
 		properties.setupConfig(arguments);
 		
@@ -75,6 +77,12 @@ public class AriiaCli {
 		builder.clear();
 		serviceManager.setFinishAction(finishAction);
 		serviceManager.startScheduledService();
+	}
+	
+	private void initSystemIO() {
+		if (PlatformUtil.isWindows()) {
+			AnsiConsole.systemInstall();
+		}
 	}
 
 }
