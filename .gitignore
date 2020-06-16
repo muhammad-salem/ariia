@@ -54,6 +54,7 @@ web-server/src/main/resources/static/angular
 /*/bin
 /*/target
 /*/node_modules
+/*/dist
 /*/package-lock.json
 # Compiled class file
 *.class
