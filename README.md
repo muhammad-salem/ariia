@@ -3,6 +3,7 @@
 Ariia is a command line download manager.
 and Ariiad, a SPA written with TypeScript and by Angular 9 framework
 
+![screenshot-01](img/angular-spa.png)
 
 ## Dependency
 
@@ -28,6 +29,8 @@ JANSI|`1.8`|for Windows VM|
 - Restful API
 - Web Server
 - WEB UI (Angular SPA)
+
+![screenshot-01](img/dependency-hierarch.png)
 ___
 
 ### Options :
