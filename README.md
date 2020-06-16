@@ -1,14 +1,17 @@
-# ariia  (0.2.7)
+# ariia  (0.2.8)
 
-Ariia is a smart command line download manager. (WEB-APP.. coming soon)
-
+Ariia is a command line download manager.
+and Ariiad, a SPA written with TypeScript and by Angular 9 framework
 
 
 ## Dependency
- - OkHttp (3.14.7) -- > for jdk8 only
- - Gson (2.8.6)
- - Lawnha (0.2.0)
- 
+
+Lib Name|Version|Info
+--- | --- | ---
+OkHttp|`3.14.7`|for jdk8 only|
+Gson|`2.8.6`| |
+Lawnha|`0.2.0`| |
+JANSI|`1.8`|for Windows VM|
  
 ## Modules
  
@@ -21,10 +24,11 @@ Ariia is a smart command line download manager. (WEB-APP.. coming soon)
 - Verify Data
 - CLI API
 - Ariia JDK 8
-- Ariia JDK 14
+- Ariia JDK 11
 - Restful API
 - Web Server
-
+- WEB UI (Angular SPA)
+___
 
 ### Options :
  - support HTTP and HTTPS.
@@ -41,7 +45,7 @@ Ariia is a smart command line download manager. (WEB-APP.. coming soon)
  		not test on ssd Hard Disk
  - solve heat problem, by reduce write time to hard disk - flush on fixed rate of time every 5s.
   
- 
+___ 
  
  ```
 java - jar ariia.jar [-u] URL
@@ -88,18 +92,12 @@ java - jar ariia.jar [-u] URL
 ### Overview
 
 ![screenshot-01](img/download-ubuntu-mini.gif)
-
+___
 ![screenshot-01](img/mini-table-01.png)
+___
 ![screenshot-02](img/mini-table-02.png)
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
+___
 ![Format2](img/text-format02.png)
-
-
-### ISSUE FIX:
-
- - fix load cookies from file
- - fix memory leak 
-
-
