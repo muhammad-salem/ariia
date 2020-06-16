@@ -12,7 +12,7 @@
       },
       "root": "projects/ariia",
       "sourceRoot": "projects/ariia/src",
-      "prefix": "ariia",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -28,13 +28,38 @@
               "projects/ariia/src/assets"
             ],
             "styles": [
-              "projects/ariia/src/style/bootstrap.dark.min.css",
-              "node_modules/ngx-toastr/toastr.css",
-              "projects/ariia/src/styles.scss"
+              {
+                "input": "projects/ariia/src/style/fonts.css"
+              },
+              {
+                "input": "projects/ariia/src/styles.scss"
+              },
+              {
+                "lazy": true,
+                "inject": false,
+                "input": "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+                "bundleName": "assets/pink-bluegrey"
+              },
+              {
+                "lazy": true,
+                "inject": false,
+                "input": "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+                "bundleName": "assets/deeppurple-amber"
+              },
+              {
+                "lazy": true,
+                "inject": false,
+                "input": "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                "bundleName": "assets/indigo-pink"
+              },
+              {
+                "lazy": true,
+                "inject": false,
+                "input": "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
+                "bundleName": "assets/purple-green"
+              }
             ],
-            "scripts": [
-            	"node_modules/chart.js/dist/Chart.bundle.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -96,6 +121,7 @@
               "projects/ariia/src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "projects/ariia/src/styles.scss"
             ],
             "scripts": []
@@ -127,6 +153,47 @@
           }
         }
       }
-    }},
+    },
+    "core-api": {
+      "projectType": "library",
+      "root": "projects/core-api",
+      "sourceRoot": "projects/core-api/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/core-api/tsconfig.lib.json",
+            "project": "projects/core-api/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/core-api/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/core-api/src/test.ts",
+            "tsConfig": "projects/core-api/tsconfig.spec.json",
+            "karmaConfig": "projects/core-api/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/core-api/tsconfig.lib.json",
+              "projects/core-api/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
   "defaultProject": "ariia"
 }

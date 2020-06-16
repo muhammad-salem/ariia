@@ -1,0 +1,64 @@
+<mat-nav-list>
+    <div class="text-center py-1">
+        <div class="header">
+            <h2>Ariia <mat-icon>cloud_download</mat-icon>
+            </h2>
+            <h4>Cloud Download Manager</h4>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    <h2 matSubheader>Pages</h2>
+
+    <mat-list-item routerLinkActive="list-item-active" routerLink="/dashboard">
+        <a matLine>Dashboard</a>
+        <button mat-icon-button>
+            <mat-icon>home</mat-icon>
+        </button>
+    </mat-list-item>
+
+    <mat-list-item routerLinkActive="list-item-active" routerLink="/download">
+        <a matLine>Download</a>
+        <button mat-icon-button>
+            <mat-icon>cloud_download</mat-icon>
+        </button>
+    </mat-list-item>
+
+    <mat-list-item routerLinkActive="list-item-active" routerLink="/network">
+        <a matLine>Network</a>
+        <button mat-icon-button>
+            <mat-icon>network_check</mat-icon>
+        </button>
+    </mat-list-item>
+
+    <mat-list-item routerLinkActive="list-item-active" routerLink="/setting">
+        <a matLine>Settings</a>
+        <button mat-icon-button>
+            <mat-icon>settings</mat-icon>
+        </button>
+    </mat-list-item>
+
+    <mat-list-item routerLinkActive="list-item-active" routerLink="/logview">
+        <a matLine>Logging</a>
+        <button mat-icon-button>
+            <mat-icon>message</mat-icon>
+        </button>
+    </mat-list-item>
+
+    <h2 matSubheader>Internet speed test: Netflix</h2>
+
+    <mat-list-item>
+        <a matLine>Server</a>
+        <button mat-icon-button>
+            <mat-icon>speed</mat-icon>
+        </button>
+    </mat-list-item>
+
+    <mat-list-item>
+        <a matLine>Client</a>
+        <button mat-icon-button>
+            <mat-icon>speed</mat-icon>
+        </button>
+    </mat-list-item>
+
+</mat-nav-list>

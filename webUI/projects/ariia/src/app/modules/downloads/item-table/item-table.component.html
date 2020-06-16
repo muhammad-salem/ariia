@@ -1,0 +1,84 @@
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let item">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(item) : null"
+                [checked]="selection.isSelected(item)">
+            </mat-checkbox>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef="let item">
+            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+        </mat-footer-cell>
+    </ng-container>
+
+    <!-- File Name -->
+    <ng-container matColumnDef="filename">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.filename}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>Session</mat-footer-cell>
+    </ng-container>
+
+    <!-- File Length -->
+    <ng-container matColumnDef="fileLength">
+        <mat-header-cell *matHeaderCellDef> Age </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.rangeInfo.fileLength | unitLength}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{session.totalLength | unitLength}}</mat-footer-cell>
+    </ng-container>
+
+    <!-- Download Length -->
+    <ng-container matColumnDef="downloadLength">
+        <mat-header-cell *matHeaderCellDef> Download Length </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.rangeInfo.downloadLength | unitLength}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{session.downloadLength | unitLength}}</mat-footer-cell>
+    </ng-container>
+
+    <!-- Remaining Length -->
+    <ng-container matColumnDef="remainingLength">
+        <mat-header-cell *matHeaderCellDef> Remaining Length </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.rangeInfo.remainingLength | unitLength}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{session.remainigLength | unitLength}}</mat-footer-cell>
+    </ng-container>
+
+    <!-- Download Speed -->
+    <ng-container matColumnDef="tcpDownloadSpeed">
+        <mat-header-cell *matHeaderCellDef> Download Speed </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.tcpDownloadSpeed | speed}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{session | speed}}</mat-footer-cell>
+    </ng-container>
+
+    <!-- Reminning Time -->
+    <ng-container matColumnDef="reminningTime">
+        <mat-header-cell *matHeaderCellDef> Reminning Time </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.remainingTime | uptime}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{session.remainingTime | uptime}}</mat-footer-cell>
+    </ng-container>
+
+    <!-- Download Progress -->
+    <ng-container matColumnDef="progress">
+        <mat-header-cell *matHeaderCellDef> Progress </mat-header-cell>
+        <mat-cell *matCellDef="let item">
+            <mat-progress-bar [value]="itemProgress(item)" mode="determinate"></mat-progress-bar>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef>
+            <mat-progress-bar [value]="sessionProgress()" mode="determinate"></mat-progress-bar>
+        </mat-footer-cell>
+    </ng-container>
+
+    <!-- Download State -->
+    <ng-container matColumnDef="state">
+        <mat-header-cell *matHeaderCellDef> State </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{item.state}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{session.downloading? 'Downloading':'Ready'}}</mat-footer-cell>
+    </ng-container>
+
+    <!-- Header and Row Declarations -->
+    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+    <mat-row *matRowDef="let item; columns: columnsToDisplay"></mat-row>
+    <mat-footer-row *matFooterRowDef="columnsToDisplay"></mat-footer-row>
+</mat-table>

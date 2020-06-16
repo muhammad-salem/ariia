@@ -1,0 +1,38 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <button mat-icon-button (click)="toggleBar()">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span>Ariia</span>
+        <div fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+            <ul fxLayout="row" fxLayoutGap.sm>
+                <li>
+                    <button mat-icon-button>
+                        <mat-icon>settings</mat-icon>
+                    </button>
+                </li>
+                <li>
+                    <button mat-icon-button>
+                        <mat-icon>help_outline</mat-icon>
+                    </button>
+                </li>
+                <li>
+                    <mat-menu #appMenu="matMenu" xPosition="before" yPosition="below">
+                        <button mat-menu-item routerLink="/dashboard">Dashboard</button>
+                        <button mat-menu-item routerLink="/download">Download</button>
+                        <button mat-menu-item routerLink="/network">Network</button>
+                        <button mat-menu-item routerLink="/setting">Setting</button>
+                        <button mat-menu-item routerLink="/logview">Logging</button>
+                    </mat-menu>
+
+                    <button mat-icon-button [matMenuTriggerFor]="appMenu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                </li>
+                <li>
+                    <theme-picker></theme-picker>
+                </li>
+            </ul>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>

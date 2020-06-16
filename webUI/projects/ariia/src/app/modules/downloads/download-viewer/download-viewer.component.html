@@ -1,0 +1,23 @@
+<!-- <nav mat-tab-nav-bar id="download-viewer">
+    <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.path" routerLinkActive #rla="routerLinkActive"
+        [active]="rla.isActive">{{link.label}}
+        <mat-icon>{{link.icon}}</mat-icon>
+    </a>
+</nav>
+
+<router-outlet></router-outlet> -->
+
+<!-- <div class="mx-2"> -->
+<mat-tab-group>
+    <mat-tab label="Download Table">
+        <ng-template matTabContent>
+            <app-item-table></app-item-table>
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Download List">
+        <ng-template matTabContent>
+            <app-item-list></app-item-list>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
+<!-- </div> -->

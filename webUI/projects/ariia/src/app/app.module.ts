@@ -1,66 +1,36 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { CoreApiModule } from 'core-api';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { AppRoutingModule } from './app-routing.module';
-import { ItemFilterPipe } from './pipe/item-filter.pipe';
-import { ItemListComponent } from './component/download/item-list/item-list.component';
-import { ItemViewComponent } from './component/download/item-view/item-view.component';
-import { LogListComponent } from './component/log/log-list/log-list.component';
-import { SessionMonitorComponent } from './component/network/session-monitor/session-monitor.component';
-import { NetworkChartComponent } from './component/network/network-chart/network-chart.component';
-import { HeaderComponent } from './component/site/header/header.component';
-import { HomeComponent } from './component/site/home/home.component';
-import { NavComponent } from './component/site/nav/nav.component';
-import { FooterComponent } from './component/site/footer/footer.component';
-import { RootComponent } from './component/site/root/root.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { UpTimePipe } from './pipe/up-time.pipe';
-import { LengthUnitPipe } from './pipe/length-unit.pipe';
-import { AddLinkComponent } from './component/link/add-link/add-link.component';
-import { CircularProgressComponent } from './component/utils/circular-progress/circular-progress.component';
-import { ServerPropertiesComponent } from './component/setting/server-properties/server-properties.component';
-import { SiteSettingsComponent } from './component/setting/site-settings/site-settings.component';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { SearchLogPipe } from './pipe/search-log.pipe';
-import { ItemTableComponent } from './component/download/item-table/item-table.component';
+import { RoutingModule } from './routing.module';
+import { MaterialModule } from './modules/material/material.module';
+import { ThemePickerModule } from './modules/shared/theme-picker/theme-picker.module';
+
+import { AppRootComponent } from './app-root/app-root.component';
+import { LayoutModule } from './modules/shared/layout/layout.module';
 
 @NgModule({
-  declarations: [
-    ItemFilterPipe,
-    ItemListComponent,
-    ItemViewComponent,
-    LogListComponent,
-    SessionMonitorComponent,
-    NetworkChartComponent,
-    HeaderComponent,
-    HomeComponent,
-    NavComponent,
-    FooterComponent,
-    RootComponent,
-    UpTimePipe,
-    LengthUnitPipe,
-    AddLinkComponent,
-    CircularProgressComponent,
-    ServerPropertiesComponent,
-    SiteSettingsComponent,
-    SearchLogPipe,
-    ItemTableComponent
-  ],
+  declarations: [AppRootComponent],
+  providers: [],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    FontAwesomeModule,
-    ToastrModule.forRoot()
+    CoreApiModule,
+    RoutingModule,
+    FlexLayoutModule,
+    MaterialModule,
+    LayoutModule,
+    ThemePickerModule
   ],
-  providers: [
-    { provide: ToastrService, useClass: ToastrService }
-  ],
-  bootstrap: [RootComponent]
+  exports: [AppRootComponent],
+  bootstrap: [AppRootComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
