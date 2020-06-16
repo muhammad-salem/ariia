@@ -12,7 +12,7 @@ import org.ariia.config.Properties;
 import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.monitors.RangeMonitor;
+import org.ariia.monitors.RangeReport;
 import org.ariia.range.RangeUtil;
 import org.ariia.segment.Segment;
 import org.ariia.segment.Segment.OfferSegment;
@@ -25,7 +25,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	protected RangeUtil info;
 	
 	protected boolean downloading = false;
-	protected RangeMonitor rangeMointor;
+	protected RangeReport rangeReport;
 	
 	protected RandomAccessFile raf;
 	private   ConcurrentLinkedQueue<Segment> segments;
@@ -34,7 +34,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	public ItemMetaData(Item item, Properties properties) {
 		this.item 			= item;
 		this.info 			= item.getRangeInfo();
-		this.rangeMointor	= new RangeMonitor(info, item.getFilename());
+		this.rangeReport	= new RangeReport(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
 		this.properties		= properties;
 		initRandomAccessFile();
@@ -150,8 +150,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return info;
 	}
 	
-	public RangeMonitor getRangeMointor() {
-		return rangeMointor;
+	public RangeReport getRangeReport() {
+		return rangeReport;
 	}
 	
 	public boolean isDownloading() {
@@ -221,7 +221,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 				if (info.isFinish(index)) {
 					continue;
 				}
-				plane.downloadPart(this, index, rangeMointor, monitors);
+				plane.downloadPart(this, index, rangeReport.getMointor(), monitors);
 				downloadList.add(index);
 			}
 		}

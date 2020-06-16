@@ -66,7 +66,7 @@ public class WebServiceManager extends ServiceManager {
 	
 	private void sendwebReport() {
 		try {
-			sessionProvider.send(Utils.toJson(sessionMonitor));
+			sessionProvider.send(Utils.toJson(sessionReport));
 			if (wattingList.size() != trackWating) {
 				wattingItemProvider.send(Utils.toJson(wattingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
 				trackWating = wattingList.size();

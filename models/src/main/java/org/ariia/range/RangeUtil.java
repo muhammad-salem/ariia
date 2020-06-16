@@ -7,13 +7,13 @@ public interface RangeUtil extends Range {
 		return getRange().length;
 	}
 	default String getFileLengthMB() {
-		return Utils.fileLengthUnite(getFileLength(), true);
+		return Utils.unitLength(getFileLength());
 	}
 	default String getDownloadLengthMB() {
-		return Utils.fileLengthUnite(getDownloadLength(), true);
+		return Utils.unitLength(getDownloadLength());
 	}
 	default String getRemainingLengthMB() {
-		return Utils.fileLengthUnite(getRemainingLength(), true);
+		return Utils.unitLength(getRemainingLength());
 	}
 	
 	default void checkRanges() {

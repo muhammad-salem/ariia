@@ -23,24 +23,16 @@ import org.ariia.items.ItemState;
 import org.ariia.items.ItemStore;
 import org.ariia.items.MetalinkItem;
 import org.ariia.logging.Log;
-import org.ariia.monitors.MiniTableMonitor;
-import org.ariia.monitors.SessionMonitor;
-import org.ariia.monitors.SimpleSessionMonitor;
-import org.ariia.monitors.TableMonitor;
+import org.ariia.monitors.MiniSpeedTableReport;
+import org.ariia.monitors.SessionReport;
+import org.ariia.monitors.SimpleSessionReport;
+import org.ariia.monitors.SpeedTableReport;
 import org.ariia.network.ConnectivityCheck;
 import org.ariia.network.NetworkReport;
 import org.ariia.network.UrlConnectivity;
 import org.ariia.range.RangeUtil;
 
 public class ServiceManager implements Closeable {
-	
-//	public static ServiceManager SegmentServiceManager(Proxy proxy) {
-//		return  new ServiceManager(new SegmentClient(proxy));
-//	}
-//	
-//	public static ServiceManager ChannelServiceManager(Proxy proxy) {
-//		return new ServiceManager(new ChannelClient(proxy));
-//	}
 	
 	public final static int SCHEDULE_TIME = 1;
 	public final static int SCHEDULE_POOL = 10;
@@ -53,8 +45,8 @@ public class ServiceManager implements Closeable {
 
 	protected DataStore<Item> dataStore;
 	protected Client client;
-	protected SessionMonitor sessionMonitor;
-	protected TableMonitor reportTable;
+	protected SessionReport sessionReport;
+	protected SpeedTableReport reportTable;
 	protected ConnectivityCheck connectivity;
 	
 	protected Properties properties;
@@ -63,8 +55,8 @@ public class ServiceManager implements Closeable {
 	
 	public ServiceManager(Client client) {
 		this.client = client;
-		this.sessionMonitor = new SimpleSessionMonitor(); 
-		this.reportTable = new MiniTableMonitor(sessionMonitor);
+		this.sessionReport = new SimpleSessionReport(); 
+		this.reportTable = new MiniSpeedTableReport(sessionReport);
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getProxy());
 		this.initServiceList(new ItemStore());
@@ -73,31 +65,31 @@ public class ServiceManager implements Closeable {
 	
 	public ServiceManager(Client client, DataStore<Item> dataStore) {
 		this.client = client;
-		this.sessionMonitor = new SimpleSessionMonitor(); 
-		this.reportTable = new MiniTableMonitor(sessionMonitor);
+		this.sessionReport = new SimpleSessionReport(); 
+		this.reportTable = new MiniSpeedTableReport(sessionReport);
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.connectivity = new UrlConnectivity(client.getProxy());
 		this.initServiceList(dataStore);
 	}
 	
-	public ServiceManager(Client client, TableMonitor reportTable) {
+	public ServiceManager(Client client, SpeedTableReport reportTable) {
 		this.client = client;
 		this.reportTable = reportTable;
-		this.sessionMonitor = reportTable.getSessionMonitor(); 
+		this.sessionReport = reportTable.getSessionMonitor(); 
 		this.connectivity = new UrlConnectivity(client.getProxy());
 
 		this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
 		this.initServiceList(new ItemStore());
 	}
 	
-	public ServiceManager(Client client, SessionMonitor monitor, TableMonitor reportTable) {
+	public ServiceManager(Client client, SessionReport monitor, SpeedTableReport reportTable) {
 		this(client, monitor, new UrlConnectivity(client.getProxy()), reportTable);
 	}
 	
-	public ServiceManager(Client client, SessionMonitor monitor,
-			ConnectivityCheck connectivity, TableMonitor reportTable) {
+	public ServiceManager(Client client, SessionReport monitor,
+			ConnectivityCheck connectivity, SpeedTableReport reportTable) {
 		this.client = client;
-		this.sessionMonitor = monitor; 
+		this.sessionReport = monitor; 
 		this.reportTable = reportTable;
 		this.connectivity = connectivity;
 
@@ -133,7 +125,9 @@ public class ServiceManager implements Closeable {
 	}
 		
 	public boolean isNetworkFailer() {
-		if (sessionMonitor.isDownloading()) {
+		if (sessionReport.isDownloading()) {
+			return false;
+		} else if (downloadingList.isEmpty() & wattingList.isEmpty()) {
 			return false;
 		} else {
 			NetworkReport report = connectivity.networkReport();
@@ -186,7 +180,7 @@ public class ServiceManager implements Closeable {
 					continue;
 				}
 				metaData.checkWhileDownloading();
-				metaData.startAndCheckDownloadQueue(client, sessionMonitor);
+				metaData.startAndCheckDownloadQueue(client, sessionReport.getMointor());
 			}
 			
 			if (downloadingList.isEmpty() & wattingList.isEmpty()) {
@@ -203,8 +197,8 @@ public class ServiceManager implements Closeable {
 		metaData.initWaitQueue();
 		metaData.checkCompleted();
 		downloadingList.add(metaData);
-		metaData.startAndCheckDownloadQueue(client, sessionMonitor);
-		reportTable.add(metaData.getRangeMointor());
+		metaData.startAndCheckDownloadQueue(client, sessionReport.getMointor());
+		reportTable.add(metaData.getRangeReport());
 		metaData.getItem().getRangeInfo().oneCycleDataUpdate();
 	}
 
@@ -214,7 +208,7 @@ public class ServiceManager implements Closeable {
 		dataStore.save(metaData.getItem());
 		metaData.close();
 		downloadingList.remove(metaData);
-		reportTable.remove(metaData.getRangeMointor());
+		reportTable.remove(metaData.getRangeReport());
 		completeingList.add(metaData);
 	}
 	
@@ -277,12 +271,12 @@ public class ServiceManager implements Closeable {
 		this.client = client;
 	}
 
-	public SessionMonitor getSessionMointor() {
-		return sessionMonitor;
+	public SessionReport getSessionMointor() {
+		return sessionReport;
 	}
 
-	public void setSessionMointor(SimpleSessionMonitor monitor) {
-		this.sessionMonitor = monitor;
+	public void setSessionMointor(SimpleSessionReport monitor) {
+		this.sessionReport = monitor;
 	}
 	
 	
@@ -292,7 +286,7 @@ public class ServiceManager implements Closeable {
 	
 	public void printAllReport() {
 		for (ItemMetaData itemMetaData : completeingList) {
-			reportTable.add(itemMetaData.getRangeMointor());
+			reportTable.add(itemMetaData.getRangeReport());
 		}
 		System.out.println(reportTable.getTableReport());
 	}
@@ -360,7 +354,7 @@ public class ServiceManager implements Closeable {
 			return;
 		}
 		
-		sessionMonitor.add(range);
+		sessionReport.addRange(range);
 		ItemMetaData metaData = null;
 		if(range.isStreaming()) {
 			metaData = new StreamMetaDataWriter(item, properties);
