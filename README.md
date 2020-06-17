@@ -11,7 +11,7 @@ Lib Name|Version|Info
 --- | --- | ---
 OkHttp|`3.14.7`|for jdk8 only|
 Gson|`2.8.6`| |
-Lawnha|`0.2.0`| |
+Lawnha|`0.2.1`| |
 JANSI|`1.8`|for Windows VM|
  
 ## Modules
