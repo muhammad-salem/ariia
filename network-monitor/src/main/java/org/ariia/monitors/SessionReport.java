@@ -25,7 +25,7 @@ public abstract class SessionReport extends TotalSpeedReport<TotalSpeedMonitor> 
 	protected long remainigLength = 0;
 
 	protected long remainingTime = 0;
-	private boolean downloading = false;
+	protected boolean downloading = false;
 	
 	public SessionReport() {
 		super(new TotalSpeedMonitor());

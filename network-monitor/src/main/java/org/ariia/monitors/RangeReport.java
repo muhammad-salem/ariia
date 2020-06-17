@@ -13,6 +13,7 @@ public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnaps
 	protected RangeUtil info;
 	protected String    name;
 	protected long remainingTime;
+	protected boolean downloading = false;
 	
 	public RangeReport(RangeUtil info, String name) {
 		super(new SpeedMonitor());
@@ -38,6 +39,7 @@ public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnaps
 		this.mointor.snapshotSpeed();
 		info.oneCycleDataUpdate();
 		remainingTime = (info.getRemainingLength() + 1) / (this.mointor.getTcpDownloadSpeed() + 1);
+		downloading = this.mointor.getTcpDownloadSpeed() > 0;
 	}
 
 	public long getRemainingTime() {
@@ -63,8 +65,13 @@ public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnaps
 	public String getPercent() {
 		return Utils.percent(info.getDownloadLength(), info.getFileLength());
 	}
+	
 	protected float percent() {
 		return (float) (info.getDownloadLength() + 1) /  (info.getFileLength() + 1);
+	}
+	
+	public boolean isDownloading() {
+		return downloading;
 	}
 
 }

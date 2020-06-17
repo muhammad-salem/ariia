@@ -12,6 +12,7 @@ export class Item implements Ui {
     rangeInfo: RangeInfo = new RangeInfo();
     tcpDownloadSpeed: number = 0;
     remainingTime: number = 0;
+    downloading: boolean;
 
     //  implements Ui
     show: boolean;
@@ -33,11 +34,8 @@ export class Item implements Ui {
         this.url = item.url;
         this.redirectUrl = item.redirectUrl;
         this.filename = item.filename;
-        this.state = item.state;
         this.saveDirectory = item.saveDirectory;
-        this.rangeInfo.update(item.rangeInfo);
-        this.tcpDownloadSpeed = item.tcpDownloadSpeed;
-        this.remainingTime = item.remainingTime;
+        this.netwotkUpdate(item);
         Object.keys(item.headers).forEach((keys) => {
             this.headers.set(keys, item.headers[keys]);
         });
@@ -48,6 +46,7 @@ export class Item implements Ui {
         this.rangeInfo.update(item.rangeInfo);
         this.tcpDownloadSpeed = item.tcpDownloadSpeed;
         this.remainingTime = item.remainingTime;
+        this.downloading = item.downloading;
     }
 
     toString(): string {
