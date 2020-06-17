@@ -1,5 +1,8 @@
 package org.ariia.cli;
 
+import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
+import static org.fusesource.jansi.internal.CLibrary.isatty;
+
 import java.util.Objects;
 
 import org.ariia.args.Argument;
@@ -80,7 +83,8 @@ public class AriiaCli {
 	}
 	
 	private void initSystemIO() {
-		if (PlatformUtil.isWindows()) {
+		int rc = isatty(STDOUT_FILENO);
+		if( rc==0 || PlatformUtil.isWindows()) {
 			AnsiConsole.systemInstall();
 		}
 	}
