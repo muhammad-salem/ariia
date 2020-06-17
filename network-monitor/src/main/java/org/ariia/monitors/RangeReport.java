@@ -9,11 +9,13 @@ import org.ariia.speed.report.SpeedSnapshot;
 import org.ariia.util.Utils;
 
 public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnapshot {
+
 	
-	protected RangeUtil info;
-	protected String    name;
 	protected long remainingTime;
 	protected boolean downloading = false;
+	
+	protected transient String name;
+	protected transient RangeUtil info;
 	
 	public RangeReport(RangeUtil info, String name) {
 		super(new SpeedMonitor());
