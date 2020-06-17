@@ -1,6 +1,4 @@
-import { Ui } from './ui';
-
-export interface Message extends Ui {
+export interface Message {
     timeMillis: number;
     level: string;
     classname: string;
