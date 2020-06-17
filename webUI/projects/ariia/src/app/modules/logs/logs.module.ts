@@ -14,6 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  id: 'logs',
   declarations: [
     LogTableComponent
   ],

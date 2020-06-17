@@ -115,6 +115,7 @@ export class ThemePicker implements OnInit, OnDestroy {
 }
 
 @NgModule({
+  id: 'theme-picker',
   imports: [
     CommonModule,
     MatButtonModule,

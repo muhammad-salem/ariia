@@ -12,6 +12,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  id: 'settings',
   declarations: [
     SiteSettingsComponent,
     ServerSettingsComponent,

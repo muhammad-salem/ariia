@@ -22,6 +22,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  id: 'downloads',
   declarations: [
     ItemViewComponent,
     ItemListComponent,

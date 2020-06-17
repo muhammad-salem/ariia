@@ -10,6 +10,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  id: 'dashboard',
   declarations: [DashboardComponent],
   imports: [
     CommonModule,

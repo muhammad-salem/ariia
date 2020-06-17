@@ -12,7 +12,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [NetworkChartComponent, SessionMonitorComponent, NetworkViewerComponent],
+  declarations: [
+    NetworkChartComponent,
+    SessionMonitorComponent,
+    NetworkViewerComponent
+  ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes)

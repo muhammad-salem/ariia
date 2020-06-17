@@ -5,6 +5,7 @@ import { SpeedPipe, UnitLengthPipe } from './pipe/speed.pipe';
 
 
 @NgModule({
+  id: 'core-api',
   declarations: [UnitLengthPipe, SpeedPipe, UpTimePipe],
   imports: [],
   exports: [UnitLengthPipe, SpeedPipe, UpTimePipe]

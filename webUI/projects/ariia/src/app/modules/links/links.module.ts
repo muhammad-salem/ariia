@@ -7,7 +7,12 @@ import { AddLinkViewerComponent } from './add-link-viewer/add-link-viewer.compon
 
 
 @NgModule({
-  declarations: [LinkComponent, MetaLinkComponent, AddLinkViewerComponent],
+  id: 'links',
+  declarations: [
+    LinkComponent,
+    MetaLinkComponent,
+    AddLinkViewerComponent
+  ],
   imports: [
     CommonModule
   ]

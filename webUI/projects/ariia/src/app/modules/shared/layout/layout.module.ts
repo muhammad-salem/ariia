@@ -16,6 +16,7 @@ import { MatTreeModule } from '@angular/material/tree';
 
 
 @NgModule({
+  id: 'layout',
   declarations: [
     HeaderComponent,
     FooterComponent,
