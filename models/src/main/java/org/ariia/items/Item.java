@@ -163,7 +163,7 @@ public class Item {
 		builder.append('\n');
 		builder.append("Headers Size : " + headers.size() );
 		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
-		builder.append(",\tState : " + state.toLowerString() );
+		builder.append(",\tState : " + state );
 		builder.append('\n');
 		builder.append(rangeInfo.toString());
 		return builder.toString();
