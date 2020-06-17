@@ -1,7 +1,7 @@
 import { RangeInfo } from './range-info';
-import { Ui } from './ui';
+import { ItemSession } from './network-session';
 
-export class Item implements Ui {
+export class Item {
     id: string = '';
     url: string = '';
     redirectUrl: string = '';
@@ -9,24 +9,17 @@ export class Item implements Ui {
     state: string = '';
     saveDirectory: string = '';
     headers: Map<string, string[]> = new Map();
-    rangeInfo: RangeInfo = new RangeInfo();
     tcpDownloadSpeed: number = 0;
     remainingTime: number = 0;
     downloading: boolean;
 
-    //  implements Ui
-    show: boolean;
-    clicked: boolean;
-    selected: boolean;
+    rangeInfo: RangeInfo = new RangeInfo();
+    report: ItemSession = new ItemSession();
 
     constructor(item: Item) {
         if (item) {
             this.update(item);
         }
-
-        this.show = true;
-        this.clicked = false;
-        this.selected = false;
     }
 
     update(item: Item) {
