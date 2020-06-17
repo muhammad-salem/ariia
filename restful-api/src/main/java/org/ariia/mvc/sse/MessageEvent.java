@@ -9,8 +9,6 @@ public class MessageEvent extends SseMessageEvent {
 	 */
 	public final static MessageEvent KeepAlive = new MessageEvent(":\n\n");
 	
-	public final static MessageEvent CloseEvent = new MessageEvent("close");
-	
     private String data;
     private String event;
     private Integer retry;
