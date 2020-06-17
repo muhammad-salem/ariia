@@ -5,13 +5,13 @@ import java.util.Objects;
 
 public class EventProvider {
 	
-	private String event; 
+	private String eventName; 
 	private Integer id = 0;
 	private SourceEvent sourceEvent;
 	
 	
 	public EventProvider(String event, SourceEvent sourceEvent) {
-		this.event = Objects.requireNonNull(event);
+		this.eventName = Objects.requireNonNull(event);
 		this.sourceEvent = Objects.requireNonNull(sourceEvent);
 	}
 	
@@ -22,7 +22,7 @@ public class EventProvider {
 
 	public void send(String data) {
 		MessageEvent messageEvent = new MessageEvent.Builder()
-				.event(event)
+				.event(eventName)
 				.data(data)
 				.id(String.valueOf(++id))
 				.build();
@@ -31,7 +31,7 @@ public class EventProvider {
 
 	public void send(String data, Integer retry) {
 		MessageEvent messageEvent = new MessageEvent.Builder()
-				.event(event)
+				.event(eventName)
 				.data(data)
 				.retry(retry)
 				.id(String.valueOf(++id))

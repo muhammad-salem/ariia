@@ -13,6 +13,7 @@ import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
 import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
+import org.ariia.mvc.sse.MessageEvent;
 import org.ariia.okhttp.OkClient;
 import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.app.WebServiceManager;
@@ -86,7 +87,9 @@ public class WebApp {
 		Log.log(WebApp.class, "Running Web Server",
 				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
 		
-
+		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
+			mainBroadcast.send(MessageEvent.CloseEvent);
+		}));
 	}
 
 }

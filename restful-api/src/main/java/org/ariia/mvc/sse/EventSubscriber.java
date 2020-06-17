@@ -22,12 +22,13 @@ public class EventSubscriber implements Subscriber {
 			outputStream.write(eventResponse.getBytes(StandardCharsets.UTF_8));
 			outputStream.flush();
 		} catch (IOException e) {
+			try {outputStream.close();} catch (Exception e2) {/*ignore exception*/}
 			throw new SseCloseException(e);
 		}
 	}
 
 	@Override
-	public void message(String event) {
+	public void message(String event) throws SseCloseException {
 		String eventResponse =  new MessageEvent.Builder()
 			    .event(event)
 			    .build()
@@ -36,7 +37,7 @@ public class EventSubscriber implements Subscriber {
 	}
 
 	@Override
-	public void message(String event, String data) {
+	public void message(String event, String data) throws SseCloseException {
 		String eventResponse =  new MessageEvent.Builder()
 			    .event(event)
 				.data(data)
@@ -46,7 +47,7 @@ public class EventSubscriber implements Subscriber {
 	}
 
 	@Override
-	public void message(String event, String data, Integer retry) {
+	public void message(String event, String data, Integer retry) throws SseCloseException {
 		String eventResponse =  new MessageEvent.Builder()
 			    .event(event)
 				.data(data)
@@ -57,7 +58,7 @@ public class EventSubscriber implements Subscriber {
 	}
 
 	@Override
-	public void message(String event, String data, Integer retry, String id) {
+	public void message(String event, String data, Integer retry, String id) throws SseCloseException {
 		String eventResponse =  new MessageEvent.Builder()
 			    .event(event)
 				.data(data)
