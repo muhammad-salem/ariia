@@ -11,6 +11,7 @@ import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.client.SegmentClient;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
+import org.ariia.mvc.WebServer.ResourceType;
 import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
 import org.ariia.mvc.sse.MessageEvent;
@@ -20,9 +21,11 @@ import org.ariia.web.app.WebServiceManager;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.controller.LogLevelController;
 import org.ariia.web.services.ItemService;
+import org.terminal.ansi.Ansi;
 import org.terminal.console.log.Level;
 import org.terminal.console.log.api.Printer;
 import org.terminal.console.log.impl.PrinterImpl;
+import org.terminal.strings.AnsiStringBuilder;
 
 public class WebApp {
 
@@ -84,12 +87,26 @@ public class WebApp {
 		cli.lunch(arguments, properties);
 		server.start();
 		LogCli.startLogService();
-		Log.log(WebApp.class, "Running Web Server",
-				String.format("start Port: %d, Path: %s, Resource Location type: %s", port, resourceLocation, type));
-		
 		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
 			mainBroadcast.send(MessageEvent.CloseEvent);
 		}));
+		
+		AnsiStringBuilder log = new AnsiStringBuilder();
+		log.append("start local web server: ");
+		log.blueLite().blink();
+		log.build();
+		log.append("http://127.0.0.1:" + port + "/");
+		if (type == ResourceType.FILE) {
+			log.defaultColor();
+			log.build();
+			log.append("\nStreaming Directory: ");
+			log.redLite();
+			log.append(resourceLocation);
+		}
+		
+		Log.log(WebApp.class, "Running Web Server", log.toString());
+		
+		
 	}
 
 }
