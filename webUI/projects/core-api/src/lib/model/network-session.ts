@@ -4,12 +4,6 @@ export interface NetworkConfig {
 }
 
 export interface NetworkMointor {
-    totalDownload: number;
-    totalUpload: number;
-    total: number;
-    totalDownloadSpeed: number;
-    totalUploadSpeed: number;
-    totalSpeed: number;
     tcpDownloadSpeed: number;
     tcpUploadSpeed: number;
     udpDownloadSpeed: number;
@@ -20,6 +14,31 @@ export interface NetworkMointor {
     udpUpload: number;
 }
 
+export class ItemSession {
+
+    timer: number;
+    remainingTime: number;
+    downloading: boolean;
+    mointor: NetworkMointor;
+
+    update(session: ItemSession) {
+        if (session) {
+            Object.keys(session).forEach(key => {
+                this[key] = session[key];
+            });
+        }
+    }
+}
+
+export interface TotalNetworkMointor extends NetworkMointor {
+    totalDownload: number;
+    totalUpload: number;
+    total: number;
+    totalDownloadSpeed: number;
+    totalUploadSpeed: number;
+    totalSpeed: number;
+}
+
 export class NetworkSession {
 
     timer: number;
@@ -28,8 +47,7 @@ export class NetworkSession {
     remainigLength: number;
     remainingTime: number;
     downloading: boolean;
-    mointor: NetworkMointor;
-
+    mointor: TotalNetworkMointor;
 
     update(session: NetworkSession) {
         if (session) {
