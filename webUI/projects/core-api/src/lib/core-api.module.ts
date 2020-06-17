@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
-import { FilterByPipe } from './pipe/filter-by.pipe';
-import { SearchPipe } from './pipe/search.pipe';
 import { UpTimePipe } from './pipe/up-time.pipe';
 import { SpeedPipe, UnitLengthPipe } from './pipe/speed.pipe';
 
 
 
 @NgModule({
-  declarations: [FilterByPipe, UnitLengthPipe, SpeedPipe, SearchPipe, UpTimePipe],
+  declarations: [UnitLengthPipe, SpeedPipe, UpTimePipe],
   imports: [],
-  exports: [FilterByPipe, UnitLengthPipe, SpeedPipe, SearchPipe, UpTimePipe]
+  exports: [UnitLengthPipe, SpeedPipe, UpTimePipe]
 })
 export class CoreApiModule { }

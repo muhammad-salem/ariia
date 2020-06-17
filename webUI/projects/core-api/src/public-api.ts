@@ -10,10 +10,7 @@ export * from './lib/model/message';
 export * from './lib/model/network-session';
 export * from './lib/model/session-history';
 export * from './lib/model/properties';
-export * from './lib/model/filter';
 
-export * from './lib/pipe/filter-by.pipe';
-export * from './lib/pipe/search.pipe';
 export * from './lib/pipe/up-time.pipe';
 export * from './lib/pipe/speed.pipe';
 
