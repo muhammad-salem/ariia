@@ -14,7 +14,6 @@ import org.ariia.mvc.WebServer;
 import org.ariia.mvc.WebServer.ResourceType;
 import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
-import org.ariia.mvc.sse.MessageEvent;
 import org.ariia.okhttp.OkClient;
 import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.app.WebServiceManager;
@@ -85,9 +84,10 @@ public class WebApp {
 		
 		cli.lunch(arguments, properties);
 		server.start();
+		mainBroadcast.send("start");
 		LogCli.startLogService();
 		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
-			mainBroadcast.send(MessageEvent.CloseEvent);
+			mainBroadcast.send("shutdown");
 		}));
 		
 		AnsiStringBuilder log = new AnsiStringBuilder();
