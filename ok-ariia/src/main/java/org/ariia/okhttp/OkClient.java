@@ -34,7 +34,7 @@ public class OkClient implements ClientRequest {
 	public Response executeRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
 		
 		Request.Builder builder = new Request.Builder();
-        if (Objects.nonNull(headers) || !headers.isEmpty()) {
+        if (Objects.nonNull(headers) && !headers.isEmpty()) {
         	headers.forEach((headerName, valueList) -> {
         		valueList.forEach(headerValue -> {
         			builder.addHeader(headerName, headerValue);

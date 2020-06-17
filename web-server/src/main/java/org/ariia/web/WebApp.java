@@ -21,7 +21,6 @@ import org.ariia.web.app.WebServiceManager;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.controller.LogLevelController;
 import org.ariia.web.services.ItemService;
-import org.terminal.ansi.Ansi;
 import org.terminal.console.log.Level;
 import org.terminal.console.log.api.Printer;
 import org.terminal.console.log.impl.PrinterImpl;

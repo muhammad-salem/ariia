@@ -54,7 +54,7 @@ public class AriiaHttpClient implements ClientRequest {
 				requestBuilder.method("HEAD", HttpRequest.BodyPublishers.noBody());
 			}
 			
-			if (Objects.nonNull(headers) || !headers.isEmpty()) {
+			if (Objects.nonNull(headers) && !headers.isEmpty()) {
 	        	headers.forEach((headerName, valueList) -> {
 	        		valueList.forEach(headerValue -> {
 	        			requestBuilder.header(headerName, headerValue);
