@@ -26,7 +26,7 @@
 
     <!-- File Length -->
     <ng-container matColumnDef="fileLength">
-        <mat-header-cell *matHeaderCellDef> Age </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> File Length  </mat-header-cell>
         <mat-cell *matCellDef="let item"> {{item.rangeInfo.fileLength | unitLength}} </mat-cell>
         <mat-footer-cell *matFooterCellDef>{{session.totalLength | unitLength}}</mat-footer-cell>
     </ng-container>
