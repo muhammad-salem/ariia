@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { NetworkSession } from '../model/network-session';
 import { NetworkConfig } from '../model/network-session';
 import { DataService } from '../service/data.service';
 
@@ -81,19 +80,8 @@ export class SpeedPipe implements PipeTransform {
     this.networkConfig = dataService.networkConfig;
   }
 
-  transform(session: NetworkSession | number): string {
-    if (!session) {
-      return '0b/s';
-    }
-    if (session instanceof NetworkSession) {
-      if (session?.mointor?.tcpDownloadSpeed) {
-        return toUnitLength(session.mointor.tcpDownloadSpeed, this.networkConfig) + '/s';
-      } else {
-        return '0b/s';
-      }
-    } else {
-      return toUnitLength(session, this.networkConfig) + '/s';
-    }
+  transform(length: number): string {
+    return toUnitLength(length, this.networkConfig) + '/s';
   }
 
 }
