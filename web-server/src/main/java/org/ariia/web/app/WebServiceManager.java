@@ -1,18 +1,14 @@
 package org.ariia.web.app;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.core.api.writer.ItemMetaDataCompleteWarpper;
-import org.ariia.items.DataStore;
-import org.ariia.items.Item;
+import org.ariia.core.api.writer.ItemMetaDataCompleteWrapper;
+import org.ariia.items.*;
 import org.ariia.logging.Log;
 import org.ariia.mvc.sse.EventProvider;
 import org.ariia.mvc.sse.SourceEvent;
@@ -21,67 +17,108 @@ import org.ariia.web.app.model.LiteItem;
 
 public class WebServiceManager extends ServiceManager {
 
+	protected SourceEvent sourceEvent;
 	protected EventProvider sessionProvider;
-
-	protected EventProvider wattingItemProvider;
-	protected EventProvider downloadingItemProvider;
-	protected EventProvider completeingItemProvider;
+	protected EventProvider itemListProvider;
+	protected EventProvider itemProvider;
 	
 	List<Queue<ItemMetaData>> queues;
 	
-	protected int trackWating = 0;
-	protected int trackComplete = 0;
-	
 	public WebServiceManager(Client client, SourceEvent sourceEvent) {
 		super(client);
-		sourceEvent = Objects.requireNonNull(sourceEvent);
-		this.sessionProvider = new EventProvider("event-session", sourceEvent);
-		this.wattingItemProvider = new EventProvider("event-item-watting", sourceEvent);
-		this.downloadingItemProvider = new EventProvider("event-item-download", sourceEvent);
-		this.completeingItemProvider = new EventProvider("event-item-complete", sourceEvent);
-		
-		this.queues = new ArrayList<>(3);
-		this.queues.add(wattingList);
-		this.queues.add(downloadingList);
-		this.queues.add(completeingList);
+		this.sourceEvent = Objects.requireNonNull(sourceEvent);
+		this.sessionProvider = new EventProvider("session-monitor", sourceEvent);
+		this.itemListProvider = new EventProvider("item-list", sourceEvent);
+		this.itemProvider = new EventProvider("item", sourceEvent);
 	}
 	
 	@Override
 	protected void initServiceList(DataStore<Item> dataStore) {
 		super.initServiceList(dataStore);
-		dataStore.getAll().forEach(item -> {
-			if(item.getState().isComplete()){
-				completeingList.add(new ItemMetaDataCompleteWarpper(item, properties));
-			} else {
-				download(item);
-			}
-		});
+
+		this.queues = new ArrayList<>(3);
+		this.queues.add(waitingList);
+		this.queues.add(downloadingList);
+		this.queues.add(completingList);
+		
 	}
 	
 	@Override
-	public void printReport() {
-		super.printReport();
-		this.sendwebReport();
+    public void startScheduledService() {
+    	dataStore.getAll().forEach(item -> {
+			ItemState state = item.getState();
+			if(state.isComplete()){
+				ItemMetaData metaData = new ItemMetaDataCompleteWrapper(item, properties);
+				moveToCompleteList(metaData);
+				sessionReport.addRange(item.getRangeInfo());
+			} if(state.isDownloading() || state.isPause()){
+				moveToPauseList(initItemMetaData(item));
+			} else {
+				moveToWaitingList(initItemMetaData(item));
+			}
+		});
+    	super.startScheduledService();
+		sourceEvent.send("session-start");
+    }
+
+
+	@Override
+	public void runSystemShutdownHook() {
+		super.runSystemShutdownHook();
+		sourceEvent.send("session-shutdown");
 	}
 	
-	private void sendwebReport() {
+
+	@Override
+	public void printReport() {
+		super.printReport();
+		this.sendWebReport();
+	}
+
+	private String toJsonItem(ItemMetaData item){
+		return Utils.toJson(LiteItem.bind(item));
+	}
+	private String toJsonItemsList(Stream<ItemMetaData> itemStream){
+		return Utils.toJson(
+				itemStream
+						.map(LiteItem::bind)
+						.collect(Collectors.toList())
+		);
+	}
+
+	private void sendWebReport() {
 		try {
 			sessionProvider.send(Utils.toJson(sessionReport));
-			if (wattingList.size() != trackWating) {
-				wattingItemProvider.send(Utils.toJson(wattingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
-				trackWating = wattingList.size();
-			}
 			if (!downloadingList.isEmpty()) {
-				downloadingItemProvider.send(Utils.toJson(downloadingList.stream().map(LiteItem::bind).collect(Collectors.toList())));
-			}
-			if (completeingList.size() != trackComplete) {
-				completeingItemProvider.send(Utils.toJson(completeingList.stream().map(LiteItem::bind).collect(Collectors.toList())));			
-				trackComplete = completeingList.size();
+				itemListProvider.send(toJsonItemsList(downloadingList.stream()));
 			}
 		} catch (Exception e) {
 			Log.error(getClass(), "Send web Report Error", e.getMessage());
 		}
 	}
+
+	@Override
+	protected void waitEvent(ItemMetaData item) {
+		itemProvider.send(toJsonItem(item));
+	}
+
+	@Override
+	protected void pauseEvent(List<ItemMetaData> items) {
+		itemListProvider.send(toJsonItemsList(items.stream()));
+	}
+
+	@Override
+	protected void downloadEvent() { }
+
+	@Override
+	protected void completeEvent(List<ItemMetaData> items) {
+		itemListProvider.send(toJsonItemsList(items.stream()));
+	}
+	
+	@Override
+	public void printAllReport() {
+        System.out.println(reportTable.getTableReport());
+    }
 	
 	private Optional<ItemMetaData> searchById(Queue<ItemMetaData> queue, String id) {
 		return queue.stream().filter(item -> item.getItem().getId().equals(id)).findAny();
@@ -120,8 +157,10 @@ public class WebServiceManager extends ServiceManager {
 		ItemMetaData metaData = findAndPause(id);
 		if (metaData != null) {
 			//return false;
-			removeItemEvent(metaData);
-			completeingList.remove(metaData);
+//			removeItemEvent(metaData);
+			moveToCompleteList(metaData);
+			completingList.remove(metaData);
+//			sessionReport.removeRange(metaData.getRangeInfo());
 			return dataStore.remove(metaData.getItem());
 		} else {
 			return dataStore.remove(dataStore.findById(id));
@@ -153,5 +192,38 @@ public class WebServiceManager extends ServiceManager {
 		}
 		return Objects.nonNull(metaData);
 	}
-	
+
+	public String download(String url) {
+        return this.download(url, Collections.emptyMap());
+    }
+
+    public String download(String url, Map<String, List<String>> headers) {
+        Builder builder = new Builder(url);
+        builder.saveDir(properties.getDefaultSaveDirectory());
+        builder.addHeaders(headers);
+        Item item = builder.build();
+        this.scheduledService.execute(() -> {
+            this.client.updateItemOnline(item);
+            this.download(item);
+        });
+        return item.getId();
+    }
+
+    public String downloadMetaLink(String[] urls) {
+        return this.downloadMetaLink(urls, Collections.emptyMap());
+    }
+
+    public String downloadMetaLink(String[] urls, Map<String, List<String>> headers) {
+        MetalinkItem metalinkItem = new MetalinkItem();
+        metalinkItem.setSaveDirectory(properties.getDefaultSaveDirectory());
+        metalinkItem.addHeaders(headers);
+        for (String string : urls) {
+            metalinkItem.addMirror(string);
+        }
+        this.scheduledService.execute(() -> {
+            this.client.updateItemOnline(metalinkItem);
+            this.download(metalinkItem);
+        });
+        return metalinkItem.getId();
+    }
 }

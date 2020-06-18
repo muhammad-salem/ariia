@@ -57,15 +57,22 @@ public class WebApp {
 //        					WebServer.ResourceType.IN_MEMORY : 
 				WebServer.ResourceType.STREAM;
 		
-		Routes rootRoutes = new Routes("/");
+
 		Routes homeRoutes = new Routes("home");
 		Routes dashboardRoutes = new Routes("dashboard");
 		Routes downloadRoutes = new Routes("download", "table", "list");
 		Routes networkRoutes = new Routes("network", "chart");
-		Routes settingkRoutes = new Routes("setting");
-		Routes logviewRoutes = new Routes("logview");
-		
-		rootRoutes.routes(homeRoutes, dashboardRoutes, downloadRoutes, networkRoutes, settingkRoutes, logviewRoutes);
+		Routes settingsRoutes = new Routes("setting");
+		Routes logViewRoutes = new Routes("logview");
+
+		Routes rootRoutes = new Routes("/",
+				homeRoutes,
+				dashboardRoutes,
+				downloadRoutes,
+				networkRoutes,
+				settingsRoutes,
+				logViewRoutes
+		);
 		
 		WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
 
@@ -84,12 +91,7 @@ public class WebApp {
 		
 		cli.lunch(arguments, properties);
 		server.start();
-		mainBroadcast.send("start");
 		LogCli.startLogService();
-		Runtime.getRuntime().addShutdownHook(new Thread(()-> {
-			mainBroadcast.send("shutdown");
-		}));
-		
 		AnsiStringBuilder log = new AnsiStringBuilder();
 		log.append("start local web server: ");
 		log.blueLite().blink();
