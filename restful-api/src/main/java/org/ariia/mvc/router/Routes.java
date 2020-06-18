@@ -20,6 +20,11 @@ public class Routes {
 		this(path);
 		this.routes(children);
 	}
+
+	public Routes(String path, Routes... children){
+		this(path);
+		this.routes(children);
+	}
 	
 	public Routes routes(String... children){
 		for (String child : children) {
