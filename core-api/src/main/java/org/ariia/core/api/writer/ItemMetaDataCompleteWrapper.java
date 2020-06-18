@@ -28,7 +28,7 @@ public class ItemMetaDataCompleteWarpper extends ItemMetaData {
 	protected void initRandomAccessFile() {	}
 
 	@Override
-	public boolean isClose() { return super.isClose(); }
+	public boolean isClose() { return true; }
 
 	@Override
 	public boolean isOpen() {return false;}
