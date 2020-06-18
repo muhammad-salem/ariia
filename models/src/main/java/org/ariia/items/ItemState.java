@@ -5,13 +5,13 @@ public enum ItemState {
 	INIT("Init"),
 	INIT_HTTP("Init HTTP"),
 	INIT_FILE("Init File"),
-	WAITING("Wating"),
+	WAITING("Waiting"),
 	DOWNLOADING("Downloading"),
 	PAUSE("Pause"),
 	COMPLETE("Complete");
 	
 	private final String state;
-	private ItemState(String state) {
+	ItemState(String state) {
 		this.state = state;
 	}
 	
@@ -20,6 +20,18 @@ public enum ItemState {
 		return this.state;
 	}
 	
+	public boolean isWaiting() {
+		return this.equals(WAITING);
+	}
+
+	public boolean isDownloading() {
+		return this.equals(DOWNLOADING);
+	}
+
+	public boolean isPause() {
+		return this.equals(PAUSE);
+	}
+
 	public boolean isComplete() {
 		return this.equals(COMPLETE);
 	}
