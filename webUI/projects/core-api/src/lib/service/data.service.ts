@@ -1,12 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Data } from '../model/data';
-import { NetworkSession, NetworkConfig } from '../model/network-session';
+import { NetworkConfig, SessionReport } from '../model/network-session';
 import { Message } from '../model/message';
 import { Item } from '../model/item';
 import { SseService } from './sse.service';
 import { ItemService } from './item.service';
 import { SessionHistory } from '../model/session-history';
 import { BehaviorSubject } from 'rxjs';
+import { SseEventHandler } from '../model/sse-event-handler';
+
+export class NotificationConfig {
+  success(title: string, message?: string): void {
+    console.log(title, message);
+  }
+  error(title: string, message?: string): void {
+    console.log(title, message);
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -19,14 +29,22 @@ export class DataService {
   itemSubject: BehaviorSubject<Item[]>;
   logSubject: BehaviorSubject<Message[]>;
 
+  notify: NotificationConfig = new NotificationConfig();
+
   constructor(private sseService: SseService, private itemService: ItemService) {
+
     this.data = new Data();
     this.logSubject = new BehaviorSubject<Message[]>(this.data.logging);
     this.itemSubject = new BehaviorSubject<Item[]>(this.data.items);
     this.historySubject = new BehaviorSubject<void>(null);
+    this.bootstrapChart();
   }
 
-  get networkSession(): NetworkSession {
+  initNotify(notify: NotificationConfig): void {
+    this.notify = notify;
+  }
+
+  get networkSession(): SessionReport {
     return this.data.session;
   }
 
@@ -68,24 +86,25 @@ export class DataService {
     });
   }
 
-  private update(dataService: DataService, messageEvent: MessageEvent) {
-    const items: Item[] = JSON.parse(messageEvent.data);
-    items.forEach(item => {
-      const oldItem = dataService.items.find(searchItem => item['itemId'] === searchItem.id);
-      if (oldItem) {
-        oldItem.netwotkUpdate(item);
-      } else {
-        dataService.itemService.getItem(item['itemId']).subscribe((item: Item) => {
-          dataService.addItem(item);
-          dataService.itemSubject.next(dataService.items);
-          // TO:DO
-          // show success toast
-        });
-      }
-    });
-  }
+  // private update(dataService: DataService, messageEvent: MessageEvent) {
+  //   const items: Item[] = JSON.parse(messageEvent.data);
+  //   items.forEach(item => {
+  //     const oldItem = dataService.items.find(searchItem => item['itemId'] === searchItem.id);
+  //     if (oldItem) {
+  //       oldItem.netwotkUpdate(item);
+  //     } else {
+  //       dataService.itemService.getItem(item['itemId']).subscribe((item: Item) => {
+  //         dataService.addItem(item);
+  //         dataService.itemSubject.next(dataService.items);
+  //         // TO:DO
+  //         // show success toast
+  //         this.notify.success(item.filename, `${item.url} - ${item.state}`);
+  //       });
+  //     }
+  //   });
+  // }
 
-  initDataService() {
+  private bootstrapChart() {
     let date = new Date();
     for (let i = 59; i >= 0; i--) {
       let xDate = new Date();
@@ -96,42 +115,131 @@ export class DataService {
         session: null
       });
     }
+  }
 
+  private handelLoggingEvent(messageEvent: MessageEvent) {
+    const message: Message = JSON.parse(messageEvent.data);
+    this.loggingMessage.push(message);
+    this.logSubject.next(this.loggingMessage);
+  }
 
-    this.sseService.initSseEvent("/backbone-broadcast").subscribe(() => {
-      this.sseService.forEvent("logging").subscribe((messageEvent) => {
-        const message: Message = JSON.parse(messageEvent.data);
-        message.show = true;
-        message.clicked = false;
-        message.selected = false;
-        this.loggingMessage.splice(0, 0, message);
-        if (this.loggingMessage.length > 60) {
-          this.loggingMessage.splice(60, this.data.logging.length - 60);
-        }
-        this.logSubject.next(this.loggingMessage);
-      });
-
-      this.sseService.forEvent("event-session").subscribe((messageEvent) => {
-        const session: NetworkSession = JSON.parse(messageEvent.data);
-        this.networkSession.update(session);
-        this.sessionHistory.push({
-          x: new Date(),
-          y: (session.mointor.tcpDownloadSpeed) / 1024,
-          session: session
-        });
-        if (this.sessionHistory.length > 60) {
-          this.sessionHistory.splice(0, this.sessionHistory.length - 60);
-        }
-        this.historySubject.next();
-      });
-
-      this.sseService.forEvent("event-item-watting")
-        .subscribe(messageEvent => this.update(this, messageEvent));
-      this.sseService.forEvent("event-item-download")
-        .subscribe(messageEvent => this.update(this, messageEvent));
-      this.sseService.forEvent("event-item-complete")
-        .subscribe(messageEvent => this.update(this, messageEvent));
+  private handelSessionMonitorEvent(messageEvent: MessageEvent): void {
+    const session: SessionReport = JSON.parse(messageEvent.data);
+    this.networkSession.update(session);
+    this.sessionHistory.push({
+      x: new Date(),
+      y: (session.monitor.tcpDownloadSpeed) / 1024,
+      session: session
     });
+    if (this.sessionHistory.length > 60) {
+      this.sessionHistory.splice(0, this.sessionHistory.length - 60);
+    }
+    this.historySubject.next();
+  }
+
+  private handelItem(item: Item) {
+    const oldItem = this.items.find(searchItem => item['itemId'] === searchItem.id);
+    if (oldItem) {
+      oldItem.netwotkUpdate(item);
+    } else {
+      this.itemService.getItem(item['itemId']).subscribe((item: Item) => {
+        this.addItem(item);
+        this.itemSubject.next(this.items);
+        // TO:DO
+        // show success toast
+        this.notify.success(item.filename, `${item.url} - ${item.state}`);
+      });
+    }
+  }
+  private handelItemEvent(messageEvent: MessageEvent) {
+    const item: Item = JSON.parse(messageEvent.data);
+    this.handelItem(item);
+  }
+
+  private handelItemListEvent(messageEvent: MessageEvent) {
+    const items: Item[] = JSON.parse(messageEvent.data);
+    items.forEach(item => this.handelItem(item));
+  }
+
+  initDataService() {
+    const events: SseEventHandler[] = [
+      {
+        name: 'logging',
+        handel: (messageEvent) => this.handelLoggingEvent(messageEvent)
+      },
+      {
+        name: 'session-monitor',
+        handel: (messageEvent) => this.handelSessionMonitorEvent(messageEvent)
+      },
+      {
+        name: 'item',
+        handel: (messageEvent) => this.handelItemEvent(messageEvent)
+      },
+      {
+        name: 'item-list',
+        handel: (messageEvent) => this.handelItemListEvent(messageEvent)
+      },
+      {
+        name: 'session-start',
+        handel: (messageEvent) => {
+          this.initItems();
+          this.initDataService();
+          this.notify.success('Start Server Successfuly');
+        }
+      },
+      {
+        name: 'session-shutdown',
+        handel: (messageEvent) => {
+          this.notify.error('Server got shutdown');
+        }
+      }
+    ];
+
+    this.sseService.initSseUrl('/backbone-broadcast', events);
+    // this.sseService.initSseEvent("/backbone-broadcast").subscribe(() => {
+    //   this.sseService.forEvent("logging").subscribe((messageEvent) => {
+    //     const message: Message = JSON.parse(messageEvent.data);
+    //     // this.loggingMessage.splice(0, 0, message);
+    //     // if (this.loggingMessage.length > 60) {
+    //     //   this.loggingMessage.splice(60, this.data.logging.length - 60);
+    //     // }
+    //     this.loggingMessage.push(message);
+    //     this.logSubject.next(this.loggingMessage);
+    //   });
+
+    //   this.sseService.forEvent('session-monitor').subscribe((messageEvent) => {
+    //     const session: SessionReport = JSON.parse(messageEvent.data);
+    //     this.networkSession.update(session);
+    //     this.sessionHistory.push({
+    //       x: new Date(),
+    //       y: (session.monitor.tcpDownloadSpeed) / 1024,
+    //       session: session
+    //     });
+    //     if (this.sessionHistory.length > 60) {
+    //       this.sessionHistory.splice(0, this.sessionHistory.length - 60);
+    //     }
+    //     this.historySubject.next();
+    //   });
+
+    //   this.sseService.forEvent('item-list')
+    //     .subscribe(messageEvent => this.update(this, messageEvent));
+
+    //   this.sseService.forEvent('item')
+    //     .subscribe(messageEvent => this.update(this, messageEvent));
+
+    //   this.sseService.forEvent("new-session").subscribe(() => {
+    //     // show success toast >> that server restarted
+    //     this.initItems();
+    //     this.initDataService();
+    //     this.notify.success('Start Server Successfuly');
+    //   });
+
+    //   this.sseService.forEvent("shutdown").subscribe(() => {
+    //     // this.sseService.destroy();
+    //     // show warning toast >> that server had to shutdown
+    //     this.notify.error('Server got shutdown');
+    //   });
+    // });
 
   }
 
@@ -142,12 +250,14 @@ export class DataService {
       }
       this.addItems(items);
       this.itemSubject.next(this.items);
+      this.notify.success('Load Items', `${items.map(item => item.filename).join('\n')}`);
     });
   }
 
   deleteItem(item: Item) {
     this.items.splice(this.items.indexOf(item), 1);
     this.itemSubject.next(this.items);
+    this.notify.success(item.filename, 'Download Item had been Removed, but the file still');
   }
 
   destroy() {

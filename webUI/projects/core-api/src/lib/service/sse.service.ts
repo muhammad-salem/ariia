@@ -1,5 +1,7 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SseEventHandler } from '../model/sse-event-handler';
+
 
 @Injectable({
   providedIn: 'root'
@@ -7,28 +9,38 @@ import { Observable } from 'rxjs';
 export class SseService {
 
   private eventSource: EventSource;
-  constructor(private _ngZone: NgZone) { }
+  constructor() { }
 
-  initSseEvent(url: string): Observable<void> {
+  initSseUrl(url: string, events: SseEventHandler[]): void {
     this.eventSource = new EventSource(url);
     this.eventSource.onerror = console.error;
     this.eventSource.onmessage = console.log;
+    this.addEventsListener(events);
+  }
 
-    return new Observable<void>(subscriber => {
-      this.eventSource.onopen = (event) => {
-        this._ngZone.run(() => {
-          subscriber.next();
-        });
-      };
+  addEventListener(event: SseEventHandler): void {
+    this.eventSource.addEventListener(event.name,
+      (data: MessageEvent) => {
+        event.handel(data);
+      }
+    );
+  }
+  addEventsListener(events: SseEventHandler[]): void {
+    events.forEach(event => {
+      this.addEventListener(event);
     });
   }
 
-  forEvent(eventName: string): Observable<MessageEvent> {
+  listen(eventName: string, handler?: any) {
+    this.addEventListener({
+      name: eventName,
+      handel: (data) => handler(data)
+    });
+  }
+  getListener(eventName: string): Observable<MessageEvent> {
     return new Observable<MessageEvent>(subscriber => {
       this.eventSource.addEventListener(eventName, (data: MessageEvent) => {
-        this._ngZone.run(() => {
-          subscriber.next(data);
-        });
+        subscriber.next(data);
       });
     });
   }

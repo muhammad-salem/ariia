@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService, LogService, Filter, Message } from 'core-api';
+import { DataService, LogService, Message } from 'core-api';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -11,10 +10,9 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LogTableComponent implements OnInit {
 
-  filter: Filter;
-
   dataSource: MatTableDataSource<Message>;
 
+  level: string = 'info';
   logLevels: string[] = [];
 
   columnsToDisplay = [
@@ -25,22 +23,17 @@ export class LogTableComponent implements OnInit {
     'message'
   ];
 
-  constructor(private dataService: DataService, private logService: LogService) {
-    this.filter = {
-      level: 'all',
-      search: ''
-    }
-  }
+  constructor(private dataService: DataService, private logService: LogService) { }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource(this.dataService.loggingMessage);
     this.dataSource.connect = () => this.dataService.logSubject;
     this.logService.levelValues().subscribe(values => this.logLevels = values);
-    this.logService.getLevel().subscribe(level => this.filter.level = level);
+    this.logService.getLevel().subscribe(level => this.level = level);
   }
 
   setLevel() {
-    this.logService.setLevel(this.filter.level).subscribe(isDone => {
+    this.logService.setLevel(this.level).subscribe(isDone => {
       if (isDone) {
         // TO:DO
         // show success notification

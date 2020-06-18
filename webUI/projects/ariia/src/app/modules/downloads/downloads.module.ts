@@ -1,19 +1,32 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
+
 import { ItemViewComponent } from './item-view/item-view.component';
 import { ItemListComponent } from './item-list/item-list.component';
 import { ItemTableComponent } from './item-table/item-table.component';
-import { Routes, RouterModule } from '@angular/router';
+
 import { DownloadViewerComponent } from './download-viewer/download-viewer.component';
 import { MatTableModule } from '@angular/material/table';
 import { CoreApiModule } from 'core-api';
+
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+
+
 import { FlexLayoutModule } from '@angular/flex-layout';
+
+
 
 const routes: Routes = [
   {
@@ -40,6 +53,12 @@ const routes: Routes = [
     MatIconModule,
     MatCardModule,
     MatGridListModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatToolbarModule,
+    MatButtonModule,
     FlexLayoutModule
   ],
   exports: [

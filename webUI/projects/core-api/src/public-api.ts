@@ -10,6 +10,7 @@ export * from './lib/model/message';
 export * from './lib/model/network-session';
 export * from './lib/model/session-history';
 export * from './lib/model/properties';
+export * from './lib/model/sse-event-handler';
 
 export * from './lib/pipe/up-time.pipe';
 export * from './lib/pipe/speed.pipe';

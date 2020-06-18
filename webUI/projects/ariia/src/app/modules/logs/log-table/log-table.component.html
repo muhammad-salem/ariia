@@ -1,8 +1,8 @@
 <mat-form-field>
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium">
+    <input matInput (keyup)="applyFilter($event)" placeholder="Search logs">
 </mat-form-field>
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-table [dataSource]="dataSource">
 
     <!-- Time Millis -->
     <ng-container matColumnDef="timeMillis">

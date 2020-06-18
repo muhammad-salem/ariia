@@ -1,84 +1,127 @@
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-toolbar color="primary-200">
+    <mat-toolbar-row>
+    
+	<div fxFlex fxLayout="row" fxLayoutAlign="space-between">
+		<ul fxLayout="row" fxLayoutGap.sm>
+            <li>
+				<mat-form-field appearance="legacy" [style.fontSize]="'14px'">
+					<mat-label>Filter</mat-label>
+					<input matInput (keyup)="applyFilter($event.value)" placeholder="Search Download Items">
+					<mat-icon matSuffix>search</mat-icon>
+				</mat-form-field>
+            </li>
+        </ul>
+		<ul fxLayout="row" fxLayoutGap.sm>
+            <li>
+                <button mat-icon-button (click)="startItem()">
+                    <mat-icon>play_circle_outline</mat-icon>
+                </button>
+            </li>
+            <li>
+                <button mat-icon-button (click)="pauseItem()">
+                    <mat-icon>pause_circle_outline</mat-icon>
+                </button>
+            </li>
+            <li>
+                <button mat-icon-button (click)="deleteItem()">
+                    <mat-icon>auto_delete</mat-icon>
+                </button>
+            </li>
+        </ul>
+    </div>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+
+
+<table mat-table [dataSource]="dataSource" matSort >
     <ng-container matColumnDef="select">
-        <mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
                 [indeterminate]="selection.hasValue() && !isAllSelected()">
             </mat-checkbox>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let item">
+        </th>
+        <td mat-cell *matCellDef="let item">
             <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(item) : null"
                 [checked]="selection.isSelected(item)">
             </mat-checkbox>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef="let item">
+        </td>
+        <td mat-footer-cell *matFooterCellDef="let item">
             <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
                 [indeterminate]="selection.hasValue() && !isAllSelected()">
             </mat-checkbox>
-        </mat-footer-cell>
+        </td>
     </ng-container>
 
     <!-- File Name -->
     <ng-container matColumnDef="filename">
-        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.filename}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>Session</mat-footer-cell>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+        <td mat-cell *matCellDef="let item"> {{item.filename}} </td>
+        <td mat-footer-cell *matFooterCellDef>Session</td>
     </ng-container>
 
     <!-- File Length -->
     <ng-container matColumnDef="fileLength">
-        <mat-header-cell *matHeaderCellDef> File Length  </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.rangeInfo.fileLength | unitLength}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>{{session.totalLength | unitLength}}</mat-footer-cell>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> File Length </th>
+        <td mat-cell *matCellDef="let item"> {{item.rangeInfo.fileLength | unitLength}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{session.totalLength | unitLength}}</td>
     </ng-container>
 
     <!-- Download Length -->
     <ng-container matColumnDef="downloadLength">
-        <mat-header-cell *matHeaderCellDef> Download Length </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.rangeInfo.downloadLength | unitLength}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>{{session.downloadLength | unitLength}}</mat-footer-cell>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Download Length </th>
+        <td mat-cell *matCellDef="let item"> {{item.rangeInfo.downloadLength | unitLength}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{session.downloadLength | unitLength}}</td>
     </ng-container>
 
     <!-- Remaining Length -->
     <ng-container matColumnDef="remainingLength">
-        <mat-header-cell *matHeaderCellDef> Remaining Length </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.rangeInfo.remainingLength | unitLength}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>{{session.remainigLength | unitLength}}</mat-footer-cell>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Remaining Length </th>
+        <td mat-cell *matCellDef="let item"> {{item.rangeInfo.remainingLength | unitLength}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{session.remainingLength | unitLength}}</td>
     </ng-container>
 
     <!-- Download Speed -->
     <ng-container matColumnDef="tcpDownloadSpeed">
-        <mat-header-cell *matHeaderCellDef> Download Speed </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.tcpDownloadSpeed | speed}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>{{session | speed}}</mat-footer-cell>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Download Speed </th>
+        <td mat-cell *matCellDef="let item"> {{item?.report?.mointor?.tcpDownloadSpeed | speed}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{session.monitor?.tcpDownloadSpeed | speed}}</td>
     </ng-container>
 
     <!-- Reminning Time -->
     <ng-container matColumnDef="reminningTime">
-        <mat-header-cell *matHeaderCellDef> Reminning Time </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.remainingTime | uptime}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>{{session.remainingTime | uptime}}</mat-footer-cell>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Reminning Time </th>
+        <td mat-cell *matCellDef="let item"> {{item.remainingTime | uptime}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{session.remainingTime | uptime}}</td>
     </ng-container>
 
     <!-- Download Progress -->
     <ng-container matColumnDef="progress">
-        <mat-header-cell *matHeaderCellDef> Progress </mat-header-cell>
-        <mat-cell *matCellDef="let item">
+        <th mat-header-cell *matHeaderCellDef> Progress </th>
+        <td mat-cell *matCellDef="let item">
             <mat-progress-bar [value]="itemProgress(item)" mode="determinate"></mat-progress-bar>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef>
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
             <mat-progress-bar [value]="sessionProgress()" mode="determinate"></mat-progress-bar>
-        </mat-footer-cell>
+        </td>
     </ng-container>
 
     <!-- Download State -->
-    <ng-container matColumnDef="state">
-        <mat-header-cell *matHeaderCellDef> State </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.state}} </mat-cell>
-        <mat-footer-cell *matFooterCellDef>{{session.downloading? 'Downloading':'Ready'}}</mat-footer-cell>
+    <ng-container matColumnDef="state" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> State </th>
+        <td mat-cell *matCellDef="let item"> {{item.state}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{session.downloading? 'Downloading':'Ready'}}</td>
     </ng-container>
 
     <!-- Header and Row Declarations -->
-    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-    <mat-row *matRowDef="let item; columns: columnsToDisplay"></mat-row>
-    <mat-footer-row *matFooterRowDef="columnsToDisplay"></mat-footer-row>
-</mat-table>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let item; columns: columnsToDisplay"></tr>
+    <tr mat-footer-row *matFooterRowDef="columnsToDisplay"></tr>
+</table>
+
+<mat-paginator [length]="100"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 100]"
+              showFirstLastButtons>
+</mat-paginator>
+

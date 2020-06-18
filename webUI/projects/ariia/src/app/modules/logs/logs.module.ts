@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CoreApiModule } from 'core-api';
 import { LogTableComponent } from './log-table/log-table.component';
 import { Routes, RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -22,7 +21,6 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
-    CoreApiModule,
     MatFormFieldModule,
     MatInputModule,
     MatTableModule

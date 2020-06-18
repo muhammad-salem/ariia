@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
 import { UpTimePipe } from './pipe/up-time.pipe';
 import { SpeedPipe, UnitLengthPipe } from './pipe/speed.pipe';
-
 
 
 @NgModule({
@@ -10,4 +9,4 @@ import { SpeedPipe, UnitLengthPipe } from './pipe/speed.pipe';
   imports: [],
   exports: [UnitLengthPipe, SpeedPipe, UpTimePipe]
 })
-export class CoreApiModule { }
+export class CoreApiModule {}

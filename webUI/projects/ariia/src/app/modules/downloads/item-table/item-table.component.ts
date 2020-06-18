@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Item, DataService, RangeService, NetworkSession } from 'core-api';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
+import { Item, DataService, RangeService, SessionReport } from 'core-api';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -12,9 +13,10 @@ export class ItemTableComponent implements OnInit {
 
   items: Item[];
   dataSource: MatTableDataSource<Item>;
-  session: NetworkSession;
+  session: SessionReport;
 
   selectedItem: Item;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   columnsToDisplay = [
     'select',
@@ -36,10 +38,15 @@ export class ItemTableComponent implements OnInit {
     this.items = this.dataService.items;
     this.dataSource = new MatTableDataSource(this.items);
     this.dataSource.connect = () => this.dataService.itemSubject;
+    this.dataSource.paginator = this.paginator;
     this.session = this.dataService.networkSession;
     const initialSelection = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<Item>(allowMultiSelect, initialSelection);
+  }
+  
+  applyFilter(value: string) {
+    this.dataSource.filter = value.trim().toLowerCase();
   }
 
   itemPercent(item: Item): string {
@@ -57,12 +64,31 @@ export class ItemTableComponent implements OnInit {
     return 100;
   }
 
-  onItemDelete(item: Item) {
-    this.dataService.deleteItem(item);
+  startItem() {
+    console.log(this.selection, this.selection.selected);
+    /*
+    return this.itemService.startItem(this.item.id).subscribe(start => {
+      if (start) {
+        console.info(`start download item ${this.item}`);
+      }
+    });
+    */
   }
 
-  selectItem(item: Item) {
-    this.selectedItem = item;
+  pauseItem() {
+    console.log(this.selection, this.selection.selected);
+    /*
+    return this.itemService.pauseItem(this.item.id).subscribe(pause => {
+      if (pause) {
+        console.info(`pause download item ${this.item}`);
+      }
+    });
+    */
+  }
+
+  deleteItem() {
+    //this.dataService.deleteItem(item);
+    console.log(this.selection, this.selection.selected);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -78,6 +104,5 @@ export class ItemTableComponent implements OnInit {
       this.selection.clear() :
       this.items.forEach(row => this.selection.select(row));
   }
-
 
 }

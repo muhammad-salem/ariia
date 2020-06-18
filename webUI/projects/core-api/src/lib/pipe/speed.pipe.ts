@@ -8,7 +8,7 @@ const kibibyte: number = 1024;	// use (2^10)
 
 function toUnitLength(length: number, networkConfig: NetworkConfig): string {
   if (Number.isNaN(length) || !length) {
-    return '0b';
+    return '0 b';
   }
   var k: number, m: number, g: number, t: number, kilo: number;
   if (networkConfig.isBinary) {

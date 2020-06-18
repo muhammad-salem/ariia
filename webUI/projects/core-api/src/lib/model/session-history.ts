@@ -1,7 +1,7 @@
-import { NetworkSession } from './network-session';
+import { SessionReport } from './network-session';
 
 export interface SessionHistory {
     x: Date;
     y: number;
-    session: NetworkSession;
+    session: SessionReport;
 }
