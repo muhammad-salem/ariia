@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, Route, UrlSegmentGroup, UrlSegment } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
     path: 'dashboard', pathMatch: 'full',
-    loadChildren: () => import('./modules/shared/dashboard/dashboard.module')
+    loadChildren: () => import('./modules/dashboard/dashboard.module')
       .then(module => module.DashboardModule)
   },
   {
@@ -27,7 +27,7 @@ const routes: Routes = [
     loadChildren: () => import('./modules/logs/logs.module')
       .then(module => module.LogsModule)
   },
-  { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
 ];
 
 @NgModule({

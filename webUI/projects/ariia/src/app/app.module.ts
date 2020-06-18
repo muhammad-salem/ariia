@@ -8,14 +8,17 @@ import { CoreApiModule } from 'core-api';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { RoutingModule } from './routing.module';
-import { MaterialModule } from './modules/material/material.module';
-import { ThemePickerModule } from './modules/shared/theme-picker/theme-picker.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { AppRootComponent } from './app-root/app-root.component';
-import { LayoutModule } from './modules/shared/layout/layout.module';
+import { LayoutModule } from './modules/layout/layout.module';
+
 
 @NgModule({
-  declarations: [AppRootComponent],
+  id: 'AppModule',
+  declarations: [
+    AppRootComponent
+  ],
   providers: [],
   imports: [
     BrowserModule,
@@ -25,11 +28,12 @@ import { LayoutModule } from './modules/shared/layout/layout.module';
     CoreApiModule,
     RoutingModule,
     FlexLayoutModule,
-    MaterialModule,
     LayoutModule,
-    ThemePickerModule
+    MatSidenavModule
   ],
-  exports: [AppRootComponent],
+  exports: [
+    AppRootComponent
+  ],
   bootstrap: [AppRootComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
