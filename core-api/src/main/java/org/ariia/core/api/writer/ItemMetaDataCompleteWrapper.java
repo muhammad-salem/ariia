@@ -6,9 +6,9 @@ import org.ariia.items.Item;
 import org.ariia.segment.Segment;
 import org.ariia.speed.report.SpeedMonitor;
 
-public class ItemMetaDataCompleteWarpper extends ItemMetaData {
+public class ItemMetaDataCompleteWrapper extends ItemMetaData {
 
-	public ItemMetaDataCompleteWarpper(Item item, Properties properties) {
+	public ItemMetaDataCompleteWrapper(Item item, Properties properties) {
 		super(item, properties);
 	}
 
