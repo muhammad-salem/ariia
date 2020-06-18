@@ -33,15 +33,15 @@ public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnaps
 
 	@Override
 	public void snapshotPoint() {
-		this.mointor.snapshotPoint();
+		this.monitor.snapshotPoint();
 	}
 	
 	@Override
 	public void snapshotSpeed() {
-		this.mointor.snapshotSpeed();
+		this.monitor.snapshotSpeed();
 		info.oneCycleDataUpdate();
-		remainingTime = (info.getRemainingLength() + 1) / (this.mointor.getTcpDownloadSpeed() + 1);
-		downloading = this.mointor.getTcpDownloadSpeed() > 0;
+		remainingTime = (info.getRemainingLength() + 1) / (this.monitor.getTcpDownloadSpeed() + 1);
+		downloading = this.monitor.getTcpDownloadSpeed() > 0;
 	}
 
 	public long getRemainingTime() {

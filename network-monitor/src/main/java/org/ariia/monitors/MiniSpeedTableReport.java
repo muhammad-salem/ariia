@@ -44,7 +44,7 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 	protected Set<RangeReport> monitors;
 	protected SessionReport session;
 	
-	String header, midBorder, bodyTemplete, fotter;
+	String header, midBorder, bodyTemplate, footer;
 	
 	StyleBuilder borderStyle;
 	protected List<ColumnStyle> dataStyle;
@@ -55,11 +55,11 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 		this.session = session;
 		this.monitors = new HashSet<>();
 		initColumnStyle();
-		initTempletes();
-		this.format = new MessageFormat(bodyTemplete);
+		initTemplates();
+		this.format = new MessageFormat(bodyTemplate);
 	}
 	
-	void initTempletes() {
+	void initTemplates() {
 		borderStyle = new StyleBuilder();
 		borderStyle.bold().color(22, 200, 44);
 		
@@ -68,7 +68,7 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 				"│#│                   Name                  │ Complete/Remain │  Speed/Down  │\n");
 		this.midBorder = borderStyle.build(
 				"├─┼─────────────────────────────────────────┼─────────────────┼──────────────┤\n");
-		this.fotter 	= borderStyle.build(
+		this.footer = borderStyle.build(
 				"└─┴─────────────────────────────────────────┴─────────────────┴──────────────┘");
 		
 		StringBuilder builder = new StringBuilder();
@@ -100,7 +100,7 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 		// │{0}│{1}│{2}│{3}│
 		// │ │{4} - ({5})│{6}│{7}│
 		
-		this.bodyTemplete = builder.toString();
+		this.bodyTemplate = builder.toString();
 	}
 	
 	protected void initColumnStyle() {
@@ -245,7 +245,7 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 			message.append(format.format(obj));
 		}
 		
-		message.append(fotter);
+		message.append(footer);
 	}
 
 	@Override

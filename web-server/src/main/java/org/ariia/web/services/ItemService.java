@@ -106,7 +106,7 @@ public class ItemService implements StreamHandler {
 	}
 
 	public String createMetaLink(String[] urls) {
-		return this.serviceManager.downloadMetalink(urls);
+		return this.serviceManager.downloadMetaLink(urls);
 	}
 	
 

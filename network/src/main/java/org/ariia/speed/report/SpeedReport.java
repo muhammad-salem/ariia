@@ -63,22 +63,22 @@ public class SpeedReport<T extends SpeedMonitor> implements MonitorReport {
 		}
 	}
 	
-	protected T mointor;
+	protected T monitor;
 	protected transient boolean isBinary;
 	protected transient boolean isByte;
 	
-	public SpeedReport(T mointor) {
-		this(mointor, true, true);
+	public SpeedReport(T monitor) {
+		this(monitor, true, true);
 	}
 	
-	public SpeedReport(T mointor, boolean isBinary, boolean isByte) {
-		this.mointor = Objects.requireNonNull(mointor);
+	public SpeedReport(T monitor, boolean isBinary, boolean isByte) {
+		this.monitor = Objects.requireNonNull(monitor);
 		this.isBinary = isBinary;
 		this.isByte = isByte;
 	}
 	
-	public T getMointor() {
-		return mointor;
+	public T getMonitor() {
+		return monitor;
 	}
 	
 	public void setBinary(boolean isBinary) {
@@ -111,42 +111,42 @@ public class SpeedReport<T extends SpeedMonitor> implements MonitorReport {
 
 	@Override
 	public String getTcpDownload() {
-		return unitLength(mointor.getTcpDownload());
+		return unitLength(monitor.getTcpDownload());
 	}
 
 	@Override
 	public String getTcpUpload() {
-		return unitLength(mointor.getTcpUpload());
+		return unitLength(monitor.getTcpUpload());
 	}
 
 	@Override
 	public String getUdpDownload() {
-		return unitLength(mointor.getUdpDownload());
+		return unitLength(monitor.getUdpDownload());
 	}
 
 	@Override
 	public String getUdpUpload() {
-		return unitLength(mointor.getUdpUpload());
+		return unitLength(monitor.getUdpUpload());
 	}
 
 	@Override
 	public String getTcpDownloadSpeed() {
-		return unitLength(mointor.getTcpDownloadSpeed());
+		return unitLength(monitor.getTcpDownloadSpeed());
 	}
 
 	@Override
 	public String getTcpUploadSpeed() {
-		return unitLength(mointor.getTcpUploadSpeed());
+		return unitLength(monitor.getTcpUploadSpeed());
 	}
 
 	@Override
 	public String getUdpDownloadSpeed() {
-		return unitLength(mointor.getUdpDownloadSpeed());
+		return unitLength(monitor.getUdpDownloadSpeed());
 	}
 
 	@Override
 	public String getUdpUploadSpeed() {
-		return unitLength(mointor.getUdpUploadSpeed());
+		return unitLength(monitor.getUdpUploadSpeed());
 	}
 
 }
