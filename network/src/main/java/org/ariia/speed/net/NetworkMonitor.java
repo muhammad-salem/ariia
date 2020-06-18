@@ -9,7 +9,6 @@ public class NetworkMonitor implements SocketMonitor, DatagramSocketMonitor, Dow
 	protected long udpDownload = 0;
 	protected long udpUpload = 0;
 	
-
 	@Override
 	public void onRead(IntWarp len) {
 		tcpDownload += len.value;

@@ -43,7 +43,7 @@ public class SimpleSessionReport extends SessionReport {
 		StringBuilder builder = new StringBuilder();
 		builder.append(red(bold(Utils.getStringWidth("T: " + unitLength(totalLength), 16))));
 		builder.append(magentaLight(bold(Utils.getStringWidth("Down: " + unitLength(downloadLength), 19))));
-		builder.append(yellow(bold(Utils.getStringWidth("Remain: " + unitLength(remainigLength) , 19))));
+		builder.append(yellow(bold(Utils.getStringWidth("Remain: " + unitLength(remainingLength) , 19))));
 		return builder.toString();
 	}
 	
