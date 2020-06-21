@@ -7,13 +7,12 @@ import java.util.stream.Stream;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.service.ServiceManager;
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.core.api.writer.ItemMetaDataCompleteWrapper;
 import org.ariia.items.*;
 import org.ariia.logging.Log;
 import org.ariia.mvc.sse.EventProvider;
 import org.ariia.mvc.sse.SourceEvent;
 import org.ariia.util.Utils;
-import org.ariia.web.app.model.LiteItem;
+import org.ariia.web.app.model.WebItem;
 
 public class WebServiceManager extends ServiceManager {
 
@@ -21,9 +20,11 @@ public class WebServiceManager extends ServiceManager {
 	protected EventProvider sessionProvider;
 	protected EventProvider itemListProvider;
 	protected EventProvider itemProvider;
-	
+
 	List<Queue<ItemMetaData>> queues;
-	
+
+	protected boolean listPaused = true;
+
 	public WebServiceManager(Client client, SourceEvent sourceEvent) {
 		super(client);
 		this.sourceEvent = Objects.requireNonNull(sourceEvent);
@@ -31,7 +32,7 @@ public class WebServiceManager extends ServiceManager {
 		this.itemListProvider = new EventProvider("item-list", sourceEvent);
 		this.itemProvider = new EventProvider("item", sourceEvent);
 	}
-	
+
 	@Override
 	protected void initServiceList(DataStore<Item> dataStore) {
 		super.initServiceList(dataStore);
@@ -40,26 +41,38 @@ public class WebServiceManager extends ServiceManager {
 		this.queues.add(waitingList);
 		this.queues.add(downloadingList);
 		this.queues.add(completingList);
-		
+
 	}
-	
+
+	public boolean isListPaused() {
+		return listPaused;
+	}
+
+	public boolean setListPaused(boolean listPaused) {
+		return this.listPaused = listPaused;
+	}
+
+
 	@Override
-    public void startScheduledService() {
-    	dataStore.getAll().forEach(item -> {
-			ItemState state = item.getState();
-			if(state.isComplete()){
-				ItemMetaData metaData = new ItemMetaDataCompleteWrapper(item, properties);
-				moveToCompleteList(metaData);
-				sessionReport.addRange(item.getRangeInfo());
-			} if(state.isDownloading() || state.isPause()){
-				moveToPauseList(initItemMetaData(item));
-			} else {
-				moveToWaitingList(initItemMetaData(item));
-			}
-		});
-    	super.startScheduledService();
+	public void startScheduledService() {
+		dataStore.getAll().forEach(this::download);
+		super.startScheduledService();
 		sourceEvent.send("session-start");
-    }
+	}
+
+	@Override
+	protected void checkDownloadList() {
+		if(listPaused){
+			List<ItemMetaData> pause = new LinkedList<>();
+			for (ItemMetaData metaData : downloadingList) {
+				moveToPauseList(metaData);
+				pause.add(metaData);
+			}
+			pauseEvent(pause);
+		} else {
+			super.checkDownloadList();
+		}
+	}
 
 
 	@Override
@@ -67,7 +80,7 @@ public class WebServiceManager extends ServiceManager {
 		super.runSystemShutdownHook();
 		sourceEvent.send("session-shutdown");
 	}
-	
+
 
 	@Override
 	public void printReport() {
@@ -75,15 +88,12 @@ public class WebServiceManager extends ServiceManager {
 		this.sendWebReport();
 	}
 
-	private String toJsonItem(ItemMetaData item){
-		return Utils.toJson(LiteItem.bind(item));
+	private String toJsonItem(ItemMetaData metaData){
+		return Utils.toJson(new WebItem(metaData));
 	}
+
 	private String toJsonItemsList(Stream<ItemMetaData> itemStream){
-		return Utils.toJson(
-				itemStream
-						.map(LiteItem::bind)
-						.collect(Collectors.toList())
-		);
+		return Utils.toJson(itemStream.map(WebItem::new).collect(Collectors.toList()));
 	}
 
 	private void sendWebReport() {
@@ -114,21 +124,21 @@ public class WebServiceManager extends ServiceManager {
 	protected void completeEvent(List<ItemMetaData> items) {
 		itemListProvider.send(toJsonItemsList(items.stream()));
 	}
-	
+
 	@Override
 	public void printAllReport() {
-        System.out.println(reportTable.getTableReport());
-    }
-	
-	private Optional<ItemMetaData> searchById(Queue<ItemMetaData> queue, String id) {
+		System.out.println(reportTable.getTableReport());
+	}
+
+	private Optional<ItemMetaData> searchById(Queue<ItemMetaData> queue, Integer id) {
 		return queue.stream().filter(item -> item.getItem().getId().equals(id)).findAny();
 	}
-	
-	private ItemMetaData find(String id) {
-		Optional<ItemMetaData> optional = null;
+
+	private ItemMetaData find(Integer id) {
+		Optional<ItemMetaData> optional;
 		ItemMetaData metaData = null;
-		for (int i = 0; i < queues.size(); i++) {
-			optional = searchById(queues.get(i), id);
+		for (Queue<ItemMetaData> queue : queues) {
+			optional = searchById(queue, id);
 			if (optional.isPresent()) {
 				metaData = optional.get();
 				break;
@@ -136,15 +146,15 @@ public class WebServiceManager extends ServiceManager {
 		}
 		return metaData;
 	}
-	
-	private ItemMetaData findAndPause(String id) {
-		Optional<ItemMetaData> optional = null;
+
+	private ItemMetaData findAndPause(Integer id) {
+		Optional<ItemMetaData> optional;
 		ItemMetaData metaData = null;
-		for (int i = 0; i < queues.size(); i++) {
-			optional = searchById(queues.get(i), id);
+		for (Queue<ItemMetaData> queue : queues) {
+			optional = searchById(queue, id);
 			if (optional.isPresent()) {
 				metaData = optional.get();
-				queues.get(i).remove(metaData);
+				queue.remove(metaData);
 				metaData.pause();
 				metaData.systemFlush();
 				break;
@@ -152,8 +162,8 @@ public class WebServiceManager extends ServiceManager {
 		}
 		return metaData;
 	}
-	
-	public boolean deleteAndRemoveItem(String id) {
+
+	public boolean deleteAndRemoveItem(Integer id) {
 		ItemMetaData metaData = findAndPause(id);
 		if (metaData != null) {
 			//return false;
@@ -165,15 +175,15 @@ public class WebServiceManager extends ServiceManager {
 		} else {
 			return dataStore.remove(dataStore.findById(id));
 		}
-		
+
 	}
-	
-	public boolean pauseItem(String id) {
+
+	public boolean pauseItem(Integer id) {
 		ItemMetaData metaData = findAndPause(id);
 		return Objects.nonNull(metaData);
 	}
-	
-	public boolean startItem(String id) {
+
+	public boolean startItem(Integer id) {
 		ItemMetaData metaData = find(id);
 		if (Objects.isNull(metaData)) {
 			//return false;
@@ -193,37 +203,37 @@ public class WebServiceManager extends ServiceManager {
 		return Objects.nonNull(metaData);
 	}
 
-	public String download(String url) {
-        return this.download(url, Collections.emptyMap());
-    }
+	public Integer download(String url) {
+		return this.download(url, Collections.emptyMap());
+	}
 
-    public String download(String url, Map<String, List<String>> headers) {
-        Builder builder = new Builder(url);
-        builder.saveDir(properties.getDefaultSaveDirectory());
-        builder.addHeaders(headers);
-        Item item = builder.build();
-        this.scheduledService.execute(() -> {
-            this.client.updateItemOnline(item);
-            this.download(item);
-        });
-        return item.getId();
-    }
+	public Integer download(String url, Map<String, List<String>> headers) {
+		Builder builder = new Builder(url);
+		builder.saveDir(properties.getDefaultSaveDirectory());
+		builder.addHeaders(headers);
+		Item item = builder.build();
+		this.scheduledService.execute(() -> {
+			this.client.updateItemOnline(item);
+			this.download(item);
+		});
+		return item.getId();
+	}
 
-    public String downloadMetaLink(String[] urls) {
-        return this.downloadMetaLink(urls, Collections.emptyMap());
-    }
+	public Integer downloadMetaLink(String[] urls) {
+		return this.downloadMetaLink(urls, Collections.emptyMap());
+	}
 
-    public String downloadMetaLink(String[] urls, Map<String, List<String>> headers) {
-        MetalinkItem metalinkItem = new MetalinkItem();
-        metalinkItem.setSaveDirectory(properties.getDefaultSaveDirectory());
-        metalinkItem.addHeaders(headers);
-        for (String string : urls) {
-            metalinkItem.addMirror(string);
-        }
-        this.scheduledService.execute(() -> {
-            this.client.updateItemOnline(metalinkItem);
-            this.download(metalinkItem);
-        });
-        return metalinkItem.getId();
-    }
+	public Integer downloadMetaLink(String[] urls, Map<String, List<String>> headers) {
+		MetalinkItem metalinkItem = new MetalinkItem();
+		metalinkItem.setSaveDirectory(properties.getDefaultSaveDirectory());
+		metalinkItem.addHeaders(headers);
+		for (String string : urls) {
+			metalinkItem.addMirror(string);
+		}
+		this.scheduledService.execute(() -> {
+			this.client.updateItemOnline(metalinkItem);
+			this.download(metalinkItem);
+		});
+		return metalinkItem.getId();
+	}
 }

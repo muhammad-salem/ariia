@@ -91,15 +91,22 @@ public class Builder {
 	} 
 	
 	private String getFileName() {
-		File file = new File(url);
+		String decodedUrl;
+		try {
+			decodedUrl = java.net.URLDecoder.decode(url, StandardCharsets.UTF_8.name());
+		} catch (Exception e) {
+			// not going to happen - value came from JDK's own StandardCharsets
+			decodedUrl = url;
+		}
+		File file = new File(decodedUrl);
 		String fileName = file.getName().split("\\?")[0];
 		
 		if ("".equals(fileName)) {
-			String[] fileParts = url.split("/");
+			String[] fileParts = decodedUrl.split("/");
 			fileName = fileParts[fileParts.length-2].split("\\?")[0];
 		}
-		byte[] bytes = fileName.getBytes(StandardCharsets.UTF_8);
-		fileName = new String(bytes, StandardCharsets.UTF_8);
+		//byte[] bytes = fileName.getBytes(StandardCharsets.UTF_8);
+		//fileName = new String(bytes, StandardCharsets.UTF_8);
 		return fileName;
 	}
 }

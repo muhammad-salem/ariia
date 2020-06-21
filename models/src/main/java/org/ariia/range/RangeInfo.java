@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class RangeInfo implements RangeUtil {
 	
-	public static RangeInfo recomendedForLength( Long fileLength ) {
+	public static RangeInfo recommendedRange(Long fileLength ) {
 		if (fileLength == null) {
 			return new RangeInfo();
 		}
@@ -96,8 +96,6 @@ public class RangeInfo implements RangeUtil {
 		rangeArray[count-1][1] = fileLength;
 		return rangeArray;
 	}
-	
-	
 
 	protected long		fileLength;
 	protected long		downloadLength;
@@ -109,7 +107,7 @@ public class RangeInfo implements RangeUtil {
 	 * stream contractor, unknown length
 	 */
 	public RangeInfo() {
-		this.fileLength = -1l;
+		this.fileLength = -1L;
 	    this.range = new long[][] {{0, -1}};
 	    this.maxRangePoolNum = 1;
     }
@@ -162,7 +160,7 @@ public class RangeInfo implements RangeUtil {
 	
 	private long calculateRemainingLength() {
 		long length = 0;
-		long len = 0;
+		long len;
 		for (int index = 0; index < range.length; index++) {
 			len = remainLengthOf(index);
 			if( len > 0)
@@ -233,6 +231,12 @@ public class RangeInfo implements RangeUtil {
 
 	@Override
 	public boolean equals(Object obj) {
+    	if (obj == null){
+    		return  false;
+		}
+		if (! (obj instanceof  RangeInfo)){
+			return  false;
+		}
 		RangeInfo info = (RangeInfo) obj;
 		return this.fileLength == info.fileLength && this.range == info.range;
 	}

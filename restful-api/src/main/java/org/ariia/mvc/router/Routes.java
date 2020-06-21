@@ -76,13 +76,22 @@ public class Routes {
 				.collect(Collectors.toList());
 	}
 	
+	
+	/**
+	*
+	* the path could be 'root', '/root', '/root/'
+	* 
+	*/
 	public boolean lookupRoute(String path) {
 		if (Objects.isNull(path)) {
 			return false;
 		}
-		
+		// support wild card
+		if (this.path.equals("**")) {
+			return true;
+		}
 		if (path.startsWith(this.path)) {
-			if (Objects.equals(this.path, path)) {
+			if (Objects.equals(this.path, path) || Objects.equals(this.path + '/', path)) {
 				return true;
 			} else {
 				String subPath = path.replaceFirst(this.path, "");

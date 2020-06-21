@@ -13,9 +13,9 @@ public interface DataStore<T extends Item> {
 	
 	Stream<T> streamByUrlAndDirectory(String url, String dir);
 	
-	T findById(String id);
+	T findById(Integer id);
 	
-	String getId(String url);
+	Integer getId(String url);
 	
 	void save(T item);
 	void add(T item);

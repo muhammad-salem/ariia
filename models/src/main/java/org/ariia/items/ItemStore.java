@@ -36,15 +36,6 @@ public class ItemStore implements DataStore<Item> {
 				continue;
 			}
 			items.add(Utils.fromJson(file, Item.class));
-//			Item item = Utils.fromJson(file, Item.class);
-//			if(Objects.nonNull(item)) {
-//				if (item.isFinish()) {
-//					// clean cache files
-//					file.delete();
-//				} else {
-//					items.add(item);
-//				}
-//			}
 		}
 	}
 	
@@ -53,38 +44,42 @@ public class ItemStore implements DataStore<Item> {
 	@Override
 	public Item findByUrl(String url) {
 		Optional<Item> findItem =  items.stream()
-			.filter(item -> {return item.getUrl().equals(url); })
+			.filter(item -> item.getUrl().equals(url))
 			.findFirst();
-		return findItem.isPresent() ? findItem.get() : null;
+		return findItem.orElse(null);
 	}
 
 	@Override
 	public Item findByFileName(String fileName) {
 		Optional<Item> findItem =  items.stream()
-				.filter(item -> {return item.getFilename().equals(fileName); })
+				.filter(item -> item.getFilename().equals(fileName))
 				.findFirst();
-			return findItem.isPresent() ? findItem.get() : null;
+			return findItem.orElse(null);
 	}
 
 	@Override
 	public Stream<Item> streamByUrlAndDirectory(String url, String dir) {
 		return items.stream()
-				.filter(item -> {return item.getUrl().equals(url); })
-				.filter(item -> {return item.getSaveDirectory().equals(dir); });
+				.filter(item -> item.getUrl().equals(url))
+				.filter(item -> item.getSaveDirectory().equals(dir));
 	}
 
 	@Override
-	public Item findById(String id) {
+	public Item findById(Integer id) {
 		Optional<Item> findItem =  items.stream()
-				.filter(item -> {return item.getId().equals(id); })
+				.filter(item -> Objects.equals(item.getId(), id))
 				.findFirst();
-			return findItem.isPresent() ? findItem.get() : null;
+			return findItem.orElse(null);
 	}
 
 	@Override
 	public void save(Item item) {
-		String cacheFile = storePath + item.getId() + '-' + item.getFilename() + ".json";
+		String cacheFile = getCacheFile(item);
 		Utils.toJsonFile(cacheFile, item);
+	}
+
+	private String getCacheFile(Item item) {
+		return storePath + item.getFilename() + '-' + item.getUuid() + ".json";
 	}
 
 	@Override
@@ -95,7 +90,7 @@ public class ItemStore implements DataStore<Item> {
 	}
 	
 	@Override
-	public String getId(String url) {
+	public Integer getId(String url) {
 		return findByUrl(url).getId();
 	}
 	@Override
@@ -113,7 +108,7 @@ public class ItemStore implements DataStore<Item> {
 	
 	@Override
 	public boolean remove(Item item) {
-		String cacheFile = storePath + item.getId() + '-' + item.getFilename() + ".json";
+		String cacheFile = getCacheFile(item);
 		return new File(cacheFile).delete() && items.remove(item);
 	}
 

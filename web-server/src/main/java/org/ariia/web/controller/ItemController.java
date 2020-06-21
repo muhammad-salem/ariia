@@ -14,6 +14,7 @@ import org.ariia.mvc.annotation.RestController;
 import org.ariia.mvc.annotation.method.DeleteRequest;
 import org.ariia.mvc.annotation.method.GetRequest;
 import org.ariia.mvc.annotation.method.PostRequest;
+import org.ariia.web.app.model.WebItem;
 import org.ariia.web.services.ItemService;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -28,56 +29,56 @@ public class ItemController {
 	}
 	
 	@GetRequest(path = "")
-	public List<Item> items() {
+	public List<WebItem> items() {
 		Log.trace(getClass(), "GET ALL Items");
 		return itemService.getItems();
 	}
 	
 	@GetRequest(path = "/info/{id}")
-	public Item getItem(@PathVariable("id") String id) {
+	public WebItem getItem(@PathVariable("id") Integer id) {
 		Log.trace(getClass(), "GET Item Info", "id: " + id);
 		return itemService.get(id);
 	}
 	
 	@PostRequest(path = "/create/url")
-	public String createItem(@RequestBody String url) {
+	public Integer createItem(@RequestBody String url) {
 		Log.trace(getClass(), "Create new Item", "url: " + url);
 		return itemService.create(url);
 	}
 	
 	@PostRequest(path = "/create/metaLink")
-	public String createMetaLink(@RequestBody String[] urls) {
+	public Integer createMetaLink(@RequestBody String[] urls) {
 		Log.trace(getClass(), "Create new MetaLink Item", "urls: " + Arrays.toString(urls));
 		return itemService.createMetaLink(urls);
 	}
 	
 	
 	@PostRequest(path = "/create/item")
-	public String createItem(@RequestBody Item item) {
+	public Integer createItem(@RequestBody Item item) {
 		Log.trace(getClass(), "Create new Item", "item: " + item);
 		return itemService.create(item);
 	}
 	
 	@PostRequest(path = "/create/metaLinkItem")
-	public String createMetaLink(@RequestBody MetalinkItem item) {
+	public Integer createMetaLink(@RequestBody MetalinkItem item) {
 		Log.trace(getClass(), "Create new MetaLink Item", "MetaLink: " + item);
 		return itemService.create(item);
 	}
 	
 	@DeleteRequest(path = "/delete/{id}")
-	public boolean delete(@PathVariable("id") String id) {
+	public boolean delete(@PathVariable("id") Integer id) {
 		Log.trace(getClass(), "Delete Item Request", "id: " + id);
 		return this.itemService.delete(id);
 	}
 	
 	@PostRequest(path = "/pause/{id}")
-	public boolean pause(@PathVariable("id") String id) {
+	public boolean pause(@PathVariable("id") Integer id) {
 		Log.trace(getClass(), "Pause Item", "id: " + id);
 		return this.itemService.pause(id);
 	}
 	
 	@PostRequest(path = "/start/{id}")
-	public boolean start(@PathVariable("id") String id) {
+	public boolean start(@PathVariable("id") Integer id) {
 		Log.trace(getClass(), "Start Download Item", "id: " + id);
 		return this.itemService.start(id);
 	}
@@ -86,7 +87,7 @@ public class ItemController {
 	@GetRequest(path = "/download/{id}/{filename}")
 	@DoExchange
 	public void downloadItem(
-			@PathVariable("id") String id,
+			@PathVariable("id") Integer id,
 			@PathVariable("filename") String filename,
 			HttpExchange exchange) {
 		Log.trace(getClass(), "Download Request", "id: " + id + " filename: " + filename);
@@ -96,7 +97,7 @@ public class ItemController {
 	@GetRequest(path = "/download/{id}/{filename}", headers = {"Range"})
 	@DoExchange
 	public void downloadItemParts (
-			@PathVariable("id") String id,
+			@PathVariable("id") Integer id,
 			@PathVariable("filename") String filename,
 			@HeaderValue("Range") String range, 
 			HttpExchange exchange) {

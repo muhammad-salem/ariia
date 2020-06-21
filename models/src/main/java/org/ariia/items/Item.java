@@ -12,9 +12,11 @@ import java.util.UUID;
 import org.ariia.range.RangeInfo;
 
 public class Item {
-	
-	protected String id;
-	
+
+	private static int ITEMS_COUNT = 1;
+
+	protected Integer id;
+	protected String uuid;
 	protected String url;
 	protected String redirectUrl;
 	protected String filename;
@@ -27,18 +29,19 @@ public class Item {
 	public Item() {
 		this.rangeInfo = new RangeInfo();
 		this.headers   = new HashMap<>(0);
-		this.id = UUID.randomUUID().toString();
+		this.uuid = UUID.randomUUID().toString();
+		this.id = ITEMS_COUNT++;
 		this.state = ItemState.INIT;
 	}
-	
-	public String getId() {
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public Integer getId() {
 		return id;
 	}
-	
-//	public void setId(String id) {
-//		this.id = id;
-//	}
-	
+
 	public String getUrl() {
 		return url;
 	}
@@ -64,7 +67,8 @@ public class Item {
 	}
 
 	public void setFilename(String filename) {
-		byte[] bytes = filename.getBytes(StandardCharsets.UTF_8);
+		//byte[] bytes = filename.getBytes(StandardCharsets.UTF_8);
+		byte[] bytes = filename.getBytes();
 		filename = new String(bytes, StandardCharsets.UTF_8);
 		this.filename = filename;
 	}
@@ -140,7 +144,7 @@ public class Item {
 		StringBuilder builder = new StringBuilder();
 		builder.append( filename);
 		builder.append( '\t' );
-		builder.append( id );
+		builder.append( uuid );
 		builder.append('\n' );
 		builder.append( url );
 		builder.append('\n' );
@@ -151,19 +155,29 @@ public class Item {
 		builder.append( "Directory : " );
 		builder.append( saveDirectory );
 		builder.append( '\n' );
-		builder.append( "File Length : " + rangeInfo.getFileLengthMB() + " ( "  + rangeInfo.getFileLength() + " byte )");
-		builder.append( ",\tDownload : " + rangeInfo.getDownloadLengthMB() );
-		builder.append( ",\tRemaining : " + rangeInfo.getRemainingLengthMB() );
+		builder.append( "File Length : ");
+		builder.append(rangeInfo.getFileLengthMB());
+		builder.append( " ( ");
+		builder.append(rangeInfo.getFileLength());
+		builder.append( " byte )");
+		builder.append( ",\tDownload : ");
+		builder.append(rangeInfo.getDownloadLengthMB() );
+		builder.append( ",\tRemaining : ");
+		builder.append(rangeInfo.getRemainingLengthMB() );
 		return builder.toString();
 	}
 	
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(liteString());
+		StringBuilder builder = new StringBuilder();
+		builder.append(liteString());
 		builder.append('\n');
-		builder.append("Headers Size : " + headers.size() );
-		builder.append(",\tRange Count : " + rangeInfo.getRangeCount() );
-		builder.append(",\tState : " + state );
+		builder.append("Headers Size : ");
+		builder.append(headers.size() );
+		builder.append(",\tRange Count : ");
+		builder.append(rangeInfo.getRangeCount());
+		builder.append(",\tState : ");
+		builder.append(state );
 		builder.append('\n');
 		builder.append(rangeInfo.toString());
 		return builder.toString();
@@ -171,6 +185,12 @@ public class Item {
 	
 	@Override
 	public boolean equals(Object obj) {
+		if (Objects.isNull(obj)){
+			return false;
+		}
+		if (!(obj instanceof Item)){
+			return false;
+		}
 		Item item =  (Item) obj;
 		return     this.url.equals(item.url)
 				&& this.filename.equals(item.filename)
@@ -178,7 +198,7 @@ public class Item {
 				&& this.saveDirectory.equals(item.saveDirectory)
 				&& this.headers.equals(item.headers)
 				&& this.rangeInfo.equals(item.rangeInfo)
-				&& this.id == item.id;
+				&& this.uuid.equals(item.uuid);
 	}
 	
 	public Item getCopy() {
@@ -194,13 +214,13 @@ public class Item {
 	}
 	
 	public void copy(Item item) {
-		this.id				= item.id;
+		this.uuid			= item.uuid;
 		this.url			= item.url;
 		this.filename		= item.filename;
 		this.state			= item.state;
 		this.headers		= item.headers;
 		this.rangeInfo		= item.rangeInfo;
-		this.redirectUrl		= item.redirectUrl;
+		this.redirectUrl	= item.redirectUrl;
 		this.saveDirectory	= item.saveDirectory;
 	}
 	

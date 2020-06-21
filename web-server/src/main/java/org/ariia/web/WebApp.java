@@ -19,6 +19,7 @@ import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.app.WebServiceManager;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.controller.LogLevelController;
+import org.ariia.web.controller.SettingController;
 import org.ariia.web.services.ItemService;
 import org.terminal.console.log.Level;
 import org.terminal.console.log.api.Printer;
@@ -40,23 +41,23 @@ public class WebApp {
 			System.out.println(arguments.getVersion() + " - Angular Material (9.1.11)");
 			return;
 		}
-		
+
 		// setup logging service
 		EventBroadcast mainBroadcast = new EventBroadcast();
 		Printer printer = new PrinterImpl(System.out);
 		WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
 		LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
 		Properties properties = new Properties(arguments);
-		
+
 		// setup web server
 		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
 		String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
 				: "/static/angular";
 		WebServer.ResourceType type = arguments.isServerResourceLocation() ? WebServer.ResourceType.FILE :
-//        			isRunningFromJar() ? 
-//        					WebServer.ResourceType.IN_MEMORY : 
+//        			isRunningFromJar() ?
+//        					WebServer.ResourceType.IN_MEMORY :
 				WebServer.ResourceType.STREAM;
-		
+
 
 		Routes homeRoutes = new Routes("home");
 		Routes dashboardRoutes = new Routes("dashboard");
@@ -73,22 +74,24 @@ public class WebApp {
 				settingsRoutes,
 				logViewRoutes
 		);
-		
+
 		WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
 
 		// setup download manager service
 		SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));
 		WebServiceManager serviceManager = new WebServiceManager(client, mainBroadcast);
 		AriiaCli cli = new AriiaCli(serviceManager);
-		
-		
+
+		SettingController settingController = new SettingController(serviceManager, properties);
+		server.createControllerContext(settingController);
+
 		ItemController itemController = new ItemController(new ItemService(serviceManager));
 		server.createControllerContext(itemController);
 		LogLevelController logLevelController = new LogLevelController();
 		server.createControllerContext(logLevelController);
-		
+
 		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
-		
+
 		cli.lunch(arguments, properties);
 		server.start();
 		LogCli.startLogService();
@@ -104,10 +107,10 @@ public class WebApp {
 			log.redLite();
 			log.append(resourceLocation);
 		}
-		
+
 		Log.log(WebApp.class, "Running Web Server", log.toString());
-		
-		
+
+
 	}
 
 }

@@ -4,6 +4,7 @@ import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.writer.ChannelMetaDataWriter;
 import org.ariia.core.api.writer.ItemMetaData;
+import org.ariia.core.api.writer.ItemMetaDataCompleteWrapper;
 import org.ariia.core.api.writer.StreamMetaDataWriter;
 import org.ariia.items.*;
 import org.ariia.logging.Log;
@@ -313,8 +314,10 @@ public class ServiceManager implements Closeable {
 
 
     public final ItemMetaData initItemMetaData(Item item) {
-        ItemMetaData metaData = null;
-        if (item.getRangeInfo().isStreaming()) {
+        ItemMetaData metaData;
+        if (item.getRangeInfo().isFinish()){
+            metaData = new ItemMetaDataCompleteWrapper(item, properties);
+        } else if (item.getRangeInfo().isStreaming()) {
             metaData = new StreamMetaDataWriter(item, properties);
         } else {
             metaData = new ChannelMetaDataWriter(item, properties);
@@ -331,16 +334,18 @@ public class ServiceManager implements Closeable {
 
     public void download(Item item) {
         RangeUtil range = item.getRangeInfo();
-        if (range.isFinish()) {
-            Log.log(getClass(), "Download Finish: " + item.getFilename(), item.liteString());
-            return;
-        }
         sessionReport.addRange(range);
         ItemMetaData metaData = initItemMetaData(item);
+        if (range.isFinish()) {
+            Log.log(getClass(), "Download Finish: " + item.getFilename(), item.liteString());
+            moveToCompleteList(metaData);
+            item.setState(ItemState.COMPLETE);
+            return;
+        }
+
         item.setState(ItemState.INIT_FILE);
         Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " + metaData.getClass().getSimpleName());
         Log.log(getClass(), "add download item to waiting list", item.toString());
-
         moveToWaitingList(metaData);
     }
 
