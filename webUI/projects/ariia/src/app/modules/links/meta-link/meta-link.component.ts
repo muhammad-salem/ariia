@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-meta-link',
-  templateUrl: './meta-link.component.html',
-  styleUrls: ['./meta-link.component.scss']
+	selector: 'app-meta-link',
+	templateUrl: './meta-link.component.html',
+	styleUrls: ['./meta-link.component.scss']
 })
 export class MetaLinkComponent implements OnInit {
 
-  constructor() { }
+	constructor() {
+	}
 
-  ngOnInit(): void {
-  }
+	ngOnInit(): void {
+	}
 
 }

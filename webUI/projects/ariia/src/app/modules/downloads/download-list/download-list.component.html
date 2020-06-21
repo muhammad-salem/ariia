@@ -12,7 +12,7 @@
     </mat-grid-tile>
 </mat-grid-list> -->
 
-<!-- 
+<!--
 <div class="content" fxLayout="row" fxLayout.xs="column" fxFlexAlign.gt-md>
     <div *ngFor="let item of items" fxFlex="50" fxFlex.xs="50">
         <app-item-view [item]="item" (delete)="onItemDelete(item)"></app-item-view>
@@ -20,9 +20,9 @@
 </div> -->
 
 <div class="row">
-    <div *ngFor="let item of items" class="col-6">
-        <app-item-view [item]="item" (delete)="onItemDelete(item)"></app-item-view>
-    </div>
+	<div *ngFor="let item of items" class="col-6">
+		<download-view (delete)="onItemDelete(item)" [item]="item"></download-view>
+	</div>
 </div>
 
 <!-- <mat-grid-list cols="2">

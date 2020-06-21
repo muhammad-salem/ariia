@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-network-viewer',
-  templateUrl: './network-viewer.component.html',
-  styleUrls: ['./network-viewer.component.scss']
+	selector: 'app-network-viewer',
+	templateUrl: './network-viewer.component.html',
+	styleUrls: ['./network-viewer.component.scss']
 })
 export class NetworkViewerComponent implements OnInit {
 
-  constructor() { }
+	constructor() {
+	}
 
-  ngOnInit(): void {
-  }
+	ngOnInit(): void {
+	}
 
 }

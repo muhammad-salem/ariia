@@ -1,49 +1,34 @@
-import { RangeInfo } from './range-info';
-import { SimpleRangeReport, RangeReport } from './network-session';
+import {RangeInfo} from './range-info';
+import {RangeReport} from './network-session';
 
-export class Item {
-
-    id: string = '';
-    url: string = '';
-    redirectUrl: string = '';
-    filename: string = '';
-    state: string = '';
-    saveDirectory: string = '';
-    headers: Map<string, string[]> = new Map();
-
-    rangeInfo: RangeInfo = new RangeInfo();
-    report: RangeReport = new SimpleRangeReport();
-
-    constructor(item: Item) {
-        if (item) {
-            this.update(item);
-        }
-        if (!this.report) {
-            this.report = new SimpleRangeReport();
-        }
-    }
-
-    update(item: Item) {
-        this.id = item.id;
-        this.url = item.url;
-        this.redirectUrl = item.redirectUrl;
-        this.filename = item.filename;
-        this.saveDirectory = item.saveDirectory;
-        this.netwotkUpdate(item);
-        Object.keys(item.headers).forEach((keys) => {
-            this.headers.set(keys, item.headers[keys]);
-        });
-    }
-
-    netwotkUpdate(item: Item) {
-        this.state = item.state;
-        this.rangeInfo.update(item.rangeInfo);
-        if (item.report) {
-            this.report.update(item.report)
-        }
-    }
-
-    toString(): string {
-        return `${this.filename} - ${this.rangeInfo.fileLength} - ${this.state}`;
-    }
+export interface Item {
+	id: number;
+	uuid: string;
+	url: string;
+	redirectUrl: string;
+	filename: string;
+	state: string;
+	saveDirectory: string;
+	headers: Map<string, string[]>;
+	rangeInfo: RangeInfo;
+	report: RangeReport;
 }
+
+export interface MetaLinkItem extends Item {
+	mirrors: string[];
+}
+
+export const assignObject = (object, copy) => {
+	Object.keys(copy).forEach(key => object[key] = copy[key]);
+};
+
+export const updateItemFromNetwork = (item: Item, networkItem: Item) => {
+	item.id = networkItem.id;
+	item.state = networkItem.state;
+	item.report = networkItem.report;
+	assignObject(item.rangeInfo , networkItem.rangeInfo );
+};
+
+export const updateItem = (item1: Item, item2: Item) => {
+	assignObject(item1, item2);
+};

@@ -1,1 +1,39 @@
-<p>link works!</p>
+<form #formLink class="link-form">
+	<div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
+		<div fxLayoutGap="10px">
+			<mat-form-field appearance="legacy" class="full-width">
+				<mat-label>Download Link</mat-label>
+				<input matInput name="link"
+					   [(ngModel)]="link"
+					   placeholder="https://url-examle.com/filename.txt">
+				<mat-icon matSuffix>url</mat-icon>
+				<mat-hint>Insert Download Link</mat-hint>
+			</mat-form-field>
+			<div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
+				<button mat-raised-button color="primary"
+						[disabled]="link === ''"
+						(click)="addLink()">
+					Add Link
+				</button>
+			</div>
+		</div>
+		<div fxLayoutGap="10px">
+			<mat-form-field appearance="legacy" class="full-width">
+				<mat-label>Download Meta Link</mat-label>
+				<textarea matInput name="metaLink" class="meta-link"
+						  [(ngModel)]="metaLink"
+						  placeholder="https://url-examle.com/filename.txt"></textarea>
+				<mat-icon matSuffix>url</mat-icon>
+				<mat-hint>
+					MetaLink Download is like several download link for the same file on different servers
+				</mat-hint>
+			</mat-form-field>
+			<div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
+				<button mat-raised-button color="primary"
+						[disabled]="metaLink === ''"
+						(click)="addLink()">Add Meta Link
+				</button>
+			</div>
+		</div>
+	</div>
+</form>
