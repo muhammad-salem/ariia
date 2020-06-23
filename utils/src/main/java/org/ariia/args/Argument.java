@@ -7,11 +7,7 @@ import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //import org.ariia.okhttp.OkUtils;
 import org.ariia.util.R;
@@ -19,7 +15,8 @@ import org.ariia.util.Utils;
 
 public class Argument {
 	
-	private String version = "Ariia version (0.2.8)";
+	private final String version = "Ariia version (0.2.8)";
+	private String urlSplit = "!:!";
 	
 	public String getVersion() {
 		return version;
@@ -72,10 +69,16 @@ public class Argument {
 				} else {
 					addArgument(argument, t[1]);
 				}
-			} else if (arg.startsWith("http")){
+			} else if (arg.startsWith("http://") || arg.startsWith("https://")) {
 				try {
 					new URL(arg);
-					dictionary.put(TerminalArgument.Url, arg);
+					String lastUrls = dictionary.get(TerminalArgument.Url);
+					if (Objects.isNull(lastUrls)){
+						lastUrls = arg;
+					} else {
+						lastUrls += urlSplit + arg;
+					}
+					dictionary.put(TerminalArgument.Url, lastUrls);
 				} catch (MalformedURLException e) {
 					continue;
 				}
@@ -187,8 +190,8 @@ public class Argument {
 		return proxy;
 	}
 
-	public String getUrl() {
-		return dictionary.get(TerminalArgument.Url);
+	public String[] getUrl() {
+		return dictionary.get(TerminalArgument.Url).split(urlSplit);
 	}
 	
 	public String getInputFile() {
@@ -309,11 +312,11 @@ public class Argument {
 			return indexs;
 		}else {
 			String temp [] = pices.split(" ");
-			int[] indexs = new int[temp.length];
+			int[] indexes = new int[temp.length];
 			for (int i = 0; i < temp.length; i++) {
-				indexs[i] = Integer.parseInt(temp[i]);
+				indexes[i] = Integer.parseInt(temp[i]);
 			}
-			return indexs;
+			return indexes;
 		}
 	}
 	

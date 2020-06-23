@@ -1,6 +1,7 @@
 package org.ariia.items;
 
 import java.io.File;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,13 +94,11 @@ public class Builder {
 	private String getFileName() {
 		String decodedUrl;
 		try {
-			decodedUrl = java.net.URLDecoder.decode(url, StandardCharsets.UTF_8.name());
+			decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8.name());
 		} catch (Exception e) {
-			// not going to happen - value came from JDK's own StandardCharsets
 			decodedUrl = url;
 		}
-		File file = new File(decodedUrl);
-		String fileName = file.getName().split("\\?")[0];
+		String fileName = new File(decodedUrl).getName().split("\\?")[0];
 		
 		if ("".equals(fileName)) {
 			String[] fileParts = decodedUrl.split("/");

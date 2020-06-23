@@ -125,7 +125,9 @@ public class ItemBuilder {
 	
 	
 	public void downloadUrl() {
-		addItem(arguments.getUrl(), arguments.getHeaders());
+		for (String url: arguments.getArgs()){
+			addItem(url, arguments.getHeaders());
+		}
 	}
 	
 	private void streamUrl(Argument arguments) {

@@ -1,5 +1,7 @@
 package org.ariia.items;
 
+import java.util.Objects;
+
 public enum ItemState {
 	
 	INIT("Init"),
@@ -8,7 +10,8 @@ public enum ItemState {
 	WAITING("Waiting"),
 	DOWNLOADING("Downloading"),
 	PAUSE("Pause"),
-	COMPLETE("Complete");
+	COMPLETE("Complete"),
+	DELETE("Delete");
 	
 	private final String state;
 	ItemState(String state) {
@@ -35,5 +38,17 @@ public enum ItemState {
 	public boolean isComplete() {
 		return this.equals(COMPLETE);
 	}
+
+	public boolean isInit() {
+		return this.toString().toLowerCase().startsWith("init");
+	}
+
+	public boolean canMoveToWaitState() {
+		return this.isInit() || Objects.equals(PAUSE, this);
+	}
+
+//	public boolean canMoveToDownloadState() {
+//		return canMoveToWaitState() || Objects.equals(WAITING, this);
+//	}
 
 }
