@@ -1,22 +1,25 @@
 package org.ariia.filecheck;
 
+import org.ariia.core.api.service.DownloadService;
+import org.ariia.items.Item;
+import org.ariia.logging.Log;
+import org.ariia.range.RangeInfo;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.ariia.core.api.service.ServiceManager;
-import org.ariia.items.Item;
-import org.ariia.logging.Log;
-import org.ariia.range.RangeInfo;
-
 public class CheckManager {
 
 	
-	public static void CheckItem(String url, int chunkSize, ServiceManager manager) {
+	public static void CheckItem(String url, int chunkSize, DownloadService downloadService) {
 		
-			Item item = manager.getDataStore().findByUrl(url);
+			Item item = downloadService.itemStream()
+					.filter(metaData -> metaData.getItem().getUrl().equals(url))
+					.findFirst()
+					.get().getItem();
 			Log.trace(CheckManager.class, "found file", item.liteString());			
 			long[][] arr;
 			try {
@@ -56,13 +59,13 @@ public class CheckManager {
 				copy.getRangeInfo().checkRanges();
 				copy.getRangeInfo().avoidMissedBytes();
 				copy.getRangeInfo().oneCycleDataUpdate();
-				manager.download(copy);
+				downloadService.download(copy);
 				Log.info(CheckManager.class, "add item", copy.toString());
 			}
 		
 	}
 
-	public static void downloadPices(String url, int[] downloadPieces, int chunkSize, ServiceManager manager) {
+	public static void downloadPieces(String url, int[] downloadPieces, int chunkSize, DownloadService downloadService) {
 		if(chunkSize < 1) {
 			// set to default 512 KB
 			chunkSize = 512 * 1024;
@@ -78,14 +81,17 @@ public class CheckManager {
 				downoad[i][1] = 0l;
 			}
 		}
-		
-		Item search = manager.getDataStore().findByUrl(url);
+
+		Item search = downloadService.itemStream()
+				.filter(metaData -> metaData.getItem().getUrl().equals(url))
+				.findFirst()
+				.get().getItem();
 		Log.trace(CheckManager.class, "found file chick", search.liteString());
 		RangeInfo info = new RangeInfo(search.getRangeInfo().getFileLength(), downoad);
 		info.oneCycleDataUpdate();
 		Item copy = search.getCopy();
 		copy.setRangeInfo(info);
-		manager.download(copy);
+		downloadService.download(copy);
 		Log.info(CheckManager.class, "add item", copy.toString());
 	}
 

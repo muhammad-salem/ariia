@@ -1,7 +1,5 @@
 package org.ariia.web;
 
-import java.io.IOException;
-
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
 import org.ariia.cli.AriiaCli;
@@ -15,16 +13,19 @@ import org.ariia.mvc.WebServer.ResourceType;
 import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
 import org.ariia.okhttp.OkClient;
+import org.ariia.web.app.WebDownloadService;
 import org.ariia.web.app.WebLoggerPrinter;
-import org.ariia.web.app.WebServiceManager;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.controller.LogLevelController;
 import org.ariia.web.controller.SettingController;
 import org.ariia.web.services.ItemService;
+import org.ariia.web.services.SettingService;
 import org.terminal.console.log.Level;
 import org.terminal.console.log.api.Printer;
 import org.terminal.console.log.impl.PrinterImpl;
 import org.terminal.strings.AnsiStringBuilder;
+
+import java.io.IOException;
 
 public class WebApp {
 
@@ -79,20 +80,21 @@ public class WebApp {
 
 		// setup download manager service
 		SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));
-		WebServiceManager serviceManager = new WebServiceManager(client, mainBroadcast);
-		AriiaCli cli = new AriiaCli(serviceManager);
+		WebDownloadService downloadService = new WebDownloadService(mainBroadcast);
 
-		SettingController settingController = new SettingController(serviceManager, properties);
+		AriiaCli cli = new AriiaCli(downloadService, client);
+
+		SettingController settingController = new SettingController(new SettingService(downloadService, properties));
 		server.createControllerContext(settingController);
 
-		ItemController itemController = new ItemController(new ItemService(serviceManager));
+		ItemController itemController = new ItemController(new ItemService(downloadService));
 		server.createControllerContext(itemController);
 		LogLevelController logLevelController = new LogLevelController();
 		server.createControllerContext(logLevelController);
 
 		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
 
-		cli.lunch(arguments, properties);
+		cli.lunchAsWebApp(arguments, properties);
 		server.start();
 		LogCli.startLogService();
 		AnsiStringBuilder log = new AnsiStringBuilder();

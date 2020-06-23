@@ -29,7 +29,7 @@ public class ItemController {
 	}
 	
 	@GetRequest(path = "")
-	public List<WebItem> items() {
+	public List<Item> items() {
 		Log.trace(getClass(), "GET ALL Items");
 		return itemService.getItems();
 	}
@@ -37,7 +37,7 @@ public class ItemController {
 	@GetRequest(path = "/info/{id}")
 	public WebItem getItem(@PathVariable("id") Integer id) {
 		Log.trace(getClass(), "GET Item Info", "id: " + id);
-		return itemService.get(id);
+		return itemService.findById(id);
 	}
 	
 	@PostRequest(path = "/create/url")

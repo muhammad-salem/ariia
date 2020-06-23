@@ -8,7 +8,9 @@ import java.util.Objects;
 import org.ariia.args.Argument;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
-import org.ariia.core.api.service.ServiceManager;
+import org.ariia.core.api.service.DownloadService;
+import org.ariia.core.api.service.DownloadServiceBuilder;
+import org.ariia.core.api.service.DownloadServiceFactory;
 import org.ariia.items.ItemBuilder;
 import org.ariia.logging.Log;
 import org.ariia.util.PlatformUtil;
@@ -18,68 +20,88 @@ import org.fusesource.jansi.AnsiConsole;
 public class AriiaCli {
 
 	private Client client;
-	private ServiceManager serviceManager;
+	private DownloadService downloadService;
 	private Runnable finishAction = () -> {};
 	
 	public AriiaCli(Client client) {
 		this.client = Objects.requireNonNull(client);
 	}
-	
-	public AriiaCli(ServiceManager serviceManager ) {
-		this.serviceManager = Objects.requireNonNull(serviceManager);
+
+	public AriiaCli(DownloadService downloadService ) {
+		this.downloadService = Objects.requireNonNull(downloadService);
 	}
-	
+
 	public AriiaCli(Client client, Runnable finishAction) {
 		this.client = Objects.requireNonNull(client);
 		this.finishAction = Objects.requireNonNull(finishAction);
 	}
 	
-	public AriiaCli(ServiceManager serviceManager, Runnable finishAction, Void v) {
-		this.serviceManager = Objects.requireNonNull(serviceManager);
+	public AriiaCli(DownloadService downloadService, Runnable finishAction) {
+		this.downloadService = Objects.requireNonNull(downloadService);
 		this.finishAction = Objects.requireNonNull(finishAction);
 	}
-	
-	public Client getClient() {
-		return client;
+
+	boolean buildServiceByFactory = false;
+	public AriiaCli(DownloadService downloadService, Client client) {
+		this(downloadService, client, ()->{});
 	}
-	
-	public ServiceManager getServiceManager() {
-		return serviceManager;
-	}
-	
-	public Runnable getFinishAction() {
-		return finishAction;
-	}
-	
-	public void lunch(String[] args) {
-		lunch(new Argument(args), new Properties());
+	public AriiaCli(DownloadService downloadService, Client client, Runnable finishAction) {
+		this.downloadService = Objects.requireNonNull(downloadService);
+		this.client = Objects.requireNonNull(client);
+		this.finishAction = Objects.requireNonNull(finishAction);
+		this.buildServiceByFactory = true;
 	}
 
-	public void lunch(Argument arguments, Properties properties) {
+	public DownloadService getDownloadService() {
+		return downloadService;
+	}
+
+	public void lunchAsWebApp(Argument arguments, Properties properties) {
+		lunch(arguments, properties, false);
+	}
+	public void lunchAsCliApp(Argument arguments, Properties properties) {
+		lunch(arguments, properties, true);
+	}
+
+	private void initDownloadService(boolean isCLI) {
+		if (Objects.nonNull(client)){
+			DownloadServiceFactory factory = new DownloadServiceFactory(client);
+			DownloadServiceBuilder builder = factory.builder();
+			builder.setFinishAction(finishAction);
+			if (isCLI){
+				builder.useCliApp();
+			} else {
+				builder.useWebApp();
+			}
+			if (buildServiceByFactory) {
+				downloadService = builder.build(downloadService);
+			} else {
+				downloadService = builder.build();
+			}
+		} else {
+			throw new RuntimeException("downloadService and client are null");
+		}
+	}
+
+	private void lunch(Argument arguments, Properties properties, boolean isCLI) {
 		initSystemIO();
 		R.MK_DIRS(R.CachePath);
 		properties.setupConfig(arguments);
-		
-		if (Objects.isNull(serviceManager)) {
-			serviceManager = new ServiceManager(client);
-		} else {
-			client = serviceManager.getClient();
+		if (Objects.isNull(downloadService) || buildServiceByFactory) {
+			initDownloadService(isCLI);
 		}
-		
 		Log.trace(getClass(), "Set Shutdown Hook Thread", "register shutdown thread");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//			manager.close();
-			serviceManager.runSystemShutdownHook();
-			serviceManager.printAllReport();
+			downloadService.runSystemShutdownHook();
+			downloadService.printReport();
+//			downloadService.close();
 			System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
 		}));
-		
+
 		ItemBuilder builder = new ItemBuilder(arguments, properties);
-		
-		serviceManager.initForDownload(builder.getItems());
+		downloadService.initializeFromDataStore(builder.getItems());
 		builder.clear();
-		serviceManager.setFinishAction(finishAction);
-		serviceManager.startScheduledService();
+		downloadService.startScheduledService();
 	}
 	
 	private void initSystemIO() {

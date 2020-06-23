@@ -3,47 +3,56 @@ package org.ariia.web.controller;
 import java.util.Objects;
 
 import org.ariia.config.Properties;
+import org.ariia.logging.Log;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RestController;
 import org.ariia.mvc.annotation.method.GetRequest;
 import org.ariia.mvc.annotation.method.PostRequest;
-import org.ariia.web.app.WebServiceManager;
+import org.ariia.web.services.SettingService;
 
 @RestController("/settings")
 public class SettingController {
 
-	final private WebServiceManager serviceManager;
-	final private Properties properties;
+	final private SettingService settingService;
 
-	public SettingController(WebServiceManager serviceManager, Properties properties) {
-		this.serviceManager = Objects.requireNonNull(serviceManager);
-		this.properties = Objects.requireNonNull(properties);
+	public SettingController(SettingService settingService) {
+		this.settingService = Objects.requireNonNull(settingService);
 	}
 
 	@GetRequest(path = "/")
 	public Properties getProperties() {
-		return properties;
+		Log.trace(getClass(), "getProperties");
+		return settingService.getProperties();
 	}
 
 	@PostRequest(path = "/update")
 	public boolean updateProperties(@RequestBody Properties properties) {
-		this.properties.updateProperties(properties);
-		return true;
+		Log.trace(getClass(), "update");
+		return settingService.updateProperties(properties);
 	}
 
 	@GetRequest(path = "/isListPaused")
 	public boolean isListPaused() {
-		return serviceManager.isListPaused();
+		Log.trace(getClass(), "isListPaused");
+		return !settingService.isAllowDownload();
+	}
+
+	@GetRequest(path = "/isAllowDownload")
+	public boolean isAllowDownload() {
+		Log.trace(getClass(), "isAllowDownload");
+		return settingService.isAllowDownload();
 	}
 
 	@PostRequest(path = "/startList")
 	public boolean startList() {
-		return serviceManager.setListPaused(false);
+		Log.trace(getClass(), "startList");
+		return settingService.startList();
 	}
 
 	@PostRequest(path = "/pauseList")
 	public boolean pauseList() {
-		return serviceManager.setListPaused(true);
+		Log.trace(getClass(), "pauseList");
+		return settingService.pauseList();
 	}
 
 }

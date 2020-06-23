@@ -32,7 +32,7 @@ public static void main(String[] args) {
 		AriiaCli cli = new AriiaCli(
 				Clients.segmentClient(properties, new AriiaHttpClient(arguments.getProxy())), 
 				onComplete);
-		cli.lunch(arguments, properties);
+		cli.lunchAsCliApp(arguments, properties);
 		
 	}
 

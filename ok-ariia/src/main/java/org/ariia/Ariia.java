@@ -32,7 +32,7 @@ public class Ariia {
 		AriiaCli cli = new AriiaCli(
 				Clients.segmentClient(properties, new OkClient(arguments.getProxy())), 
 				onComplete);
-		cli.lunch(arguments, properties);
+		cli.lunchAsCliApp(arguments, properties);
 		
 	}
 
