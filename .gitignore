@@ -51,6 +51,7 @@ Thumbs.db
 web-server/src/main/resources/static/angular
 *.iml
 /*/*.iml
+/*/.idea
 /*/bin
 /*/target
 /*/node_modules
