@@ -15,7 +15,8 @@ export class DownloadViewComponent implements OnInit {
 	constructor(private itemService: ItemService, private rangeService: RangeService, private notifyService: NotifyService) {
 	}
 
-	ngOnInit(): void {}
+	ngOnInit(): void {
+	}
 
 	deleteItem() {
 		return this.itemService.deleteItem(this.item.id).subscribe(deleted => {

@@ -22,6 +22,7 @@ import {DownloadTabsComponent} from './download-tabs/download-tabs.component';
 import {DownloadViewComponent} from './download-view/download-view.component';
 import {DownloadListComponent} from './download-list/download-list.component';
 import {DownloadTableComponent} from './download-table/download-table.component';
+import {MatDividerModule} from '@angular/material/divider';
 
 
 const routes: Routes = [
@@ -53,7 +54,8 @@ const routes: Routes = [
 		MatInputModule,
 		MatToolbarModule,
 		MatButtonModule,
-		FlexLayoutModule
+		FlexLayoutModule,
+		MatDividerModule
 	],
 	exports: [
 		CommonModule,

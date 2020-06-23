@@ -31,6 +31,7 @@
 	</mat-toolbar-row>
 </mat-toolbar>
 
+<mat-divider class="divider" ></mat-divider>
 
 <table [dataSource]="dataSource" mat-table matSort>
 	<ng-container matColumnDef="select">
@@ -41,7 +42,7 @@
 		</th>
 		<td *matCellDef="let item" mat-cell>
 			<mat-checkbox (change)="$event ? selection.toggle(item) : null" (click)="$event.stopPropagation()"
-				[checked]="selection.isSelected(item)">
+						  [checked]="selection.isSelected(item)">
 			</mat-checkbox>
 		</td>
 		<td *matFooterCellDef="let item" mat-footer-cell>
@@ -65,6 +66,12 @@
 				<mat-progress-bar [value]="sessionProgress()" mode="determinate"></mat-progress-bar>
 			</div>
 		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="percent">
+		<th *matHeaderCellDef mat-header-cell mat-sort-header> Percent %</th>
+		<td *matCellDef="let item" mat-cell>{{itemPercent(item)}}</td>
+		<td *matFooterCellDef mat-footer-cell>{{sessionProgress()}}</td>
 	</ng-container>
 
 	<!-- <ng-container matColumnDef="fileLength">
