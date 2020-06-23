@@ -11,22 +11,25 @@ export class LinkComponent implements OnInit {
 
 	link: string;
 	metaLink: string;
-	constructor(private itemService: ItemService, private notifyService: NotifyService) {}
 
-	ngOnInit(): void {}
+	constructor(private itemService: ItemService, private notifyService: NotifyService) {
+	}
+
+	ngOnInit(): void {
+	}
 
 	addLink() {
-		if (this.link === '' && this.metaLink === ''){
+		if (this.link === '' && this.metaLink === '') {
 			this.notifyService.error('Empty Link', 'Please Provide');
 		}
-		if (this.link){
+		if (this.link) {
 			this.itemService.downloadUrl(this.link).subscribe(id => {
 				this.notifyService.showSnackBar('Add Download Link',
 					this.link + '\nwith id:' + id);
 				this.link = '';
 			});
 		}
-		if (this.metaLink){
+		if (this.metaLink) {
 			const urls = this.metaLink.split('\n');
 			this.itemService.createMetaLinkUrl(urls).subscribe(id => {
 				this.notifyService.showSnackBar('Add Download Link',
