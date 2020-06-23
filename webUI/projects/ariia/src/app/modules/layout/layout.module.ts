@@ -12,6 +12,7 @@ import {RouterModule} from '@angular/router';
 import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {ServerControlStateComponent} from './server-control-state/server-control-state.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 	declarations: [
 		HeaderComponent,
 		FooterComponent,
-		SidebarComponent
+		SidebarComponent,
+		ServerControlStateComponent
 	],
 	imports: [
 		CommonModule,
@@ -37,7 +39,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 	exports: [
 		HeaderComponent,
 		FooterComponent,
-		SidebarComponent
+		SidebarComponent,
+		ServerControlStateComponent
 	],
 	bootstrap: [],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
