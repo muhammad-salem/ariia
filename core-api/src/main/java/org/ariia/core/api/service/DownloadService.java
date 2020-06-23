@@ -1,0 +1,333 @@
+package org.ariia.core.api.service;
+
+import org.ariia.config.Properties;
+import org.ariia.core.api.client.Client;
+import org.ariia.core.api.writer.ChannelMetaDataWriter;
+import org.ariia.core.api.writer.ItemMetaData;
+import org.ariia.core.api.writer.ItemMetaDataCompleteWrapper;
+import org.ariia.core.api.writer.StreamMetaDataWriter;
+import org.ariia.items.DataStore;
+import org.ariia.items.Item;
+import org.ariia.items.ItemState;
+import org.ariia.logging.Log;
+import org.ariia.monitors.SessionReport;
+import org.ariia.monitors.SpeedTableReport;
+import org.ariia.network.ConnectivityCheck;
+import org.ariia.network.NetworkReport;
+
+import java.io.Closeable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+/**
+ * item life cycle
+ * meta data to waiting list then it moved to download list
+ * if finish >> to complete list
+ * else to pause list and if any action to waiting list again
+ * <br/>
+ * item --> [item meta data] --> add to [waiting list] -- > [download list] --> [ complete list]
+ *                                            |---<--- [pause list] <--|
+ */
+public class DownloadService implements Closeable {
+
+    public final static int SCHEDULE_TIME = 1;
+//    public final static int SCHEDULE_POOL = 10;
+
+    protected ScheduledExecutorService scheduledService;
+
+    protected List<ItemMetaData> itemMetaDataList;
+    protected DataStore<Item> itemDataStore;
+    protected Client client;
+    protected SessionReport sessionReport;
+    protected SpeedTableReport speedTableReport;
+    protected ConnectivityCheck connectivityCheck;
+
+    protected Properties properties;
+    protected Runnable finishAction = () -> {};
+    protected boolean allowDownload = true;
+    protected boolean allowPause = false;
+
+    protected DownloadService(){}
+
+    public void setAllowDownload(boolean allowDownload) {
+        this.allowDownload = allowDownload;
+    }
+
+    public void setAllowPause(boolean allowPause) {
+        this.allowPause = allowPause;
+    }
+
+    public boolean isAllowDownload() {
+        return allowDownload;
+    }
+
+    public boolean isAllowPause() {
+        return allowPause;
+    }
+
+    protected void waitEvent(ItemMetaData item) { }
+    protected void pauseEvent(ItemMetaData item) { }
+    protected void downloadEvent(ItemMetaData item) { }
+    protected void completeEvent(ItemMetaData item) { }
+
+    public void addItemMetaData(ItemMetaData metaData){
+        itemMetaDataList.add(metaData);
+        sessionReport.addRange(metaData.getRangeInfo());
+    }
+
+    public void removeItemMetaData(ItemMetaData metaData){
+        itemMetaDataList.remove(metaData);
+        sessionReport.removeRange(metaData.getRangeInfo());
+//        speedTableReport.remove(metaData.getRangeReport());
+    }
+
+    private void moveToWaitingList(ItemMetaData metaData) {
+//        if (metaData.getRangeInfo().isFinish()) { return;}
+        if (metaData.getItem().getState().canMoveToWaitState()) {
+            metaData.getItem().setState(ItemState.WAITING);
+            metaData.getRangeInfo().oneCycleDataUpdate();
+            speedTableReport.remove(metaData.getRangeReport());
+            Log.log(getClass(), "Waiting", metaData.getItem().getFilename(), metaData.getItem().toString());
+            waitEvent(metaData);
+        }
+    }
+
+    public void moveToDownloadList(ItemMetaData metaData) {
+        if (metaData.getItem().getState().isWaiting()) {
+            metaData.getItem().setState(ItemState.DOWNLOADING);
+            metaData.initWaitQueue();
+            metaData.checkCompleted();
+            metaData.getRangeInfo().oneCycleDataUpdate();
+            speedTableReport.add(metaData.getRangeReport());
+            metaData.startAndCheckDownloadQueue(client, sessionReport.getMonitor());
+            itemDataStore.save(metaData.getItem());
+            Log.log(getClass(), "Download", metaData.getItem().getFilename(), metaData.getItem().toString());
+            downloadEvent(metaData);
+        }
+    }
+
+    private void moveToCompleteList(ItemMetaData metaData) {
+        if (metaData.getItem().getState().isDownloading()) {
+            metaData.systemFlush();
+            metaData.getItem().setState(ItemState.COMPLETE);
+            itemDataStore.save(metaData.getItem());
+            speedTableReport.remove(metaData.getRangeReport());
+            metaData.close();
+            Log.log(getClass(), "Complete", metaData.getItem().getFilename(), metaData.getItem().liteString());
+            completeEvent(metaData);
+        }
+    }
+
+    public void moveToPauseList(ItemMetaData metaData) {
+        if (allowPause) {
+            //        if (metaData.getItem().getState().isDownloading()) {
+            metaData.pause();
+            speedTableReport.remove(metaData.getRangeReport());
+            metaData.getItem().setState(ItemState.PAUSE);
+            itemDataStore.save(metaData.getItem());
+            Log.log(getClass(), "Pause", metaData.getItem().getFilename(), metaData.getItem().toString());
+            pauseEvent(metaData);
+//        }
+        } else {
+            metaData.pause();
+            moveToWaitingList(metaData);
+        }
+
+    }
+
+    public void deleteFromList(ItemMetaData metaData) {
+        removeItemMetaData(metaData);
+        metaData.getItem().setState(ItemState.DELETE);
+        metaData.pause();
+        metaData.systemFlush();
+        itemDataStore.remove(metaData.getItem());
+    }
+
+
+    public void startScheduledService() {
+        scheduledService.scheduleWithFixedDelay(this::checkDownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
+        scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
+        scheduledService.scheduleWithFixedDelay(this::systemFlushData, 1, 1, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void close() {
+        scheduledService.shutdownNow();
+        client.shutdownServiceNow();
+    }
+
+    protected boolean isItemListHaveItemsToDownload() {
+        return itemMetaDataList.stream().anyMatch(metaData -> {
+            ItemState state = metaData.getItem().getState();
+            return  state.isDownloading() || state.isWaiting();
+        });
+    }
+
+    public boolean isItRequiredToPauseDownloadList() {
+        if (sessionReport.isDownloading()) {
+            return false;
+        } else if (isItemListHaveItemsToDownload()) {
+            return false;
+        } else {
+            NetworkReport report = connectivityCheck.networkReport();
+            Log.trace(connectivityCheck.getClass(), report.getTitle(), report.getMessage());
+            return !report.isConnected();
+        }
+    }
+
+    public Stream<ItemMetaData> itemStream(){
+        return itemMetaDataList.stream();
+    }
+
+    protected Stream<ItemMetaData> downloadStream(){
+        return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isDownloading());
+    }
+
+    private Stream<ItemMetaData> waitStream(){
+        return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isWaiting());
+    }
+
+    protected Stream<ItemMetaData> pauseStream(){
+        return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isPause());
+    }
+
+    protected Stream<ItemMetaData> completeStream(){
+        return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isComplete());
+    }
+
+    public int getDownloadCount(){
+        return (int)downloadStream().count();
+    }
+
+    public boolean isFinishTime() {
+        return waitStream().count() == 0L & downloadStream().count() == 0L & pauseStream().count() == 0L;
+    }
+
+    protected void checkDownloadList() {
+        if (!allowDownload) { return;}
+    	Log.trace(getClass(), "DownloadService.checkDownloadList");
+        if (isItRequiredToPauseDownloadList()) {
+            Log.log(getClass(), "Check Network Connection",
+                    "Network Connectivity Statues: NETWORK DISCONNECTED");
+            List<ItemMetaData> pause = new LinkedList<>();
+            // check download to pause
+            itemMetaDataList.stream()
+                    .filter(metaData -> metaData.getItem().getState().isDownloading())
+                    .forEach(this::moveToWaitingList);
+        } else {
+            // check download to complete
+            downloadStream().forEach(metaData -> {
+                if (metaData.getRangeInfo().isFinish()) {
+                    moveToCompleteList(metaData);
+                } else {
+                    metaData.checkWhileDownloading();
+                    metaData.startAndCheckDownloadQueue(client, sessionReport.getMonitor());
+                }
+            });
+            // check waiting to download
+            long reamingActiveDownloadPool = properties.getMaxActiveDownloadPool() - getDownloadCount();
+            if (reamingActiveDownloadPool > 0) {
+                waitStream()
+                        .limit(reamingActiveDownloadPool)
+                        .forEach(metaData -> {
+                            this.moveToDownloadList(metaData);
+                        });
+            }
+            if (isFinishTime()) {
+                finishAction.run();
+            }
+        }
+
+    }
+
+
+
+    public void runSystemShutdownHook() {
+        for (ItemMetaData metaData : itemMetaDataList) {
+            metaData.systemFlush();
+            itemDataStore.save(metaData.getItem());
+            metaData.close();
+        }
+    }
+
+    public DataStore<Item> getItemDataStore() {
+        return itemDataStore;
+    }
+
+    public void printReport() {
+        System.out.println(speedTableReport.getTableReport());
+    }
+
+    protected void systemFlushData() {
+        downloadStream().forEach(metaData -> {
+            metaData.systemFlush();
+            itemDataStore.save(metaData.getItem());
+        });
+    }
+
+
+
+    public final ItemMetaData initializeItemMetaData(Item item) {
+        if (item.getRangeInfo().isFinish()){
+            return new ItemMetaDataCompleteWrapper(item, properties);
+        } else if (item.getRangeInfo().isStreaming()) {
+            return new StreamMetaDataWriter(item, properties);
+        } else {
+            return new ChannelMetaDataWriter(item, properties);
+        }
+
+//		else if(Integer.MAX_VALUE  > range.getFileLength()) {
+//			return new SimpleMappedMetaDataWriter(item, properties);
+//		} else {
+//			return new LargeMappedMetaDataWriter(item, properties);
+//		}
+    }
+
+
+    public void download(Item item) {
+        ItemMetaData metaData = initializeItemMetaData(item);
+        addItemMetaData(metaData);
+        if (item.getRangeInfo().isFinish()
+                || metaData.getItem().getState().isComplete()) {
+            moveToCompleteList(metaData);
+        } else if(metaData.getItem().getState().isPause()) {
+            moveToPauseList(metaData);
+        } else if(metaData.getItem().getState().isDownloading()) {
+            moveToDownloadList(metaData);
+        } else {
+            item.setState(ItemState.INIT_FILE);
+            moveToWaitingList(metaData);
+        }
+        Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " + metaData.getClass().getSimpleName());
+        Log.log(getClass(), "add download item to list", item.toString());
+    }
+
+    public void initializeItemOnlineAndDownload(Item item) {
+        scheduledService.execute(() ->{
+            client.updateItemOnline(item);
+            download(item);
+        });
+    }
+
+    public void initializeFromDataStore(List<Item> items) {
+        for (Item item: items) {
+            Item old = itemDataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
+            if (Objects.isNull(old)) {
+                client.updateItemOnline(item);
+            } else {
+                old.getRangeInfo().checkRanges();
+                old.addHeaders(item.getHeaders());
+                item.copy(old);
+            }
+            download(item);
+        }
+    }
+
+    public Properties getProperties() {
+        return client.getProperties();
+    }
+}

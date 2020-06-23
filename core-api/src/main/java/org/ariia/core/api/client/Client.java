@@ -3,6 +3,8 @@ package org.ariia.core.api.client;
 import java.io.File;
 import java.io.IOException;
 import java.net.Proxy;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.concurrent.ExecutorService;
@@ -37,19 +39,19 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 
 	public Proxy getProxy() { return clientRequest.proxy(); }
 	public Properties getProperties() { return properties; }
+	public void setProperties(Properties properties) { this.properties = properties; }
 
-	public int getRetries() { return properties.getRetries(); }
 	public ClientRequest getClientRequest() { return clientRequest;}
 	public ExecutorService getExecutor() { return executor; }
 	
 
-	public void stopService() {
+	public void shutdownServiceNow() {
 		executor.shutdownNow();
 	}
 	
 	@Override
 	public Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
-		if (getRetries() == 0) {
+		if (properties.getRetries() == 0) {
 			return executor.submit(() -> {
 				boolean finsh = false;
 				while (!finsh && metaData.isDownloading()) {
@@ -59,7 +61,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 		} else {
 			return executor.submit(() -> {
 				boolean finised = false;
-				for (int i = 0; (i < getRetries() && !finised && metaData.isDownloading()); i++) {
+				for (int i = 0; (i < properties.getRetries() && !finised && metaData.isDownloading()); i++) {
 					finised = downloadTask(metaData, index, monitors);
 				}
 			});
@@ -94,14 +96,16 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 			if (! response.requestUrl().equals(item.getUrl())) {
 				Log.trace(getClass(), "redirect item to another location","base url:\t" + item.getUrl() 
 						+ "\nredirect url: \t"+ response.requestUrl() );
-				
-				String rediretUrl = response.requestUrl();
-				item.setRedirectUrl(rediretUrl);
-				File file = new File(rediretUrl);
-				String fileName = file.getName().split("\\?")[0];
-				
+
+				String decodedUrl;
+				try {
+					decodedUrl = URLDecoder.decode(response.requestUrl(), StandardCharsets.UTF_8.name());
+				} catch (Exception e) {
+					decodedUrl = response.requestUrl();
+				}
+				String fileName = new File(decodedUrl).getName().split("\\?")[0];
 				if ("".equals(fileName)) {
-					String[] fileParts = rediretUrl.split("/");
+					String[] fileParts = decodedUrl.split("/");
 					fileName = fileParts[fileParts.length-2].split("\\?")[0];
 				}
 				item.setFilename(fileName);
