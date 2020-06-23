@@ -1,8 +1,39 @@
-<mat-form-field>
-	<mat-label>Filter</mat-label>
-	<input (keyup)="applyFilter($event)" matInput placeholder="Search logs">
-</mat-form-field>
-<mat-table [dataSource]="dataSource">
+<mat-toolbar aria-label="download-action" role="toolbar">
+	<mat-toolbar-row>
+		<div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm>
+			<ul fxLayout="row" fxLayoutGap.sm>
+				<li>
+					<mat-form-field>
+						<mat-label>Level</mat-label>
+						<mat-select [(value)]="level" (selectionChange)="setLevel()">
+							<mat-option *ngFor="let level of logLevels" [value]="level">
+								{{level}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</li>
+				<li>
+					<button (click)="clearLogMessages()" mat-icon-button>
+						<mat-icon>delete_sweep_outline</mat-icon>
+					</button>
+				</li>
+			</ul>
+			<ul fxLayout="row" fxLayoutGap.sm>
+				<li>
+					<mat-form-field [style.fontSize]="'12px'" appearance="legacy">
+						<mat-label>Filter</mat-label>
+						<input (keyup)="applyFilter($event.target.value)" matInput placeholder="Search Server Logs">
+						<mat-icon matSuffix>search</mat-icon>
+					</mat-form-field>
+				</li>
+			</ul>
+		</div>
+	</mat-toolbar-row>
+</mat-toolbar>
+
+<mat-divider class="divider" ></mat-divider>
+
+<mat-table [dataSource]="dataSource" matSort>
 
 	<!-- Time Millis -->
 	<ng-container matColumnDef="timeMillis">
@@ -18,7 +49,7 @@
 
 	<!--Class Name -->
 	<ng-container matColumnDef="classname">
-		<mat-header-cell *matHeaderCellDef> Download Length</mat-header-cell>
+		<mat-header-cell *matHeaderCellDef> Class Name </mat-header-cell>
 		<mat-cell *matCellDef="let message"> {{message.classname}} </mat-cell>
 	</ng-container>
 

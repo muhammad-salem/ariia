@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DataService, LogService, Message} from 'core-api';
 import {MatTableDataSource} from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
 
 
 @Component({
@@ -11,9 +12,11 @@ import {MatTableDataSource} from '@angular/material/table';
 export class LogTableComponent implements OnInit {
 
 	dataSource: MatTableDataSource<Message>;
+	@ViewChild(MatSort, {static: true}) sort: MatSort;
 
-	level: string = 'info';
+	level = 'info';
 	logLevels: string[] = [];
+	// logLevels: string[] = ['off', 'log', 'error', 'warn', 'info', 'assertion', 'debug', 'trace']; // [];
 
 	columnsToDisplay = [
 		'timeMillis',
@@ -29,6 +32,11 @@ export class LogTableComponent implements OnInit {
 	ngOnInit(): void {
 		this.dataSource = new MatTableDataSource(this.dataService.loggingMessage);
 		this.dataSource.connect = () => this.dataService.logSubject;
+		this.dataSource.sort = this.sort;
+		this.dataSource.filterPredicate = (message: Message, filter: string) => {
+			console.log(filter, message);
+			return false;
+		};
 		this.logService.levelValues().subscribe(values => this.logLevels = values);
 		this.logService.getLevel().subscribe(level => this.level = level);
 	}
@@ -46,10 +54,8 @@ export class LogTableComponent implements OnInit {
 		});
 	}
 
-	applyFilter(event: Event) {
-		const filterValue = (event.target as HTMLInputElement).value;
-		this.dataSource.filter = filterValue.trim().toLowerCase();
-		// console.log(filterValue);
+	applyFilter(value: string) {
+		this.dataSource.filter = value.trim().toLowerCase();
 	}
 
 	// selectMessage(message: Message) {
@@ -57,9 +63,10 @@ export class LogTableComponent implements OnInit {
 	//   message.clicked = true;
 	// }
 
-	// clearLogMessages() {
-	//   this.messages.splice(0, this.messages.length);
-	// }
+	clearLogMessages() {
+		this.dataService.loggingMessage.splice(0, this.dataService.loggingMessage.length);
+		this.dataService.logSubject.next(this.dataService.loggingMessage);
+	}
 
 
 }

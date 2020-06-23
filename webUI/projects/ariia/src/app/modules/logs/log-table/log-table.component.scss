@@ -1,8 +1,39 @@
+
+.divider {
+  height: 10px;
+  background-color: limegreen;
+}
+
+ul li {
+  list-style: none;
+}
+
 table {
   width: 100%;
 }
-
 .mat-form-field {
   font-size: 14px;
   width: 100%;
 }
+
+.mat-column-timeMillis {
+  width: 10%;
+}
+
+.mat-column-level {
+  width: 10%;
+}
+
+.mat-column-classname {
+  width: 10%;
+}
+
+.mat-column-title {
+  width: 10%;
+}
+
+.mat-column-message {
+  width: 60%;
+}
+
+
