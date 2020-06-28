@@ -6,16 +6,13 @@ export interface Item {
 	uuid: string;
 	url: string;
 	redirectUrl: string;
+	mirrors: string[];
 	filename: string;
 	state: string;
 	saveDirectory: string;
 	headers: Map<string, string[]>;
 	rangeInfo: RangeInfo;
 	report: RangeReport;
-}
-
-export interface MetaLinkItem extends Item {
-	mirrors: string[];
 }
 
 export const assignObject = (object, copy) => {
