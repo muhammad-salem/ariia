@@ -29,14 +29,9 @@ public class SettingService {
 	public boolean isAllowDownload() {
 		return downloadService.isAllowDownload();
 	}
-
-	public boolean startList() {
-		downloadService.setAllowDownload(true);
-		return isAllowDownload();
-	}
-
-	public boolean pauseList() {
-		downloadService.setAllowDownload(false);
+	
+	public boolean toggleAllowDownloadList() {
+		downloadService.setAllowDownload(!downloadService.isAllowDownload());
 		return isAllowDownload();
 	}
 

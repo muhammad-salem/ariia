@@ -17,13 +17,8 @@ export class ServerControlStateComponent implements OnInit {
 	}
 
 	toggleServerState(){
-		this.serverSettings.isAllowDownload().subscribe(allow => {
-			this.allowDownload = allow;
-			( this.allowDownload ? this.serverSettings.pauseList() : this.serverSettings.startList() )
-				.subscribe(allowState => {
-					this.allowDownload = allowState;
-				});
-		});
+		this.serverSettings.toggleAllowDownload()
+			.subscribe(allow => his.allowDownload = allow);
 	}
 
 }

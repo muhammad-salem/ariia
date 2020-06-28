@@ -19,16 +19,12 @@ export class ServerSettingsService {
 		return this.httpClient.post<boolean>('/settings/update', properties);
 	}
 
-	startList(): Observable<boolean> {
-		return this.httpClient.post<boolean>('/settings/startList', null);
-	}
-
-	pauseList(): Observable<boolean> {
-		return this.httpClient.post<boolean>('/settings/pauseList', null);
-	}
-
 	isAllowDownload(): Observable<boolean> {
 		return this.httpClient.get<boolean>('/settings/isAllowDownload');
+	}
+
+	toggleAllowDownload(): Observable<boolean> {
+		return this.httpClient.post<boolean>('/settings/toggleAllowDownload', null);
 	}
 
 

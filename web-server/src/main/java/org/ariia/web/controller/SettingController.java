@@ -31,28 +31,16 @@ public class SettingController {
 		return settingService.updateProperties(properties);
 	}
 
-	@GetRequest(path = "/isListPaused")
-	public boolean isListPaused() {
-		Log.trace(getClass(), "isListPaused");
-		return !settingService.isAllowDownload();
-	}
-
 	@GetRequest(path = "/isAllowDownload")
 	public boolean isAllowDownload() {
 		Log.trace(getClass(), "isAllowDownload");
 		return settingService.isAllowDownload();
 	}
 
-	@PostRequest(path = "/startList")
+	@PostRequest(path = "/toggleAllowDownload")
 	public boolean startList() {
 		Log.trace(getClass(), "startList");
-		return settingService.startList();
-	}
-
-	@PostRequest(path = "/pauseList")
-	public boolean pauseList() {
-		Log.trace(getClass(), "pauseList");
-		return settingService.pauseList();
+		return settingService.toggleAllowDownloadList();
 	}
 
 }
