@@ -37,35 +37,36 @@
 
 	<!-- Time Millis -->
 	<ng-container matColumnDef="timeMillis">
-		<mat-header-cell *matHeaderCellDef> #</mat-header-cell>
-		<mat-cell *matCellDef="let message"> {{message.timeMillis|date:'mediumTime'}} </mat-cell>
+		<th *matHeaderCellDef mat-header-cell mat-sort-header>#</th>
+		<td *matCellDef="let message" mat-cell>{{message.timeMillis|date:'mediumTime'}}</td>
 	</ng-container>
 
 	<!-- level-->
 	<ng-container matColumnDef="level">
-		<mat-header-cell *matHeaderCellDef> Level</mat-header-cell>
-		<mat-cell *matCellDef="let message"> {{message.level}} </mat-cell>
+		<th *matHeaderCellDef mat-header-cell mat-sort-header>Level</th>
+		<td *matCellDef="let message" mat-cell>{{message.level}}</td>
 	</ng-container>
 
 	<!--Class Name -->
 	<ng-container matColumnDef="classname">
-		<mat-header-cell *matHeaderCellDef> Class Name </mat-header-cell>
-		<mat-cell *matCellDef="let message"> {{message.classname}} </mat-cell>
+		<th *matHeaderCellDef mat-header-cell mat-sort-header>Class Name</th>
+		<td *matCellDef="let message" mat-cell>{{message.classname}}</td>
 	</ng-container>
 
 	<!-- Title -->
 	<ng-container matColumnDef="title">
-		<mat-header-cell *matHeaderCellDef> Title</mat-header-cell>
-		<mat-cell *matCellDef="let message"> {{message.title}} </mat-cell>
+		<th *matHeaderCellDef mat-header-cell mat-sort-header>Title</th>
+		<td *matCellDef="let message" mat-cell>{{message.title}}</td>
 	</ng-container>
 
 	<!-- Message -->
 	<ng-container matColumnDef="message">
-		<mat-header-cell *matHeaderCellDef> Message</mat-header-cell>
-		<mat-cell *matCellDef="let message"> {{message.message}} </mat-cell>
+		<th *matHeaderCellDef mat-header-cell mat-sort-header>Message</th>
+		<td *matCellDef="let message" mat-cell>{{message.message}}</td>
 	</ng-container>
 
-	<!-- Header and Row Declarations -->
-	<mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-	<mat-row *matRowDef="let item; columns: columnsToDisplay"></mat-row>
+	<!-- Header and Row Declarations -->	
+	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+	<tr *matRowDef="let message; columns: columnsToDisplay" mat-row></tr>
+	
 </mat-table>
