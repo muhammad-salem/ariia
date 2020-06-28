@@ -1,3 +1,44 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar></div>
+    <mat-card-title>{{item.filename}}</mat-card-title>
+    <mat-card-subtitle>{{item.url}}</mat-card-subtitle>
+    <!--<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>-->
+  </mat-card-header>
+	<mat-card-actions>
+		<button mat-icon-button (click)="startItem()"><mat-icon>play_circle_outline</mat-icon></button>
+		<button mat-icon-button (click)="pauseItem()"><mat-icon>pause_circle_outline</mat-icon></button>
+		<button mat-icon-button (click)="deleteItem()"><mat-icon>auto_delete</mat-icon></button>
+	</mat-card-actions>
+  <div>
+  	
+  </div>
+  <mat-card-content>
+	<mat-list>
+		<mat-list-item>
+			{{item.rangeInfo?.downloadLength | unitLength}}
+			of {{item.rangeInfo?.fileLength | unitLength}}
+			</mat-list-item>
+		<mat-list-item>
+			<mat-progress-spinner
+				[color]="'accent'"
+				[mode]="'determinate'"
+				[value]="downloadProgress()">
+			</mat-progress-spinner>
+		</mat-list-item>
+		<mat-list-item> Paprika </mat-list-item>
+	</mat-list>
+  </mat-card-content>
+  <mat-card-actions>
+    <a mat-button *ngIf="item.state === 'COMPLETE'" class="card-link" download
+	   href="/items/download/{{item.id}}/{{item.filename}}">
+		Download File from Local Server
+		<mat-icon>cloud_download</mat-icon>
+	</a>
+  </mat-card-actions>
+</mat-card>
+
+<!--
 <div class="card border-info shadow px-2 my-1 bg-white rounded">
 	<div class="card-header">
 		<div class="row">
@@ -22,22 +63,19 @@
 					<div aria-label="Download" class="btn-group btn-group-sm mr-2" role="group">
 						<button (click)="startItem()" class="btn btn-link text-info" type="button">
                             <span>
-                                <!-- <fa-icon [icon]="faDownload" [size]="'sm'"></fa-icon> -->
-                                <mat-icon>cloud_download</mat-icon>
+                                <mat-icon>play_circle_outline</mat-icon>
                             </span>
 						</button>
 						<button (click)="pauseItem()" class="btn btn-link text-success" type="button">
                             <span>
-                                <!-- <fa-icon [icon]="faPauseCircle" [size]="'sm'"></fa-icon> -->
-                                <mat-icon>pause</mat-icon>
+                                <mat-icon>pause_circle_outline</mat-icon>
                             </span>
 						</button>
 					</div>
 					<div aria-label="Delete" class="btn-group btn-group-sm" role="group">
 						<button (click)="deleteItem()" class="btn btn-link text-danger" type="button">
                             <span>
-                                <!-- <fa-icon [icon]="faTrash" [size]="'sm'"></fa-icon> -->
-                                <mat-icon>trash</mat-icon>
+                                <mat-icon>auto_delete</mat-icon>
                             </span>
 						</button>
 					</div>
@@ -56,7 +94,6 @@
 					   href="/items/download/{{item.id}}/{{item.filename}}">
 						Download File from Local Server
 						<span>
-                            <!-- <fa-icon [icon]="faCloudDownloadAlt" [size]="'sm'"></fa-icon> -->
                             <mat-icon>cloud_download</mat-icon>
                         </span>
 					</a>
@@ -64,7 +101,6 @@
 					<button class="btn btn-sm btn-outline-info ml-2" type="button">
 						Play Video
 						<span>
-                            <!-- <fa-icon [icon]="faPlayCircle" [size]="'sm'"></fa-icon> -->
                             <mat-icon>play</mat-icon>
                         </span>
 					</button>
@@ -79,3 +115,5 @@
 		<div> 1 Pieces x 8 MB Complete</div>
 	</div>
 </div>
+
+-->

@@ -1,32 +1,38 @@
-<!-- <mat-grid-list cols="2" rowHeight="4:1">
+<mat-grid-list cols="2" >
     <div *ngFor="let item of items" class="m-1">
         <mat-grid-tile>
-            <app-item-view [item]="item" (delete)="onItemDelete(item)"></app-item-view>
+            <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
         </mat-grid-tile>
     </div>
-</mat-grid-list> -->
-
-<!-- <mat-grid-list cols="2" class="md-pad">
+</mat-grid-list>
+<!-- 
+<mat-grid-list cols="2" class="md-pad">
     <mat-grid-tile *ngFor="let item of items">
-        <app-item-view [item]="item" (delete)="onItemDelete(item)"></app-item-view>
+        <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
     </mat-grid-tile>
-</mat-grid-list> -->
+</mat-grid-list>
+-->
+
+<!-- 
+<div class="content" fxLayout="row" fxFlexAlign.gt-md>
+    <div *ngFor="let item of items" fxFlex="50">
+        <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
+    </div>
+</div> 
+ -->
 
 <!--
-<div class="content" fxLayout="row" fxLayout.xs="column" fxFlexAlign.gt-md>
-    <div *ngFor="let item of items" fxFlex="50" fxFlex.xs="50">
-        <app-item-view [item]="item" (delete)="onItemDelete(item)"></app-item-view>
-    </div>
-</div> -->
-
 <div class="row">
 	<div *ngFor="let item of items" class="col-6">
 		<download-view (delete)="onItemDelete(item)" [item]="item"></download-view>
 	</div>
 </div>
+-->
 
-<!-- <mat-grid-list cols="2">
+<!--
+<mat-grid-list cols="2">
     <mat-grid-tile *ngFor="let item of items">
-        <app-item-view [item]="item" (delete)="onItemDelete(item)"></app-item-view>
+        <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
     </mat-grid-tile>
-</mat-grid-list> -->
+</mat-grid-list>
+-->

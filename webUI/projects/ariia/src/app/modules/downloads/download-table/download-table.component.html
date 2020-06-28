@@ -140,7 +140,9 @@
 
 	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
 	<tr *matRowDef="let item; columns: columnsToDisplay" mat-row></tr>
-	<tr *matFooterRowDef="columnsToDisplay" mat-footer-row></tr>
+	<ng-container *ngIf="items.length > 1">
+		<tr *matFooterRowDef="columnsToDisplay" mat-footer-row></tr>
+	</ng-container>
 </table>
 
 <mat-paginator [length]="100" [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons>

@@ -23,6 +23,11 @@ import {DownloadViewComponent} from './download-view/download-view.component';
 import {DownloadListComponent} from './download-list/download-list.component';
 import {DownloadTableComponent} from './download-table/download-table.component';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
+
+
 
 
 const routes: Routes = [
@@ -55,7 +60,9 @@ const routes: Routes = [
 		MatToolbarModule,
 		MatButtonModule,
 		FlexLayoutModule,
-		MatDividerModule
+		MatDividerModule,
+		MatListModule,
+		MatProgressSpinnerModule
 	],
 	exports: [
 		CommonModule,
