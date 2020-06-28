@@ -1,18 +1,19 @@
 package org.ariia.web.app.model;
 
+import java.util.List;
+import java.util.Map;
+
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
 import org.ariia.items.ItemState;
+import org.ariia.items.MetaLinkItem;
 import org.ariia.monitors.RangeReport;
-import org.ariia.range.RangeInfo;
-
-import java.util.List;
-import java.util.Map;
 
 public class WebItem {
 
     protected String url;
     protected String redirectUrl;
+    protected List<String> mirrors;
     protected String filename;
     protected String saveDirectory;
     protected Map<String, List<String>> headers;
@@ -47,6 +48,10 @@ public class WebItem {
         this.saveDirectory = item.getSaveDirectory();
         this.headers = item.getHeaders();
         this.rangeInfo = new WebRangeInfo(item.getRangeInfo());
+        if(item instanceof MetaLinkItem) {
+        	MetaLinkItem metaLinkItem = (MetaLinkItem) item;
+        	this.mirrors = metaLinkItem.getMirrors();
+        }
     }
 
 }
