@@ -1,15 +1,15 @@
 package org.ariia.core.api.writer;
 
 import org.ariia.config.Properties;
-import org.ariia.core.api.queue.ItemDownloader;
+import org.ariia.core.api.client.Client;
 import org.ariia.items.Item;
 import org.ariia.segment.Segment;
 import org.ariia.speed.report.SpeedMonitor;
 
 public class ItemMetaDataCompleteWrapper extends ItemMetaData {
 
-	public ItemMetaDataCompleteWrapper(Item item, Properties properties) {
-		super(item, properties);
+	public ItemMetaDataCompleteWrapper(Item item, Client client, Properties properties) {
+		super(item, client, properties);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class ItemMetaDataCompleteWrapper extends ItemMetaData {
 	public boolean isDownloadListEmpty() {return true;}
 
 	@Override
-	public void startAndCheckDownloadQueue(ItemDownloader plane, SpeedMonitor... monitors) {	}
+	public void startAndCheckDownloadQueue(SpeedMonitor... monitors) {	}
 
 	
 	

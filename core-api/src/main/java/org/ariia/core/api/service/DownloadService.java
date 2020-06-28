@@ -1,5 +1,12 @@
 package org.ariia.core.api.service;
 
+import java.io.Closeable;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.writer.ChannelMetaDataWriter;
@@ -14,14 +21,6 @@ import org.ariia.monitors.SessionReport;
 import org.ariia.monitors.SpeedTableReport;
 import org.ariia.network.ConnectivityCheck;
 import org.ariia.network.NetworkReport;
-
-import java.io.Closeable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 /**
  * item life cycle
@@ -41,7 +40,7 @@ public class DownloadService implements Closeable {
 
     protected List<ItemMetaData> itemMetaDataList;
     protected DataStore<Item> itemDataStore;
-    protected Client client;
+    protected Client defaultClient;
     protected SessionReport sessionReport;
     protected SpeedTableReport speedTableReport;
     protected ConnectivityCheck connectivityCheck;
@@ -103,7 +102,7 @@ public class DownloadService implements Closeable {
             metaData.checkCompleted();
             metaData.getRangeInfo().oneCycleDataUpdate();
             speedTableReport.add(metaData.getRangeReport());
-            metaData.startAndCheckDownloadQueue(client, sessionReport.getMonitor());
+            metaData.startAndCheckDownloadQueue(sessionReport.getMonitor());
             itemDataStore.save(metaData.getItem());
             Log.log(getClass(), "Download", metaData.getItem().getFilename(), metaData.getItem().toString());
             downloadEvent(metaData);
@@ -157,7 +156,7 @@ public class DownloadService implements Closeable {
     @Override
     public void close() {
         scheduledService.shutdownNow();
-        client.shutdownServiceNow();
+        defaultClient.shutdownServiceNow();
     }
 
     public Stream<ItemMetaData> itemStream(){
@@ -231,7 +230,7 @@ public class DownloadService implements Closeable {
                     moveToCompleteList(metaData);
                 } else {
                     metaData.checkWhileDownloading();
-                    metaData.startAndCheckDownloadQueue(client, sessionReport.getMonitor());
+                    metaData.startAndCheckDownloadQueue(sessionReport.getMonitor());
                 }
             });
             // check waiting to download
@@ -276,20 +275,26 @@ public class DownloadService implements Closeable {
     }
 
 
-
     public final ItemMetaData initializeItemMetaData(Item item) {
+    	return initializeItemMetaData(item, null);
+    }
+
+    public final ItemMetaData initializeItemMetaData(Item item, Client client) {
+    	
+    	Client itemClient = Objects.isNull(client) ? this.defaultClient : client;
+    	
         if (item.getRangeInfo().isFinish()){
-            return new ItemMetaDataCompleteWrapper(item, properties);
+            return new ItemMetaDataCompleteWrapper(item, itemClient, properties);
         } else if (item.getRangeInfo().isStreaming()) {
-            return new StreamMetaDataWriter(item, properties);
+            return new StreamMetaDataWriter(item, itemClient, properties);
         } else {
-            return new ChannelMetaDataWriter(item, properties);
+            return new ChannelMetaDataWriter(item, itemClient, properties);
         }
 
 //		else if(Integer.MAX_VALUE  > range.getFileLength()) {
-//			return new SimpleMappedMetaDataWriter(item, properties);
+//			return new SimpleMappedMetaDataWriter(item, itemClient, properties);
 //		} else {
-//			return new LargeMappedMetaDataWriter(item, properties);
+//			return new LargeMappedMetaDataWriter(item, itemClient, properties);
 //		}
     }
 
@@ -314,7 +319,7 @@ public class DownloadService implements Closeable {
 
     public void initializeItemOnlineAndDownload(Item item) {
         scheduledService.execute(() ->{
-            client.updateItemOnline(item);
+            defaultClient.updateItemOnline(item);
             download(item);
         });
     }
@@ -323,7 +328,7 @@ public class DownloadService implements Closeable {
         for (Item item: items) {
             Item old = itemDataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
             if (Objects.isNull(old)) {
-                client.updateItemOnline(item);
+                defaultClient.updateItemOnline(item);
             } else {
                 old.getRangeInfo().checkRanges();
                 old.addHeaders(item.getHeaders());
@@ -334,6 +339,6 @@ public class DownloadService implements Closeable {
     }
 
     public Properties getProperties() {
-        return client.getProperties();
+        return defaultClient.getProperties();
     }
 }

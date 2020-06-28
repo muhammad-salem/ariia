@@ -81,7 +81,7 @@ public class DownloadServiceBuilder {
 
         downloadService.scheduledService = this.scheduledService;
         downloadService.connectivityCheck = this.connectivityCheck;
-        downloadService.client = this.client;
+        downloadService.defaultClient = this.client;
         downloadService.properties = this.client.getProperties();
 
         if (Objects.isNull(speedTableReport)) {

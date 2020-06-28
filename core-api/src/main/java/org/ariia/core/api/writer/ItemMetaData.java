@@ -9,7 +9,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.ariia.config.Properties;
-import org.ariia.core.api.queue.ItemDownloader;
+import org.ariia.core.api.client.Client;
+//import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.monitors.RangeReport;
@@ -30,9 +31,11 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 	protected RandomAccessFile raf;
 	private   ConcurrentLinkedQueue<Segment> segments;
 	protected Properties properties;
+	protected Client client;
 	
-	public ItemMetaData(Item item, Properties properties) {
+	public ItemMetaData(Item item, Client client, Properties properties) {
 		this.item 			= item;
+		this.client			= client;
 		this.info 			= item.getRangeInfo();
 		this.rangeReport	= new RangeReport(info, item.getFilename());
 		this.segments		= new ConcurrentLinkedQueue<>();
@@ -117,7 +120,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		forceUpdate();
 		
 		if(writtenSegmentCount > 0) {
-			Log.trace(ItemMetaData.class, "flush segments",
+			Log.trace(getClass(), "flush segments",
 					String.format("File Name: %s\nWritten Segment Count: %s", 
 							item.getFilename(), writtenSegmentCount)
 			);
@@ -211,7 +214,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 		return downloadList.isEmpty();
 	}
 
-	public void startAndCheckDownloadQueue(ItemDownloader plane, SpeedMonitor... monitors) {
+	public void startAndCheckDownloadQueue(SpeedMonitor... monitors) {
 		if (waitQueue.isEmpty()) { return; }
 		downloading = true;
 		while ( downloadList.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
@@ -221,7 +224,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 				if (info.isFinish(index)) {
 					continue;
 				}
-				plane.downloadPart(this, index, rangeReport.getMonitor(), monitors);
+				client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
 				downloadList.add(index);
 			}
 		}
