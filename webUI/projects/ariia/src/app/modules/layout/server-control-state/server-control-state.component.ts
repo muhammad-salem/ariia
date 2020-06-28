@@ -8,20 +8,20 @@ import {ServerSettingsService} from 'core-api';
 })
 export class ServerControlStateComponent implements OnInit {
 
-	listPaused: boolean;
+	allowDownload: boolean;
 	constructor(private serverSettings: ServerSettingsService) {}
 
 	ngOnInit(): void {
-		this.serverSettings.isListPaused()
-			.subscribe(paused => this.listPaused = paused);
+		this.serverSettings.isAllowDownload()
+			.subscribe(allow => this.allowDownload = allow);
 	}
 
 	toggleServerState(){
-		this.serverSettings.isListPaused().subscribe(paused => {
-			this.listPaused = paused;
-			( this.listPaused ? this.serverSettings.startList() : this.serverSettings.pauseList())
-				.subscribe(pausedState => {
-					this.listPaused = pausedState;
+		this.serverSettings.isAllowDownload().subscribe(allow => {
+			this.allowDownload = allow;
+			( this.allowDownload ? this.serverSettings.pauseList() : this.serverSettings.startList() )
+				.subscribe(allowState => {
+					this.allowDownload = allowState;
 				});
 		});
 	}

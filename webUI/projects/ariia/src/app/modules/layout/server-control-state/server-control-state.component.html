@@ -1,7 +1,7 @@
 <div>
 	<button mat-icon-button (click)="toggleServerState()">
-		<mat-icon *ngIf="listPaused">play_arrow</mat-icon>
-		<mat-icon *ngIf="!listPaused">stop</mat-icon>
+		<mat-icon *ngIf="allowDownload">stop</mat-icon>
+		<mat-icon *ngIf="!allowDownload">play_arrow</mat-icon>
 	</button>
 </div>
 
