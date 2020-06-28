@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ariia.items.Item;
-import org.ariia.items.MetalinkItem;
+import org.ariia.items.MetaLinkItem;
 import org.ariia.logging.Log;
 import org.ariia.mvc.annotation.DoExchange;
 import org.ariia.mvc.annotation.HeaderValue;
@@ -35,7 +35,7 @@ public class ItemController {
 	}
 	
 	@GetRequest(path = "/info/{id}")
-	public WebItem getItem(@PathVariable("id") Integer id) {
+	public Item getItem(@PathVariable("id") Integer id) {
 		Log.trace(getClass(), "GET Item Info", "id: " + id);
 		return itemService.findById(id);
 	}
@@ -60,7 +60,7 @@ public class ItemController {
 	}
 	
 	@PostRequest(path = "/create/metaLinkItem")
-	public Integer createMetaLink(@RequestBody MetalinkItem item) {
+	public Integer createMetaLink(@RequestBody MetaLinkItem item) {
 		Log.trace(getClass(), "Create new MetaLink Item", "MetaLink: " + item);
 		return itemService.create(item);
 	}

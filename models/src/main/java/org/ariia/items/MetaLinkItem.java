@@ -2,29 +2,36 @@ package org.ariia.items;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.ariia.util.Utils;
 
-public class MetalinkItem extends Item {
+public class MetaLinkItem extends Item {
 
-	private List<String> mirrors;
-	public MetalinkItem() {
+	protected List<String> mirrors;
+	public MetaLinkItem() {
 		super();
 		mirrors = new ArrayList<>();
 	}
 	
 	transient int indexMark = -1;
 	public String nextUrl() {
-		if(mirrors.isEmpty())
+		if(mirrors.isEmpty()){
 			return null;
+		}
 		indexMark++;
-		if(indexMark >= mirrors.size())
+		if(indexMark >= mirrors.size()){
 			indexMark = 0;
+		}
 		return mirrors.get( indexMark );
 	}
 	
 	@Override
 	public String getUrl() {
+		if (Objects.isNull(url)) {
+			url = nextUrl();
+			return url;
+		}
 		return nextUrl();
 	}
 	
@@ -45,10 +52,10 @@ public class MetalinkItem extends Item {
 		return mirrors.get(index);
 	}
 
-	public static MetalinkItem fromJsonFile(String filePath) {
-		return Utils.fromJson(filePath, MetalinkItem.class);
+	public static MetaLinkItem fromJsonFile(String filePath) {
+		return Utils.fromJson(filePath, MetaLinkItem.class);
 	}
-	public static boolean toJsonFile(String filePath, MetalinkItem item) {
+	public static boolean toJsonFile(String filePath, MetaLinkItem item) {
 		return Utils.toJsonFile(filePath, item);
 	}
 	
@@ -57,7 +64,7 @@ public class MetalinkItem extends Item {
 		StringBuilder builder = new StringBuilder();
 		builder.append(filename );
 		builder.append("\n(#URL: " + mirrors.size() + ")\t");
-		builder.append( url);
+		builder.append( mirrors.get(0));
 		builder.append('\n');
 		builder.append("Directory : " + saveDirectory );
 		builder.append('\n');

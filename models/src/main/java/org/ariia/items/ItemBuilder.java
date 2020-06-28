@@ -165,7 +165,7 @@ public class ItemBuilder {
 	
 
 	private void downloadMetalink() {
-		MetalinkItem item = null;
+		MetaLinkItem item = null;
 		String metalinkFile = arguments.getMetaLinkFile();
 		if (metalinkFile.contains(".metalink")) {
 			item = readMetaLink(metalinkFile);
@@ -179,7 +179,7 @@ public class ItemBuilder {
 		}
 	}
 	
-	private MetalinkItem readMetaLink(String metaLinkFile) {
+	private MetaLinkItem readMetaLink(String metaLinkFile) {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
@@ -206,14 +206,14 @@ public class ItemBuilder {
 		return null;
 	}
 	
-	private MetalinkItem readMetaLinkText(String metaLinkFile) {
+	private MetaLinkItem readMetaLinkText(String metaLinkFile) {
 		List<String> urls = Utils.readLines(metaLinkFile);
 		Iterator<String> iterator = urls.iterator();
 		return readMetaLinkText(iterator);
 	}
 	
-	private MetalinkItem readMetaLinkText(Iterator<String> iterator) {
-		MetalinkItem builder = new MetalinkItem();
+	private MetaLinkItem readMetaLinkText(Iterator<String> iterator) {
+		MetaLinkItem builder = new MetaLinkItem();
 		Map<String, List<String>> headers = new LinkedHashMap<>();
 	
 		while (iterator.hasNext()) {
@@ -236,7 +236,7 @@ public class ItemBuilder {
 	}
 	
 
-	public MetalinkItem readMetaLinkXML(String metaLinkFile) {
+	public MetaLinkItem readMetaLinkXML(String metaLinkFile) {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {

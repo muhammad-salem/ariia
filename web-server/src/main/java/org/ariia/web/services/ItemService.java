@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Builder;
 import org.ariia.items.Item;
-import org.ariia.items.MetalinkItem;
+import org.ariia.items.MetaLinkItem;
 import org.ariia.logging.Log;
 import org.ariia.mvc.resource.StreamHandler;
 import org.ariia.range.RangeResponseHeader;
@@ -27,10 +27,10 @@ public class ItemService implements StreamHandler {
 		this.downloadService = Objects.requireNonNull(downloadService);
 	}
 
-	public WebItem findById(Integer id) {
+	public Item findById(Integer id) {
 		Optional<ItemMetaData> optional = downloadService.searchById(id);
 		if (optional.isPresent()){
-			return new WebItem(optional.get());
+			return optional.get().getItem();
 		} else {
 			throw new NullPointerException("no download found with id: " + id);
 		}
@@ -151,7 +151,7 @@ public class ItemService implements StreamHandler {
     }
 
     public Integer createMetaLink(String[] urls, Map<String, List<String>> headers) {
-        MetalinkItem metalinkItem = new MetalinkItem();
+        MetaLinkItem metalinkItem = new MetaLinkItem();
         metalinkItem.setSaveDirectory(downloadService.getProperties().getDefaultSaveDirectory());
         metalinkItem.addHeaders(headers);
         for (String string : urls) {
