@@ -17,7 +17,6 @@ import org.ariia.range.RangeResponseHeader;
 import org.ariia.web.app.WebDownloadService;
 
 import com.sun.net.httpserver.HttpExchange;
-import org.ariia.web.app.model.WebItem;
 
 public class ItemService implements StreamHandler {
 

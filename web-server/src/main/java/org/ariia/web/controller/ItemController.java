@@ -14,7 +14,6 @@ import org.ariia.mvc.annotation.RestController;
 import org.ariia.mvc.annotation.method.DeleteRequest;
 import org.ariia.mvc.annotation.method.GetRequest;
 import org.ariia.mvc.annotation.method.PostRequest;
-import org.ariia.web.app.model.WebItem;
 import org.ariia.web.services.ItemService;
 
 import com.sun.net.httpserver.HttpExchange;
