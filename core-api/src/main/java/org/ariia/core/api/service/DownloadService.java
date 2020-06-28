@@ -160,25 +160,6 @@ public class DownloadService implements Closeable {
         client.shutdownServiceNow();
     }
 
-    protected boolean isItemListHaveItemsToDownload() {
-        return itemMetaDataList.stream().anyMatch(metaData -> {
-            ItemState state = metaData.getItem().getState();
-            return  state.isDownloading() || state.isWaiting();
-        });
-    }
-
-    public boolean isItRequiredToPauseDownloadList() {
-        if (sessionReport.isDownloading()) {
-            return false;
-        } else if (isItemListHaveItemsToDownload()) {
-            return false;
-        } else {
-            NetworkReport report = connectivityCheck.networkReport();
-            Log.trace(connectivityCheck.getClass(), report.getTitle(), report.getMessage());
-            return !report.isConnected();
-        }
-    }
-
     public Stream<ItemMetaData> itemStream(){
         return itemMetaDataList.stream();
     }
@@ -207,17 +188,42 @@ public class DownloadService implements Closeable {
         return waitStream().count() == 0L & downloadStream().count() == 0L & pauseStream().count() == 0L;
     }
 
+    protected boolean isItemListHadItemsToDownload() {
+        return itemMetaDataList.stream().anyMatch(metaData -> {
+            ItemState state = metaData.getItem().getState();
+            return  state.isDownloading() || state.isWaiting();
+        });
+    }
+
+    public boolean isItRequiredToPauseDownloadList() {
+        if (sessionReport.isDownloading()) {
+            return false;
+//        } else if (isItemListHadItemsToDownload()) {
+//            return false;
+        } else {
+            NetworkReport report = connectivityCheck.networkReport();
+            Log.trace(connectivityCheck.getClass(), report.getTitle(), report.getMessage());
+            return !report.isConnected();
+        }
+    }
+
     protected void checkDownloadList() {
-        if (!allowDownload) { return;}
     	Log.trace(getClass(), "DownloadService.checkDownloadList");
+        // if (!allowDownload) { return;}
+        // if (!isItemListHadItemsToDownload()) { return;}
+        
+        if (!allowDownload || itemMetaDataList.isEmpty()) {
+        	Log.log(getClass(), "Check Pause Download Service", "Allow Download: false");
+            // check download to pause
+            downloadStream().forEach(this::moveToWaitingList);
+            return;
+        }
+        
         if (isItRequiredToPauseDownloadList()) {
             Log.log(getClass(), "Check Network Connection",
                     "Network Connectivity Statues: NETWORK DISCONNECTED");
-            List<ItemMetaData> pause = new LinkedList<>();
             // check download to pause
-            itemMetaDataList.stream()
-                    .filter(metaData -> metaData.getItem().getState().isDownloading())
-                    .forEach(this::moveToWaitingList);
+            downloadStream().forEach(this::moveToWaitingList);
         } else {
             // check download to complete
             downloadStream().forEach(metaData -> {
