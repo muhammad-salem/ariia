@@ -1,16 +1,7 @@
 package org.ariia.core.api.writer;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
-//import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.monitors.RangeReport;
@@ -20,215 +11,225 @@ import org.ariia.segment.Segment.OfferSegment;
 import org.ariia.speed.report.SpeedMonitor;
 import org.ariia.util.R;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+//import org.ariia.core.api.queue.ItemDownloader;
+
 public abstract class ItemMetaData implements OfferSegment, Closeable {
-	
-	protected Item item;
-	protected RangeUtil info;
-	
-	protected boolean downloading = false;
-	protected RangeReport rangeReport;
-	
-	protected RandomAccessFile raf;
-	private   ConcurrentLinkedQueue<Segment> segments;
-	protected Properties properties;
-	protected Client client;
-	
-	public ItemMetaData(Item item, Client client, Properties properties) {
-		this.item 			= item;
-		this.client			= client;
-		this.info 			= item.getRangeInfo();
-		this.rangeReport	= new RangeReport(info, item.getFilename());
-		this.segments		= new ConcurrentLinkedQueue<>();
-		this.properties		= properties;
-		initRandomAccessFile();
-		initMetaData();
-	}
-	
-	protected abstract void    initMetaData();
-	protected abstract boolean writeSegment(Segment segment) ;
-	public    abstract void    forceUpdate();
+
+    protected Item item;
+    protected RangeUtil info;
+
+    protected boolean downloading = false;
+    protected RangeReport rangeReport;
+
+    protected RandomAccessFile raf;
+    protected Properties properties;
+    protected Client client;
+    private ConcurrentLinkedQueue<Segment> segments;
+    private LinkedList<Integer> downloadList = new LinkedList<>();
+    private Queue<Integer> waitQueue = new LinkedList<>();
+
+    public ItemMetaData(Item item, Client client, Properties properties) {
+        this.item = item;
+        this.client = client;
+        this.info = item.getRangeInfo();
+        this.rangeReport = new RangeReport(info, item.getFilename());
+        this.segments = new ConcurrentLinkedQueue<>();
+        this.properties = properties;
+        initRandomAccessFile();
+        initMetaData();
+    }
+
+    protected abstract void initMetaData();
 //	public    abstract void    clearFile();
-	
-	
-	/**
-	 * @param item
-	 */
-	protected void initRandomAccessFile() {
-		try {
-			R.mkParentDir(item.path());
-			raf = new RandomAccessFile(item.path(), "rw");
-			raf.setLength(info.getFileLength());
-		} catch (IOException e) {
-			Log.error(getClass(), e.getMessage(), e.toString());
-		}
-		
-	}
-	
-	public boolean isClose() {
-		return !raf.getChannel().isOpen();
-	}
-	
-	public boolean isOpen() {
-		return raf.getChannel().isOpen();
-	}
-	
-	@Override
-	public void close() {
-		try {
-			raf.close();
-		} catch (IOException e) {
-			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
-		}
-	}
-	
-	@Override
-	public void offerSegment(Segment segment) {
-		if(segment.buffer.remaining() == 0 ) {
-			releaseSegment(segment);
-			return;
-		}
-		segments.add(segment);
-		info.addStartOfIndex(segment.index, segment.buffer.limit());
-	}
-	
-	public synchronized void systemFlush() {
-		if(segments.isEmpty()) return;
-		flush(segments);
-		System.out.print(".");
-	}
-	
-	private void  flush(Queue<Segment> queue) {
-		Segment segment;
-		int writtenSegmentCount = 0;
-		while (!queue.isEmpty()) {
-			segment = queue.peek();
-			if(segment == null) break;
-			if(writeSegment(segment)) {
-				writtenSegmentCount++;
-				queue.poll();
-				releaseSegment(segment);
-			} else {
-				// check raf is opened
-				if(raf == null || isClose() ) {
-					initRandomAccessFile();
-					initMetaData();
-				}
-			}
-		}
-		
+
+    protected abstract boolean writeSegment(Segment segment);
+
+    public abstract void forceUpdate();
+
+    /**
+     * @param item
+     */
+    protected void initRandomAccessFile() {
+        try {
+            R.mkParentDir(item.path());
+            raf = new RandomAccessFile(item.path(), "rw");
+            raf.setLength(info.getFileLength());
+        } catch (IOException e) {
+            Log.error(getClass(), e.getMessage(), e.toString());
+        }
+
+    }
+
+    public boolean isClose() {
+        return !raf.getChannel().isOpen();
+    }
+
+    public boolean isOpen() {
+        return raf.getChannel().isOpen();
+    }
+
+    @Override
+    public void close() {
+        try {
+            raf.close();
+        } catch (IOException e) {
+            Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+        }
+    }
+
+    @Override
+    public void offerSegment(Segment segment) {
+        if (segment.buffer.remaining() == 0) {
+            releaseSegment(segment);
+            return;
+        }
+        segments.add(segment);
+        info.addStartOfIndex(segment.index, segment.buffer.limit());
+    }
+
+    public synchronized void systemFlush() {
+        if (segments.isEmpty()) return;
+        flush(segments);
+        System.out.print(".");
+    }
+
+    private void flush(Queue<Segment> queue) {
+        Segment segment;
+        int writtenSegmentCount = 0;
+        while (!queue.isEmpty()) {
+            segment = queue.peek();
+            if (segment == null) break;
+            if (writeSegment(segment)) {
+                writtenSegmentCount++;
+                queue.poll();
+                releaseSegment(segment);
+            } else {
+                // check raf is opened
+                if (raf == null || isClose()) {
+                    initRandomAccessFile();
+                    initMetaData();
+                }
+            }
+        }
+
 //		saveItem2CacheFile();
-		forceUpdate();
-		
-		if(writtenSegmentCount > 0) {
-			Log.trace(getClass(), "flush segments",
-					String.format("File Name: %s\nWritten Segment Count: %s", 
-							item.getFilename(), writtenSegmentCount)
-			);
-		}
-	}
-	
-	
-	public int segmentSize() {
-		return segments.size();
-	}
+        forceUpdate();
 
-	@Override
-	public long startOfIndex(int index) {
-		return info.startOfIndex(index);
-	}
-	@Override
-	public long limitOfIndex(int index) {
-		return info.limitOfIndex(index);
-	}
+        if (writtenSegmentCount > 0) {
+            Log.trace(getClass(), "flush segments",
+                    String.format("File Name: %s\nWritten Segment Count: %s",
+                            item.getFilename(), writtenSegmentCount)
+            );
+        }
+    }
 
-	public Item getItem() {
-		return item;
-	}
+    public int segmentSize() {
+        return segments.size();
+    }
 
-	public Properties getProperties() {
-		return properties;
-	}
-	
-	public RangeUtil getRangeInfo() {
-		return info;
-	}
-	
-	public RangeReport getRangeReport() {
-		return rangeReport;
-	}
-	
-	public boolean isDownloading() {
-		return downloading;
-	}
-	
-	@Override
-	public boolean allowSegmentWrite() {
-		return downloading;
-	}
-	
-	public void checkCompleted() {
-		Iterator<Integer> iterator = downloadList.iterator();
-		while (iterator.hasNext()) {
-			Integer index = iterator.next();
-			if ( info.isFinish(index)){
-				iterator.remove();
-			} else {
-				iterator.remove();
-				waitQueue.add(index);
-			}
-		}
-	}
-	
-	public void checkWhileDownloading() {
-		Iterator<Integer> iterator = downloadList.iterator();
-		while (iterator.hasNext()) {
-			Integer index = iterator.next();
-			if ( info.isFinish(index)){
-				iterator.remove();
-			}
-		}
-	}
-	
-	public void pause() {
-		downloading = false;
-		checkCompleted();
-	}
-	
-	
-	private LinkedList<Integer> downloadList = new LinkedList<>();
-	private Queue<Integer> waitQueue = new LinkedList<>();
-	
-	
-	public void initWaitQueue() {
-		int count = info.getRangeCount();
-		if (count == 0) return;
-		waitQueue.clear();
-		for ( int index = 0 ; index < count; index++) {
-			if (! info.isFinish(index)) {
-				waitQueue.add(index);
-			}
-		}
-	}
-	
-	public boolean isDownloadListEmpty() {
-		return downloadList.isEmpty();
-	}
+    @Override
+    public long startOfIndex(int index) {
+        return info.startOfIndex(index);
+    }
 
-	public void startAndCheckDownloadQueue(SpeedMonitor... monitors) {
-		if (waitQueue.isEmpty()) { return; }
-		downloading = true;
-		while ( downloadList.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
-			Integer index = waitQueue.poll();
-			if(index == null) break;
-			else {
-				if (info.isFinish(index)) {
-					continue;
-				}
-				client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
-				downloadList.add(index);
-			}
-		}
-	}
-	
-	
+    @Override
+    public long limitOfIndex(int index) {
+        return info.limitOfIndex(index);
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public RangeUtil getRangeInfo() {
+        return info;
+    }
+
+    public RangeReport getRangeReport() {
+        return rangeReport;
+    }
+
+    public boolean isDownloading() {
+        return downloading;
+    }
+
+    @Override
+    public boolean allowSegmentWrite() {
+        return downloading;
+    }
+
+    public void checkCompleted() {
+        Iterator<Integer> iterator = downloadList.iterator();
+        while (iterator.hasNext()) {
+            Integer index = iterator.next();
+            if (info.isFinish(index)) {
+                iterator.remove();
+            } else {
+                iterator.remove();
+                waitQueue.add(index);
+            }
+        }
+    }
+
+    public void checkWhileDownloading() {
+        Iterator<Integer> iterator = downloadList.iterator();
+        while (iterator.hasNext()) {
+            Integer index = iterator.next();
+            if (info.isFinish(index)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public void pause() {
+        downloading = false;
+        checkCompleted();
+    }
+
+    public void initWaitQueue() {
+        int count = info.getRangeCount();
+        if (count == 0) return;
+        waitQueue.clear();
+        for (int index = 0; index < count; index++) {
+            if (!info.isFinish(index)) {
+                waitQueue.add(index);
+            }
+        }
+    }
+
+    public boolean isDownloadListEmpty() {
+        return downloadList.isEmpty();
+    }
+
+    public void startAndCheckDownloadQueue(SpeedMonitor... monitors) {
+        if (waitQueue.isEmpty()) {
+            return;
+        }
+        downloading = true;
+        while (downloadList.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
+            Integer index = waitQueue.poll();
+            if (index == null) break;
+            else {
+                if (info.isFinish(index)) {
+                    continue;
+                }
+                client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
+                downloadList.add(index);
+            }
+        }
+    }
+
+
 }

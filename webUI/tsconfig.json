@@ -14,10 +14,13 @@
       "path": "./projects/ariia/tsconfig.spec.json"
     },
     {
+      "path": "./projects/ariia/e2e/tsconfig.json"
+    },
+    {
       "path": "./projects/core-api/tsconfig.lib.json"
     },
     {
       "path": "./projects/core-api/tsconfig.spec.json"
     }
-  ]
+]
 }

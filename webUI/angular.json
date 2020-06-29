@@ -121,7 +121,7 @@
               "projects/ariia/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
               "projects/ariia/src/styles.scss"
             ],
             "scripts": []

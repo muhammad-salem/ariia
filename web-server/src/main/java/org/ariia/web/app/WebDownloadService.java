@@ -8,7 +8,9 @@ import org.ariia.mvc.sse.SourceEvent;
 import org.ariia.util.Utils;
 import org.ariia.web.app.model.WebItem;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,20 +49,21 @@ public class WebDownloadService extends DownloadService {
         this.sendWebReport();
     }
 
-    private String toJsonItem(ItemMetaData metaData){
+    private String toJsonItem(ItemMetaData metaData) {
         return Utils.toJson(new WebItem(metaData));
     }
 
-    private String toJsonItemsList(Stream<ItemMetaData> itemStream){
+    private String toJsonItemsList(Stream<ItemMetaData> itemStream) {
         List<WebItem> dataList = itemStream.map(WebItem::new).collect(Collectors.toList());
         if (dataList.isEmpty()) return null;
         return Utils.toJson(dataList);
     }
+
     private void sendWebReport() {
         try {
             sessionProvider.send(Utils.toJson(sessionReport));
             String downloadMessage = toJsonItemsList(downloadStream());
-            if (Objects.nonNull(downloadMessage)){
+            if (Objects.nonNull(downloadMessage)) {
                 itemListProvider.send(downloadMessage);
             }
         } catch (Exception e) {
@@ -94,7 +97,7 @@ public class WebDownloadService extends DownloadService {
 
     public Optional<ItemMetaData> searchById(Integer id) {
         return itemMetaDataList.stream()
-                .filter(item -> Objects.equals(item.getItem().getId(),id))
+                .filter(item -> Objects.equals(item.getItem().getId(), id))
                 .findAny();
     }
 }

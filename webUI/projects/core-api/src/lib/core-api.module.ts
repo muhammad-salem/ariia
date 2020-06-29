@@ -1,12 +1,13 @@
-import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
-import { UpTimePipe } from './pipe/up-time.pipe';
-import { SpeedPipe, UnitLengthPipe } from './pipe/speed.pipe';
+import {NgModule} from '@angular/core';
+import {UpTimePipe} from './pipe/up-time.pipe';
+import {SpeedPipe, UnitLengthPipe} from './pipe/speed.pipe';
 
 
 @NgModule({
-  id: 'core-api',
-  declarations: [UnitLengthPipe, SpeedPipe, UpTimePipe],
-  imports: [],
-  exports: [UnitLengthPipe, SpeedPipe, UpTimePipe]
+	id: 'core-api',
+	declarations: [UnitLengthPipe, SpeedPipe, UpTimePipe],
+	imports: [],
+	exports: [UnitLengthPipe, SpeedPipe, UpTimePipe]
 })
-export class CoreApiModule {}
+export class CoreApiModule {
+}

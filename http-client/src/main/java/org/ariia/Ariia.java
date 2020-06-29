@@ -10,30 +10,30 @@ import org.ariia.internal.AriiaHttpClient;
 import org.terminal.console.log.Level;
 
 public class Ariia {
-	
-public static void main(String[] args) {
-		
-		Argument arguments = new Argument(args);
-		if (arguments.isEmpty() || arguments.isHelp()) {
-			System.out.println(TerminalArgument.help());
-			return;
-		} else if (arguments.isVersion()) {
-			System.out.println(arguments.getVersion() + " - JDK (11+)");
-			return;
-		}
-		
-		LogCli.initLogServices(arguments, Level.log);
-		Properties properties = new Properties(arguments);
-		Runnable onComplete = ()-> {
-			if (!arguments.isDaemonService()){
-				System.exit(0);
-			}
-		};
-		AriiaCli cli = new AriiaCli(
-				Clients.segmentClient(properties, new AriiaHttpClient(arguments.getProxy())), 
-				onComplete);
-		cli.lunchAsCliApp(arguments, properties);
-		
-	}
+
+    public static void main(String[] args) {
+
+        Argument arguments = new Argument(args);
+        if (arguments.isEmpty() || arguments.isHelp()) {
+            System.out.println(TerminalArgument.help());
+            return;
+        } else if (arguments.isVersion()) {
+            System.out.println(arguments.getVersion() + " - JDK (11+)");
+            return;
+        }
+
+        LogCli.initLogServices(arguments, Level.log);
+        Properties properties = new Properties(arguments);
+        Runnable onComplete = () -> {
+            if (!arguments.isDaemonService()) {
+                System.exit(0);
+            }
+        };
+        AriiaCli cli = new AriiaCli(
+                Clients.segmentClient(properties, new AriiaHttpClient(arguments.getProxy())),
+                onComplete);
+        cli.lunchAsCliApp(arguments, properties);
+
+    }
 
 }

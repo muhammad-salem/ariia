@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Item, ItemService, RangeService} from 'core-api';
-import {NotifyService} from '../../../app-root/app-root.component';
+import {NotifyService} from "../../layout/app-root/notify.service";
 
 @Component({
 	selector: 'download-view',

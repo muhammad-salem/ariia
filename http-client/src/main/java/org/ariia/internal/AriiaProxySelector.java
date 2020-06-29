@@ -1,11 +1,7 @@
 package org.ariia.internal;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.SocketAddress;
-import java.net.URI;
+import java.net.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +9,7 @@ public class AriiaProxySelector extends ProxySelector {
     private static final List<Proxy> NO_PROXY_LIST = List.of(Proxy.NO_PROXY);
     final List<Proxy> list;
 
-    AriiaProxySelector(InetSocketAddress address){
+    AriiaProxySelector(InetSocketAddress address) {
         Proxy p;
         if (address == null) {
             p = Proxy.NO_PROXY;
@@ -22,8 +18,8 @@ public class AriiaProxySelector extends ProxySelector {
         }
         list = List.of(p);
     }
-    
-    AriiaProxySelector(Proxy proxy){
+
+    AriiaProxySelector(Proxy proxy) {
         Objects.requireNonNull(proxy);
         list = List.of(proxy);
     }

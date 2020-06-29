@@ -42,15 +42,15 @@ export class ThemePicker implements OnInit, OnDestroy {
 			accent: '#607D8B',
 			displayName: 'Pink & Blue-grey',
 			name: 'pink-bluegrey',
-			isDark: true,
-			isDefault: false
+			isDark: true
 		},
 		{
 			primary: '#9C27B0',
 			accent: '#4CAF50',
 			displayName: 'Purple & Green',
 			name: 'purple-green',
-			isDark: true
+			isDark: true,
+			isDefault: true
 		},
 	];
 	private _queryParamSubscription = Subscription.EMPTY;

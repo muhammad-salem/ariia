@@ -17,7 +17,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {DownloadTabsComponent} from './download-tabs/download-tabs.component';
 import {DownloadViewComponent} from './download-view/download-view.component';
 import {DownloadListComponent} from './download-list/download-list.component';
@@ -25,10 +24,7 @@ import {DownloadTableComponent} from './download-table/download-table.component'
 import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-
-
-
-
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const routes: Routes = [
 	{path: '', component: DownloadTabsComponent}
@@ -59,10 +55,10 @@ const routes: Routes = [
 		MatInputModule,
 		MatToolbarModule,
 		MatButtonModule,
-		FlexLayoutModule,
 		MatDividerModule,
 		MatListModule,
-		MatProgressSpinnerModule
+		MatProgressSpinnerModule,
+		FlexLayoutModule
 	],
 	exports: [
 		CommonModule,
@@ -80,8 +76,7 @@ const routes: Routes = [
 		MatFormFieldModule,
 		MatInputModule,
 		MatToolbarModule,
-		MatButtonModule,
-		FlexLayoutModule
+		MatButtonModule
 	],
 	bootstrap: [
 		DownloadViewComponent,

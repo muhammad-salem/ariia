@@ -6,7 +6,8 @@ import {RangeInfo} from '../model/range-info';
 })
 export class RangeService {
 
-	constructor() {}
+	constructor() {
+	}
 
 	downloadPercent(rangeInfo: RangeInfo): number {
 		return (rangeInfo.downloadLength / rangeInfo.fileLength) * 100;

@@ -12,7 +12,6 @@
       "element",
       "lib",
       "kebab-case"
-    ],
-	"indent": [true, "tabs", 1]
+    ]
   }
 }

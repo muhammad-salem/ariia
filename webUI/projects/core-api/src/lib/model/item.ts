@@ -23,7 +23,7 @@ export const updateItemFromNetwork = (item: Item, networkItem: Item) => {
 	item.id = networkItem.id;
 	item.state = networkItem.state;
 	item.report = networkItem.report;
-	assignObject(item.rangeInfo , networkItem.rangeInfo );
+	assignObject(item.rangeInfo, networkItem.rangeInfo);
 };
 
 export const updateItem = (item1: Item, item2: Item) => {

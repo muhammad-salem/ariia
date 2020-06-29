@@ -5,26 +5,22 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {CoreApiModule} from 'core-api';
-import {FlexLayoutModule} from '@angular/flex-layout';
 
 import {RoutingModule} from './routing.module';
-import {MatSidenavModule} from '@angular/material/sidenav';
-
-import {AppRootComponent} from './app-root/app-root.component';
 import {LayoutModule} from './modules/layout/layout.module';
-import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from '@angular/material/snack-bar';
+import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
+import {AppRootComponent} from "./modules/layout/app-root/app-root.component";
 
 
 @NgModule({
 	id: 'AppModule',
-	declarations: [
-		AppRootComponent
-	],
+	declarations: [],
 	providers: [
-		{	provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, 
+		{
+			provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
 			useValue: {
 				duration: 2500,
-				horizontalPosition: 'right',
+				horizontalPosition: 'center',
 				verticalPosition: 'top'
 			}
 		}
@@ -36,17 +32,10 @@ import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from '@angular/materia
 		HttpClientModule,
 		CoreApiModule,
 		RoutingModule,
-		FlexLayoutModule,
-		LayoutModule,
-		MatSidenavModule,
-		MatSnackBarModule
+		LayoutModule
 	],
-	exports: [
-		AppRootComponent
-	],
-	bootstrap: [
-		AppRootComponent
-	],
+	exports: [],
+	bootstrap: [AppRootComponent],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {

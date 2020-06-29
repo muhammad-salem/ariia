@@ -3,7 +3,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {DataService, Item, RangeService, SessionReport} from 'core-api';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatTable, MatTableDataSource} from '@angular/material/table';
-import {MatSort, Sort} from '@angular/material/sort';
+import {MatSort} from '@angular/material/sort';
 
 @Component({
 	selector: 'download-table',
@@ -55,15 +55,24 @@ export class DownloadTableComponent implements OnInit {
 			const result = data.sort((e1: Item, e2: Item) => {
 				const isAsc = matSort.direction === 'asc';
 				switch (matSort.active) {
-					case 'filename': return compare(e1.filename, e2.filename, isAsc);
-					case 'percent': return compare(this.downloadPercent(e1), this.downloadPercent(e2), isAsc);
-					case 'fileLength': return compare(e1.rangeInfo.fileLength, e2.rangeInfo.fileLength, isAsc);
-					case 'downloadLength': return compare(e1.rangeInfo.downloadLength, e2.rangeInfo.downloadLength, isAsc);
-					case 'remainingLength': return compare(e1.rangeInfo.remainingLength, e2.rangeInfo.remainingLength, isAsc);
-					case 'tcpDownloadSpeed': return compare(e1.report.monitor.tcpDownloadSpeed, e2.report.monitor.tcpDownloadSpeed, isAsc);
-					case 'remainingTime': return compare(e1.report.remainingTime, e2.report.remainingTime, isAsc);
-					case 'state': return compare(e1.state, e2.state, isAsc);
-					default : return 0;
+					case 'filename':
+						return compare(e1.filename, e2.filename, isAsc);
+					case 'percent':
+						return compare(this.downloadPercent(e1), this.downloadPercent(e2), isAsc);
+					case 'fileLength':
+						return compare(e1.rangeInfo.fileLength, e2.rangeInfo.fileLength, isAsc);
+					case 'downloadLength':
+						return compare(e1.rangeInfo.downloadLength, e2.rangeInfo.downloadLength, isAsc);
+					case 'remainingLength':
+						return compare(e1.rangeInfo.remainingLength, e2.rangeInfo.remainingLength, isAsc);
+					case 'tcpDownloadSpeed':
+						return compare(e1.report.monitor.tcpDownloadSpeed, e2.report.monitor.tcpDownloadSpeed, isAsc);
+					case 'remainingTime':
+						return compare(e1.report.remainingTime, e2.report.remainingTime, isAsc);
+					case 'state':
+						return compare(e1.state, e2.state, isAsc);
+					default :
+						return 0;
 				}
 			});
 			return result;
@@ -75,10 +84,6 @@ export class DownloadTableComponent implements OnInit {
 	applyFilter(value: string) {
 		this.dataSource.filter = value.trim().toLowerCase();
 		this.table.renderRows();
-	}
-
-	private downloadPercent(item: Item): number {
-		return this.rangeService.downloadPercent(item.rangeInfo);
 	}
 
 	itemPercent(item: Item): string {
@@ -139,6 +144,10 @@ export class DownloadTableComponent implements OnInit {
 		this.isAllSelected() ?
 			this.selection.clear() :
 			this.items.forEach(row => this.selection.select(row));
+	}
+
+	private downloadPercent(item: Item): number {
+		return this.rangeService.downloadPercent(item.rangeInfo);
 	}
 
 }

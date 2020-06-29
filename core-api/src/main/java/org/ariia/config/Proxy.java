@@ -5,128 +5,125 @@ import java.net.SocketAddress;
 
 public class Proxy {
 
-	public enum Type {
-		/**
-		 * Obtain System Proxy Setting.
-		 */
-		SYSTEM,
-		/**
-		 * Represents a direct connection, or the absence of a proxy.
-		 */
-		DIRECT,
-		/**
-		 * Represents proxy for high level protocols such as HTTP or FTP.
-		 */
-		HTTP,
-		/**
-		 * Represents a SOCKS (V4) proxy.
-		 */
-		SOCKS4,
+    Type type;
+    String host;
+    int port;
+    char[] user, pass;
+    boolean hasAuthorization;
 
-		/**
-		 * Represents a SOCKS (V5) proxy.
-		 */
-		SOCKS5;
-	}
+    public static Proxy getProxy(String host, int port, Type type) {
+        Proxy proxy = new Proxy();
+        switch (type) {
+            case DIRECT:
+                proxy.setType(Type.DIRECT);
+                break;
+            case HTTP:
+                proxy.setType(Type.HTTP);
+                break;
+            case SOCKS4:
+                proxy.setType(Type.SOCKS4);
+                break;
+            case SOCKS5:
+                proxy.setType(Type.SOCKS5);
+                break;
+            case SYSTEM:
+                proxy.setType(Type.SOCKS5);
+                break;
+            default:
+                proxy.setType(Type.DIRECT);
+        }
+        proxy.host = host;
+        proxy.port = port;
+        return proxy;
+    }
 
-	Type type;
+    public void setProxy(String host, int port) {
+        this.host = host;
+        this.port = port;
+        hasAuthorization = false;
+    }
 
-	String host;
-	int port;
+    public java.net.Proxy getProxy() {
+        java.net.Proxy.Type netType;
+        switch (this.type) {
+            case DIRECT:
+                netType = java.net.Proxy.Type.DIRECT;
+                break;
+            case HTTP:
+                netType = java.net.Proxy.Type.HTTP;
+                break;
+            case SOCKS4:
+                netType = java.net.Proxy.Type.SOCKS;
+                break;
+            case SOCKS5:
+                netType = java.net.Proxy.Type.SOCKS;
+                break;
+            case SYSTEM:
+                netType = java.net.Proxy.Type.DIRECT;
+                break;
+            default:
+                netType = java.net.Proxy.Type.DIRECT;
+        }
+        SocketAddress sa = new InetSocketAddress(host, port);
+        return new java.net.Proxy(netType, sa);
+    }
 
-	char[] user, pass;
+    public void setAuthorization(char[] user, char[] pass) {
+        this.user = user;
+        this.pass = pass;
+        hasAuthorization = true;
+    }
 
-	boolean hasAuthorization;
+    public boolean hasAuthorization() {
+        return hasAuthorization;
+    }
 
-	public void setType(Type type) {
-		this.type = type;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public void setProxy(String host, int port) {
-		this.host = host;
-		this.port = port;
-		hasAuthorization = false;
-	}
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-	public static Proxy getProxy(String host, int port, Type type) {
-		Proxy proxy = new Proxy();
-		switch (type) {
-		case DIRECT:
-			proxy.setType(Type.DIRECT);
-			break;
-		case HTTP:
-			proxy.setType(Type.HTTP);
-			break;
-		case SOCKS4:
-			proxy.setType(Type.SOCKS4);
-			break;
-		case SOCKS5:
-			proxy.setType(Type.SOCKS5);
-			break;
-		case SYSTEM:
-			proxy.setType(Type.SOCKS5);
-			break;
-		default:
-			proxy.setType(Type.DIRECT);
-		}
-		proxy.host = host;
-		proxy.port = port;
-		return proxy;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public java.net.Proxy getProxy() {
-		java.net.Proxy.Type netType;
-		switch (this.type) {
-		case DIRECT:
-			netType = java.net.Proxy.Type.DIRECT;
-			break;
-		case HTTP:
-			netType = java.net.Proxy.Type.HTTP;
-			break;
-		case SOCKS4:
-			netType = java.net.Proxy.Type.SOCKS;
-			break;
-		case SOCKS5:
-			netType = java.net.Proxy.Type.SOCKS;
-			break;
-		case SYSTEM:
-			netType = java.net.Proxy.Type.DIRECT;
-			break;
-		default:
-			netType = java.net.Proxy.Type.DIRECT;
-		}
-		SocketAddress sa = new InetSocketAddress(host, port);
-		return new java.net.Proxy(netType, sa);
-	}
+    public int getPort() {
+        return port;
+    }
 
-	public void setAuthorization(char[] user, char[] pass) {
-		this.user = user;
-		this.pass = pass;
-		hasAuthorization = true;
-	}
+    public char[] getUser() {
+        return user;
+    }
 
-	public boolean hasAuthorization() {
-		return hasAuthorization;
-	}
+    public char[] getPass() {
+        return pass;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public enum Type {
+        /**
+         * Obtain System Proxy Setting.
+         */
+        SYSTEM,
+        /**
+         * Represents a direct connection, or the absence of a proxy.
+         */
+        DIRECT,
+        /**
+         * Represents proxy for high level protocols such as HTTP or FTP.
+         */
+        HTTP,
+        /**
+         * Represents a SOCKS (V4) proxy.
+         */
+        SOCKS4,
 
-	public String getHost() {
-		return host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public char[] getUser() {
-		return user;
-	}
-
-	public char[] getPass() {
-		return pass;
-	}
+        /**
+         * Represents a SOCKS (V5) proxy.
+         */
+        SOCKS5;
+    }
 
 }

@@ -1,51 +1,52 @@
 package org.ariia.core.api.writer;
 
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
 import org.ariia.segment.Segment;
 
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+
 public class ChannelMetaDataWriter extends ItemMetaData {
 
 
-	protected FileChannel channel;
-	public ChannelMetaDataWriter(Item item, Client client, Properties properties) {
-		super(item, client, properties);
-	}
-	
-	@Override
-	public void initMetaData() {
-		channel = raf.getChannel();
-	}
-	
-	@Override
-	public void forceUpdate() {
-		try {
-			channel.force(true);
-		} catch (IOException e) {
-			Log.error(getClass(), "force update", "error force update to channel\n" + item.getFilename() + '\n' + e.getMessage());
-		}
-	}
+    protected FileChannel channel;
 
-	
-	@Override
-	protected boolean writeSegment(Segment segment) {
-		try {
-			channel.position(segment.start);
-			while (segment.buffer.hasRemaining()) {
-				channel.write(segment.buffer);
-			}
-			return true;
-		} catch (IOException e) {
-			Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
-			return false;
-		}
-		
-	}
+    public ChannelMetaDataWriter(Item item, Client client, Properties properties) {
+        super(item, client, properties);
+    }
+
+    @Override
+    public void initMetaData() {
+        channel = raf.getChannel();
+    }
+
+    @Override
+    public void forceUpdate() {
+        try {
+            channel.force(true);
+        } catch (IOException e) {
+            Log.error(getClass(), "force update", "error force update to channel\n" + item.getFilename() + '\n' + e.getMessage());
+        }
+    }
+
+
+    @Override
+    protected boolean writeSegment(Segment segment) {
+        try {
+            channel.position(segment.start);
+            while (segment.buffer.hasRemaining()) {
+                channel.write(segment.buffer);
+            }
+            return true;
+        } catch (IOException e) {
+            Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+            return false;
+        }
+
+    }
 
 
 //	@Override
@@ -62,16 +63,16 @@ public class ChannelMetaDataWriter extends ItemMetaData {
 //			e.printStackTrace();
 //		}
 //	}
-	
-	@Override
-	public void close() {
-		try {
-			channel.force(true);
-		} catch (IOException e) {
-			Log.error(getClass(), "close channel", "force any updates of this channel's file"
-					+ "\nto be written to the storage device\n" 
-					+ e.getMessage());
-		}
-		super.close();
-	}
+
+    @Override
+    public void close() {
+        try {
+            channel.force(true);
+        } catch (IOException e) {
+            Log.error(getClass(), "close channel", "force any updates of this channel's file"
+                    + "\nto be written to the storage device\n"
+                    + e.getMessage());
+        }
+        super.close();
+    }
 }

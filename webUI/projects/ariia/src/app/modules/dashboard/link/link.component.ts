@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ItemService} from 'core-api';
-import {NotifyService} from '../../../app-root/app-root.component';
+import {NotifyService} from "../../layout/app-root/notify.service";
 
 @Component({
 	selector: 'app-link',
@@ -12,11 +12,9 @@ export class LinkComponent implements OnInit {
 	link: string;
 	metaLink: string;
 
-	constructor(private itemService: ItemService, private notifyService: NotifyService) {
-	}
+	constructor(private itemService: ItemService, private notifyService: NotifyService) {}
 
-	ngOnInit(): void {
-	}
+	ngOnInit(): void {}
 
 	addLink() {
 		if (this.link === '' && this.metaLink === '') {

@@ -9,16 +9,18 @@ import {ServerSettingsService} from 'core-api';
 export class ServerControlStateComponent implements OnInit {
 
 	allowDownload: boolean;
-	constructor(private serverSettings: ServerSettingsService) {}
+
+	constructor(private serverSettings: ServerSettingsService) {
+	}
 
 	ngOnInit(): void {
 		this.serverSettings.isAllowDownload()
 			.subscribe(allow => this.allowDownload = allow);
 	}
 
-	toggleServerState(){
+	toggleServerState() {
 		this.serverSettings.toggleAllowDownload()
-			.subscribe(allow => his.allowDownload = allow);
+			.subscribe(allow => this.allowDownload = allow);
 	}
 
 }

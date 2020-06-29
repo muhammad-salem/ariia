@@ -12,7 +12,7 @@ export interface DocsSiteTheme {
 
 @Injectable()
 export class ThemeStorage {
-	static storageKey = 'docs-theme-storage-current-name';
+	static storageKey = 'theme-storage-current-name';
 
 	onThemeUpdate: EventEmitter<DocsSiteTheme> = new EventEmitter<DocsSiteTheme>();
 

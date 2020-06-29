@@ -24,23 +24,10 @@ public class DownloadServiceFactory {
         this.client = client;
     }
 
-    public void setScheduledService(ScheduledExecutorService scheduledService) {
-        this.scheduledService = scheduledService;
-    }
-
-    public void setSessionReportFactory(SessionReport sessionReportFactory) {
-        this.sessionReportFactory = sessionReportFactory;
-        this.useSessionReportFactory = true;
-    }
-
-    public void setConnectivityCheck(ConnectivityCheck connectivityCheck) {
-        this.connectivityCheck = connectivityCheck;
-    }
-
-    public DownloadServiceBuilder builder(){
+    public DownloadServiceBuilder builder() {
         DownloadServiceBuilder builder = new DownloadServiceBuilder();
         builder.setClient(client);
-        if (useSessionReportFactory){
+        if (useSessionReportFactory) {
             builder.setSessionReport(sessionReportFactory);
         }
         if (Objects.isNull(scheduledService)) {
@@ -62,11 +49,24 @@ public class DownloadServiceFactory {
         return scheduledService;
     }
 
+    public void setScheduledService(ScheduledExecutorService scheduledService) {
+        this.scheduledService = scheduledService;
+    }
+
     public SessionReport getSessionReportFactory() {
         return sessionReportFactory;
     }
 
+    public void setSessionReportFactory(SessionReport sessionReportFactory) {
+        this.sessionReportFactory = sessionReportFactory;
+        this.useSessionReportFactory = true;
+    }
+
     public ConnectivityCheck getConnectivityCheck() {
         return connectivityCheck;
+    }
+
+    public void setConnectivityCheck(ConnectivityCheck connectivityCheck) {
+        this.connectivityCheck = connectivityCheck;
     }
 }

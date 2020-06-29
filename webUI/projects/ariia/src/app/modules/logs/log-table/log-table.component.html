@@ -5,7 +5,7 @@
 				<li>
 					<mat-form-field>
 						<mat-label>Level</mat-label>
-						<mat-select [(value)]="level" (selectionChange)="setLevel()">
+						<mat-select (selectionChange)="setLevel()" [(value)]="level">
 							<mat-option *ngFor="let level of logLevels" [value]="level">
 								{{level}}
 							</mat-option>
@@ -31,7 +31,7 @@
 	</mat-toolbar-row>
 </mat-toolbar>
 
-<mat-divider class="divider" ></mat-divider>
+<mat-divider class="divider"></mat-divider>
 
 <mat-table [dataSource]="dataSource" matSort>
 
@@ -65,8 +65,8 @@
 		<td *matCellDef="let message" mat-cell>{{message.message}}</td>
 	</ng-container>
 
-	<!-- Header and Row Declarations -->	
+	<!-- Header and Row Declarations -->
 	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
 	<tr *matRowDef="let message; columns: columnsToDisplay" mat-row></tr>
-	
+
 </mat-table>

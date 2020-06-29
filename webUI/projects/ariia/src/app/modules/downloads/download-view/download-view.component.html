@@ -1,41 +1,47 @@
 <mat-card>
-  <mat-card-header>
-    <div mat-card-avatar></div>
-    <mat-card-title>{{item.filename}}</mat-card-title>
-    <mat-card-subtitle>{{item.url}}</mat-card-subtitle>
-    <!--<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>-->
-  </mat-card-header>
+	<mat-card-header>
+		<div mat-card-avatar></div>
+		<mat-card-title>{{item.filename}}</mat-card-title>
+		<mat-card-subtitle>{{item.url}}</mat-card-subtitle>
+		<!--<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>-->
+	</mat-card-header>
 	<mat-card-actions>
-		<button mat-icon-button (click)="startItem()"><mat-icon>play_circle_outline</mat-icon></button>
-		<button mat-icon-button (click)="pauseItem()"><mat-icon>pause_circle_outline</mat-icon></button>
-		<button mat-icon-button (click)="deleteItem()"><mat-icon>auto_delete</mat-icon></button>
+		<button (click)="startItem()" mat-icon-button>
+			<mat-icon>play_circle_outline</mat-icon>
+		</button>
+		<button (click)="pauseItem()" mat-icon-button>
+			<mat-icon>pause_circle_outline</mat-icon>
+		</button>
+		<button (click)="deleteItem()" mat-icon-button>
+			<mat-icon>auto_delete</mat-icon>
+		</button>
 	</mat-card-actions>
-  <div>
-  	
-  </div>
-  <mat-card-content>
-	<mat-list>
-		<mat-list-item>
-			{{item.rangeInfo?.downloadLength | unitLength}}
-			of {{item.rangeInfo?.fileLength | unitLength}}
+	<div>
+
+	</div>
+	<mat-card-content>
+		<mat-list>
+			<mat-list-item>
+				{{item.rangeInfo?.downloadLength | unitLength}}
+				of {{item.rangeInfo?.fileLength | unitLength}}
 			</mat-list-item>
-		<mat-list-item>
-			<mat-progress-spinner
-				[color]="'accent'"
-				[mode]="'determinate'"
-				[value]="downloadProgress()">
-			</mat-progress-spinner>
-		</mat-list-item>
-		<mat-list-item> Paprika </mat-list-item>
-	</mat-list>
-  </mat-card-content>
-  <mat-card-actions>
-    <a mat-button *ngIf="item.state === 'COMPLETE'" class="card-link" download
-	   href="/items/download/{{item.id}}/{{item.filename}}">
-		Download File from Local Server
-		<mat-icon>cloud_download</mat-icon>
-	</a>
-  </mat-card-actions>
+			<mat-list-item>
+				<mat-progress-spinner
+						[color]="'accent'"
+						[mode]="'determinate'"
+						[value]="downloadProgress()">
+				</mat-progress-spinner>
+			</mat-list-item>
+			<mat-list-item> Paprika</mat-list-item>
+		</mat-list>
+	</mat-card-content>
+	<mat-card-actions>
+		<a *ngIf="item.state === 'COMPLETE'" class="card-link" download href="/items/download/{{item.id}}/{{item.filename}}"
+		   mat-button>
+			Download File from Local Server
+			<mat-icon>cloud_download</mat-icon>
+		</a>
+	</mat-card-actions>
 </mat-card>
 
 <!--

@@ -6,71 +6,71 @@ import java.util.List;
 
 
 public class EventBroadcast implements SourceEvent {
-	
-	List<Subscriber> subscribers;
-	
-	public EventBroadcast() {
-		this(new LinkedList<Subscriber>());
-	}
-	
-	public EventBroadcast(List<Subscriber> subscribers) {
-		this.subscribers = subscribers;
-	}
 
-	@Override
-	public void subscribe(Subscriber subscriber) {
-		this.subscribers.add(subscriber);
-	}
+    List<Subscriber> subscribers;
 
-	@Override
-	public void send(String event, String data) {
-		MessageEvent messageEvent = new MessageEvent.Builder()
-					.event(event)
-					.data(data)
-					.build();
-		send(messageEvent);
-	}
+    public EventBroadcast() {
+        this(new LinkedList<Subscriber>());
+    }
 
-	@Override
-	public void send(MessageEvent event) {
-		Iterator<Subscriber> iterator = subscribers.iterator();
-		while (iterator.hasNext()) {
-			Subscriber subscriber =  iterator.next();
-			try {
-				subscriber.message(event);
-			} catch (SseCloseException e) {
-				iterator.remove();
-			}
-		}
-	}
+    public EventBroadcast(List<Subscriber> subscribers) {
+        this.subscribers = subscribers;
+    }
 
-	@Override
-	public void send(String event) {
-		MessageEvent messageEvent = new MessageEvent.Builder()
-				.event(event)
-				.build();
-		send(messageEvent);
-	}
+    @Override
+    public void subscribe(Subscriber subscriber) {
+        this.subscribers.add(subscriber);
+    }
 
-	@Override
-	public void send(String event, String data, Integer retry) {
-		MessageEvent messageEvent = new MessageEvent.Builder()
-				.event(event)
-				.data(data)
-				.retry(retry)
-				.build();
-		send(messageEvent);
-	}
+    @Override
+    public void send(String event, String data) {
+        MessageEvent messageEvent = new MessageEvent.Builder()
+                .event(event)
+                .data(data)
+                .build();
+        send(messageEvent);
+    }
 
-	@Override
-	public void send(String event, String data, Integer retry, String id) {
-		MessageEvent messageEvent = new MessageEvent.Builder()
-				.event(event)
-				.data(data)
-				.retry(retry)
-				.id(id)
-				.build();
-		send(messageEvent);
-	}
+    @Override
+    public void send(MessageEvent event) {
+        Iterator<Subscriber> iterator = subscribers.iterator();
+        while (iterator.hasNext()) {
+            Subscriber subscriber = iterator.next();
+            try {
+                subscriber.message(event);
+            } catch (SseCloseException e) {
+                iterator.remove();
+            }
+        }
+    }
+
+    @Override
+    public void send(String event) {
+        MessageEvent messageEvent = new MessageEvent.Builder()
+                .event(event)
+                .build();
+        send(messageEvent);
+    }
+
+    @Override
+    public void send(String event, String data, Integer retry) {
+        MessageEvent messageEvent = new MessageEvent.Builder()
+                .event(event)
+                .data(data)
+                .retry(retry)
+                .build();
+        send(messageEvent);
+    }
+
+    @Override
+    public void send(String event, String data, Integer retry, String id) {
+        MessageEvent messageEvent = new MessageEvent.Builder()
+                .event(event)
+                .data(data)
+                .retry(retry)
+                .id(id)
+                .build();
+        send(messageEvent);
+    }
 
 }

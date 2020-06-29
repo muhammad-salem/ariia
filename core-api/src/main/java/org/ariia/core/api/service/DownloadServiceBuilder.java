@@ -11,7 +11,9 @@ import org.ariia.monitors.SimpleSessionReport;
 import org.ariia.monitors.SpeedTableReport;
 import org.ariia.network.ConnectivityCheck;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class DownloadServiceBuilder {
@@ -29,36 +31,8 @@ public class DownloadServiceBuilder {
 
     protected SessionReport sessionReport;
     protected SpeedTableReport speedTableReport;
-    private Runnable finishAction = () -> {};
-
-
-    void setScheduledService(ScheduledExecutorService scheduledService) {
-        this.scheduledService = scheduledService;
-    }
-
-    void setConnectivityCheck(ConnectivityCheck connectivityCheck) {
-        this.connectivityCheck = connectivityCheck;
-    }
-
-    void setClient(Client client) {
-        this.client = client;
-    }
-
-    public void setItemDataStore(DataStore<Item> itemDataStore) {
-        this.itemDataStore = itemDataStore;
-    }
-
-    public void setSpeedTableReport(SpeedTableReport speedTableReport) {
-        this.speedTableReport = speedTableReport;
-    }
-
-    public void setFinishAction(Runnable finishAction) {
-        this.finishAction = finishAction;
-    }
-
-    public void setSessionReport(SessionReport sessionReport) {
-        this.sessionReport = sessionReport;
-    }
+    private Runnable finishAction = () -> {
+    };
 
     public void useCliApp() {
         this.allowPause = false;
@@ -85,7 +59,7 @@ public class DownloadServiceBuilder {
         downloadService.properties = this.client.getProperties();
 
         if (Objects.isNull(speedTableReport)) {
-            if (Objects.isNull(sessionReport)){
+            if (Objects.isNull(sessionReport)) {
                 sessionReport = new SimpleSessionReport();
             }
             speedTableReport = new MiniSpeedTableReport(sessionReport);
@@ -96,9 +70,9 @@ public class DownloadServiceBuilder {
         if (Objects.isNull(itemDataStore)) {
             itemDataStore = new ItemStore();
         }
-        downloadService.itemDataStore =itemDataStore;
+        downloadService.itemDataStore = itemDataStore;
 
-        if (Objects.nonNull(finishAction)){
+        if (Objects.nonNull(finishAction)) {
             downloadService.finishAction = finishAction;
         }
         return downloadService;
@@ -108,27 +82,55 @@ public class DownloadServiceBuilder {
         return itemDataStore;
     }
 
+    public void setItemDataStore(DataStore<Item> itemDataStore) {
+        this.itemDataStore = itemDataStore;
+    }
+
     public SpeedTableReport getSpeedTableReport() {
         return speedTableReport;
+    }
+
+    public void setSpeedTableReport(SpeedTableReport speedTableReport) {
+        this.speedTableReport = speedTableReport;
     }
 
     public SessionReport getSessionReport() {
         return sessionReport;
     }
 
+    public void setSessionReport(SessionReport sessionReport) {
+        this.sessionReport = sessionReport;
+    }
+
     public Runnable getFinishAction() {
         return finishAction;
+    }
+
+    public void setFinishAction(Runnable finishAction) {
+        this.finishAction = finishAction;
     }
 
     public ScheduledExecutorService getScheduledService() {
         return scheduledService;
     }
 
+    void setScheduledService(ScheduledExecutorService scheduledService) {
+        this.scheduledService = scheduledService;
+    }
+
     public ConnectivityCheck getConnectivityCheck() {
         return connectivityCheck;
     }
 
+    void setConnectivityCheck(ConnectivityCheck connectivityCheck) {
+        this.connectivityCheck = connectivityCheck;
+    }
+
     public Client getClient() {
         return client;
+    }
+
+    void setClient(Client client) {
+        this.client = client;
     }
 }

@@ -31,7 +31,7 @@
 	</mat-toolbar-row>
 </mat-toolbar>
 
-<mat-divider class="divider" ></mat-divider>
+<mat-divider class="divider"></mat-divider>
 
 <table [dataSource]="dataSource" mat-table matSort>
 	<ng-container matColumnDef="select">
@@ -140,7 +140,7 @@
 
 	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
 	<tr *matRowDef="let item; columns: columnsToDisplay" mat-row></tr>
-	<ng-container *ngIf="items.length > 1">
+	<ng-container *ngIf="items.length !== 1">
 		<tr *matFooterRowDef="columnsToDisplay" mat-footer-row></tr>
 	</ng-container>
 </table>

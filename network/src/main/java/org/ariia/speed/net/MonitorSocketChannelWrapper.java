@@ -14,195 +14,195 @@ import java.util.Set;
 
 public class MonitorSocketChannelWrapper extends SocketChannel {
 
-	private SocketChannel originalSocket;
-	private List<SocketChannelMonitor> monitors;
-	
-	private MonitorSocketChannelWrapper() {
-		super(SelectorProvider.provider());
-	}
-	
-	public MonitorSocketChannelWrapper(SocketChannel socket, SocketChannelMonitor... monitors) {
-		this();
-		this.originalSocket = socket;
-		this.monitors = new ArrayList<>(monitors.length);
-		Collections.addAll(this.monitors, monitors);
-	}
+    private SocketChannel originalSocket;
+    private List<SocketChannelMonitor> monitors;
 
-	public MonitorSocketChannelWrapper(SocketChannel socket, List<SocketChannelMonitor> monitors) {
-		this();
-		this.originalSocket = socket;
-		this.monitors = monitors;
-	}
+    private MonitorSocketChannelWrapper() {
+        super(SelectorProvider.provider());
+    }
 
-	public MonitorSocketChannelWrapper(SocketChannel socket) {
-		this();
-		this.originalSocket = socket;
-	}
+    public MonitorSocketChannelWrapper(SocketChannel socket, SocketChannelMonitor... monitors) {
+        this();
+        this.originalSocket = socket;
+        this.monitors = new ArrayList<>(monitors.length);
+        Collections.addAll(this.monitors, monitors);
+    }
 
-	public static SocketChannel wrap(SocketChannel socket, SocketChannelMonitor... monitors) {
-		return new MonitorSocketChannelWrapper(socket, monitors);
-	}
+    public MonitorSocketChannelWrapper(SocketChannel socket, List<SocketChannelMonitor> monitors) {
+        this();
+        this.originalSocket = socket;
+        this.monitors = monitors;
+    }
 
-	public static SocketChannel wrap(SocketChannel socket, List<SocketChannelMonitor> monitors) {
-		return new MonitorSocketChannelWrapper(socket, monitors);
-	}
+    public MonitorSocketChannelWrapper(SocketChannel socket) {
+        this();
+        this.originalSocket = socket;
+    }
 
-	public MonitorSocketChannelWrapper addMonitor(SocketChannelMonitor monitor) {
-		if (monitors == null) {
-			monitors = new ArrayList<>(1);
-		}
-		monitors.add(monitor);
-		return this;
-	}
+    public static SocketChannel wrap(SocketChannel socket, SocketChannelMonitor... monitors) {
+        return new MonitorSocketChannelWrapper(socket, monitors);
+    }
 
-	public MonitorSocketChannelWrapper removeMonitor(SocketChannelMonitor monitor) {
-		if (monitors != null) {
-			monitors.remove(monitor);
-		}
-		return this;
-	}
+    public static SocketChannel wrap(SocketChannel socket, List<SocketChannelMonitor> monitors) {
+        return new MonitorSocketChannelWrapper(socket, monitors);
+    }
 
-	public SocketChannel getOriginalSocket() {
-		return originalSocket;
-	}
+    public MonitorSocketChannelWrapper addMonitor(SocketChannelMonitor monitor) {
+        if (monitors == null) {
+            monitors = new ArrayList<>(1);
+        }
+        monitors.add(monitor);
+        return this;
+    }
 
-	public void setOriginalSocket(SocketChannel originalSocket) {
-		this.originalSocket = originalSocket;
-	}
+    public MonitorSocketChannelWrapper removeMonitor(SocketChannelMonitor monitor) {
+        if (monitors != null) {
+            monitors.remove(monitor);
+        }
+        return this;
+    }
 
-	public List<SocketChannelMonitor> getMonitors() {
-		return monitors;
-	}
+    public SocketChannel getOriginalSocket() {
+        return originalSocket;
+    }
 
-	public void setMonitors(List<SocketChannelMonitor> monitors) {
-		this.monitors = monitors;
-	}
+    public void setOriginalSocket(SocketChannel originalSocket) {
+        this.originalSocket = originalSocket;
+    }
 
-	@Override
-	public <T> T getOption(SocketOption<T> name) throws IOException {
-		return originalSocket.getOption(name);
-	}
+    public List<SocketChannelMonitor> getMonitors() {
+        return monitors;
+    }
 
-	@Override
-	public Set<SocketOption<?>> supportedOptions() {
-		return originalSocket.supportedOptions();
-	}
+    public void setMonitors(List<SocketChannelMonitor> monitors) {
+        this.monitors = monitors;
+    }
 
-	@Override
-	public SocketChannel bind(SocketAddress local) throws IOException {
-		return originalSocket.bind(local);
-	}
+    @Override
+    public <T> T getOption(SocketOption<T> name) throws IOException {
+        return originalSocket.getOption(name);
+    }
 
-	@Override
-	public <T> SocketChannel setOption(SocketOption<T> name, T value) throws IOException {
-		return originalSocket.setOption(name, value);
-	}
+    @Override
+    public Set<SocketOption<?>> supportedOptions() {
+        return originalSocket.supportedOptions();
+    }
 
-	@Override
-	public SocketChannel shutdownInput() throws IOException {
-		return originalSocket.shutdownInput();
-	}
+    @Override
+    public SocketChannel bind(SocketAddress local) throws IOException {
+        return originalSocket.bind(local);
+    }
 
-	@Override
-	public SocketChannel shutdownOutput() throws IOException {
-		return originalSocket.shutdownOutput();
-	}
+    @Override
+    public <T> SocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+        return originalSocket.setOption(name, value);
+    }
 
-	@Override
-	public Socket socket() {
-		return originalSocket.socket();
-	}
+    @Override
+    public SocketChannel shutdownInput() throws IOException {
+        return originalSocket.shutdownInput();
+    }
 
-	@Override
-	public boolean isConnected() {
-		return originalSocket.isConnected();
-	}
+    @Override
+    public SocketChannel shutdownOutput() throws IOException {
+        return originalSocket.shutdownOutput();
+    }
 
-	@Override
-	public boolean isConnectionPending() {
-		return originalSocket.isConnectionPending();
-	}
+    @Override
+    public Socket socket() {
+        return originalSocket.socket();
+    }
 
-	@Override
-	public boolean connect(SocketAddress remote) throws IOException {
-		return originalSocket.connect(remote);
-	}
+    @Override
+    public boolean isConnected() {
+        return originalSocket.isConnected();
+    }
 
-	@Override
-	public boolean finishConnect() throws IOException {
-		return originalSocket.finishConnect();
-	}
+    @Override
+    public boolean isConnectionPending() {
+        return originalSocket.isConnectionPending();
+    }
 
-	@Override
-	public SocketAddress getRemoteAddress() throws IOException {
-		return originalSocket.getRemoteAddress();
-	}
+    @Override
+    public boolean connect(SocketAddress remote) throws IOException {
+        return originalSocket.connect(remote);
+    }
 
-	@Override
-	public int read(ByteBuffer dst) throws IOException {
-		int len = originalSocket.read(dst);
-		onReadMonitor(len);
-		return len;
-	}
+    @Override
+    public boolean finishConnect() throws IOException {
+        return originalSocket.finishConnect();
+    }
 
-	@Override
-	public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
-		long len = originalSocket.read(dsts, offset, length);
-		onReadMonitor((int)(len%Integer.MAX_VALUE));
-		for (int i = 0; i < len/Integer.MAX_VALUE; i++) {
-			onReadMonitor(Integer.MAX_VALUE);
-		}
-		return len;
-	}
+    @Override
+    public SocketAddress getRemoteAddress() throws IOException {
+        return originalSocket.getRemoteAddress();
+    }
 
-	@Override
-	public int write(ByteBuffer src) throws IOException {
-		int len = originalSocket.write(src);
-		onWriteMonitor(len);
-		return len;
-	}
+    @Override
+    public int read(ByteBuffer dst) throws IOException {
+        int len = originalSocket.read(dst);
+        onReadMonitor(len);
+        return len;
+    }
 
-	@Override
-	public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
-		long len = originalSocket.write(srcs, offset, length);
-		onWriteMonitor((int)(len%Integer.MAX_VALUE));
-		for (int i = 0; i < len/Integer.MAX_VALUE; i++) {
-			onWriteMonitor(Integer.MAX_VALUE);
-		}
-		return len;
-	}
-	
-	private void onReadMonitor(int len) {
-		if (monitors != null) {
-			IntWarp intWarp = new IntWarp(len);
-			for (InputStreamMonitor monitor : monitors) {
-				monitor.onRead(intWarp);
-			}
-		}
-	}
-	
-	private void onWriteMonitor(int len) {
-		if (monitors != null) {
-			IntWarp intWarp = new IntWarp(len);
-			for (OutputStreamMonitor monitor : monitors) {
-				monitor.onWrite(intWarp);
-			}
-		}
-	}
+    @Override
+    public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
+        long len = originalSocket.read(dsts, offset, length);
+        onReadMonitor((int) (len % Integer.MAX_VALUE));
+        for (int i = 0; i < len / Integer.MAX_VALUE; i++) {
+            onReadMonitor(Integer.MAX_VALUE);
+        }
+        return len;
+    }
 
-	@Override
-	public SocketAddress getLocalAddress() throws IOException {
-		return originalSocket.getLocalAddress();
-	}
+    @Override
+    public int write(ByteBuffer src) throws IOException {
+        int len = originalSocket.write(src);
+        onWriteMonitor(len);
+        return len;
+    }
 
-	@Override
-	protected void implCloseSelectableChannel() throws IOException {
-		originalSocket.close();
-	}
+    @Override
+    public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
+        long len = originalSocket.write(srcs, offset, length);
+        onWriteMonitor((int) (len % Integer.MAX_VALUE));
+        for (int i = 0; i < len / Integer.MAX_VALUE; i++) {
+            onWriteMonitor(Integer.MAX_VALUE);
+        }
+        return len;
+    }
 
-	@Override
-	protected void implConfigureBlocking(boolean block) throws IOException {
-		originalSocket.configureBlocking(block);
-	}
-	
+    private void onReadMonitor(int len) {
+        if (monitors != null) {
+            IntWarp intWarp = new IntWarp(len);
+            for (InputStreamMonitor monitor : monitors) {
+                monitor.onRead(intWarp);
+            }
+        }
+    }
+
+    private void onWriteMonitor(int len) {
+        if (monitors != null) {
+            IntWarp intWarp = new IntWarp(len);
+            for (OutputStreamMonitor monitor : monitors) {
+                monitor.onWrite(intWarp);
+            }
+        }
+    }
+
+    @Override
+    public SocketAddress getLocalAddress() throws IOException {
+        return originalSocket.getLocalAddress();
+    }
+
+    @Override
+    protected void implCloseSelectableChannel() throws IOException {
+        originalSocket.close();
+    }
+
+    @Override
+    protected void implConfigureBlocking(boolean block) throws IOException {
+        originalSocket.configureBlocking(block);
+    }
+
 }

@@ -29,90 +29,90 @@ import java.io.IOException;
 
 public class WebApp {
 
-	public static boolean isRunningFromJar() {
-		return WebApp.class.getResource("WebApp.class").getProtocol().equalsIgnoreCase("jar");
-	}
+    public static boolean isRunningFromJar() {
+        return WebApp.class.getResource("WebApp.class").getProtocol().equalsIgnoreCase("jar");
+    }
 
-	public static void main(String[] args) throws IOException {
-		Argument arguments = new Argument(args);
-		if (arguments.isHelp()) {
-			System.out.println(TerminalArgument.help());
-			return;
-		} else if (arguments.isVersion()) {
-			System.out.println(arguments.getVersion() + " - Angular Material (10.0.0)");
-			return;
-		}
+    public static void main(String[] args) throws IOException {
+        Argument arguments = new Argument(args);
+        if (arguments.isHelp()) {
+            System.out.println(TerminalArgument.help());
+            return;
+        } else if (arguments.isVersion()) {
+            System.out.println(arguments.getVersion() + " - Angular Material (10.0.0)");
+            return;
+        }
 
-		// setup logging service
-		EventBroadcast mainBroadcast = new EventBroadcast();
-		Printer printer = new PrinterImpl(System.out);
-		WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
-		LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
-		Properties properties = new Properties(arguments);
+        // setup logging service
+        EventBroadcast mainBroadcast = new EventBroadcast();
+        Printer printer = new PrinterImpl(System.out);
+        WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
+        LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
+        Properties properties = new Properties(arguments);
 
-		// setup web server
-		int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
-		String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
-				: "/static/angular";
-		WebServer.ResourceType type = arguments.isServerResourceLocation() ? WebServer.ResourceType.FILE :
+        // setup web server
+        int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
+        String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
+                : "/static/angular";
+        WebServer.ResourceType type = arguments.isServerResourceLocation() ? WebServer.ResourceType.FILE :
 //        			isRunningFromJar() ?
 //        					WebServer.ResourceType.IN_MEMORY :
-				WebServer.ResourceType.STREAM;
+                WebServer.ResourceType.STREAM;
 
 
-		Routes homeRoutes = new Routes("home");
-		Routes dashboardRoutes = new Routes("dashboard");
-		Routes downloadRoutes = new Routes("download", "table", "list");
-		Routes networkRoutes = new Routes("network", "chart");
-		Routes settingsRoutes = new Routes("setting");
-		Routes logViewRoutes = new Routes("logview");
+        Routes homeRoutes = new Routes("home");
+        Routes dashboardRoutes = new Routes("dashboard");
+        Routes downloadRoutes = new Routes("download", "table", "list");
+        Routes networkRoutes = new Routes("network", "chart");
+        Routes settingsRoutes = new Routes("setting");
+        Routes logViewRoutes = new Routes("logview");
 
-		Routes rootRoutes = new Routes("/",
-				homeRoutes,
-				dashboardRoutes,
-				downloadRoutes,
-				networkRoutes,
-				settingsRoutes,
-				logViewRoutes
-		);
+        Routes rootRoutes = new Routes("/",
+                homeRoutes,
+                dashboardRoutes,
+                downloadRoutes,
+                networkRoutes,
+                settingsRoutes,
+                logViewRoutes
+        );
 
-		WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
+        WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
 
-		// setup download manager service
-		SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));
-		WebDownloadService downloadService = new WebDownloadService(mainBroadcast);
+        // setup download manager service
+        SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));
+        WebDownloadService downloadService = new WebDownloadService(mainBroadcast);
 
-		AriiaCli cli = new AriiaCli(downloadService, client);
+        AriiaCli cli = new AriiaCli(downloadService, client);
 
-		SettingController settingController = new SettingController(new SettingService(downloadService, properties));
-		server.createControllerContext(settingController);
+        SettingController settingController = new SettingController(new SettingService(downloadService, properties));
+        server.createControllerContext(settingController);
 
-		ItemController itemController = new ItemController(new ItemService(downloadService));
-		server.createControllerContext(itemController);
-		LogLevelController logLevelController = new LogLevelController();
-		server.createControllerContext(logLevelController);
+        ItemController itemController = new ItemController(new ItemService(downloadService));
+        server.createControllerContext(itemController);
+        LogLevelController logLevelController = new LogLevelController();
+        server.createControllerContext(logLevelController);
 
-		server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
+        server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
 
-		cli.lunchAsWebApp(arguments, properties);
-		server.start();
-		LogCli.startLogService();
-		AnsiStringBuilder log = new AnsiStringBuilder();
-		log.append("start local web server: ");
-		log.blueLite().blink();
-		log.build();
-		log.append("http://127.0.0.1:" + port + "/");
-		if (type == ResourceType.FILE) {
-			log.defaultColor();
-			log.build();
-			log.append("\nStreaming Directory: ");
-			log.redLite();
-			log.append(resourceLocation);
-		}
+        cli.lunchAsWebApp(arguments, properties);
+        server.start();
+        LogCli.startLogService();
+        AnsiStringBuilder log = new AnsiStringBuilder();
+        log.append("start local web server: ");
+        log.blueLite().blink();
+        log.build();
+        log.append("http://127.0.0.1:" + port + "/");
+        if (type == ResourceType.FILE) {
+            log.defaultColor();
+            log.build();
+            log.append("\nStreaming Directory: ");
+            log.redLite();
+            log.append(resourceLocation);
+        }
 
-		Log.log(WebApp.class, "Running Web Server", log.toString());
+        Log.log(WebApp.class, "Running Web Server", log.toString());
 
 
-	}
+    }
 
 }

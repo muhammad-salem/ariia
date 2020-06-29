@@ -1,11 +1,11 @@
-<mat-grid-list cols="2" >
-    <div *ngFor="let item of items" class="m-1">
-        <mat-grid-tile>
-            <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
-        </mat-grid-tile>
-    </div>
+<mat-grid-list cols="2">
+	<div *ngFor="let item of items" class="m-1">
+		<mat-grid-tile>
+			<download-view (delete)="onItemDelete(item)" [item]="item"></download-view>
+		</mat-grid-tile>
+	</div>
 </mat-grid-list>
-<!-- 
+<!--
 <mat-grid-list cols="2" class="md-pad">
     <mat-grid-tile *ngFor="let item of items">
         <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
@@ -13,12 +13,12 @@
 </mat-grid-list>
 -->
 
-<!-- 
+<!--
 <div class="content" fxLayout="row" fxFlexAlign.gt-md>
     <div *ngFor="let item of items" fxFlex="50">
         <download-view [item]="item" (delete)="onItemDelete(item)"></download-view>
     </div>
-</div> 
+</div>
  -->
 
 <!--

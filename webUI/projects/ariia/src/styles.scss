@@ -4,12 +4,13 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
-// 
+
 @import '~bootstrap/scss/utilities/sizing';
 @import '~bootstrap/scss/utilities/spacing';
-// // @import '~bootstrap/scss/utilities/flex';
 @import '~bootstrap/scss/utilities/text';
-@import '~bootstrap/scss/grid';
+//@import '~bootstrap/scss/utilities/flex';
+//@import '~bootstrap/scss/grid';
+
 
 html, body { height: 100%; }
-body { margin: 0; font-family: "Roboto Mono", "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: "Roboto Mono", Roboto, "Helvetica Neue", sans-serif; }

@@ -1,13 +1,13 @@
 package org.ariia.web.app.model;
 
-import java.util.List;
-import java.util.Map;
-
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
 import org.ariia.items.ItemState;
 import org.ariia.items.MetaLinkItem;
 import org.ariia.monitors.RangeReport;
+
+import java.util.List;
+import java.util.Map;
 
 public class WebItem {
 
@@ -26,7 +26,7 @@ public class WebItem {
 
     protected RangeReport report;
 
-    public WebItem(ItemMetaData metaData){
+    public WebItem(ItemMetaData metaData) {
         this(metaData.getItem(), metaData.getRangeReport());
     }
 
@@ -38,7 +38,7 @@ public class WebItem {
         this.report = rangeReport;
     }
 
-    public WebItem(Item item){
+    public WebItem(Item item) {
         this.id = item.getId();
         this.uuid = item.getUuid();
         this.url = item.getUrl();
@@ -48,9 +48,9 @@ public class WebItem {
         this.saveDirectory = item.getSaveDirectory();
         this.headers = item.getHeaders();
         this.rangeInfo = new WebRangeInfo(item.getRangeInfo());
-        if(item instanceof MetaLinkItem) {
-        	MetaLinkItem metaLinkItem = (MetaLinkItem) item;
-        	this.mirrors = metaLinkItem.getMirrors();
+        if (item instanceof MetaLinkItem) {
+            MetaLinkItem metaLinkItem = (MetaLinkItem) item;
+            this.mirrors = metaLinkItem.getMirrors();
         }
     }
 

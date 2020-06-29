@@ -3,6 +3,8 @@ import {CommonModule} from '@angular/common';
 import {HeaderComponent} from './header/header.component';
 import {FooterComponent} from './footer/footer.component';
 import {SidebarComponent} from './sidebar/sidebar.component';
+import {ServerControlStateComponent} from './server-control-state/server-control-state.component';
+import {AppRootComponent} from "./app-root/app-root.component";
 import {ThemePickerModule} from '../theme-picker/theme-picker.module';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -11,8 +13,9 @@ import {MatMenuModule} from '@angular/material/menu';
 import {RouterModule} from '@angular/router';
 import {MatListModule} from '@angular/material/list';
 import {MatButtonModule} from '@angular/material/button';
-import {FlexLayoutModule} from '@angular/flex-layout';
-import {ServerControlStateComponent} from './server-control-state/server-control-state.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 
 @NgModule({
@@ -21,28 +24,34 @@ import {ServerControlStateComponent} from './server-control-state/server-control
 		HeaderComponent,
 		FooterComponent,
 		SidebarComponent,
-		ServerControlStateComponent
+		ServerControlStateComponent,
+		AppRootComponent
+
 	],
 	imports: [
 		CommonModule,
 		RouterModule,
 		ThemePickerModule,
-		FlexLayoutModule,
 		MatDividerModule,
 		MatToolbarModule,
 		MatIconModule,
 		MatMenuModule,
 		MatListModule,
 		MatButtonModule,
-		// MatTreeModule
+		MatSidenavModule,
+		MatSnackBarModule,
+		FlexLayoutModule
 	],
 	exports: [
 		HeaderComponent,
 		FooterComponent,
 		SidebarComponent,
-		ServerControlStateComponent
+		ServerControlStateComponent,
+		AppRootComponent
 	],
-	bootstrap: [],
+	bootstrap: [
+		AppRootComponent
+	],
 	schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LayoutModule {

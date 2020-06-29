@@ -1,12 +1,5 @@
 package org.ariia.core.api.service;
 
-import java.io.Closeable;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
-
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.writer.ChannelMetaDataWriter;
@@ -22,6 +15,13 @@ import org.ariia.monitors.SpeedTableReport;
 import org.ariia.network.ConnectivityCheck;
 import org.ariia.network.NetworkReport;
 
+import java.io.Closeable;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 /**
  * item life cycle
  * meta data to waiting list then it moved to download list
@@ -29,7 +29,7 @@ import org.ariia.network.NetworkReport;
  * else to pause list and if any action to waiting list again
  * <br/>
  * item --> [item meta data] --> add to [waiting list] -- > [download list] --> [ complete list]
- *                                            |---<--- [pause list] <--|
+ * |---<--- [pause list] <--|
  */
 public class DownloadService implements Closeable {
 
@@ -46,39 +46,48 @@ public class DownloadService implements Closeable {
     protected ConnectivityCheck connectivityCheck;
 
     protected Properties properties;
-    protected Runnable finishAction = () -> {};
+    protected Runnable finishAction = () -> {
+    };
     protected boolean allowDownload = true;
     protected boolean allowPause = false;
 
-    protected DownloadService(){}
-
-    public void setAllowDownload(boolean allowDownload) {
-        this.allowDownload = allowDownload;
-    }
-
-    public void setAllowPause(boolean allowPause) {
-        this.allowPause = allowPause;
+    protected DownloadService() {
     }
 
     public boolean isAllowDownload() {
         return allowDownload;
     }
 
+    public void setAllowDownload(boolean allowDownload) {
+        this.allowDownload = allowDownload;
+    }
+
     public boolean isAllowPause() {
         return allowPause;
     }
 
-    protected void waitEvent(ItemMetaData item) { }
-    protected void pauseEvent(ItemMetaData item) { }
-    protected void downloadEvent(ItemMetaData item) { }
-    protected void completeEvent(ItemMetaData item) { }
+    public void setAllowPause(boolean allowPause) {
+        this.allowPause = allowPause;
+    }
 
-    public void addItemMetaData(ItemMetaData metaData){
+    protected void waitEvent(ItemMetaData item) {
+    }
+
+    protected void pauseEvent(ItemMetaData item) {
+    }
+
+    protected void downloadEvent(ItemMetaData item) {
+    }
+
+    protected void completeEvent(ItemMetaData item) {
+    }
+
+    public void addItemMetaData(ItemMetaData metaData) {
         itemMetaDataList.add(metaData);
         sessionReport.addRange(metaData.getRangeInfo());
     }
 
-    public void removeItemMetaData(ItemMetaData metaData){
+    public void removeItemMetaData(ItemMetaData metaData) {
         itemMetaDataList.remove(metaData);
         sessionReport.removeRange(metaData.getRangeInfo());
 //        speedTableReport.remove(metaData.getRangeReport());
@@ -159,28 +168,28 @@ public class DownloadService implements Closeable {
         defaultClient.shutdownServiceNow();
     }
 
-    public Stream<ItemMetaData> itemStream(){
+    public Stream<ItemMetaData> itemStream() {
         return itemMetaDataList.stream();
     }
 
-    protected Stream<ItemMetaData> downloadStream(){
+    protected Stream<ItemMetaData> downloadStream() {
         return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isDownloading());
     }
 
-    private Stream<ItemMetaData> waitStream(){
+    private Stream<ItemMetaData> waitStream() {
         return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isWaiting());
     }
 
-    protected Stream<ItemMetaData> pauseStream(){
+    protected Stream<ItemMetaData> pauseStream() {
         return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isPause());
     }
 
-    protected Stream<ItemMetaData> completeStream(){
+    protected Stream<ItemMetaData> completeStream() {
         return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isComplete());
     }
 
-    public int getDownloadCount(){
-        return (int)downloadStream().count();
+    public int getDownloadCount() {
+        return (int) downloadStream().count();
     }
 
     public boolean isFinishTime() {
@@ -190,7 +199,7 @@ public class DownloadService implements Closeable {
     protected boolean isItemListHadItemsToDownload() {
         return itemMetaDataList.stream().anyMatch(metaData -> {
             ItemState state = metaData.getItem().getState();
-            return  state.isDownloading() || state.isWaiting();
+            return state.isDownloading() || state.isWaiting();
         });
     }
 
@@ -207,17 +216,17 @@ public class DownloadService implements Closeable {
     }
 
     protected void checkDownloadList() {
-    	Log.trace(getClass(), "DownloadService.checkDownloadList");
+        Log.trace(getClass(), "DownloadService.checkDownloadList");
         // if (!allowDownload) { return;}
         // if (!isItemListHadItemsToDownload()) { return;}
-        
+
         if (!allowDownload || itemMetaDataList.isEmpty()) {
-        	Log.log(getClass(), "Check Pause Download Service", "Allow Download: false");
+            Log.log(getClass(), "Check Pause Download Service", "Allow Download: false");
             // check download to pause
             downloadStream().forEach(this::moveToWaitingList);
             return;
         }
-        
+
         if (isItRequiredToPauseDownloadList()) {
             Log.log(getClass(), "Check Network Connection",
                     "Network Connectivity Statues: NETWORK DISCONNECTED");
@@ -250,7 +259,6 @@ public class DownloadService implements Closeable {
     }
 
 
-
     public void runSystemShutdownHook() {
         for (ItemMetaData metaData : itemMetaDataList) {
             metaData.systemFlush();
@@ -276,14 +284,14 @@ public class DownloadService implements Closeable {
 
 
     public final ItemMetaData initializeItemMetaData(Item item) {
-    	return initializeItemMetaData(item, null);
+        return initializeItemMetaData(item, null);
     }
 
     public final ItemMetaData initializeItemMetaData(Item item, Client client) {
-    	
-    	Client itemClient = Objects.isNull(client) ? this.defaultClient : client;
-    	
-        if (item.getRangeInfo().isFinish()){
+
+        Client itemClient = Objects.isNull(client) ? this.defaultClient : client;
+
+        if (item.getRangeInfo().isFinish()) {
             return new ItemMetaDataCompleteWrapper(item, itemClient, properties);
         } else if (item.getRangeInfo().isStreaming()) {
             return new StreamMetaDataWriter(item, itemClient, properties);
@@ -305,9 +313,9 @@ public class DownloadService implements Closeable {
         if (item.getRangeInfo().isFinish()
                 || metaData.getItem().getState().isComplete()) {
             moveToCompleteList(metaData);
-        } else if(metaData.getItem().getState().isPause()) {
+        } else if (metaData.getItem().getState().isPause()) {
             moveToPauseList(metaData);
-        } else if(metaData.getItem().getState().isDownloading()) {
+        } else if (metaData.getItem().getState().isDownloading()) {
             moveToDownloadList(metaData);
         } else {
             item.setState(ItemState.INIT_FILE);
@@ -318,14 +326,14 @@ public class DownloadService implements Closeable {
     }
 
     public void initializeItemOnlineAndDownload(Item item) {
-        scheduledService.execute(() ->{
+        scheduledService.execute(() -> {
             defaultClient.updateItemOnline(item);
             download(item);
         });
     }
 
     public void initializeFromDataStore(List<Item> items) {
-        for (Item item: items) {
+        for (Item item : items) {
             Item old = itemDataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
             if (Objects.isNull(old)) {
                 defaultClient.updateItemOnline(item);

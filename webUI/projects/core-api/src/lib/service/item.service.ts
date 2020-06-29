@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Item, MetaLinkItem} from '../model/item';
+import {Item} from '../model/item';
 
 @Injectable({
 	providedIn: 'root'
@@ -47,7 +47,7 @@ export class ItemService {
 		return this.httpClient.post<number>('/items/create/metaLink', urls);
 	}
 
-	createMetaLinkItem(item: MetaLinkItem): Observable<number> {
+	createMetaLinkItem(item: Item): Observable<number> {
 		return this.httpClient.post<number>('/items/create/metaLinkItem', item);
 	}
 

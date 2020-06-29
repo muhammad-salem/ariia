@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.ariia</groupId>
-		<artifactId>ariia-pom</artifactId>
-		<version>0.2.8</version>
-	</parent>
-	<artifactId>core-api</artifactId>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.ariia</groupId>
+        <artifactId>ariia-pom</artifactId>
+        <version>0.2.8</version>
+    </parent>
+    <artifactId>core-api</artifactId>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.ariia</groupId>
-			<artifactId>network-monitor</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ariia</groupId>
-			<artifactId>logger</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ariia</groupId>
-			<artifactId>models</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.ariia</groupId>
+            <artifactId>network-monitor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ariia</groupId>
+            <artifactId>logger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ariia</groupId>
+            <artifactId>models</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -7,12 +7,12 @@ import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {FlexModule} from '@angular/flex-layout';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSortModule} from '@angular/material/sort';
 import {MatDividerModule} from '@angular/material/divider';
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const routes: Routes = [
 	{path: '', component: LogTableComponent},
@@ -32,12 +32,12 @@ const routes: Routes = [
 		MatInputModule,
 		MatTableModule,
 		MatToolbarModule,
-		FlexModule,
 		MatIconModule,
 		MatButtonModule,
 		MatSelectModule,
 		MatSortModule,
-		MatDividerModule
+		MatDividerModule,
+		FlexLayoutModule
 	],
 	bootstrap: []
 })
