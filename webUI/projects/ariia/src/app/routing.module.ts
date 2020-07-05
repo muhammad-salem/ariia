@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
 	{
@@ -18,16 +18,17 @@ const routes: Routes = [
 			.then(module => module.NetworkModule)
 	},
 	{
-		path: 'setting', pathMatch: 'full',
+		path: 'config', pathMatch: 'full',
 		loadChildren: () => import('./modules/setting/setting.module')
 			.then(module => module.SettingModule)
 	},
 	{
-		path: 'logview', pathMatch: 'full',
+		path: 'logger', pathMatch: 'full',
 		loadChildren: () => import('./modules/logs/logs.module')
 			.then(module => module.LogsModule)
 	},
-	{path: '**', redirectTo: 'dashboard'}
+	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+	{ path: '**', redirectTo: 'dashboard' }
 ];
 
 @NgModule({
