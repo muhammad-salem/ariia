@@ -39,6 +39,9 @@ const routes: Routes = [
 		MatDividerModule,
 		FlexLayoutModule
 	],
+	exports: [
+		RouterModule
+	],
 	bootstrap: []
 })
 export class LogsModule {

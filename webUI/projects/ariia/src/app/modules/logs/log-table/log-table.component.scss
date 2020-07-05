@@ -7,42 +7,37 @@ ul li {
   list-style: none;
 }
 
-table {
+.log-toolbar {
+  font-size: 14px;
   width: 100%;
 }
 
-.mat-form-field {
-  font-size: 14px;
+table {
   width: 100%;
 }
 
 .mat-column-timeMillis {
   width: 10%;
-  padding-left: 2px;
   text-align: center;
 }
 
 .mat-column-level {
   width: 10%;
-  padding-left: 2px;
   text-align: center;
 }
 
 .mat-column-classname {
   width: 15%;
-  padding-left: 2px;
   text-align: center;
 }
 
 .mat-column-title {
   width: 15%;
-  padding-left: 2px;
   text-align: center;
 }
 
 .mat-column-message {
   width: 50%;
   padding-left: 2px;
-  text-align: center;
 }
 

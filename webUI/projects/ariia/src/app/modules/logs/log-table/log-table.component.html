@@ -1,6 +1,6 @@
 <mat-toolbar aria-label="download-action" role="toolbar">
 	<mat-toolbar-row>
-		<div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm>
+		<div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm class="log-toolbar">
 			<ul fxLayout="row" fxLayoutGap.sm>
 				<li>
 					<mat-form-field>
@@ -10,6 +10,7 @@
 								{{level}}
 							</mat-option>
 						</mat-select>
+						<mat-icon matSuffix>search</mat-icon>
 					</mat-form-field>
 				</li>
 				<li>
@@ -20,7 +21,7 @@
 			</ul>
 			<ul fxLayout="row" fxLayoutGap.sm>
 				<li>
-					<mat-form-field [style.fontSize]="'12px'" appearance="legacy">
+					<mat-form-field appearance="legacy">
 						<mat-label>Filter</mat-label>
 						<input (keyup)="applyFilter($event.target.value)" matInput placeholder="Search Server Logs">
 						<mat-icon matSuffix>search</mat-icon>
@@ -33,8 +34,7 @@
 
 <mat-divider class="divider"></mat-divider>
 
-<mat-table [dataSource]="dataSource" matSort>
-
+<table [dataSource]="dataSource" mat-table matSort>
 	<!-- Time Millis -->
 	<ng-container matColumnDef="timeMillis">
 		<th *matHeaderCellDef mat-header-cell mat-sort-header>#</th>
@@ -43,25 +43,25 @@
 
 	<!-- level-->
 	<ng-container matColumnDef="level">
-		<th *matHeaderCellDef mat-header-cell mat-sort-header>Level</th>
+		<th *matHeaderCellDef mat-header-cell>Level</th>
 		<td *matCellDef="let message" mat-cell>{{message.level}}</td>
 	</ng-container>
 
 	<!--Class Name -->
 	<ng-container matColumnDef="classname">
-		<th *matHeaderCellDef mat-header-cell mat-sort-header>Class Name</th>
+		<th *matHeaderCellDef mat-header-cell>Class Name</th>
 		<td *matCellDef="let message" mat-cell>{{message.classname}}</td>
 	</ng-container>
 
 	<!-- Title -->
 	<ng-container matColumnDef="title">
-		<th *matHeaderCellDef mat-header-cell mat-sort-header>Title</th>
+		<th *matHeaderCellDef mat-header-cell>Title</th>
 		<td *matCellDef="let message" mat-cell>{{message.title}}</td>
 	</ng-container>
 
 	<!-- Message -->
 	<ng-container matColumnDef="message">
-		<th *matHeaderCellDef mat-header-cell mat-sort-header>Message</th>
+		<th *matHeaderCellDef mat-header-cell>Message</th>
 		<td *matCellDef="let message" mat-cell>{{message.message}}</td>
 	</ng-container>
 
@@ -69,4 +69,4 @@
 	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
 	<tr *matRowDef="let message; columns: columnsToDisplay" mat-row></tr>
 
-</mat-table>
+</table>
