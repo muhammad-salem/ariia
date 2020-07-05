@@ -43,11 +43,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 		FlexLayoutModule
 	],
 	exports: [
-		HeaderComponent,
-		FooterComponent,
-		SidebarComponent,
-		ServerControlStateComponent,
-		AppRootComponent
+		RouterModule
 	],
 	bootstrap: [
 		AppRootComponent

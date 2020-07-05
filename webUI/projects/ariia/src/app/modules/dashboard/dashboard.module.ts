@@ -44,7 +44,9 @@ const routes: Routes = [
 		MatListModule,
 		FlexLayoutModule
 	],
-	exports: [DashboardComponent],
+	exports: [
+		RouterModule
+	],
 	bootstrap: [DashboardComponent]
 })
 export class DashboardModule {
