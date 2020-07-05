@@ -63,17 +63,17 @@ public class WebApp {
         Routes homeRoutes = new Routes("home");
         Routes dashboardRoutes = new Routes("dashboard");
         Routes downloadRoutes = new Routes("download", "table", "list");
-        Routes networkRoutes = new Routes("network", "chart");
-        Routes settingsRoutes = new Routes("setting");
-        Routes logViewRoutes = new Routes("logview");
+        Routes networkRoutes = new Routes("network", "monitor", "chart");
+        Routes configRoutes = new Routes("config");
+        Routes loggerRoutes = new Routes("logger");
 
         Routes rootRoutes = new Routes("/",
                 homeRoutes,
                 dashboardRoutes,
                 downloadRoutes,
                 networkRoutes,
-                settingsRoutes,
-                logViewRoutes
+                configRoutes,
+                loggerRoutes
         );
 
         WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);

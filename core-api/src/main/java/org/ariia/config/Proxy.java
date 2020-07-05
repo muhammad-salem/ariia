@@ -14,9 +14,6 @@ public class Proxy {
     public static Proxy getProxy(String host, int port, Type type) {
         Proxy proxy = new Proxy();
         switch (type) {
-            case DIRECT:
-                proxy.setType(Type.DIRECT);
-                break;
             case HTTP:
                 proxy.setType(Type.HTTP);
                 break;
@@ -27,8 +24,7 @@ public class Proxy {
                 proxy.setType(Type.SOCKS5);
                 break;
             case SYSTEM:
-                proxy.setType(Type.SOCKS5);
-                break;
+            case DIRECT:
             default:
                 proxy.setType(Type.DIRECT);
         }
@@ -46,21 +42,15 @@ public class Proxy {
     public java.net.Proxy getProxy() {
         java.net.Proxy.Type netType;
         switch (this.type) {
-            case DIRECT:
-                netType = java.net.Proxy.Type.DIRECT;
-                break;
             case HTTP:
                 netType = java.net.Proxy.Type.HTTP;
                 break;
             case SOCKS4:
-                netType = java.net.Proxy.Type.SOCKS;
-                break;
             case SOCKS5:
                 netType = java.net.Proxy.Type.SOCKS;
                 break;
             case SYSTEM:
-                netType = java.net.Proxy.Type.DIRECT;
-                break;
+            case DIRECT:
             default:
                 netType = java.net.Proxy.Type.DIRECT;
         }

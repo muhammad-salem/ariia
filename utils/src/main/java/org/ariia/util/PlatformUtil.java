@@ -53,7 +53,7 @@ public class PlatformUtil {
     private static final boolean WINDOWS_VISTA_OR_LATER = WINDOWS && versionNumberGreaterThanOrEqualTo(6.0f);
     private static final boolean WINDOWS_7_OR_LATER = WINDOWS && versionNumberGreaterThanOrEqualTo(6.1f);
     private static final boolean MAC = os.startsWith("Mac");
-    private static final boolean LINUX = os.startsWith("Linux") && !ANDROID;
+    private static final boolean LINUX;
     private static final boolean SOLARIS = os.startsWith("SunOS");
     private static final boolean IOS = os.startsWith("iOS");
     // a property used to denote a non-default impl for this host
@@ -62,6 +62,7 @@ public class PlatformUtil {
             || "Dalvik".equals(System.getProperty("java.vm.name"));
 
     static {
+        LINUX = os.startsWith("Linux") && !ANDROID;
         javafxPlatform = AccessController
                 .doPrivileged((PrivilegedAction<String>) () -> System.getProperty("javafx.platform"));
         loadProperties();

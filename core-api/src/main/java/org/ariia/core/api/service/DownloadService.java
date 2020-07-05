@@ -221,14 +221,14 @@ public class DownloadService implements Closeable {
         // if (!isItemListHadItemsToDownload()) { return;}
 
         if (!allowDownload || itemMetaDataList.isEmpty()) {
-            Log.log(getClass(), "Check Pause Download Service", "Allow Download: false");
+            Log.trace(getClass(), "Check Pause Download Service", "Allow Download: false");
             // check download to pause
             downloadStream().forEach(this::moveToWaitingList);
             return;
         }
 
         if (isItRequiredToPauseDownloadList()) {
-            Log.log(getClass(), "Check Network Connection",
+            Log.trace(getClass(), "Check Network Connection",
                     "Network Connectivity Statues: NETWORK DISCONNECTED");
             // check download to pause
             downloadStream().forEach(this::moveToWaitingList);
