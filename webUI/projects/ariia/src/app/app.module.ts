@@ -3,7 +3,6 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
 import {CoreApiModule} from 'core-api';
 
 import {RoutingModule} from './routing.module';
@@ -29,7 +28,6 @@ import {AppRootComponent} from "./modules/layout/app-root/app-root.component";
 		BrowserModule,
 		BrowserAnimationsModule,
 		FormsModule,
-		HttpClientModule,
 		CoreApiModule,
 		RoutingModule,
 		LayoutModule
