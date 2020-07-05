@@ -8,6 +8,11 @@
 			<ul fxLayout="row" fxLayoutGap.sm>
 				<li>
 					<button mat-icon-button>
+						<mat-icon>add</mat-icon>
+					</button>
+				</li>
+				<li>
+					<button mat-icon-button>
 						<mat-icon>settings</mat-icon>
 					</button>
 				</li>
@@ -24,8 +29,8 @@
 						<button mat-menu-item routerLink="/dashboard">Dashboard</button>
 						<button mat-menu-item routerLink="/download">Download</button>
 						<button mat-menu-item routerLink="/network">Network</button>
-						<button mat-menu-item routerLink="/setting">Setting</button>
-						<button mat-menu-item routerLink="/logview">Logging</button>
+						<button mat-menu-item routerLink="/config">Settings</button>
+						<button mat-menu-item routerLink="/logger">Logging</button>
 					</mat-menu>
 
 					<button [matMenuTriggerFor]="appMenu" mat-icon-button>

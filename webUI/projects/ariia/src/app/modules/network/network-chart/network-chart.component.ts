@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-	selector: 'app-network-chart',
+	selector: 'network-chart',
 	templateUrl: './network-chart.component.html',
 	styleUrls: ['./network-chart.component.scss']
 })

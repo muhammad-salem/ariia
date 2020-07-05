@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
-	selector: 'app-session-monitor',
+	selector: 'session-monitor',
 	templateUrl: './session-monitor.component.html',
 	styleUrls: ['./session-monitor.component.scss']
 })
