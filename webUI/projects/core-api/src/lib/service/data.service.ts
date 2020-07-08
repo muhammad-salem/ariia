@@ -108,7 +108,7 @@ export class DataService {
 			},
 			{
 				name: 'session-start',
-				handel: (messageEvent) => {
+				handel: () => {
 					this.initItems();
 					this.initDataService();
 					this.notify.success('Start Server Successfully');
@@ -116,7 +116,7 @@ export class DataService {
 			},
 			{
 				name: 'session-shutdown',
-				handel: (messageEvent) => {
+				handel: () => {
 					this.notify.error('Server got shutdown');
 				}
 			}
@@ -166,6 +166,9 @@ export class DataService {
 	private handelLoggingEvent(messageEvent: MessageEvent) {
 		const message: Message = JSON.parse(messageEvent.data);
 		this.loggingMessage.push(message);
+		if (this.loggingMessage.length > 60) {
+			this.loggingMessage.splice(0, this.loggingMessage.length - 60);
+		}
 		this.logSubject.next(this.loggingMessage);
 	}
 
