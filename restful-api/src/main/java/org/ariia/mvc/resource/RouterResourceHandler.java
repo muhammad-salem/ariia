@@ -31,6 +31,11 @@ public abstract class RouterResourceHandler implements HttpHandler, StreamHandle
     public void handle(HttpExchange exchange) throws IOException {
         URI uri = exchange.getRequestURI();
         String filename = uri.getPath();
+        if(filename.contains("/../")){
+        	exchange.sendResponseHeaders(404, -1);
+            exchange.close();
+            return;
+        }
         if (routes.lookupRoute(filename)) {
             filename = indexFile;
         }
