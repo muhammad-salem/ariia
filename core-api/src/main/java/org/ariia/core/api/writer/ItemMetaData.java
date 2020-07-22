@@ -14,10 +14,13 @@ import org.ariia.util.R;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
 
 //import org.ariia.core.api.queue.ItemDownloader;
 
@@ -33,8 +36,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
     protected Properties properties;
     protected Client client;
     private ConcurrentLinkedQueue<Segment> segments;
-    private LinkedList<Integer> downloadList = new LinkedList<>();
-    private Queue<Integer> waitQueue = new LinkedList<>();
+    private HashMap<Integer, Future<?>> downloadMap;
+    private Queue<Integer> waitQueue;
 
     public ItemMetaData(Item item, Client client, Properties properties) {
         this.item = item;
@@ -42,13 +45,15 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
         this.info = item.getRangeInfo();
         this.rangeReport = new RangeReport(info, item.getFilename());
         this.segments = new ConcurrentLinkedQueue<>();
+        this.downloadMap = new HashMap<>();
+        this.waitQueue = new LinkedList<>();
         this.properties = properties;
         initRandomAccessFile();
         initMetaData();
     }
 
     protected abstract void initMetaData();
-//	public    abstract void    clearFile();
+    // public abstract void clearFile();
 
     protected abstract boolean writeSegment(Segment segment);
 
@@ -96,7 +101,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
     }
 
     public synchronized void systemFlush() {
-        if (segments.isEmpty()) return;
+        if (segments.isEmpty())
+            return;
         flush(segments);
         System.out.print(".");
     }
@@ -106,7 +112,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
         int writtenSegmentCount = 0;
         while (!queue.isEmpty()) {
             segment = queue.peek();
-            if (segment == null) break;
+            if (segment == null)
+                break;
             if (writeSegment(segment)) {
                 writtenSegmentCount++;
                 queue.poll();
@@ -120,14 +127,12 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
             }
         }
 
-//		saveItem2CacheFile();
+        // saveItem2CacheFile();
         forceUpdate();
 
         if (writtenSegmentCount > 0) {
             Log.trace(getClass(), "flush segments",
-                    String.format("File Name: %s\nWritten Segment Count: %s",
-                            item.getFilename(), writtenSegmentCount)
-            );
+                    String.format("File Name: %s\nWritten Segment Count: %s", item.getFilename(), writtenSegmentCount));
         }
     }
 
@@ -171,23 +176,28 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
     }
 
     public void checkCompleted() {
-        Iterator<Integer> iterator = downloadList.iterator();
+        Iterator<Entry<Integer, Future<?>>> iterator = downloadMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Integer index = iterator.next();
-            if (info.isFinish(index)) {
+            Entry<Integer, Future<?>> entry = iterator.next();
+            if (info.isFinish(entry.getKey())) {
                 iterator.remove();
             } else {
+                waitQueue.add(entry.getKey());
                 iterator.remove();
-                waitQueue.add(index);
             }
         }
     }
 
     public void checkWhileDownloading() {
-        Iterator<Integer> iterator = downloadList.iterator();
+        Iterator<Entry<Integer, Future<?>>> iterator = downloadMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Integer index = iterator.next();
-            if (info.isFinish(index)) {
+            Entry<Integer, Future<?>> entry = iterator.next();
+            boolean isFinish = info.isFinish(entry.getKey());
+            boolean isDone = entry.getValue().isDone();
+            if (isDone && isFinish) {
+                iterator.remove();
+            } else if (isDone && !isFinish) {
+                waitQueue.add(entry.getKey());
                 iterator.remove();
             }
         }
@@ -200,7 +210,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
 
     public void initWaitQueue() {
         int count = info.getRangeCount();
-        if (count == 0) return;
+        if (count == 0)
+            return;
         waitQueue.clear();
         for (int index = 0; index < count; index++) {
             if (!info.isFinish(index)) {
@@ -209,8 +220,8 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
         }
     }
 
-    public boolean isDownloadListEmpty() {
-        return downloadList.isEmpty();
+    public boolean isDownloadMapEmpty() {
+        return downloadMap.isEmpty();
     }
 
     public void startAndCheckDownloadQueue(SpeedMonitor... monitors) {
@@ -218,18 +229,18 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
             return;
         }
         downloading = true;
-        while (downloadList.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
+        while (downloadMap.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
             Integer index = waitQueue.poll();
-            if (index == null) break;
+            if (index == null)
+                break;
             else {
                 if (info.isFinish(index)) {
                     continue;
                 }
-                client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
-                downloadList.add(index);
+                Future<?> downladProcess = client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
+                downloadMap.put(index, downladProcess);
             }
         }
     }
-
 
 }

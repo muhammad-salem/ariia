@@ -23,18 +23,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
- * item life cycle
- * meta data to waiting list then it moved to download list
- * if finish >> to complete list
- * else to pause list and if any action to waiting list again
- * <br/>
- * item --> [item meta data] --> add to [waiting list] -- > [download list] --> [ complete list]
- * |---<--- [pause list] <--|
+ * item life cycle meta data to waiting list then it moved to download list if
+ * finish >> to complete list else to pause list and if any action to waiting
+ * list again <br/>
+ * item --> [item meta data] --> add to [waiting list] -- > [download list] -->
+ * [ complete list] |---<--- [pause list] <--|
  */
 public class DownloadService implements Closeable {
 
     public final static int SCHEDULE_TIME = 1;
-//    public final static int SCHEDULE_POOL = 10;
+    // public final static int SCHEDULE_POOL = 10;
 
     protected ScheduledExecutorService scheduledService;
 
@@ -83,6 +81,8 @@ public class DownloadService implements Closeable {
     }
 
     public void addItemMetaData(ItemMetaData metaData) {
+        metaData.initWaitQueue();
+        moveToPauseList(metaData);
         itemMetaDataList.add(metaData);
         sessionReport.addRange(metaData.getRangeInfo());
     }
@@ -90,11 +90,11 @@ public class DownloadService implements Closeable {
     public void removeItemMetaData(ItemMetaData metaData) {
         itemMetaDataList.remove(metaData);
         sessionReport.removeRange(metaData.getRangeInfo());
-//        speedTableReport.remove(metaData.getRangeReport());
+        // speedTableReport.remove(metaData.getRangeReport());
     }
 
     private void moveToWaitingList(ItemMetaData metaData) {
-//        if (metaData.getRangeInfo().isFinish()) { return;}
+        // if (metaData.getRangeInfo().isFinish()) { return;}
         if (metaData.getItem().getState().canMoveToWaitState()) {
             metaData.getItem().setState(ItemState.WAITING);
             metaData.getRangeInfo().oneCycleDataUpdate();
@@ -132,14 +132,14 @@ public class DownloadService implements Closeable {
 
     public void moveToPauseList(ItemMetaData metaData) {
         if (allowPause) {
-            //        if (metaData.getItem().getState().isDownloading()) {
+            // if (metaData.getItem().getState().isDownloading()) {
             metaData.pause();
             speedTableReport.remove(metaData.getRangeReport());
             metaData.getItem().setState(ItemState.PAUSE);
             itemDataStore.save(metaData.getItem());
             Log.log(getClass(), "Pause", metaData.getItem().getFilename(), metaData.getItem().toString());
             pauseEvent(metaData);
-//        }
+            // }
         } else {
             metaData.pause();
             moveToWaitingList(metaData);
@@ -154,7 +154,6 @@ public class DownloadService implements Closeable {
         metaData.systemFlush();
         itemDataStore.remove(metaData.getItem());
     }
-
 
     public void startScheduledService() {
         scheduledService.scheduleWithFixedDelay(this::checkDownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
@@ -206,8 +205,8 @@ public class DownloadService implements Closeable {
     public boolean isItRequiredToPauseDownloadList() {
         if (sessionReport.isDownloading()) {
             return false;
-//        } else if (isItemListHadItemsToDownload()) {
-//            return false;
+            // } else if (isItemListHadItemsToDownload()) {
+            // return false;
         } else {
             NetworkReport report = connectivityCheck.networkReport();
             Log.trace(connectivityCheck.getClass(), report.getTitle(), report.getMessage());
@@ -228,8 +227,7 @@ public class DownloadService implements Closeable {
         }
 
         if (isItRequiredToPauseDownloadList()) {
-            Log.trace(getClass(), "Check Network Connection",
-                    "Network Connectivity Statues: NETWORK DISCONNECTED");
+            Log.trace(getClass(), "Check Network Connection", "Network Connectivity Statues: NETWORK DISCONNECTED");
             // check download to pause
             downloadStream().forEach(this::moveToWaitingList);
         } else {
@@ -245,11 +243,9 @@ public class DownloadService implements Closeable {
             // check waiting to download
             long reamingActiveDownloadPool = properties.getMaxActiveDownloadPool() - getDownloadCount();
             if (reamingActiveDownloadPool > 0) {
-                waitStream()
-                        .limit(reamingActiveDownloadPool)
-                        .forEach(metaData -> {
-                            this.moveToDownloadList(metaData);
-                        });
+                waitStream().limit(reamingActiveDownloadPool).forEach(metaData -> {
+                    this.moveToDownloadList(metaData);
+                });
             }
             if (isFinishTime()) {
                 finishAction.run();
@@ -257,7 +253,6 @@ public class DownloadService implements Closeable {
         }
 
     }
-
 
     public void runSystemShutdownHook() {
         for (ItemMetaData metaData : itemMetaDataList) {
@@ -282,7 +277,6 @@ public class DownloadService implements Closeable {
         });
     }
 
-
     public final ItemMetaData initializeItemMetaData(Item item) {
         return initializeItemMetaData(item, null);
     }
@@ -299,28 +293,28 @@ public class DownloadService implements Closeable {
             return new ChannelMetaDataWriter(item, itemClient, properties);
         }
 
-//		else if(Integer.MAX_VALUE  > range.getFileLength()) {
-//			return new SimpleMappedMetaDataWriter(item, itemClient, properties);
-//		} else {
-//			return new LargeMappedMetaDataWriter(item, itemClient, properties);
-//		}
+        // else if(Integer.MAX_VALUE > range.getFileLength()) {
+        // return new SimpleMappedMetaDataWriter(item, itemClient, properties);
+        // } else {
+        // return new LargeMappedMetaDataWriter(item, itemClient, properties);
+        // }
     }
-
 
     public void download(Item item) {
         ItemMetaData metaData = initializeItemMetaData(item);
         addItemMetaData(metaData);
-        if (item.getRangeInfo().isFinish()
-                || metaData.getItem().getState().isComplete()) {
-            moveToCompleteList(metaData);
-        } else if (metaData.getItem().getState().isPause()) {
-            moveToPauseList(metaData);
-        } else if (metaData.getItem().getState().isDownloading()) {
-            moveToDownloadList(metaData);
-        } else {
-            item.setState(ItemState.INIT_FILE);
-            moveToWaitingList(metaData);
-        }
+
+        // if (item.getRangeInfo().isFinish() ||
+        // metaData.getItem().getState().isComplete()) {
+        // moveToCompleteList(metaData);
+        // } else if (metaData.getItem().getState().isPause()) {
+        // moveToPauseList(metaData);
+        // } else if (metaData.getItem().getState().isDownloading()) {
+        // moveToDownloadList(metaData);
+        // } else {
+        // item.setState(ItemState.INIT_FILE);
+        // moveToWaitingList(metaData);
+        // }
         Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " + metaData.getClass().getSimpleName());
         Log.log(getClass(), "add download item to list", item.toString());
     }

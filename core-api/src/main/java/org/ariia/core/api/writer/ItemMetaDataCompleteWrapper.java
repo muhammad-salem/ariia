@@ -87,13 +87,12 @@ public class ItemMetaDataCompleteWrapper extends ItemMetaData {
     }
 
     @Override
-    public boolean isDownloadListEmpty() {
+    public boolean isDownloadMapEmpty() {
         return true;
     }
 
     @Override
     public void startAndCheckDownloadQueue(SpeedMonitor... monitors) {
     }
-
 
 }

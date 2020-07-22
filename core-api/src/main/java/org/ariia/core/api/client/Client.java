@@ -25,7 +25,7 @@ import java.util.concurrent.Future;
 
 public abstract class Client implements Downloader, ItemDownloader, ContentLength {
 
-    //	protected int retries;
+    // protected int retries;
     protected Properties properties;
     protected ClientRequest clientRequest;
     protected ExecutorService executor;
@@ -57,7 +57,6 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
         return executor;
     }
 
-
     public void shutdownServiceNow() {
         executor.shutdownNow();
     }
@@ -66,9 +65,12 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
     public Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
         if (properties.getRetries() == 0) {
             return executor.submit(() -> {
-                boolean finsh = false;
-                while (!finsh && metaData.isDownloading()) {
-                    finsh = downloadTask(metaData, index, monitors);
+                boolean finised = false;
+                while (!finised && metaData.isDownloading()) {
+                    finised = downloadTask(metaData, index, monitors);
+                    if (!finised && monitors[0].getTcpDownloadSpeed() == 0) {
+                        break;
+                    }
                 }
             });
         } else {
@@ -76,6 +78,13 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
                 boolean finised = false;
                 for (int i = 0; (i < properties.getRetries() && !finised && metaData.isDownloading()); i++) {
                     finised = downloadTask(metaData, index, monitors);
+                    if (!finised && monitors[0].getTcpDownloadSpeed() == 0) {
+                        Thread.currentThread().interrupt();
+                        /*
+                         * no need for 'break' her, the interrupt handel it
+                         */
+                        break;
+                    }
                 }
             });
         }
@@ -100,16 +109,14 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 
     private void updateItemOnline(Item item, boolean headOrGet) throws IOException {
 
-        try (Response response = headOrGet
-                ? clientRequest.head(item)
-                : clientRequest.get(item)) {
+        try (Response response = headOrGet ? clientRequest.head(item) : clientRequest.get(item)) {
             if (response.code() == 404) {
                 item.setFilename("404_Not_Found");
                 return;
             }
             if (!response.requestUrl().equals(item.getUrl())) {
-                Log.trace(getClass(), "redirect item to another location", "base url:\t" + item.getUrl()
-                        + "\nredirect url: \t" + response.requestUrl());
+                Log.trace(getClass(), "redirect item to another location",
+                        "base url:\t" + item.getUrl() + "\nredirect url: \t" + response.requestUrl());
 
                 String decodedUrl;
                 try {
@@ -126,9 +133,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
             }
             OptionalLong contentLength = response.firstValueAsLong("Content-Length");
             if (contentLength.isPresent()) {
-                item.setRangeInfo(
-                        RangeInfo.recommendedRange(contentLength.getAsLong())
-                );
+                item.setRangeInfo(RangeInfo.recommendedRange(contentLength.getAsLong()));
             }
 
             Optional<String> contentDisposition = response.firstValue("Content-disposition");
@@ -136,10 +141,8 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
             if (contentDisposition.isPresent() && contentDisposition.get().contains("filename")) {
                 String[] split = contentDisposition.get().split("=");
                 String filename = split[split.length - 1].trim();
-                filename = filename.substring(
-                        filename.charAt(0) == '"' ? 1 : 0,
-                        filename.charAt(filename.length() - 1) == '"'
-                                ? filename.length() - 1 : filename.length());
+                filename = filename.substring(filename.charAt(0) == '"' ? 1 : 0,
+                        filename.charAt(filename.length() - 1) == '"' ? filename.length() - 1 : filename.length());
                 item.setFilename(filename);
             }
         } catch (IOException e) {
@@ -148,6 +151,5 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
         }
 
     }
-
 
 }
