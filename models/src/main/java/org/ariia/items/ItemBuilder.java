@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-
 /**
  * build only items from arguments
  *
@@ -47,7 +46,6 @@ public class ItemBuilder {
         initItems();
     }
 
-
     private void initItems() {
         this.items = new LinkedList<>();
         if (arguments.isUrl()) {
@@ -60,13 +58,15 @@ public class ItemBuilder {
             streamUrl(arguments);
         }
 
-//		else if (arguments.isCheckFile()) {
-//			if(arguments.isDownloadPieces()) {
-//				CheckManager.downloadPices(arguments.getCheckFile(), arguments.parseDownloadPieces(), arguments.parseChunkSize(), manager);
-//			} else {
-//				CheckManager.CheckItem(arguments.getCheckFile(),arguments.parseChunkSize(), manager);
-//			}
-//		}
+        // else if (arguments.isCheckFile()) {
+        // if(arguments.isDownloadPieces()) {
+        // CheckManager.downloadPices(arguments.getCheckFile(),
+        // arguments.parseDownloadPieces(), arguments.parseChunkSize(), manager);
+        // } else {
+        // CheckManager.CheckItem(arguments.getCheckFile(),arguments.parseChunkSize(),
+        // manager);
+        // }
+        // }
     }
 
     private void addItem(String url, Map<String, List<String>> headers) {
@@ -85,10 +85,10 @@ public class ItemBuilder {
         if (arguments.isCookieFile()) {
             Map<String, String> cookies = arguments.getCookies();
             List<String> values = new ArrayList<>(cookies.size());
-//			String cookie = "";
+            // String cookie = "";
             for (Map.Entry<String, String> entry : cookies.entrySet()) {
                 values.add(entry.getKey() + '=' + entry.getValue());
-//				cookie = entry.getKey() + '=' + entry.getValue() + "; " + cookie;
+                // cookie = entry.getKey() + '=' + entry.getValue() + "; " + cookie;
             }
             item.addHeader("Cookie", values);
         }
@@ -112,9 +112,8 @@ public class ItemBuilder {
         return item;
     }
 
-
     public void downloadUrl() {
-        for (String url : arguments.getArgs()) {
+        for (String url : arguments.getUrls()) {
             addItem(url, arguments.getHeaders());
         }
     }
@@ -122,7 +121,6 @@ public class ItemBuilder {
     private void streamUrl(Argument arguments) {
         addItem(arguments.getStream(), arguments.getHeaders());
     }
-
 
     private void downloadInputFile() {
         List<String> lines = Utils.readLines(arguments.getInputFile());
@@ -137,9 +135,7 @@ public class ItemBuilder {
                 addItem(line.trim(), headers);
             } else if (line.equals("\t")) {
                 continue;
-            } else if (line.startsWith("\\t")
-                    || line.startsWith(" ")
-                    || line.startsWith("	")) {
+            } else if (line.startsWith("\\t") || line.startsWith(" ") || line.startsWith("	")) {
                 String[] header = line.trim().split(": ");
                 if (header.length == 1) {
                     continue;
@@ -150,7 +146,6 @@ public class ItemBuilder {
             }
         }
     }
-
 
     private void downloadMetalink() {
         MetaLinkItem item = null;
@@ -178,8 +173,7 @@ public class ItemBuilder {
 
             for (int i = 0; i < mirrors.getLength(); i++) {
                 Node node = mirrors.item(i);
-                if (node.hasAttributes() && node.getAttributes()
-                        .getNamedItem("type").getNodeValue().equals("http"))
+                if (node.hasAttributes() && node.getAttributes().getNamedItem("type").getNodeValue().equals("http"))
                     urls.add(node.getTextContent());
             }
             Iterator<String> iterator = urls.iterator();
@@ -223,7 +217,6 @@ public class ItemBuilder {
         return builder;
     }
 
-
     public MetaLinkItem readMetaLinkXML(String metaLinkFile) {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -235,8 +228,7 @@ public class ItemBuilder {
 
             for (int i = 0; i < mirrors.getLength(); i++) {
                 Node node = mirrors.item(i);
-                urls.add(node.getAttributes().getNamedItem("url")
-                        .getNodeValue());
+                urls.add(node.getAttributes().getNamedItem("url").getNodeValue());
             }
             Iterator<String> iterator = urls.iterator();
             return readMetaLinkText(iterator);

@@ -29,9 +29,7 @@ public class Ariia {
                 System.exit(0);
             }
         };
-        AriiaCli cli = new AriiaCli(
-                Clients.segmentClient(properties, new OkClient(arguments.getProxy())),
-                onComplete);
+        AriiaCli cli = new AriiaCli(Clients.segmentClient(properties, new OkClient(arguments.getProxy())), onComplete);
         cli.lunchAsCliApp(arguments, properties);
 
     }

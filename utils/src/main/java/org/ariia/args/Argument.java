@@ -15,6 +15,7 @@ public class Argument {
     private String urlSplit = "!:!";
     transient private String[] args;
     private Map<TerminalArgument, String> dictionary;
+
     public Argument() {
         dictionary = new HashMap<TerminalArgument, String>();
     }
@@ -40,7 +41,6 @@ public class Argument {
     public Map<TerminalArgument, String> getDictionary() {
         return dictionary;
     }
-
 
     /**
      * dictionary
@@ -116,9 +116,7 @@ public class Argument {
             if (value == null)
                 value = get(TerminalArgument.HttpsProxy);
             proxy = getProxy(value, Type.HTTP);
-        } else if (isSocksProxy()
-                || isSocks4Proxy()
-                || isSocks5Proxy()) {
+        } else if (isSocksProxy() || isSocks4Proxy() || isSocks5Proxy()) {
             value = dictionary.get(TerminalArgument.SocksProxy);
             if (value == null)
                 value = dictionary.get(TerminalArgument.Socks5Proxy);
@@ -142,21 +140,13 @@ public class Argument {
             String[] temp = value.split(":");
             switch (temp.length) {
                 case 3:
-                    // <->  http*//127.0.0.1*8080/
-				
-				/*
-				switch (temp[0]) {
-				case "http":
-				case "https":
-					type = Type.HTTP;
-					break;
-				case "ssh":	
-				case "socks":
-				case "socks4":
-				case "socks5":	
-					type = Type.SOCKS;
-					break;
-				}*/
+                    // <-> http*//127.0.0.1*8080/
+
+                    /*
+                     * switch (temp[0]) { case "http": case "https": type = Type.HTTP; break; case
+                     * "ssh": case "socks": case "socks4": case "socks5": type = Type.SOCKS; break;
+                     * }
+                     */
 
                     host = temp[1].substring(2);
                     if (temp[2].lastIndexOf('/') == -1)
@@ -170,7 +160,7 @@ public class Argument {
                     port = Integer.parseInt(temp[1]);
                     break;
                 case 1:
-                    // 127.0.0.1	use 8080 as default
+                    // 127.0.0.1 use 8080 as default
                     host = temp[0];
                     port = 8080;
                     break;
@@ -184,7 +174,7 @@ public class Argument {
         return proxy;
     }
 
-    public String[] getUrl() {
+    public String[] getUrls() {
         return dictionary.get(TerminalArgument.Url).split(urlSplit);
     }
 
@@ -217,9 +207,11 @@ public class Argument {
     }
 
     public Map<String, List<String>> getHeaders() {
-        if (!isHeader()) return Collections.emptyMap();
+        if (!isHeader())
+            return Collections.emptyMap();
         String value = dictionary.get(TerminalArgument.Header);
-        if (value == null) return Collections.emptyMap();
+        if (value == null)
+            return Collections.emptyMap();
         String[] temp1 = value.split("\n");
         Map<String, List<String>> headers = new HashMap<>(temp1.length);
         for (String string : temp1) {
@@ -253,7 +245,6 @@ public class Argument {
     public String getLogLevel() {
         return dictionary.get(TerminalArgument.Debug);
     }
-
 
     public int getNumberOfConnection() {
         return Integer.parseInt(dictionary.get(TerminalArgument.Connection));
@@ -319,7 +310,6 @@ public class Argument {
         }
     }
 
-
     private boolean is(TerminalArgument key) {
         return dictionary.containsKey(key);
     }
@@ -375,9 +365,7 @@ public class Argument {
                 proxy = true;
 
         }
-        return is(TerminalArgument.SocksProxy)
-                || is(TerminalArgument.Socks4Proxy)
-                || is(TerminalArgument.Socks5Proxy)
+        return is(TerminalArgument.SocksProxy) || is(TerminalArgument.Socks4Proxy) || is(TerminalArgument.Socks5Proxy)
                 || proxy;
     }
 
@@ -404,7 +392,6 @@ public class Argument {
     public boolean isVersion() {
         return is(TerminalArgument.Version);
     }
-
 
     public boolean isCheckFile() {
         return is(TerminalArgument.CheckFile);
@@ -469,7 +456,6 @@ public class Argument {
         return get(TerminalArgument.Stream);
     }
 
-
     public boolean isServerPort() {
         return is(TerminalArgument.ServerPort);
     }
@@ -493,6 +479,5 @@ public class Argument {
     public String getServerResourceLocation() {
         return get(TerminalArgument.ServerResourceLocation);
     }
-
 
 }
