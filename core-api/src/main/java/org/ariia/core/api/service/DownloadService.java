@@ -82,7 +82,7 @@ public class DownloadService implements Closeable {
 
     public void addItemMetaData(ItemMetaData metaData) {
         metaData.initWaitQueue();
-        moveToPauseList(metaData);
+        moveToWaitingList(metaData);
         itemMetaDataList.add(metaData);
         sessionReport.addRange(metaData.getRangeInfo());
     }
@@ -94,7 +94,6 @@ public class DownloadService implements Closeable {
     }
 
     private void moveToWaitingList(ItemMetaData metaData) {
-        // if (metaData.getRangeInfo().isFinish()) { return;}
         if (metaData.getItem().getState().canMoveToWaitState()) {
             metaData.getItem().setState(ItemState.WAITING);
             metaData.getRangeInfo().oneCycleDataUpdate();
@@ -307,7 +306,7 @@ public class DownloadService implements Closeable {
         // if (item.getRangeInfo().isFinish() ||
         // metaData.getItem().getState().isComplete()) {
         // moveToCompleteList(metaData);
-        // } else if (metaData.getItem().getState().isPause()) {
+        // } else if (metaData.getItem().getState().isPause()) {SIZEOF_EPOLLEVENT
         // moveToPauseList(metaData);
         // } else if (metaData.getItem().getState().isDownloading()) {
         // moveToDownloadList(metaData);
