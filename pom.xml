@@ -6,7 +6,7 @@
 
     <groupId>org.ariia</groupId>
     <artifactId>ariia-pom</artifactId>
-    <version>0.2.8</version>
+    <version>0.2.81</version>
     <packaging>pom</packaging>
 
     <modules>

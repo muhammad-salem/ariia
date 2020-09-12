@@ -82,6 +82,11 @@ public class ItemBuilder {
         Item item = new Item();
         item.setUrl(url);
         item.setHeaders(headers);
+        buildItemCommon(item);
+        return item;
+    }
+    
+    public Item buildItemCommon(Item item) {
         if (arguments.isCookieFile()) {
             Map<String, String> cookies = arguments.getCookies();
             List<String> values = new ArrayList<>(cookies.size());
@@ -100,11 +105,11 @@ public class ItemBuilder {
         if (arguments.isFileName()) {
             item.setFilename(arguments.getFileName());
         } else {
-            File file = new File(url);
+            File file = new File(item.getUrl());
             String fileName = file.getName().split("\\?")[0];
 
             if ("".equals(fileName)) {
-                String[] fileParts = url.split("/");
+                String[] fileParts = item.getUrl().split("/");
                 fileName = fileParts[fileParts.length - 2].split("\\?")[0];
             }
             item.setFilename(fileName);
@@ -158,6 +163,7 @@ public class ItemBuilder {
             item = readMetaLinkText(metalinkFile);
         }
         if (Objects.nonNull(item)) {
+        	buildItemCommon(item);
             items.add(item);
         }
     }
