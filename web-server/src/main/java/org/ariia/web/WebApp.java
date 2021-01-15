@@ -39,7 +39,7 @@ public class WebApp {
             System.out.println(TerminalArgument.help());
             return;
         } else if (arguments.isVersion()) {
-            System.out.println(arguments.getVersion() + " - Angular Material (10.0.0)");
+            System.out.println(arguments.getVersion() + " - Angular Material (11.0.9)");
             return;
         }
 
@@ -62,12 +62,13 @@ public class WebApp {
 
         Routes homeRoutes = new Routes("home");
         Routes dashboardRoutes = new Routes("dashboard");
-        Routes downloadRoutes = new Routes("download", "table", "list");
+        Routes downloadRoutes = new Routes("download", "**");
         Routes networkRoutes = new Routes("network", "monitor", "chart");
         Routes configRoutes = new Routes("config");
         Routes loggerRoutes = new Routes("logger");
 
-        Routes rootRoutes = new Routes("/",
+        Routes rootRoutes = new Routes(
+        	"/",
                 homeRoutes,
                 dashboardRoutes,
                 downloadRoutes,
