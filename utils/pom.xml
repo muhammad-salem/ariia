@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.ariia</groupId>
         <artifactId>ariia-pom</artifactId>
-        <version>0.2.81</version>
+        <version>0.2.9</version>
     </parent>
     <artifactId>utils</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.ansi</groupId>
+            <groupId>com.github.salemebo</groupId>
             <artifactId>lawnha</artifactId>
             <version>${lawnha.version}</version>
         </dependency>
