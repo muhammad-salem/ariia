@@ -1,11 +1,12 @@
 package org.ariia.core.api.writer;
 
-import org.ariia.speed.net.MonitorInputStreamWrapper;
-import org.ariia.speed.report.SpeedMonitor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+
+import org.network.speed.net.MonitorInputStreamWrapper;
+import org.network.speed.report.SpeedMonitor;
 
 public interface ClinetWriter {
 

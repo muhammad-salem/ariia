@@ -6,7 +6,7 @@ import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.core.api.writer.SegmentWriter;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.speed.report.SpeedMonitor;
+import org.network.speed.report.SpeedMonitor;
 
 import java.io.IOException;
 import java.util.Arrays;

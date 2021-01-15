@@ -6,7 +6,7 @@ import org.ariia.core.api.writer.ClinetWriter;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
 import org.ariia.logging.Log;
-import org.ariia.speed.report.SpeedMonitor;
+import org.network.speed.report.SpeedMonitor;
 
 import java.io.RandomAccessFile;
 import java.util.Arrays;

@@ -12,8 +12,8 @@ import org.ariia.items.ItemState;
 import org.ariia.logging.Log;
 import org.ariia.monitors.SessionReport;
 import org.ariia.monitors.SpeedTableReport;
-import org.ariia.network.ConnectivityCheck;
-import org.ariia.network.NetworkReport;
+import org.network.connectivity.ConnectivityCheck;
+import org.network.connectivity.NetworkReport;
 
 import java.io.Closeable;
 import java.util.List;

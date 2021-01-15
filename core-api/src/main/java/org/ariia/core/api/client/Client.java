@@ -11,7 +11,7 @@ import org.ariia.items.Item;
 import org.ariia.items.ItemState;
 import org.ariia.logging.Log;
 import org.ariia.range.RangeInfo;
-import org.ariia.speed.report.SpeedMonitor;
+import org.network.speed.report.SpeedMonitor;
 
 import java.io.File;
 import java.io.IOException;

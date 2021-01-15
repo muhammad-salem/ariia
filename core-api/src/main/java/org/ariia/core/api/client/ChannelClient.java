@@ -8,7 +8,7 @@ import org.ariia.core.api.response.ChannelDownloader;
 import org.ariia.core.api.writer.ClientChannelWriter;
 import org.ariia.core.api.writer.ClinetWriter;
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.speed.report.SpeedMonitor;
+import org.network.speed.report.SpeedMonitor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

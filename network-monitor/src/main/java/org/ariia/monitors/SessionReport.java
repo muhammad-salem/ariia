@@ -1,10 +1,10 @@
 package org.ariia.monitors;
 
 import org.ariia.range.RangeUtil;
-import org.ariia.speed.report.SpeedSnapshot;
-import org.ariia.speed.report.TotalSpeedMonitor;
-import org.ariia.speed.report.TotalSpeedReport;
 import org.ariia.util.Utils;
+import org.network.speed.report.SpeedSnapshot;
+import org.network.speed.report.TotalSpeedMonitor;
+import org.network.speed.report.TotalSpeedReport;
 import org.terminal.ansi.CursorControl;
 import org.terminal.ansi.Styles;
 

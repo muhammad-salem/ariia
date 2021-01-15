@@ -6,20 +6,25 @@
     <parent>
         <groupId>org.ariia</groupId>
         <artifactId>ariia-pom</artifactId>
-        <version>0.2.81</version>
+        <version>0.2.9</version>
     </parent>
     <artifactId>network-monitor</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.ansi</groupId>
-            <artifactId>lawnha</artifactId>
-            <version>${lawnha.version}</version>
+            <groupId>com.github.salemebo</groupId>
+            <artifactId>network-speed</artifactId>
+            <version>${network.utils.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.ariia</groupId>
-            <artifactId>network</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.github.salemebo</groupId>
+            <artifactId>network-connectivity</artifactId>
+            <version>${network.utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.salemebo</groupId>
+            <artifactId>lawnha</artifactId>
+            <version>${lawnha.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ariia</groupId>

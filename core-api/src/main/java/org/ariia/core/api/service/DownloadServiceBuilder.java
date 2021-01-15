@@ -9,7 +9,7 @@ import org.ariia.monitors.MiniSpeedTableReport;
 import org.ariia.monitors.SessionReport;
 import org.ariia.monitors.SimpleSessionReport;
 import org.ariia.monitors.SpeedTableReport;
-import org.ariia.network.ConnectivityCheck;
+import org.network.connectivity.ConnectivityCheck;
 
 import java.util.ArrayList;
 import java.util.List;

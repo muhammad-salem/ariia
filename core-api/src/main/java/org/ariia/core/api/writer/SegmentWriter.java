@@ -2,8 +2,8 @@ package org.ariia.core.api.writer;
 
 import org.ariia.segment.Segment;
 import org.ariia.segment.Segment.OfferSegment;
-import org.ariia.speed.net.MonitorInputStreamWrapper;
-import org.ariia.speed.report.SpeedMonitor;
+import org.network.speed.net.MonitorInputStreamWrapper;
+import org.network.speed.report.SpeedMonitor;
 
 import java.io.IOException;
 import java.io.InputStream;

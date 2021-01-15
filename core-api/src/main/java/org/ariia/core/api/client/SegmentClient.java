@@ -7,7 +7,7 @@ import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.response.SegmentDownloader;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.core.api.writer.SegmentWriter;
-import org.ariia.speed.report.SpeedMonitor;
+import org.network.speed.report.SpeedMonitor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

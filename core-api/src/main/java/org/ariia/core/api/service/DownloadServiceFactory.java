@@ -3,8 +3,8 @@ package org.ariia.core.api.service;
 
 import org.ariia.core.api.client.Client;
 import org.ariia.monitors.SessionReport;
-import org.ariia.network.ConnectivityCheck;
-import org.ariia.network.UrlConnectivity;
+import org.network.connectivity.ConnectivityCheck;
+import org.network.connectivity.UrlConnectivity;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;

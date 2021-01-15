@@ -1,10 +1,10 @@
 package org.ariia.monitors;
 
 import org.ariia.range.RangeUtil;
-import org.ariia.speed.report.SpeedMonitor;
-import org.ariia.speed.report.SpeedReport;
-import org.ariia.speed.report.SpeedSnapshot;
 import org.ariia.util.Utils;
+import org.network.speed.report.SpeedMonitor;
+import org.network.speed.report.SpeedReport;
+import org.network.speed.report.SpeedSnapshot;
 
 import java.util.Objects;
 
