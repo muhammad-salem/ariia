@@ -1,6 +1,6 @@
 ## ---------------- creation --------------------- #
-ng new ariia -v --createApplication=false --directory=webUI
-cd webUI/
+ng new ariia -v --createApplication=false --directory=web-client
+cd web-client/
 ng g application ariia --style=scss --routing=true
 # ----------------- creation --------------------- #
 
