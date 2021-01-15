@@ -11,7 +11,7 @@ export class UpTimePipe implements PipeTransform {
 	}
 
 	transform(seconds: number): string {
-		if (!seconds || seconds == 1) {
+		if (!seconds || seconds === 1) {
 			return '00:00:00';
 		}
 		if (seconds < 10) {

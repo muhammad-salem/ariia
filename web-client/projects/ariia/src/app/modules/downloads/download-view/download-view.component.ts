@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Item, ItemService, RangeService} from 'core-api';
-import {NotifyService} from '../../layout/app-root/notify.service';
+import { Component, EventEmitter, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DataService, Item, ItemService, RangeService } from 'core-api';
+import { NotifyService } from '../../layout/app-root/notify.service';
 
 @Component({
 	selector: 'download-view',
@@ -9,33 +10,39 @@ import {NotifyService} from '../../layout/app-root/notify.service';
 })
 export class DownloadViewComponent implements OnInit {
 
-	@Input() item: Item;
-	@Output() delete: EventEmitter<void> = new EventEmitter<void>();
 
-	constructor(private itemService: ItemService, private rangeService: RangeService, private notifyService: NotifyService) {
-	}
+	item: Item;
+
+	errorMessage: string;
+
+	constructor(private dataService: DataService, private itemService: ItemService,
+				private rangeService: RangeService, private notifyService: NotifyService,
+				private route: ActivatedRoute, private router: Router) { }
 
 	ngOnInit(): void {
+		const id = +this.route.snapshot.params.id;
+		this.item = this.dataService.getItem(id);
 	}
 
-	deleteItem() {
-		return this.itemService.deleteItem(this.item.id).subscribe(deleted => {
+	deleteItem(): void {
+		this.itemService.deleteItem(this.item.id).subscribe(deleted => {
 			if (deleted) {
-				this.delete.emit();
+				this.dataService.deleteItem(this.item);
+				this.router.navigate(['/download']);
 			}
 		});
 	}
 
-	startItem() {
-		return this.itemService.startItem(this.item.id).subscribe(start => {
+	startItem(): void {
+		this.itemService.startItem(this.item.id).subscribe(start => {
 			if (start) {
 				this.notifyService.info(`Start Download ${this.item.filename}`);
 			}
 		});
 	}
 
-	pauseItem() {
-		return this.itemService.pauseItem(this.item.id).subscribe(pause => {
+	pauseItem(): void {
+		this.itemService.pauseItem(this.item.id).subscribe(pause => {
 			if (pause) {
 				this.notifyService.info(`Pause Download ${this.item.filename}`);
 			}
