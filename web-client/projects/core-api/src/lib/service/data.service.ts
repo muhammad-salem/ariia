@@ -80,15 +80,19 @@ export class DataService {
 		this.notify = notify;
 	}
 
-	addItem(item: Item) {
+	addItem(item: Item): void {
 		this.data.items.push(item);
 	}
 
-	addItems(items: Item[]) {
+	getItem(id: number): Item | undefined {
+		return this.data.items.find(item => item.id === id);
+	}
+
+	addItems(items: Item[]): void {
 		items.forEach(item => this.addItem(item));
 	}
 
-	initDataService() {
+	initDataService(): void {
 		const events: SseEventHandler[] = [
 			{
 				name: 'logging',
@@ -125,7 +129,7 @@ export class DataService {
 		this.sseService.initSseUrl('/backbone-broadcast', events);
 	}
 
-	initItems() {
+	initItems(): void {
 		this.notify.info('Fetching Download Info', '');
 		this.itemService.getAllItems().subscribe(items => {
 			if (this.items.length > 0) {
@@ -137,20 +141,20 @@ export class DataService {
 		});
 	}
 
-	deleteItem(item: Item) {
+	deleteItem(item: Item): void {
 		this.items.splice(this.items.indexOf(item), 1);
 		this.itemSubject.next(this.items);
 		this.notify.success(item.filename, 'Download Item had been Removed, but the file still');
 	}
 
-	destroy() {
+	destroy(): void {
 		this.sseService.destroy();
 		this.historySubject.unsubscribe();
 		this.itemSubject.unsubscribe();
 		this.logSubject.unsubscribe();
 	}
 
-	private bootstrapChart() {
+	private bootstrapChart(): void{
 		const date = new Date();
 		for (let i = 59; i >= 0; i--) {
 			const xDate = new Date();
@@ -163,7 +167,7 @@ export class DataService {
 		}
 	}
 
-	private handelLoggingEvent(messageEvent: MessageEvent) {
+	private handelLoggingEvent(messageEvent: MessageEvent): void {
 		const message: Message = JSON.parse(messageEvent.data);
 		this.loggingMessage.push(message);
 		if (this.loggingMessage.length > 60) {
@@ -186,7 +190,7 @@ export class DataService {
 		this.historySubject.next();
 	}
 
-	private handelItem(item: Item) {
+	private handelItem(item: Item): void {
 		const oldItem = this.items.find(searchItem => item.uuid === searchItem.uuid);
 		if (oldItem) {
 			updateItemFromNetwork(oldItem, item);
@@ -200,12 +204,12 @@ export class DataService {
 		}
 	}
 
-	private handelItemEvent(messageEvent: MessageEvent) {
+	private handelItemEvent(messageEvent: MessageEvent): void {
 		const item: Item = JSON.parse(messageEvent.data);
 		this.handelItem(item);
 	}
 
-	private handelItemListEvent(messageEvent: MessageEvent) {
+	private handelItemListEvent(messageEvent: MessageEvent): void {
 		const items: Item[] = JSON.parse(messageEvent.data);
 		items.forEach(item => this.handelItem(item));
 	}
