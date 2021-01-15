@@ -36,10 +36,10 @@ ng g pipe pipe/up-time --project=core-api
 
 #downloads
 ng g module modules/downloads
-ng g c modules/downloads/item-view
 ng g c modules/downloads/item-list
 ng g c modules/downloads/item-table
 ng g c modules/downloads/download-view
+ng g c modules/downloads/download-router
 
 #log-message
 ng g module modules/logs
