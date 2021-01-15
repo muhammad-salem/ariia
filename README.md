@@ -1,4 +1,4 @@
-# ariia  (0.2.8)
+# ariia  (0.2.9)
 
 Ariia is a command line download manager.
 and Ariiad, a SPA written with TypeScript and by Angular 9 framework
@@ -11,6 +11,9 @@ Lib Name|Version|Info
 --- | --- | ---
 OkHttp|`3.14.7`|for jdk8 only|
 Gson|`2.8.6`| |
+Network Speed|`0.2.8`| |
+Network Connectivity|`0.2.8`| |
+RESTful API|`0.2.8`| |
 Lawnha|`0.2.1`| |
 JANSI|`1.8`|for Windows VM|
  
