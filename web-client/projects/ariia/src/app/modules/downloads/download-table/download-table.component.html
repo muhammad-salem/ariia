@@ -139,7 +139,7 @@
 	</ng-container>
 
 	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
-	<tr *matRowDef="let item; columns: columnsToDisplay" mat-row></tr>
+	<tr *matRowDef="let item; columns: columnsToDisplay" mat-row [routerLink]="[item.id]" ></tr>
 	<ng-container *ngIf="items.length !== 1">
 		<tr *matFooterRowDef="columnsToDisplay" mat-footer-row></tr>
 	</ng-container>

@@ -81,7 +81,7 @@ export class DownloadTableComponent implements OnInit {
 		this.selection = new SelectionModel<Item>(false, []);
 	}
 
-	applyFilter(value: string) {
+	applyFilter(value: string): void {
 		this.dataSource.filter = value.trim().toLowerCase();
 		this.table.renderRows();
 	}
@@ -105,7 +105,7 @@ export class DownloadTableComponent implements OnInit {
 		return 100;
 	}
 
-	startItem() {
+	startItem(): void {
 		console.log(this.selection, this.selection.selected);
 		/*
 		return this.itemService.startItem(this.item.id).subscribe(start => {
@@ -116,7 +116,7 @@ export class DownloadTableComponent implements OnInit {
 		*/
 	}
 
-	pauseItem() {
+	pauseItem(): void {
 		console.log(this.selection, this.selection.selected);
 		/*
 		return this.itemService.pauseItem(this.item.id).subscribe(pause => {
@@ -127,20 +127,20 @@ export class DownloadTableComponent implements OnInit {
 		*/
 	}
 
-	deleteItem() {
+	deleteItem(): void {
 		// this.dataService.deleteItem(item);
 		console.log(this.selection, this.selection.selected);
 	}
 
 	/** Whether the number of selected elements matches the total number of rows. */
-	isAllSelected() {
+	isAllSelected(): boolean {
 		const numSelected = this.selection.selected.length;
 		const numRows = this.items.length;
 		return numSelected === numRows;
 	}
 
 	/** Selects all rows if they are not all selected; otherwise clear selection. */
-	masterToggle() {
+	masterToggle(): void {
 		this.isAllSelected() ?
 			this.selection.clear() :
 			this.items.forEach(row => this.selection.select(row));
@@ -152,6 +152,6 @@ export class DownloadTableComponent implements OnInit {
 
 }
 
-function compare(a: number | string, b: number | string, isAsc: boolean) {
+function compare(a: number | string, b: number | string, isAsc: boolean): number {
 	return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
