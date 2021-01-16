@@ -52,15 +52,6 @@
 				<mat-list-item>Remaining Time: {{item?.report?.remainingTime | uptime}}</mat-list-item>
 				<mat-list-item>State: {{item.state}}</mat-list-item>
 			</mat-list>
-			<div class="col-sm-6">
-				speed chart
-				<div> 1 Pieces x 8 MB Complete</div>
-				<svg [attr.height]="getSvgHeight()" class="w-100 mt-2">
-				<g>
-					<rect *ngFor="let range of item.rangeInfo.range; index as i" [id]="i" width="12" height="12" [attr.x]="getX(i)" [attr.y]="getY(i)" [attr.fill]="svgFill(i)"></rect>
-				</g>
-				</svg>
-			</div>
 			<div class="col-sm-2">
 				<mat-progress-spinner
 					[diameter]="300"
@@ -68,9 +59,24 @@
 					[mode]="'determinate'"
 					[value]="downloadProgress()">
 				</mat-progress-spinner>
-				<div style="position:relative; top: -150px; left: 80px;">
+				<div style="position:relative; top: -160px; left: 100px; font-size: x-large;">
+					{{percent()}} <sup class="small">%</sup>
+				</div>
+				<div style="position:relative; left: 50px; font-size: large;">
 					{{item.rangeInfo?.downloadLength | unitLength}} of {{item.rangeInfo?.fileLength | unitLength}}
 				</div>
+			</div>
+			<div class="col-sm-6">
+				speed chart
+				<div> 1 Pieces x 8 MB Complete</div>
+				<svg [attr.height]="getSvgHeight()" class="w-100 mt-2">
+					<g>
+						<rect *ngFor="let range of item.rangeInfo.range; index as i"
+							[id]="i" width="12" height="12" [attr.x]="getX(i)"
+							[attr.y]="getY(i)" [attr.fill]="svgFill(i)">
+						</rect>
+					</g>
+				</svg>
 			</div>
 		</div>
 	</mat-card-content>

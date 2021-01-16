@@ -57,7 +57,7 @@ export class DownloadViewComponent implements OnInit {
 		return +this.percent();
 	}
 
-	private percent(): string {
+	percent(): string {
 		return this.rangeService.downloadPercent(this.item.rangeInfo).toFixed(2);
 	}
 
