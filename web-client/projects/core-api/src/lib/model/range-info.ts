@@ -3,7 +3,7 @@ export interface RangeInfo {
 	downloadLength: number;
 	remainingLength: number;
 	maxRangePoolNum: number;
-	// range: number[][];
+	range: number[][];
 	finish: boolean;
 	streaming: boolean;
 }
