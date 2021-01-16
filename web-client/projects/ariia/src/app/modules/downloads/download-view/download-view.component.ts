@@ -61,4 +61,21 @@ export class DownloadViewComponent implements OnInit {
 		return this.rangeService.downloadPercent(this.item.rangeInfo).toFixed(2);
 	}
 
+	svgFill(index: number): string {
+		return this.rangeService.isFinish(this.item.rangeInfo, index) ? 'green' : 'blue';
+	}
+
+	getX(index: number): number {
+		return (index % 50) * 15;
+	}
+
+	getY(index: number): number {
+		return ~~(index / 50) * 15;
+	}
+
+	getSvgHeight(): number {
+		const rowNum = ~~(this.item?.rangeInfo?.range?.length/50) + (this.item?.rangeInfo?.range?.length % 50 > 0 ? 1 : 0);
+		return rowNum * 15;
+	}
+
 }

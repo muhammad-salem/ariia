@@ -1,125 +1,77 @@
+<mat-toolbar aria-label="download-actions" role="toolbar">
+	<mat-toolbar-row>
+		<div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm>
+			<ul fxLayout="row" fxLayoutGap.sm>
+				<li>
+					<button (click)="startItem()" mat-icon-button>
+						<mat-icon>play_circle_outline</mat-icon>
+					</button>
+				</li>
+				<li>
+					<button (click)="pauseItem()" mat-icon-button>
+						<mat-icon>pause_circle_outline</mat-icon>
+					</button>
+				</li>
+				<li>
+					<button (click)="deleteItem()" mat-icon-button>
+						<mat-icon>auto_delete</mat-icon>
+					</button>
+				</li>
+			</ul>
+			<ul fxLayout="row" fxLayoutGap.sm>
+				<li>
+					<a *ngIf="item.state === 'COMPLETE'" class="card-link" mat-button
+						download href="/items/download/{{item.id}}/{{item.filename}}">
+						<mat-icon>cloud_download</mat-icon>
+						Download File from Local Server
+					</a>
+				</li>
+			</ul>
+		</div>
+	</mat-toolbar-row>
+</mat-toolbar>
+<mat-progress-bar [value]="downloadProgress()" mode="determinate" style="height: 10px;"></mat-progress-bar>
 <mat-card>
 	<mat-card-header>
 		<div mat-card-avatar></div>
 		<mat-card-title>{{item.filename}}</mat-card-title>
-		<mat-card-subtitle>{{item.url}}</mat-card-subtitle>
-		<!--<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>-->
+		<mat-card-subtitle>
+			{{item.url}}
+			<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>
+		</mat-card-subtitle>
 	</mat-card-header>
-	<mat-card-actions>
-		<button (click)="startItem()" mat-icon-button>
-			<mat-icon>play_circle_outline</mat-icon>
-		</button>
-		<button (click)="pauseItem()" mat-icon-button>
-			<mat-icon>pause_circle_outline</mat-icon>
-		</button>
-		<button (click)="deleteItem()" mat-icon-button>
-			<mat-icon>auto_delete</mat-icon>
-		</button>
-	</mat-card-actions>
-	<div>
-
-	</div>
 	<mat-card-content>
-		<mat-list>
-			<mat-list-item>
-				{{item.rangeInfo?.downloadLength | unitLength}}
-				of {{item.rangeInfo?.fileLength | unitLength}}
-			</mat-list-item>
-			<mat-list-item>
+		<div class="row">
+			<mat-list class="col-sm-3">
+				<mat-list-item>Save Directory: {{item.saveDirectory}}</mat-list-item>
+				<mat-list-item>Percent: {{downloadPercent()}}</mat-list-item>
+				<mat-list-item>File Length: {{item.rangeInfo.fileLength | unitLength}}</mat-list-item>
+				<mat-list-item>Download Length: {{item.rangeInfo.downloadLength | unitLength}}</mat-list-item>
+				<mat-list-item>Remaining Length: {{item.rangeInfo.remainingLength | unitLength}}</mat-list-item>
+				<mat-list-item>Download Speed: {{item?.report?.monitor?.tcpDownloadSpeed | speed}}</mat-list-item>
+				<mat-list-item>Remaining Time: {{item?.report?.remainingTime | uptime}}</mat-list-item>
+				<mat-list-item>State: {{item.state}}</mat-list-item>
+			</mat-list>
+			<div class="col-sm-6">
+				speed chart
+				<div> 1 Pieces x 8 MB Complete</div>
+				<svg [attr.height]="getSvgHeight()" class="w-100 mt-2">
+				<g>
+					<rect *ngFor="let range of item.rangeInfo.range; index as i" [id]="i" width="12" height="12" [attr.x]="getX(i)" [attr.y]="getY(i)" [attr.fill]="svgFill(i)"></rect>
+				</g>
+				</svg>
+			</div>
+			<div class="col-sm-2">
 				<mat-progress-spinner
-						[color]="'accent'"
-						[mode]="'determinate'"
-						[value]="downloadProgress()">
+					[diameter]="300"
+					[strokeWidth]="10"
+					[mode]="'determinate'"
+					[value]="downloadProgress()">
 				</mat-progress-spinner>
-			</mat-list-item>
-			<mat-list-item> Paprika</mat-list-item>
-		</mat-list>
+				<div style="position:relative; top: -150px; left: 80px;">
+					{{item.rangeInfo?.downloadLength | unitLength}} of {{item.rangeInfo?.fileLength | unitLength}}
+				</div>
+			</div>
+		</div>
 	</mat-card-content>
-	<mat-card-actions>
-		<a *ngIf="item.state === 'COMPLETE'" class="card-link" download href="/items/download/{{item.id}}/{{item.filename}}"
-		   mat-button>
-			Download File from Local Server
-			<mat-icon>cloud_download</mat-icon>
-		</a>
-	</mat-card-actions>
 </mat-card>
-
-<!--
-<div class="card border-info shadow px-2 my-1 bg-white rounded">
-	<div class="card-header">
-		<div class="row">
-			<div class="col-md-10">
-				<div class="row">
-					<div class="col col-md-9">
-						{{item.filename}}
-					</div>
-					<div class="col col-md-auto align-self-end">
-						{{item.rangeInfo?.downloadLength | unitLength}} of
-						{{item.rangeInfo?.fileLength | unitLength}}
-					</div>
-				</div>
-				<div class="progress" style="height: 1px;">
-					<div [ngStyle]="{'width': downloadPercent()}" aria-valuemax="100" aria-valuemin="0"
-						 aria-valuenow="0"
-						 class="progress-bar" role="progressbar"></div>
-				</div>
-			</div>
-			<div class="col-md-2">
-				<div aria-label="Item Actions" class="btn-toolbar" role="toolbar">
-					<div aria-label="Download" class="btn-group btn-group-sm mr-2" role="group">
-						<button (click)="startItem()" class="btn btn-link text-info" type="button">
-                            <span>
-                                <mat-icon>play_circle_outline</mat-icon>
-                            </span>
-						</button>
-						<button (click)="pauseItem()" class="btn btn-link text-success" type="button">
-                            <span>
-                                <mat-icon>pause_circle_outline</mat-icon>
-                            </span>
-						</button>
-					</div>
-					<div aria-label="Delete" class="btn-group btn-group-sm" role="group">
-						<button (click)="deleteItem()" class="btn btn-link text-danger" type="button">
-                            <span>
-                                <mat-icon>auto_delete</mat-icon>
-                            </span>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="card-body p-2">
-		<div class="row">
-			<div class="col-md-8 col-sm-12">
-				<h5 class="card-title">{{item.state | lowercase}}</h5>
-				<h6 class="card-subtitle mb-2 text-muted">{{item.saveDirectory}}</h6>
-				<p class="card-text">{{item.rangeInfo?.downloadLength | unitLength }}</p>
-				<div #action>
-					<a *ngIf="item.state === 'COMPLETE'" class="card-link" download
-					   href="/items/download/{{item.id}}/{{item.filename}}">
-						Download File from Local Server
-						<span>
-                            <mat-icon>cloud_download</mat-icon>
-                        </span>
-					</a>
-
-					<button class="btn btn-sm btn-outline-info ml-2" type="button">
-						Play Video
-						<span>
-                            <mat-icon>play</mat-icon>
-                        </span>
-					</button>
-				</div>
-				<a class="card-link" href="{{item.url}}">{{item.url}}</a>
-				<a *ngIf="item.redirectUrl" href="{{item.redirectUrl}}">{{item.redirectUrl}}</a>
-			</div>
-			<div class="col-md-4 col-sm-12">
-				<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>
-			</div>
-		</div>
-		<div> 1 Pieces x 8 MB Complete</div>
-	</div>
-</div>
-
--->
