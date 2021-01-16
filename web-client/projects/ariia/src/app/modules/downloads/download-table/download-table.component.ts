@@ -20,7 +20,7 @@ export class DownloadTableComponent implements OnInit {
 	@ViewChild(MatTable, {static: true}) table: MatTable<Item>;
 
 	columnsToDisplay = [
-		'select',
+		// 'select',
 		'filename',
 		'percent',
 		'downloadLength',
@@ -34,8 +34,7 @@ export class DownloadTableComponent implements OnInit {
 
 	selection: SelectionModel<Item>;
 
-	constructor(private dataService: DataService, private rangeService: RangeService) {
-	}
+	constructor(private dataService: DataService, private rangeService: RangeService) {}
 
 	ngOnInit(): void {
 		this.session = this.dataService.networkSession;
