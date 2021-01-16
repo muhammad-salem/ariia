@@ -9,7 +9,7 @@ and Ariiad, a SPA written with TypeScript and by Angular 9 framework
 
 Lib Name|Version|Info
 --- | --- | ---
-OkHttp|`3.14.7`|for jdk8 only|
+OkHttp|`3.14.9`|for jdk8 only|
 Gson|`2.8.6`| |
 Network Speed|`0.2.8`| |
 Network Connectivity|`0.2.8`| |
