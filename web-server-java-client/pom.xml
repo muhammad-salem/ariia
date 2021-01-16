@@ -8,16 +8,23 @@
         <artifactId>ariia-pom</artifactId>
         <version>0.2.9</version>
     </parent>
-    <artifactId>web-server</artifactId>
+    <artifactId>web-server-java-client</artifactId>
 
     <properties>
         <main.class>org.ariia.web.WebApp</main.class>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.ariia</groupId>
-            <artifactId>cli-api</artifactId>
+            <artifactId>java-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ariia</groupId>
+            <artifactId>web-server</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -35,7 +42,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <finalName>${app.name}d</finalName>
+                    <finalName>${app.name}-web-server-java-client</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
@@ -78,6 +85,26 @@
                     <!--<arguments>
                                 <argument>-h</argument>
                         </arguments> -->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>11</version>
+                        </jdk>
+                    </toolchains>
                 </configuration>
             </plugin>
 

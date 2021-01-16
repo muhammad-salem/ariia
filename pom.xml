@@ -15,11 +15,13 @@
         <module>utils</module>
         <module>network-monitor</module>
         <module>core-api</module>
-        <module>cli-api</module>
-        <module>ok-ariia</module>
-        <module>http-client</module>
         <module>verify-data</module>
+        <module>cli-api</module>
+        <module>okhttp-client</module>
+        <module>java-client</module>
         <module>web-server</module>
+        <module>web-server-okhttp-client</module>
+        <module>web-server-java-client</module>
     </modules>
 
     <description>Command Line Download Manager</description>

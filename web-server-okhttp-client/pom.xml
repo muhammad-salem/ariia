@@ -8,7 +8,7 @@
         <artifactId>ariia-pom</artifactId>
         <version>0.2.9</version>
     </parent>
-    <artifactId>web-server</artifactId>
+    <artifactId>web-server-okhttp-client</artifactId>
 
     <properties>
         <main.class>org.ariia.web.WebApp</main.class>
@@ -17,7 +17,12 @@
     <dependencies>
         <dependency>
             <groupId>org.ariia</groupId>
-            <artifactId>cli-api</artifactId>
+            <artifactId>okhttp-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ariia</groupId>
+            <artifactId>web-server</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -35,7 +40,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <finalName>${app.name}d</finalName>
+                    <finalName>${app.name}-web-server-okhttp-client</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>

@@ -6,7 +6,7 @@ import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCli;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
-import org.ariia.internal.AriiaHttpClient;
+import org.ariia.internal.JavaHttpClient;
 import org.terminal.console.log.Level;
 
 public class Ariia {
@@ -30,7 +30,7 @@ public class Ariia {
             }
         };
         AriiaCli cli = new AriiaCli(
-                Clients.segmentClient(properties, new AriiaHttpClient(arguments.getProxy())),
+                Clients.segmentClient(properties, new JavaHttpClient(arguments.getProxy())),
                 onComplete);
         cli.lunchAsCliApp(arguments, properties);
 

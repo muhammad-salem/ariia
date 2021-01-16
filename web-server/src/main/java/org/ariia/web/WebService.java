@@ -7,12 +7,12 @@ import org.ariia.cli.LogCli;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.client.SegmentClient;
+import org.ariia.core.api.request.ClientRequest;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
 import org.ariia.mvc.WebServer.ResourceType;
 import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
-import org.ariia.okhttp.OkClient;
 import org.ariia.web.app.WebDownloadService;
 import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.controller.ItemController;
@@ -27,21 +27,13 @@ import org.terminal.strings.AnsiStringBuilder;
 
 import java.io.IOException;
 
-public class WebApp {
+public class WebService {
 
     public static boolean isRunningFromJar() {
-        return WebApp.class.getResource("WebApp.class").getProtocol().equalsIgnoreCase("jar");
+        return WebService.class.getResource("WebService.class").getProtocol().equalsIgnoreCase("jar");
     }
 
-    public static void main(String[] args) throws IOException {
-        Argument arguments = new Argument(args);
-        if (arguments.isHelp()) {
-            System.out.println(TerminalArgument.help());
-            return;
-        } else if (arguments.isVersion()) {
-            System.out.println(arguments.getVersion() + " - Angular Material (11.0.9)");
-            return;
-        }
+    public static void start(Argument arguments, ClientRequest clientRequest) throws IOException {
 
         // setup logging service
         EventBroadcast mainBroadcast = new EventBroadcast();
@@ -80,7 +72,7 @@ public class WebApp {
         WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
 
         // setup download manager service
-        SegmentClient client = Clients.segmentClient(properties, new OkClient(arguments.getProxy()));
+        SegmentClient client = Clients.segmentClient(properties, clientRequest);
         WebDownloadService downloadService = new WebDownloadService(mainBroadcast);
 
         AriiaCli cli = new AriiaCli(downloadService, client);
@@ -111,7 +103,7 @@ public class WebApp {
             log.append(resourceLocation);
         }
 
-        Log.log(WebApp.class, "Running Web Server", log.toString());
+        Log.log(WebService.class, "Running Web Server", log.toString());
 
 
     }

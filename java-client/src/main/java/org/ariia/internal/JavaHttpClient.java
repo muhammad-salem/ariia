@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class AriiaHttpClient implements ClientRequest {
+public class JavaHttpClient implements ClientRequest {
 
     Proxy proxy;
     HttpClient client;
 
-    public AriiaHttpClient(Proxy proxy) {
+    public JavaHttpClient(Proxy proxy) {
         this.proxy = proxy;
         init();
     }
@@ -34,7 +34,7 @@ public class AriiaHttpClient implements ClientRequest {
 //			        .version(Version.HTTP_1_1)
                 .followRedirects(Redirect.ALWAYS)
                 .connectTimeout(Duration.ofSeconds(20))
-                .proxy(new AriiaProxySelector(proxy))
+                .proxy(new JavaProxySelector(proxy))
 //			        .proxy(ProxySelector.of( (InetSocketAddress) proxy.address() ))
 //			        .authenticator(Authenticator.getDefault())
 //			        .executor(Executors.newCachedThreadPool())

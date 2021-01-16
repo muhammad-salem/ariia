@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,11 +8,11 @@
         <artifactId>ariia-pom</artifactId>
         <version>0.2.9</version>
     </parent>
-    <artifactId>http-client</artifactId>
+    <artifactId>okhttp-client</artifactId>
+
     <properties>
         <main.class>org.ariia.Ariia</main.class>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <okhttp.version>3.14.9</okhttp.version>
     </properties>
 
     <dependencies>
@@ -25,16 +26,23 @@
             <artifactId>cli-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <finalName>${app.name}-http-client-11</finalName>
+                    <finalName>${app.name}-okhttp-client</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
@@ -73,26 +81,6 @@
                 <configuration>
                     <mainClass>${main.class}</mainClass>
                     <!-- <arguments> <argument>-h</argument> </arguments> -->
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-toolchains-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>toolchain</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <toolchains>
-                        <jdk>
-                            <version>11</version>
-                        </jdk>
-                    </toolchains>
                 </configuration>
             </plugin>
 

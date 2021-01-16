@@ -5,11 +5,11 @@ import java.net.*;
 import java.util.List;
 import java.util.Objects;
 
-public class AriiaProxySelector extends ProxySelector {
+public class JavaProxySelector extends ProxySelector {
     private static final List<Proxy> NO_PROXY_LIST = List.of(Proxy.NO_PROXY);
     final List<Proxy> list;
 
-    AriiaProxySelector(InetSocketAddress address) {
+    JavaProxySelector(InetSocketAddress address) {
         Proxy p;
         if (address == null) {
             p = Proxy.NO_PROXY;
@@ -19,7 +19,7 @@ public class AriiaProxySelector extends ProxySelector {
         list = List.of(p);
     }
 
-    AriiaProxySelector(Proxy proxy) {
+    JavaProxySelector(Proxy proxy) {
         Objects.requireNonNull(proxy);
         list = List.of(proxy);
     }
