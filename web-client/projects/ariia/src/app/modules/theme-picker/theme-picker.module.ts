@@ -108,6 +108,7 @@ export class ThemePicker implements OnInit, OnDestroy {
 
 @NgModule({
 	id: 'theme-picker',
+	declarations: [ThemePicker],
 	imports: [
 		CommonModule,
 		MatButtonModule,
@@ -115,9 +116,9 @@ export class ThemePicker implements OnInit, OnDestroy {
 		MatMenuModule,
 		MatTooltipModule,
 	],
-	exports: [ThemePicker],
-	declarations: [ThemePicker],
-	providers: [StyleManager, ThemeStorage],
+	providers: [
+		StyleManager, 
+		ThemeStorage
+	],
 })
-export class ThemePickerModule {
-}
+export class ThemePickerModule { }

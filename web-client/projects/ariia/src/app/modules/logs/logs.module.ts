@@ -15,8 +15,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {FlexLayoutModule} from '@angular/flex-layout';
 
 const routes: Routes = [
-	{path: '', component: LogTableComponent},
-	{path: '**', redirectTo: ''}
+	{ path: '', component: LogTableComponent }
 ];
 
 @NgModule({
@@ -44,5 +43,4 @@ const routes: Routes = [
 	],
 	bootstrap: []
 })
-export class LogsModule {
-}
+export class LogsModule { }

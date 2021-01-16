@@ -7,8 +7,7 @@ import {SiteSettingsViewerComponent} from './site-settings-viewer/site-settings-
 import {RouterModule, Routes} from '@angular/router';
 
 const routes: Routes = [
-	{path: '', component: SiteSettingsViewerComponent},
-	{path: '**', redirectTo: ''}
+	{ path: '', component: SiteSettingsViewerComponent }
 ];
 
 @NgModule({
@@ -21,10 +20,6 @@ const routes: Routes = [
 	imports: [
 		CommonModule,
 		RouterModule.forChild(routes)
-	],
-	exports: [
-		RouterModule
 	]
 })
-export class SettingModule {
-}
+export class SettingModule { }

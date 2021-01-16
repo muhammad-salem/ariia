@@ -19,8 +19,7 @@ import {AddLinkViewerComponent} from './add-link-viewer/add-link-viewer.componen
 
 
 const routes: Routes = [
-	{path: '', component: DashboardComponent},
-	{path: '**', redirectTo: ''}
+	{path: '', component: DashboardComponent}
 ];
 
 @NgModule({
@@ -43,11 +42,6 @@ const routes: Routes = [
 		MatButtonModule,
 		MatListModule,
 		FlexLayoutModule
-	],
-	exports: [
-		RouterModule
-	],
-	bootstrap: [DashboardComponent]
+	]
 })
-export class DashboardModule {
-}
+export class DashboardModule { }

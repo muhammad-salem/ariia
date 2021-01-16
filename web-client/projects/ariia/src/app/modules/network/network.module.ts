@@ -16,6 +16,7 @@ export class NetworkRoutingModule { }
 
 
 @NgModule({
+	id: 'network',
 	declarations: [
 		NetworkChartComponent,
 		SessionMonitorComponent,
@@ -24,14 +25,6 @@ export class NetworkRoutingModule { }
 	imports: [
 		CommonModule,
 		NetworkRoutingModule
-	],
-	exports: [
-		NetworkRoutingModule
-	],
-	bootstrap: [
-		NetworkChartComponent,
-		SessionMonitorComponent,
-		NetworkViewerComponent
 	]
 })
 export class NetworkModule { }

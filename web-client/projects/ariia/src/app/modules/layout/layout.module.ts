@@ -42,13 +42,11 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 		MatSnackBarModule,
 		FlexLayoutModule
 	],
-	exports: [
-		RouterModule
-	],
 	bootstrap: [
 		AppRootComponent
 	],
-	schemas: [CUSTOM_ELEMENTS_SCHEMA]
+	schemas: [
+		CUSTOM_ELEMENTS_SCHEMA
+	]
 })
-export class LayoutModule {
-}
+export class LayoutModule { }

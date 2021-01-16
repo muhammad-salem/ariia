@@ -55,5 +55,4 @@ const routes: Routes = [
 		FlexLayoutModule
 	]
 })
-export class DownloadsModule {
-}
+export class DownloadsModule { }
