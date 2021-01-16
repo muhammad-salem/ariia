@@ -117,8 +117,9 @@ export class ThemePicker implements OnInit, OnDestroy {
 		MatTooltipModule,
 	],
 	providers: [
-		StyleManager, 
+		StyleManager,
 		ThemeStorage
 	],
+	exports: [ThemePicker]
 })
 export class ThemePickerModule { }
