@@ -3,7 +3,7 @@
 Ariia is a command line download manager.
 and Ariiad, a SPA written with TypeScript and by Angular 9 framework
 
-![screenshot-01](img/angular-spa.png)
+![screenshot-01](img/angular-spa-01.png)
 
 ## Dependency
 
@@ -96,7 +96,10 @@ java - jar ariia.jar [-u] URL
  - add SSH implementation
 
 ### Overview
-
+![screenshot-01](img/angular-spa-02.png)
+___
+![screenshot-01](img/angular-spa-03.png)
+___
 ![screenshot-01](img/download-ubuntu-mini.gif)
 ___
 ![screenshot-01](img/mini-table-01.png)
