@@ -12,7 +12,6 @@
 
     <properties>
         <main.class>org.ariia.Ariia</main.class>
-        <okhttp.version>3.14.9</okhttp.version>
     </properties>
 
     <dependencies>
