@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { DataService, SessionReport } from 'core-api';
 
 @Component({
 	selector: 'app-network-viewer',
@@ -7,10 +8,19 @@ import {Component, OnInit} from '@angular/core';
 })
 export class NetworkViewerComponent implements OnInit {
 
-	constructor() {
-	}
+	session: SessionReport;
+
+	constructor(private dataService: DataService) {}
 
 	ngOnInit(): void {
+		this.session = this.dataService.networkSession;
+	}
+
+	sessionProgress(): number {
+		if (this.session.totalLength) {
+			return +(((this.session.downloadLength / this.session.totalLength) * 100).toFixed(2));
+		}
+		return 100;
 	}
 
 }

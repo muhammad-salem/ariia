@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataService, SessionReport } from 'core-api';
 
 @Component({
 	selector: 'session-monitor',
@@ -7,10 +8,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SessionMonitorComponent implements OnInit {
 
-	constructor() {
-	}
+	session: SessionReport;
+	isBinary = true;
+
+	constructor(private dataService: DataService) {}
 
 	ngOnInit(): void {
+		this.session = this.dataService.networkSession;
 	}
 
+	sessionPercent(): string {
+		if (this.session.totalLength) {
+			return `${((this.session.downloadLength / this.session.totalLength) * 100).toFixed(2)}%`;
+		}
+		return `100%`;
+	}
+
+	sessionProgress(): number {
+		if (this.session.totalLength) {
+			return +(((this.session.downloadLength / this.session.totalLength) * 100).toFixed(2));
+		}
+		return 100;
+	}
 }
