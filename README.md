@@ -1,7 +1,6 @@
 # ariia  (0.2.9)
 
-Ariia is a command line download manager.
-and Ariiad, a SPA written with TypeScript and by Angular 9 framework
+Ariia is a command line download manager and HTML UI interface [Angular 11].
 
 ![screenshot-01](img/angular-spa-01.png)
 
