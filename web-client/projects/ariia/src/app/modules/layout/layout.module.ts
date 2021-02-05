@@ -16,6 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 		MatButtonModule,
 		MatSidenavModule,
 		MatSnackBarModule,
-		FlexLayoutModule
+		FlexLayoutModule,
+		MatCardModule
 	],
 	bootstrap: [
 		AppRootComponent

@@ -12,7 +12,7 @@ import { Chart } from 'chart.js';
 export class NetworkChartComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	chart: Chart;
-	@ViewChild("chart") chartRef: ElementRef;
+	@ViewChild('chart') chartRef: ElementRef;
 
 	historySubscription: Subscription;
 

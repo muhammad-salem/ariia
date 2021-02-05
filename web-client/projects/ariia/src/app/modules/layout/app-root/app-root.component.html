@@ -1,7 +1,13 @@
 <app-header (toggleSideBar)="sideBarOpen = !sideBarOpen"></app-header>
 
 <mat-drawer-container>
-	<mat-drawer [opened]="sideBarOpen" mode="side">
+	<mat-drawer [opened]="sideBarOpen" mode="side" style="margin: 10px 5px;">
+		<mat-card>
+			<mat-card-header>
+			  <mat-card-title>Ariia <mat-icon>cloud_download</mat-icon></mat-card-title>
+			  <mat-card-subtitle>Cloud Download Manager</mat-card-subtitle>
+			</mat-card-header>
+		</mat-card>
 		<app-sidebar></app-sidebar>
 	</mat-drawer>
 	<mat-drawer-content>
