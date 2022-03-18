@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class WebApp {
 
-    public static void main(String[] args)  throws NoSuchAlgorithmException, KeyManagementException, IOException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException, IOException {
         Argument arguments = new Argument(args);
         if (arguments.isHelp()) {
             System.out.println(TerminalArgument.help());

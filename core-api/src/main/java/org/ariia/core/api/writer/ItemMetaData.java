@@ -8,8 +8,8 @@ import org.ariia.monitors.RangeReport;
 import org.ariia.range.RangeUtil;
 import org.ariia.segment.Segment;
 import org.ariia.segment.Segment.OfferSegment;
-import org.network.speed.report.SpeedMonitor;
 import org.ariia.util.R;
+import org.network.speed.report.SpeedMonitor;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 

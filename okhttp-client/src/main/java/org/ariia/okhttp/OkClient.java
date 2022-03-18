@@ -6,23 +6,18 @@ import okhttp3.Request;
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
 
-import java.io.IOException;
-import java.net.Proxy;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
+import java.net.Proxy;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class OkClient implements ClientRequest {
 
@@ -35,12 +30,10 @@ public class OkClient implements ClientRequest {
         builder.cookieJar(OkCookieJar.CookieJarMap)
                 .proxy(proxy)
                 .retryOnConnectionFailure(false);
-        if (trustAll){
+        if (trustAll) {
             TrustManager[] trustManagers = new TrustManager[]{
                     new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() {
-                            return null;
-                        }
+                        public X509Certificate[] getAcceptedIssuers() { return null; }
                         public void checkClientTrusted(X509Certificate[] certs, String authType) {}
                         public void checkServerTrusted(X509Certificate[] certs, String authType) {}
                     }

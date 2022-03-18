@@ -85,7 +85,7 @@ public class ItemBuilder {
         buildItemCommon(item);
         return item;
     }
-    
+
     public Item buildItemCommon(Item item) {
         if (arguments.isCookieFile()) {
             Map<String, String> cookies = arguments.getCookies();
@@ -163,7 +163,7 @@ public class ItemBuilder {
             item = readMetaLinkText(metalinkFile);
         }
         if (Objects.nonNull(item)) {
-        	buildItemCommon(item);
+            buildItemCommon(item);
             items.add(item);
         }
     }

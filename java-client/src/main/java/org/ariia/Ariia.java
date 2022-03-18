@@ -1,8 +1,5 @@
 package org.ariia;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
 import org.ariia.cli.AriiaCli;
@@ -11,6 +8,9 @@ import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.internal.JavaHttpClient;
 import org.terminal.console.log.Level;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 public class Ariia {
 

@@ -17,9 +17,8 @@ public class R {
     public static String DownloadsPath = UserHome + sprtr + "Downloads" + sprtr + app_name + sprtr;
     public static String ConfigPath = UserHome + sprtr + ".config" + sprtr + app_name + sprtr;
     public static String CachePath = UserHome + sprtr + ".cache" + sprtr + app_name + sprtr;
-
-    public static String ConfigJsonFile;
     public static String LockFile = CachePath + sprtr + "lock";
+    public static String ConfigJsonFile;
     public static String TempDir = "/tmp/";
 
     static {

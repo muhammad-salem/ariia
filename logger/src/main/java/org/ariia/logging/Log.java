@@ -17,6 +17,7 @@ public final class Log {
     private static Printer printer = new PrinterImpl(System.out);
     private static ConcurrentLinkedQueue<Message> queue = new ConcurrentLinkedQueue<>();
     private static ScheduledExecutorService ex = new ScheduledThreadPoolExecutor(1);
+
     private Log() {
     }
 

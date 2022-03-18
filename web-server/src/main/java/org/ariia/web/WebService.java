@@ -1,7 +1,6 @@
 package org.ariia.web;
 
 import org.ariia.args.Argument;
-import org.ariia.args.TerminalArgument;
 import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCli;
 import org.ariia.config.Properties;
@@ -60,7 +59,7 @@ public class WebService {
         Routes loggerRoutes = new Routes("logger");
 
         Routes rootRoutes = new Routes(
-        	"/",
+                "/",
                 homeRoutes,
                 dashboardRoutes,
                 downloadRoutes,
