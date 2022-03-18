@@ -18,10 +18,14 @@ import java.io.IOException;
 import java.net.Proxy;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class Client implements Downloader, ItemDownloader, ContentLength {
 
@@ -115,8 +119,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 				return;
 			}
 			if (!response.requestUrl().equals(item.getUrl())) {
-				Log.trace(getClass(), "redirect item to another location",
-						"base url:\t" + item.getUrl() + "\nredirect url: \t" + response.requestUrl());
+				Log.trace(getClass(), "redirect item to another location", "base url:\t" + item.getUrl() + "\nredirect url: \t" + response.requestUrl());
 
 				String decodedUrl;
 				try {
@@ -145,11 +148,30 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 			Optional<String> contentDisposition = response.firstValue("Content-disposition");
 
 			if (contentDisposition.isPresent() && contentDisposition.get().contains("filename")) {
-				String[] split = contentDisposition.get().split("=");
-				String filename = split[split.length - 1].trim();
-				filename = filename.substring(filename.charAt(0) == '"' ? 1 : 0,
-						filename.charAt(filename.length() - 1) == '"' ? filename.length() - 1 : filename.length());
-				item.setFilename(filename);
+				Map<String, String> filenames = Stream.of(contentDisposition.get().split("; "))
+						.filter(line -> line.contains("="))
+						.map(parameter -> parameter.split("="))
+						.collect(Collectors.toMap(strings -> strings[0], strings -> strings[1]));
+				String encode = "UTF-8";
+				String name = null;
+				if (filenames.containsKey("filename*")) {
+					String value = filenames.get("filename*");
+					String[] temp = value.split("''", 2);
+					if (temp.length == 2) {
+						encode = temp[0];
+						name = temp[1];
+					} else {
+						name = value;
+					}
+				} else if (filenames.containsKey("filename")) {
+					name = filenames.get("filename");
+					if (name.startsWith("\"")) {
+						name = name.substring(1, name.length() - 1);
+					}
+				}
+				if (Objects.nonNull(name)) {
+					item.setFilename(name, encode);
+				}
 			}
 		} catch (IOException e) {
 			Log.warn(getClass(), e.getClass().getSimpleName(), e.getMessage());

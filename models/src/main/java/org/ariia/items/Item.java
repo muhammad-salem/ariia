@@ -3,6 +3,8 @@ package org.ariia.items;
 import org.ariia.range.RangeInfo;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -62,10 +64,15 @@ public class Item {
     }
 
     public void setFilename(String filename) {
-        //byte[] bytes = filename.getBytes(StandardCharsets.UTF_8);
-        byte[] bytes = filename.getBytes();
-        filename = new String(bytes, StandardCharsets.UTF_8);
-        this.filename = filename;
+        this.setFilename(filename, "UTF-8");
+    }
+
+    public void setFilename(String filename, String enc) {
+        try {
+            this.filename = URLDecoder.decode(filename, enc);
+        } catch (UnsupportedEncodingException e) {
+            this.filename = filename;
+        }
     }
 
     public ItemState getState() {
