@@ -40,7 +40,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <finalName>${app.name}-web-server-okhttp-client</finalName>
+                    <finalName>${app.name}-web-server-okhttp-client-${pom.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
