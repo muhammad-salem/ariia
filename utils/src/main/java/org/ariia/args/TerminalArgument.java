@@ -15,7 +15,6 @@ public enum TerminalArgument {
     Header("-H", "--header"),
     CookieFile("-cf", "--cookie-file"),
 
-
     FileName("-o", "--file-name"),
     SavePath("-sp", "--save-path"),
 
@@ -23,6 +22,7 @@ public enum TerminalArgument {
     Connection("-c", "--max-connection"),
     MaxItem("-n", "--num-download"),
 
+    Insecure("-k", "--insecure"),
 
     Proxy("-p", "--proxy"),
 
@@ -142,6 +142,7 @@ public enum TerminalArgument {
             case DaemonService:
             case Help:
             case Version:
+            case Insecure:
                 return false;
             default:
                 return true;
@@ -157,18 +158,18 @@ public enum TerminalArgument {
             case Url:
                 return ("[-u] add new link/url to download manager");
             case InputFile:
-                return ("downoload from text file - list of urls");
+                return ("download from text file - list of urls");
             case MetaLink:
-                return ("downoload from  metalink text/xml file - list of urls on deffrient servers for the same daownloadable file");
+                return ("download from  metal ink text/xml file - list of urls on deficient servers for the same downloadable file");
 
             case Referer:
                 return ("set referer header for that link");
             case UserAgent:
                 return ("set user-agent header while download");
             case Header:
-                return ("set one/multiable different header(s) for that link\n\t\t\tadd cookie(s) while download");
+                return ("set one/more different header(s) for that link\n\t\t\tadd cookie(s) while download");
             case CookieFile:
-                return ("add cookie(s) from standered cookie file");
+                return ("add cookie(s) from standard cookie file");
 
             case FileName:
                 return ("save download link to file on hard-disk");
@@ -176,11 +177,14 @@ public enum TerminalArgument {
                 return ("set directory of download process");
 
             case Tries:
-                return ("number of tries when failler, then giveup (0 for keep-try )");
+                return ("number of tries on failed state, then give-up (0 for keep-try forever)");
             case Connection:
                 return ("max connection for current session for each link");
             case MaxItem:
-                return ("number of download links in queue, if more links, will be in watting list");
+                return ("number of download links in queue, if more links, will be in waiting list");
+
+            case Insecure:
+                return ("TLS By default, every secure connection ariia makes\n\t\t\tis verified to be secure before the transfer takes place.\n\t\t\tThis option makes curl skip the verification step and proceed without checking");
 
             case Proxy:
                 return ("set proxy to http://host:port[8080]/, support protocols http, https ans socks4/5");
@@ -205,9 +209,9 @@ public enum TerminalArgument {
             case CheckFile:
                 return ("check donload file if is complete, and try to complete it");
             case ChunkSize:
-                return ("length of shunk/segment to check");
+                return ("length of chunk/segment to check");
             case DownloadPieces:
-                return ("index of pieces which need download. it could be in formate of string as \"2 52 22 783 \" or a file holding the indexs separited by '\\n'");
+                return ("index of pieces which need download. it could be in format of string as \"2 52 22 783 \" or a file holding the index separated by '\\n'");
 
             case Stream:
                 return ("stream URL One download connection");
@@ -216,7 +220,7 @@ public enum TerminalArgument {
             case ServerPort:
                 return ("run web application on port (default port 8080)");
             case ServerHost:
-                return ("run web application for local interface (defult is any all)");
+                return ("run web application for local interface (default is any all)");
             case ServerResourceLocation:
                 return ("run web application with resource location directory path");
 

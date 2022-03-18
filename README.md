@@ -1,4 +1,4 @@
-# ariia  (0.2.9)
+# ariia  (0.3.0)
 
 Ariia is a command line download manager and HTML UI interface [Angular 11].
 
@@ -53,20 +53,23 @@ ___
 ___ 
  
  ```
-java - jar ariia.jar [-u] URL
+ java - jar ariia.jar [-u] URL
 	-u	--url			[-u] add new link/url to download manager
-	-i	--input-file		downoload from text file - list of urls
-	-m	--metalink		downoload from  metalink text/xml file - list of urls on deffrient servers for the same daownloadable file
+	-i	--input-file		download from text file - list of urls
+	-m	--metalink		download from  metal ink text/xml file - list of urls on deficient servers for the same downloadable file
 	-r	--http-referer		set referer header for that link
 	-ua	--user-agent		set user-agent header while download
-	-H	--header		set one/multiable different header(s) for that link
+	-H	--header		set one/more different header(s) for that link
 			add cookie(s) while download
-	-cf	--cookie-file		add cookie(s) from standered cookie file
+	-cf	--cookie-file		add cookie(s) from standard cookie file
 	-o	--file-name		save download link to file on hard-disk
 	-sp	--save-path		set directory of download process
-	-t	--tries			number of tries when failler, then giveup (0 for keep-try )
+	-t	--tries			number of tries on failed state, then give-up (0 for keep-try forever)
 	-c	--max-connection	max connection for current session for each link
-	-n	--num-download		number of download links in queue, if more links, will be in watting list
+	-n	--num-download		number of download links in queue, if more links, will be in waiting list
+	-k	--insecure		TLS By default, every secure connection ariia makes
+			is verified to be secure before the transfer takes place.
+			This option makes curl skip the verification step and proceed without checking
 	-p	--proxy			set proxy to http://host:port[8080]/, support protocols http, https ans socks4/5
 	-http	--http-proxy		use http proxy [host:port] format
 	-https	--https-proxy		use https proxy [host:port] format
@@ -77,16 +80,17 @@ java - jar ariia.jar [-u] URL
 	-su	--ssh-user		set ssh user name - remote login user name
 	-sp	--ssh-pass		set remote login password, if non will be asked from terminal
 	-ch	--check-file		check donload file if is complete, and try to complete it
-	-cs	--chunk-size		length of shunk/segment to check
-	-dp	--download-pieces	index of pieces which need download. it could be in formate of string as "2 52 22 783 " or a file holding the indexs separited by '\n'
+	-cs	--chunk-size		length of chunk/segment to check
+	-dp	--download-pieces	index of pieces which need download. it could be in format of string as "2 52 22 783 " or a file holding the index separated by '\n'
 	-st	--stream		stream URL One download connection
 	-ds	--daemon-service	start ariia as daemon service
 	-port	--server-port		run web application on port (default port 8080)
-	-host	--server-host		run web application for local interface (defult is any all)
+	-host	--server-host		run web application for local interface (default is any all)
 	-rl	--resource-location	run web application with resource location directory path
 	-h	--help			print this message
 	-d	--debug-level		display logging, Levels: [off, log, error, warn, info, assertion, debug, trace, all]
 	-v	--version		display the version of ariia
+
 
  ```
 

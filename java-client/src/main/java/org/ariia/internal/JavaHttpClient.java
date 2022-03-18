@@ -3,6 +3,9 @@ package org.ariia.internal;
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
@@ -13,6 +16,9 @@ import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -20,26 +26,40 @@ import java.util.Objects;
 
 public class JavaHttpClient implements ClientRequest {
 
-    Proxy proxy;
-    HttpClient client;
+    private Proxy proxy;
+    private HttpClient client;
+    private boolean trustAll;
 
-    public JavaHttpClient(Proxy proxy) {
+    public JavaHttpClient(Proxy proxy, boolean trustAll) throws NoSuchAlgorithmException, KeyManagementException {
         this.proxy = proxy;
+        this.trustAll = trustAll;
         init();
     }
 
-    private void init() {
-
-        client = HttpClient.newBuilder()
-//			        .version(Version.HTTP_1_1)
+    private void init() throws NoSuchAlgorithmException, KeyManagementException {
+        HttpClient.Builder builder = HttpClient.newBuilder()
                 .followRedirects(Redirect.ALWAYS)
                 .connectTimeout(Duration.ofSeconds(20))
                 .proxy(new JavaProxySelector(proxy))
 //			        .proxy(ProxySelector.of( (InetSocketAddress) proxy.address() ))
 //			        .authenticator(Authenticator.getDefault())
 //			        .executor(Executors.newCachedThreadPool())
-                .build();
-
+                ;
+        if (trustAll){
+            TrustManager[] trustManagers = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                    }
+            };
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagers, null);
+            builder.sslContext(sslContext);
+        }
+        this.client = builder.build();
     }
 
 
@@ -62,10 +82,7 @@ public class JavaHttpClient implements ClientRequest {
                 });
             }
 
-
-            HttpResponse<InputStream> response =
-                    client.send(requestBuilder.build(), BodyHandlers.ofInputStream());
-
+            HttpResponse<InputStream> response = client.send(requestBuilder.build(), BodyHandlers.ofInputStream());
 
             Response.Builder responseBuilder = new Response.Builder();
             responseBuilder.code(response.statusCode());

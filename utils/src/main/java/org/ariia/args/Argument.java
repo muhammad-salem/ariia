@@ -194,6 +194,10 @@ public class Argument {
         return dictionary.get(TerminalArgument.FileName);
     }
 
+    public boolean isInsecure() {
+        return dictionary.containsKey(TerminalArgument.Insecure);
+    }
+
     public String getSavetoName() {
         return dictionary.get(TerminalArgument.FileName);
     }

@@ -8,20 +8,50 @@ import org.ariia.core.api.request.Response;
 
 import java.io.IOException;
 import java.net.Proxy;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
 public class OkClient implements ClientRequest {
 
     private OkHttpClient httpClient;
+    private boolean trustAll;
 
-    public OkClient(Proxy proxy) {
+    public OkClient(Proxy proxy, boolean trustAll) throws NoSuchAlgorithmException, KeyManagementException {
+        this.trustAll = trustAll;
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder
-                .cookieJar(OkCookieJar.CookieJarMap)
+        builder.cookieJar(OkCookieJar.CookieJarMap)
                 .proxy(proxy)
                 .retryOnConnectionFailure(false);
+        if (trustAll){
+            TrustManager[] trustManagers = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                    }
+            };
+            X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagers, null);
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            builder.sslSocketFactory(sslSocketFactory, trustManager);
+        }
         this.httpClient = builder.build();
     }
 

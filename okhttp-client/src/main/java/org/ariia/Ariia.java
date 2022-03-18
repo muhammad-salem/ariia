@@ -9,9 +9,12 @@ import org.ariia.core.api.client.Clients;
 import org.ariia.okhttp.OkClient;
 import org.terminal.console.log.Level;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 public class Ariia {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException {
 
         Argument arguments = new Argument(args);
         if (arguments.isEmpty() || arguments.isHelp()) {
@@ -29,7 +32,7 @@ public class Ariia {
                 System.exit(0);
             }
         };
-        AriiaCli cli = new AriiaCli(Clients.segmentClient(properties, new OkClient(arguments.getProxy())), onComplete);
+        AriiaCli cli = new AriiaCli(Clients.segmentClient(properties, new OkClient(arguments.getProxy(), arguments.isInsecure())), onComplete);
         cli.lunchAsCliApp(arguments, properties);
 
     }
