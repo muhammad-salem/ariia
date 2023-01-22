@@ -21,14 +21,14 @@ export class LinkComponent implements OnInit {
 			this.notifyService.error('Empty Link', 'Please Provide');
 		}
 		if (this.link) {
-			this.itemService.downloadUrl(this.link).subscribe(id => {
+			this.itemService.downloadUrl(encodeURI(this.link)).subscribe(id => {
 				this.notifyService.showSnackBar('Add Download Link',
 					this.link + '\nwith id:' + id);
 				this.link = '';
 			});
 		}
 		if (this.metaLink) {
-			const urls = this.metaLink.split('\n');
+			const urls = this.metaLink.split('\n').map(encodeURI);
 			this.itemService.createMetaLinkUrl(urls).subscribe(id => {
 				this.notifyService.showSnackBar('Add Download Link',
 					this.metaLink + '\nwith id:' + id);
