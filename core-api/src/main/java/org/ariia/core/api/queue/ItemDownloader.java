@@ -2,7 +2,7 @@ package org.ariia.core.api.queue;
 
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.network.speed.report.SpeedMonitor;
 
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.concurrent.Future;
 
 public interface ItemDownloader {
 
+    Logger log = Logger.create(ItemDownloader.class);
 
     Future<?> downloadPart(ItemMetaData metaData, int index, SpeedMonitor... monitors);
 
@@ -34,14 +35,14 @@ public interface ItemDownloader {
     default List<Future<?>> download(ItemMetaData metaData, SpeedMonitor... monitors) {
         Item item = metaData.getItem();
         if (item.isStreaming()) {
-            Log.info(getClass(), "Streaming...", item.getFilename());
+            log.info("Streaming...", item.getFilename());
         } else if (item.isFinish()) {
-            Log.info(getClass(), "Download Complete", item.getFilename());
+            log.info("Download Complete", item.getFilename());
             return null;
         }
-        List<Integer> indexs = downloadOrder(item.getRangeInfo().getRangeCount());
+        List<Integer> indexes = downloadOrder(item.getRangeInfo().getRangeCount());
         List<Future<?>> futures = new LinkedList<Future<?>>();
-        for (Integer index : indexs) {
+        for (Integer index : indexes) {
             futures.add(downloadPart(metaData, index, monitors));
         }
         return futures;

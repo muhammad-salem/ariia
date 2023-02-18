@@ -10,6 +10,7 @@ import org.ariia.items.DataStore;
 import org.ariia.items.Item;
 import org.ariia.items.ItemState;
 import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.monitors.SessionReport;
 import org.ariia.monitors.SpeedTableReport;
 import org.network.connectivity.ConnectivityCheck;
@@ -23,13 +24,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
- * item life cycle meta data to waiting list then it moved to download list if
+ * item life cycle metadata to waiting list then it moved to download list if
  * finish >> to complete list else to pause list and if any action to waiting
  * list again <br/>
  * item --> [item meta data] --> add to [waiting list] -- > [download list] -->
  * [ complete list] |---<--- [pause list] <--|
  */
 public class DownloadService implements Closeable {
+
+    private static Logger log = Logger.create(DownloadService.class);
 
     public final static int SCHEDULE_TIME = 1;
     // public final static int SCHEDULE_POOL = 10;
@@ -98,7 +101,7 @@ public class DownloadService implements Closeable {
             metaData.getItem().setState(ItemState.WAITING);
             metaData.getRangeInfo().oneCycleDataUpdate();
             speedTableReport.remove(metaData.getRangeReport());
-            Log.log(getClass(), "Waiting", metaData.getItem().getFilename(), metaData.getItem().toString());
+            log.log("Waiting", metaData.getItem().getFilename(), metaData.getItem().toString());
             waitEvent(metaData);
         }
     }
@@ -112,7 +115,7 @@ public class DownloadService implements Closeable {
             speedTableReport.add(metaData.getRangeReport());
             metaData.startAndCheckDownloadQueue(sessionReport.getMonitor());
             itemDataStore.save(metaData.getItem());
-            Log.log(getClass(), "Download", metaData.getItem().getFilename(), metaData.getItem().toString());
+            log.log("Download", metaData.getItem().getFilename(), metaData.getItem().toString());
             downloadEvent(metaData);
         }
     }
@@ -124,7 +127,7 @@ public class DownloadService implements Closeable {
             itemDataStore.save(metaData.getItem());
             speedTableReport.remove(metaData.getRangeReport());
             metaData.close();
-            Log.log(getClass(), "Complete", metaData.getItem().getFilename(), metaData.getItem().liteString());
+            log.log("Complete", metaData.getItem().getFilename(), metaData.getItem().liteString());
             completeEvent(metaData);
         }
     }
@@ -136,7 +139,7 @@ public class DownloadService implements Closeable {
             speedTableReport.remove(metaData.getRangeReport());
             metaData.getItem().setState(ItemState.PAUSE);
             itemDataStore.save(metaData.getItem());
-            Log.log(getClass(), "Pause", metaData.getItem().getFilename(), metaData.getItem().toString());
+            log.log( "Pause", metaData.getItem().getFilename(), metaData.getItem().toString());
             pauseEvent(metaData);
             // }
         } else {
@@ -214,19 +217,19 @@ public class DownloadService implements Closeable {
     }
 
     protected void checkDownloadList() {
-        Log.trace(getClass(), "DownloadService.checkDownloadList");
+        log.trace("DownloadService.checkDownloadList");
         // if (!allowDownload) { return;}
         // if (!isItemListHadItemsToDownload()) { return;}
 
         if (!allowDownload || itemMetaDataList.isEmpty()) {
-            Log.trace(getClass(), "Check Pause Download Service", "Allow Download: false");
+            log.trace("Check Pause Download Service", "Allow Download: false");
             // check download to pause
             downloadStream().forEach(this::moveToWaitingList);
             return;
         }
 
         if (isItRequiredToPauseDownloadList()) {
-            Log.trace(getClass(), "Check Network Connection", "Network Connectivity Statues: NETWORK DISCONNECTED");
+            log.trace("Check Network Connection", "Network Connectivity Statues: NETWORK DISCONNECTED");
             // check download to pause
             downloadStream().forEach(this::moveToWaitingList);
         } else {
@@ -314,8 +317,8 @@ public class DownloadService implements Closeable {
         // item.setState(ItemState.INIT_FILE);
         // moveToWaitingList(metaData);
         // }
-        Log.trace(getClass(), item.getFilename(), "Meta Data Writer: " + metaData.getClass().getSimpleName());
-        Log.log(getClass(), "add download item to list", item.toString());
+        log.trace(item.getFilename(), "Meta Data Writer: " + metaData.getClass().getSimpleName());
+        log.log("add download item to list", item.toString());
     }
 
     public void initializeItemOnlineAndDownload(Item item) {

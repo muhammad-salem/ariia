@@ -5,7 +5,7 @@ import org.ariia.core.api.request.Response;
 import org.ariia.core.api.writer.ClinetWriter;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.network.speed.report.SpeedMonitor;
 
 import java.io.RandomAccessFile;
@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ChannelDownloader implements Downloader, ContentLength {
+
+    private static Logger log = Logger.create(ChannelDownloader.class);
 
     private ClientRequest clientRequest;
     private ClinetWriter clinetWriter;
@@ -44,7 +46,7 @@ public class ChannelDownloader implements Downloader, ContentLength {
             }
             //item.addCookies(getClientRequest().getHttpClient().cookieJar().loadForRequest(item.url()));
             if (response.code() / 100 != 2) {
-                Log.warn(getClass(), item.getFilename(),
+                log.warn(item.getFilename(),
                         "response.code = " + response.code() + ' ' + response.responseMessage()
                                 + "\nurl = " + response.requestUrl()
                                 + "\nindex = " + index + "\t" + Arrays.toString(item.getRangeInfo().indexOf(index)));
@@ -66,7 +68,7 @@ public class ChannelDownloader implements Downloader, ContentLength {
                     raf.close();
                 }
             } catch (Exception e) {
-                Log.info(getClass(), e.getClass().getName(), e.getMessage());
+                log.info(e.getClass().getName(), e.getMessage());
             }
         }
         return true;

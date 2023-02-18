@@ -3,7 +3,7 @@ package org.ariia.core.api.writer;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.monitors.RangeReport;
 import org.ariia.range.RangeUtil;
 import org.ariia.segment.Segment;
@@ -25,6 +25,8 @@ import java.util.concurrent.Future;
 //import org.ariia.core.api.queue.ItemDownloader;
 
 public abstract class ItemMetaData implements OfferSegment, Closeable {
+
+    private static Logger log = Logger.create(ItemMetaData.class);
 
     protected Item item;
     protected RangeUtil info;
@@ -68,7 +70,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
             raf = new RandomAccessFile(item.path(), "rw");
             raf.setLength(info.getFileLength());
         } catch (IOException e) {
-            Log.error(getClass(), e.getMessage(), e.toString());
+            log.error(e.getMessage(), e.toString());
         }
 
     }
@@ -86,7 +88,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
         try {
             raf.close();
         } catch (IOException e) {
-            Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+            log.error(e.getClass().getSimpleName(), e.getMessage());
         }
     }
 
@@ -131,7 +133,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
         forceUpdate();
 
         if (writtenSegmentCount > 0) {
-            Log.trace(getClass(), "flush segments",
+            log.trace("flush segments",
                     String.format("File Name: %s\nWritten Segment Count: %s", item.getFilename(), writtenSegmentCount));
         }
     }

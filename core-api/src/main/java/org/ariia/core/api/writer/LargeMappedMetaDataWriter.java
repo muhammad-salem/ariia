@@ -3,7 +3,7 @@ package org.ariia.core.api.writer;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.segment.Segment;
 
 import java.io.IOException;
@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LargeMappedMetaDataWriter extends ItemMetaData {
+
+    private static Logger log = Logger.create(LargeMappedMetaDataWriter.class);
 
     Map<Pair, MappedByteBuffer> mappedBuffers;
 
@@ -33,13 +35,13 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
             pair.limit = Math.min(pos, length);
             pair.initSize();
             pos = pair.limit;
-            Log.trace(getClass(), "Pair ", pair.toString());
+            log.trace("Pair ", pair.toString());
             try {
                 MappedByteBuffer buffer = channel.map(MapMode.READ_WRITE, pair.start, pair.size);
-                Log.trace(getClass(), "create mapped byte buffer", buffer.toString());
+                log.trace("create mapped byte buffer", buffer.toString());
                 mappedBuffers.put(pair, buffer);
             } catch (IOException e) {
-                Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+                log.error(e.getClass().getSimpleName(), e.getMessage());
             }
         }
 
@@ -66,7 +68,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
     }
 
     /**
-     * @param report
+     *
      * @param segment
      * @return
      */
@@ -80,7 +82,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
             }
             return true;
         } catch (Exception e) {
-            Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+            log.error(e.getClass().getSimpleName(), e.getMessage());
             return false;
         }
     }

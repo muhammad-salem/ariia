@@ -3,7 +3,7 @@ package org.ariia.core.api.writer;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.segment.Segment;
 
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.nio.channels.FileChannel;
 
 public class ChannelMetaDataWriter extends ItemMetaData {
 
+    private static Logger log = Logger.create(ChannelMetaDataWriter.class);
 
     protected FileChannel channel;
 
@@ -28,7 +29,7 @@ public class ChannelMetaDataWriter extends ItemMetaData {
         try {
             channel.force(true);
         } catch (IOException e) {
-            Log.error(getClass(), "force update", "error force update to channel\n" + item.getFilename() + '\n' + e.getMessage());
+            log.error("force update", "error force update to channel\n" + item.getFilename() + '\n' + e.getMessage());
         }
     }
 
@@ -42,7 +43,7 @@ public class ChannelMetaDataWriter extends ItemMetaData {
             }
             return true;
         } catch (IOException e) {
-            Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+            log.error(e.getClass().getSimpleName(), e.getMessage());
             return false;
         }
 
@@ -69,7 +70,7 @@ public class ChannelMetaDataWriter extends ItemMetaData {
         try {
             channel.force(true);
         } catch (IOException e) {
-            Log.error(getClass(), "close channel", "force any updates of this channel's file"
+            log.error("close channel", "force any updates of this channel's file"
                     + "\nto be written to the storage device\n"
                     + e.getMessage());
         }

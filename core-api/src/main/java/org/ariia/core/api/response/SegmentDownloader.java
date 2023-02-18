@@ -5,7 +5,7 @@ import org.ariia.core.api.request.Response;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.core.api.writer.SegmentWriter;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.network.speed.report.SpeedMonitor;
 
 import java.io.IOException;
@@ -14,6 +14,8 @@ import java.util.Optional;
 
 
 public class SegmentDownloader implements Downloader, ContentLength {
+
+    private static Logger log = Logger.create(SegmentDownloader.class);
 
 
     ClientRequest clientRequest;
@@ -40,7 +42,7 @@ public class SegmentDownloader implements Downloader, ContentLength {
 
             }
             if (response.code() / 100 != 2) {
-                Log.warn(getClass(), item.getFilename(),
+                log.warn(item.getFilename(),
                         "response.code = " + response.code() + ' ' + response.responseMessage()
                                 + "\nurl = " + response.requestUrl()
                                 + "\nindex = " + index + "\t" + Arrays.toString(item.getRangeInfo().indexOf(index)));

@@ -3,7 +3,7 @@ package org.ariia.core.api.writer;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.items.Item;
-import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.segment.Segment;
 
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
 public class SimpleMappedMetaDataWriter extends ItemMetaData {
+
+    private static Logger log = Logger.create(SimpleMappedMetaDataWriter.class);
 
     protected MappedByteBuffer mappedBuffer;
     protected FileChannel channel;
@@ -26,7 +28,7 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
         try {
             mappedBuffer = channel.map(MapMode.READ_WRITE, 0, raf.length());
         } catch (IOException e) {
-            Log.error(getClass(), e.getClass().getSimpleName(), e.getMessage());
+            log.error(e.getClass().getSimpleName(), e.getMessage());
         }
     }
 
@@ -39,7 +41,7 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
             }
             return true;
         } catch (Exception e) {
-            Log.error(getClass(), "flush data to file ", item.path() + '\n' + e);
+            log.error("flush data to file ", item.path() + '\n' + e);
             return false;
         }
     }

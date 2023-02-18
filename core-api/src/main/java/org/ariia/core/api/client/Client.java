@@ -9,7 +9,6 @@ import org.ariia.core.api.response.Downloader;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Item;
 import org.ariia.items.ItemState;
-import org.ariia.logging.Log;
 import org.ariia.range.RangeInfo;
 import org.network.speed.report.SpeedMonitor;
 
@@ -119,7 +118,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
                 return;
             }
             if (!response.requestUrl().equals(item.getUrl())) {
-                Log.trace(getClass(), "redirect item to another location", "base url:\t" + item.getUrl() + "\nredirect url: \t" + response.requestUrl());
+                log.trace("redirect item to another location", "base url:\t" + item.getUrl() + "\nredirect url: \t" + response.requestUrl());
 
                 String decodedUrl;
                 try {
@@ -174,7 +173,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
                 }
             }
         } catch (IOException e) {
-            Log.warn(getClass(), e.getClass().getSimpleName(), e.getMessage());
+            log.warn(e.getClass().getSimpleName(), e.getMessage());
             throw e;
         }
 

@@ -2,7 +2,7 @@ package org.ariia.web;
 
 import org.ariia.args.Argument;
 import org.ariia.cli.AriiaCli;
-import org.ariia.cli.LogCli;
+import org.ariia.cli.LogCLI;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.core.api.client.SegmentClient;
@@ -38,7 +38,7 @@ public class WebService {
         EventBroadcast mainBroadcast = new EventBroadcast();
         Printer printer = new PrinterImpl(System.out);
         WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
-        LogCli.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
+        LogCLI.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
         Properties properties = new Properties(arguments);
 
         // setup web server
@@ -88,7 +88,7 @@ public class WebService {
 
         cli.lunchAsWebApp(arguments, properties);
         server.start();
-        LogCli.startLogService();
+        LogCLI.startLogService();
         AnsiStringBuilder log = new AnsiStringBuilder();
         log.append("start local web server: ");
         log.blueLite().blink();
