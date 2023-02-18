@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public interface BackwordOrder {
+public interface BackwardOrder {
 
     default List<Integer> streamDownloadOrder(int count) {
         if (count == 0) return Collections.emptyList();
