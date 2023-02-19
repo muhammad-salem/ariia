@@ -1,0 +1,27 @@
+{
+  "name": "web-client",
+  "version": "1.0.0",
+  "description": "Ariia Web client, build with Aurora",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "author": " Authors (https://github.com/ibyar/aurora/graphs/contributors)",
+  "contributors": [
+    {
+      "name": "Muhammad Salem",
+      "email": "salem.ebo@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@ibyar/aurora": "^0.8.6",
+    "bootstrap": "^5.2.3",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@ibyar/esmpack": "^0.1.93"
+  }
+}

@@ -1,0 +1,16 @@
+{
+	"extends": "@ibyar/aurora/tsconfig.compilerOption.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"outDir": "dist",
+		"rootDir": "src"
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx"
+	],
+	"files": [
+		"src/index.ts"
+	],
+	"compileOnSave": true
+}
