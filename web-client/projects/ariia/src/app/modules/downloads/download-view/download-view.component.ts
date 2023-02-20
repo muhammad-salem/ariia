@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService, Item, ItemService, RangeService } from 'core-api';
+import { delay, switchMap, tap } from 'rxjs/operators';
 import { NotifyService } from '../../layout/app-root/notify.service';
 import { DownloadEditComponent } from '../download-edit/download-edit.component';
 
@@ -66,7 +67,13 @@ export class DownloadViewComponent implements OnInit {
 				redirectUrl: this.item.redirectUrl,
 			},
 		});
-		dialogRef.afterClosed().subscribe((item: Item) => this.itemService.updateItem(this.item.id, item).subscribe());
+		dialogRef.afterClosed()
+			.pipe(
+				switchMap((item: Item) => this.itemService.updateItem(this.item.id, item)),
+				tap(() => this.dataService.initItems()),
+				delay(1000),
+			)
+			.subscribe(() => this.item = this.dataService.getItem(this.item.id));
 	}
 
 	downloadPercent(): string {
