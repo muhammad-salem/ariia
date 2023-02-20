@@ -27,6 +27,10 @@ export class ItemService {
 		return this.httpClient.post<number>('/items/create/url', item);
 	}
 
+	updateItem(id: number,item: Item): Observable<void> {
+		return this.httpClient.post<void>('/items/' + id, item);
+	}
+
 	deleteItem(id: number): Observable<boolean> {
 		return this.httpClient.delete<boolean>('/items/delete/' + id);
 	}
