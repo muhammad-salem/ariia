@@ -56,7 +56,10 @@
                 "bundleName": "assets/purple-green"
               }
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "chart.js"
+            ]
           },
           "configurations": {
             "production": {
