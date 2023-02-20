@@ -39,6 +39,22 @@ public class ItemService implements StreamHandler {
         return item.getId();
     }
 
+    public void update(Integer id,  Item update) {
+        Optional<ItemMetaData> optionalItemMetaData = downloadService.searchById(id);
+        if (!optionalItemMetaData.isPresent()){
+            return;
+        }
+        ItemMetaData metaData = optionalItemMetaData.get();
+        boolean isDownloading = metaData.isDownloading();
+        if (isDownloading){
+            this.pause(id);
+        }
+        metaData.getItem().update(update);
+        if (isDownloading){
+            this.start(id);
+        }
+    }
+
     public Integer create(String url) {
         return this.create(url, Collections.emptyMap());
     }
