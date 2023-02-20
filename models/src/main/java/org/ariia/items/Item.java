@@ -235,11 +235,8 @@ public class Item {
         if (!this.saveDirectory.equals(item.saveDirectory) && item.saveDirectory != null) {
             this.saveDirectory = item.saveDirectory;
         }
-        if (!this.headers.equals(item.headers) && item.headers != null) {
+        if (this.headers!=null && !this.headers.equals(item.headers) && item.headers != null) {
             this.headers = item.headers;
-        }
-        if (!this.redirectUrl.equals(item.redirectUrl) && item.redirectUrl != null) {
-            this.redirectUrl = item.redirectUrl;
         }
     }
 
