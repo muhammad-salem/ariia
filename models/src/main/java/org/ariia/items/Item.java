@@ -225,5 +225,22 @@ public class Item {
         this.saveDirectory = item.saveDirectory;
     }
 
+    public void update(Item item) {
+        if (!this.url.equals(item.url) && item.url != null) {
+            this.url = item.url;
+        }
+        if (!this.filename.equals(item.filename) && item.filename != null) {
+            this.filename = item.filename;
+        }
+        if (!this.saveDirectory.equals(item.saveDirectory) && item.saveDirectory != null) {
+            this.saveDirectory = item.saveDirectory;
+        }
+        if (!this.headers.equals(item.headers) && item.headers != null) {
+            this.headers = item.headers;
+        }
+        if (!this.redirectUrl.equals(item.redirectUrl) && item.redirectUrl != null) {
+            this.redirectUrl = item.redirectUrl;
+        }
+    }
 
 }
