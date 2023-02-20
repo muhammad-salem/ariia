@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "dev": "ng build ariia --watch",
-    "prod": "ng build core-api --prod & ng build --prod",
+    "prod": "ng build core-api --prod & ng build ariia --prod",
     "core": "ng build core-api --prod",
     "test": "ng test",
     "lint": "ng lint",
