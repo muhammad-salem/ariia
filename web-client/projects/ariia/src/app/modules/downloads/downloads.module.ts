@@ -17,10 +17,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DownloadViewComponent } from './download-view/download-view.component';
 import { DownloadTableComponent } from './download-table/download-table.component';
+import { DownloadEditComponent } from './download-edit/download-edit.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
 	{ path: '', component: DownloadTableComponent },
@@ -31,11 +34,13 @@ const routes: Routes = [
 	id: 'download',
 	declarations: [
 		DownloadViewComponent,
-		DownloadTableComponent
+		DownloadTableComponent,
+		DownloadEditComponent
 	],
 	imports: [
 		CommonModule,
 		RouterModule.forChild(routes),
+		FormsModule,
 		CoreApiModule,
 		MatTableModule,
 		MatProgressBarModule,
@@ -52,7 +57,8 @@ const routes: Routes = [
 		MatDividerModule,
 		MatListModule,
 		MatProgressSpinnerModule,
-		FlexLayoutModule
+		FlexLayoutModule,
+		MatDialogModule,
 	]
 })
 export class DownloadsModule { }

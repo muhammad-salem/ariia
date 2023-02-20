@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Update Download</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Download Link:</mat-label>
+    <input matInput [(ngModel)]="item.url">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>File Name:</mat-label>
+    <input matInput [(ngModel)]="item.filename">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Save Directory:</mat-label>
+    <input matInput [(ngModel)]="item.saveDirectory">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="item" cdkFocusInitial>Ok</button>
+</div>
