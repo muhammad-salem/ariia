@@ -1,7 +1,7 @@
 {
-  "name": "web-client",
+  "name": "ariia",
   "version": "1.0.0",
-  "description": "Ariia Web client, build with Aurora",
+  "description": "Ariia Web client, build by Aurora",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",

@@ -1,5 +1,5 @@
 const config = {
-	outDir: 'public/web_modules/',
+	outDir: '../web-server/src/main/resources/static/aurora/web_modules/',
 	src: {
 		files: [],
 		include: ["./dist/**/*.js"],
