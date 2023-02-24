@@ -14,7 +14,13 @@
   ],
   "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx tsc --build --verbose",
+		"build:watch": "npx tsc --build --verbose --watch",
+    "serve": "ariiad -rl ../web-server/src/main/resources/static/aurora",
+    "esmpack": "npx esmpack",
+		"esmpack:watch": "npx esmpack -w",
+		"ibyar": "npx ibyar --build --verbose",
+		"ibyar:watch": "npx ibyar --build --watch --verbose"
   },
   "dependencies": {
     "@ibyar/aurora": "^0.8.6",
@@ -22,6 +28,7 @@
     "rxjs": "^7.8.0"
   },
   "devDependencies": {
-    "@ibyar/esmpack": "^1.0.0"
+    "@ibyar/esmpack": "^1.0.0",
+		"typescript": "^4.9.5"
   }
 }
