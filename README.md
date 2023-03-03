@@ -1,6 +1,6 @@
-# ariia  (0.3.0)
+# ariia  (2.0.0)
 
-Ariia is a command line download manager and HTML UI interface [Angular 11].
+Ariia is a command line download manager and HTML UI interface Angular 11, Aurora 0.8.6 and Java 17.
 
 ![screenshot-01](img/angular-spa-01.png)
 
@@ -8,8 +8,7 @@ Ariia is a command line download manager and HTML UI interface [Angular 11].
 
 | Lib Name             | Version  | Info           |
 |----------------------|----------|----------------|
-| OkHttp               | `3.14.9` | for jdk8 only  |
-| Gson                 | `2.8.6`  |                |
+| Gson                 | `2.10.1` |                |
 | Network Speed        | `0.2.8`  |                |
 | Network Connectivity | `0.2.8`  |                |
 | RESTful API          | `0.2.8`  |                |
@@ -26,11 +25,12 @@ Ariia is a command line download manager and HTML UI interface [Angular 11].
 - Core API
 - Verify Data
 - CLI API
-- Ariia JDK 8
-- Ariia JDK 11
+- Ariia JDK 17
 - Restful API
 - Web Server
-- WEB UI (Angular SPA)
+- Angular SPA
+- Aurora SPA
+- JavaFX Desktop Client
 
 ![screenshot-01](img/dependency-hierarch.png)
 ___
@@ -42,7 +42,7 @@ ___
  - parallel download, using segment.
  - saved setting every 1 second.
  - support Google Chrome with extension.
- - support using Proxy [HTTP, HTTPS, SOCKS], COMMING SOON JSCH(SSH)
+ - support using Proxy [HTTP, HTTPS, SOCKS], COMING SOON JSCH(SSH)
  - support download from maven repository
  - supported arguments
  - save time while downloading, by spiriting download process and writing data to hard disk.

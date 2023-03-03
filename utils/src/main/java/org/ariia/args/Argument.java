@@ -7,8 +7,6 @@ import java.net.*;
 import java.net.Proxy.Type;
 import java.util.*;
 
-//import org.ariia.okhttp.OkUtils;
-
 public class Argument {
 
     private final String version = "Ariia version (0.2.9)";
