@@ -40,7 +40,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <finalName>${app.name}-web-server-java-client-${project.version}</finalName>
+                    <finalName>ariia-web-${project.version}</finalName>
                     <appendAssemblyId>true</appendAssemblyId>
                     <archive>
                         <manifest>
@@ -49,8 +49,6 @@
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                        <!-- <descriptorRef>project</descriptorRef> <descriptorRef>bin</descriptorRef>
-                            <descriptorRef>src</descriptorRef> -->
                     </descriptorRefs>
 
                 </configuration>

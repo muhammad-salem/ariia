@@ -44,8 +44,6 @@
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                        <!-- <descriptorRef>project</descriptorRef> <descriptorRef>bin</descriptorRef>
-                            <descriptorRef>src</descriptorRef> -->
                     </descriptorRefs>
 
                 </configuration>
