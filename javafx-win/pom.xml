@@ -11,7 +11,7 @@
     <artifactId>javafx-win</artifactId>
 
     <properties>
-        <main.class>org.ariia.web.win.JavaFXWinApp</main.class>
+        <main.class>org.ariia.javafx.win.JavaFXWinApp</main.class>
     </properties>
 
     <dependencies>

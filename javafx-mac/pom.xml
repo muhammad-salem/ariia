@@ -11,7 +11,7 @@
     <artifactId>javafx-mac</artifactId>
 
     <properties>
-        <main.class>org.ariia.web.mac.JavaFXMacApp</main.class>
+        <main.class>org.ariia.javafx.mac.JavaFXMacApp</main.class>
     </properties>
 
     <dependencies>
