@@ -15,6 +15,7 @@ import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.internal.JavaHttpClient;
 import org.ariia.javafx.controllers.MainController;
+import org.ariia.javafx.controllers.MovingStage;
 import org.terminal.console.log.Level;
 
 import java.io.IOException;
@@ -73,6 +74,7 @@ public class JavaFXApp extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Ariia");
         stage.setScene(new Scene(pane));
+        MovingStage.move(stage, pane);
         stage.show();
     }
 
