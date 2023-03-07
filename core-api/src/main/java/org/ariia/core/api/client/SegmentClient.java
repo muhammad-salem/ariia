@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class SegmentClient extends Client implements StreamOrder, ThreadOrder {
 
-    SegmentDownloader segmentDownloader;
+    private SegmentDownloader segmentDownloader;
 
     public SegmentClient(Properties properties, ClientRequest clientRequest) {
         this(properties, clientRequest, Executors.newCachedThreadPool(),
@@ -31,8 +31,7 @@ public class SegmentClient extends Client implements StreamOrder, ThreadOrder {
 
     public SegmentClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,
                          SegmentWriter segmentWriter) {
-        this(properties, clientRequest, executor,
-                new SegmentDownloader(clientRequest, segmentWriter));
+        this(properties, clientRequest, executor, new SegmentDownloader(clientRequest, segmentWriter));
     }
 
     public SegmentClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,
