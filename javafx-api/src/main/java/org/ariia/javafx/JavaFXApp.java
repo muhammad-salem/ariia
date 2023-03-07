@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.ariia.args.Argument;
 import org.ariia.args.TerminalArgument;
+import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCLI;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
@@ -59,10 +60,10 @@ public class JavaFXApp extends Application {
         };
         var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
-//        var ariiaCli = new AriiaCli(client, onComplete);
+        var ariiaCli = new AriiaCli(client, onComplete);
 //        ariiaCli.lunchAsCliApp(arguments, properties);
 
-        var controller = new MainController(stage, client);
+        var controller = new MainController(stage, ariiaCli.getDownloadService());
         var url = getResource("gui/fxml/main-controller.xml");
 
         var loader = new FXMLLoader(url);

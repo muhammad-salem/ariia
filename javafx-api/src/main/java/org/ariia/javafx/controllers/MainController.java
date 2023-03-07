@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import org.ariia.core.api.client.Client;
+import org.ariia.core.api.service.DownloadService;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -28,19 +28,13 @@ public class MainController implements Initializable {
     public TextField findField;
 
     @FXML
-    public TreeView<Object> treeView;
-
-    @FXML
-    public TreeView<Object> treeState;
-
-    @FXML
     public Label labelMessages;
 
     @FXML
     public ContextMenu contextOpt, contextMenuTree;
 
     @FXML
-    public Button btnOpt, deletButton, deletCompButton;
+    public Button btnOpt, deleteButton, deleteCompButton;
 
     @FXML
     public ImageView findIcon;
@@ -49,11 +43,11 @@ public class MainController implements Initializable {
     public AnchorPane anchorRoot;
 
     private final Stage stage;
-    private final Client client;
+    private final DownloadService downloadService;
 
-    public MainController(Stage stage, Client client) {
+    public MainController(Stage stage, DownloadService downloadService) {
         this.stage = stage;
-        this.client = client;
+        this.downloadService = downloadService;
     }
 
     @Override
@@ -133,32 +127,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    public void startDownloadMainQueue(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void startDownloadSecondQueue(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void stopDownloadMainQueue(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void stopDownloadSecondQueue(ActionEvent event) {
-
-    }
-
-    @FXML
     public void showMinimalView(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void hideTreeView(ActionEvent event) {
 
     }
 
@@ -169,46 +138,6 @@ public class MainController implements Initializable {
 
     @FXML
     public void showOptionsWindows(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void browseSelectedCategory(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void showSelectedCategoryInManger(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void deleteSelectedCategory(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void addNewCategory(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void startDownloadSelectedQueue(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void stopDownloadSelectedQueue(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void showSelectedQueueInManger(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void deleteSelectedQueue(ActionEvent event) {
 
     }
 
@@ -230,6 +159,7 @@ public class MainController implements Initializable {
     @FXML
     public void closeProgram(ActionEvent event) {
         stage.close();
+        exitProgram(event);
     }
 
     @FXML
@@ -274,4 +204,5 @@ public class MainController implements Initializable {
     public void showProperties(ActionEvent event) {
 
     }
+
 }
