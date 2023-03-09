@@ -9,11 +9,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import lombok.RequiredArgsConstructor;
 import org.ariia.core.api.service.DownloadService;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@RequiredArgsConstructor
 public class MainController implements Initializable {
     @FXML
     public MenuBar menu;
@@ -22,7 +24,7 @@ public class MainController implements Initializable {
     public HBox hBoxHeader, hBoxFind;
 
     @FXML
-    public ListView<AnchorPane> list;
+    public TableView<AnchorPane> table;
 
     @FXML
     public TextField findField;
@@ -44,11 +46,6 @@ public class MainController implements Initializable {
 
     private final Stage stage;
     private final DownloadService downloadService;
-
-    public MainController(Stage stage, DownloadService downloadService) {
-        this.stage = stage;
-        this.downloadService = downloadService;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

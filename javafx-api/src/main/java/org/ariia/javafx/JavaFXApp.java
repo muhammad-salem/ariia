@@ -65,7 +65,7 @@ public class JavaFXApp extends Application {
 //        ariiaCli.lunchAsCliApp(arguments, properties);
 
         var controller = new MainController(stage, ariiaCli.getDownloadService());
-        var url = getResource("gui/fxml/main-controller.xml");
+        var url = getResource("gui/fxml/main-controller.fxml");
 
         var loader = new FXMLLoader(url);
         loader.setController(controller);
