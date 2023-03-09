@@ -1,4 +1,5 @@
 module ariia.models {
+    requires lombok;
     requires ariia.utils;
     requires java.xml;
     exports org.ariia.config;

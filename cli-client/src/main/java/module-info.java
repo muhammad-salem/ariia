@@ -1,4 +1,5 @@
 module ariia.cli.client {
+    requires lombok;
     requires lawnha;
     requires ariia.cli.api;
     requires ariia.core.api;

@@ -1,4 +1,5 @@
 module ariia.web.client {
+    requires lombok;
     requires restful.api;
     requires ariia.cli.api;
     requires ariia.web.server;

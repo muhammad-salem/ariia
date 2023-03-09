@@ -1,4 +1,5 @@
 module ariia.javafx.api {
+    requires lombok;
     requires lawnha;
     requires restful.api;
     requires javafx.fxml;

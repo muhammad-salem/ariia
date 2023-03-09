@@ -1,4 +1,5 @@
 module ariia.web.server {
+    requires lombok;
     requires jdk.httpserver;
     requires lawnha;
     requires ariia.logger;

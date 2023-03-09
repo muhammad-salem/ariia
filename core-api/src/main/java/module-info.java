@@ -1,4 +1,5 @@
 module ariia.core.api {
+    requires lombok;
     requires network.speed;
     requires network.connectivity;
     requires ariia.logger;
