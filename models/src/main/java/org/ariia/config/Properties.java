@@ -1,10 +1,14 @@
 package org.ariia.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.ariia.args.Argument;
 import org.ariia.util.R;
 
 import java.util.Objects;
 
+@Setter
+@Getter
 public class Properties {
 
     private int retries = 0;
@@ -17,7 +21,7 @@ public class Properties {
     }
 
     public Properties(Argument arguments) {
-        setupConfig(arguments);
+        updateArguments(arguments);
     }
 
     public void updateProperties(Properties properties) {
@@ -30,7 +34,7 @@ public class Properties {
         this.retries = Objects.requireNonNull(properties.retries, "retries is null");
     }
 
-    public void setupConfig(Argument arguments) {
+    public void updateArguments(Argument arguments) {
         if (arguments.isTries()) {
             retries = arguments.getTries();
         }
@@ -45,46 +49,6 @@ public class Properties {
             defaultSaveDirectory = arguments.getSavePath();
         }
         R.MK_DIRS(defaultSaveDirectory);
-    }
-
-    public int getRetries() {
-        return retries;
-    }
-
-    public void setRetries(int retries) {
-        this.retries = retries;
-    }
-
-    public String getDefaultSaveDirectory() {
-        return defaultSaveDirectory;
-    }
-
-    public void setDefaultSaveDirectory(String defaultSaveDirectory) {
-        this.defaultSaveDirectory = defaultSaveDirectory;
-    }
-
-    public int getMaxActiveDownloadPool() {
-        return maxActiveDownloadPool;
-    }
-
-    public void setMaxActiveDownloadPool(int maxActiveDownloadPool) {
-        this.maxActiveDownloadPool = maxActiveDownloadPool;
-    }
-
-    public int getRangePoolNum() {
-        return rangePoolNum;
-    }
-
-    public void setRangePoolNum(int rangePoolNum) {
-        this.rangePoolNum = rangePoolNum;
-    }
-
-    public int getMaxBufferPool() {
-        return maxBufferPool;
-    }
-
-    public void setMaxBufferPool(int maxBufferPool) {
-        this.maxBufferPool = maxBufferPool;
     }
 
 }

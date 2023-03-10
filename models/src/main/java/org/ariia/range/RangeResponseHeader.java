@@ -77,7 +77,7 @@ public class RangeResponseHeader {
     }
 
     public String toRequestRange() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(type.name() + " ");
         builder.append(start);
         builder.append('-');

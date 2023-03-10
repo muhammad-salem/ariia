@@ -66,10 +66,6 @@ public class StreamMetaDataWriter extends ItemMetaData {
 
     }
 
-//	@Override
-//	public void clearFile() {}
-
-
     @Override
     public void close() {
         try {

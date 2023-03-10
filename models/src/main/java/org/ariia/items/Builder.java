@@ -60,7 +60,7 @@ public class Builder {
     }
 
     public Builder addHeaders(String name, String header) {
-        List<String> value = this.headers.getOrDefault(name, new ArrayList<>(1));
+        var value = this.headers.getOrDefault(name, new ArrayList<>(1));
         value.add(header);
         return addHeaders(name, value);
     }
@@ -71,7 +71,7 @@ public class Builder {
     }
 
     public Item build() {
-        Item item = new Item();
+        var item = new Item();
 
         item.setUrl(this.url);
         item.setFilename(getFileName());
@@ -94,14 +94,12 @@ public class Builder {
         } catch (Exception e) {
             decodedUrl = url;
         }
-        String fileName = new File(decodedUrl).getName().split("\\?")[0];
+        var fileName = new File(decodedUrl).getName().split("\\?")[0];
 
         if ("".equals(fileName)) {
             String[] fileParts = decodedUrl.split("/");
             fileName = fileParts[fileParts.length - 2].split("\\?")[0];
         }
-        //byte[] bytes = fileName.getBytes(StandardCharsets.UTF_8);
-        //fileName = new String(bytes, StandardCharsets.UTF_8);
         return fileName;
     }
 }

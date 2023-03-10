@@ -13,14 +13,14 @@ public interface ClientChannelWriter extends ClinetWriter {
 
     default void write(InputStream source, RandomAccessFile destination, long[] ranges)
             throws IOException {
-        ReadableByteChannel reader = Channels.newChannel(source);
+        var reader = Channels.newChannel(source);
         write(reader, destination.getChannel(), ranges);
     }
 
     default void write(InputStream source, RandomAccessFile destination, long[] ranges, boolean stream)
             throws IOException {
         // Objects.requireNonNull(file, "file");		
-        ReadableByteChannel reader = Channels.newChannel(source);
+        var reader = Channels.newChannel(source);
         if (stream)
             writeStream(reader, destination.getChannel(), ranges);
         else
@@ -28,17 +28,17 @@ public interface ClientChannelWriter extends ClinetWriter {
     }
 
     /**
+     *
      * @param reader
      * @param writer
      * @param ranges
-     * @param buffer
      * @throws IOException
      */
 
     default void writeStream(ReadableByteChannel reader, FileChannel writer, long[] ranges)
             throws IOException {
         int count = 0;
-        ByteBuffer buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
+        var buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
         while ((count = reader.read(buffer)) != -1) {
             buffer.flip();
             writer.write(buffer);
@@ -48,16 +48,16 @@ public interface ClientChannelWriter extends ClinetWriter {
     }
 
     /**
+     *
      * @param reader
      * @param writer
      * @param ranges
-     * @param buffer
      * @throws IOException
      */
     default void write(ReadableByteChannel reader, FileChannel writer, long[] ranges)
             throws IOException {
         int count = 0;
-        ByteBuffer buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
+        var buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
         while ((count = reader.read(buffer)) != -1) {
             buffer.flip();
             writer.write(buffer);

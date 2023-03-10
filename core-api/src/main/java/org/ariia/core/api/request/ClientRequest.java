@@ -55,13 +55,13 @@ public interface ClientRequest {
     }
 
     default Response executeAndDebugRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
-        Response response = executeRequest(method, url, headers);
+        var response = executeRequest(method, url, headers);
         debugResponse(response, headers);
         return response;
     }
 
     default void debugResponse(Response response, Map<String, List<String>> requestHeaders) {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append("request send:\n");
         builder.append('\n');
         builder.append(response.requestMethod());

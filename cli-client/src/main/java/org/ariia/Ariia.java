@@ -16,7 +16,7 @@ public class Ariia {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException {
 
-        Argument arguments = new Argument(args);
+        var arguments = new Argument(args);
         if (arguments.isEmpty() || arguments.isHelp()) {
             System.out.println(TerminalArgument.help());
             return;
@@ -26,13 +26,15 @@ public class Ariia {
         }
 
         LogCLI.initLogServices(arguments, Level.log);
-        Properties properties = new Properties(arguments);
+        var properties = new Properties(arguments);
         Runnable onComplete = () -> {
             if (!arguments.isDaemonService()) {
                 System.exit(0);
             }
         };
-        AriiaCli cli = new AriiaCli(Clients.segmentClient(properties, new JavaHttpClient(arguments.getProxy(), arguments.isInsecure())), onComplete);
+        var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
+        var client = Clients.segmentClient(properties, httpClient);
+        var cli = new AriiaCli(client, onComplete);
         cli.lunchAsCliApp(arguments, properties);
 
     }

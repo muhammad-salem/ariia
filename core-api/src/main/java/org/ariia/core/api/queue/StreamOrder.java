@@ -8,7 +8,7 @@ public interface StreamOrder {
 
     default List<Integer> streamDownloadOrder(int count) {
         if (count == 0) return Collections.emptyList();
-        List<Integer> indexes = new ArrayList<>();
+        var indexes = new ArrayList<Integer>();
         if (count == 1) {
             indexes.add(0);
         } else if (count > 1) {

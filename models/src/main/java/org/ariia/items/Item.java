@@ -1,5 +1,7 @@
 package org.ariia.items;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.ariia.range.RangeInfo;
 
 import java.io.File;
@@ -7,6 +9,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
 
+@Setter
+@Getter
 public class Item {
 
     private static int ITEMS_COUNT = 1;
@@ -30,36 +34,8 @@ public class Item {
         this.state = ItemState.INIT;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public boolean isRedirected() {
         return redirectUrl != null && !redirectUrl.equals(url);
-    }
-
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
-
-    public void setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-    }
-
-    public String getFilename() {
-        return filename;
     }
 
     public void setFilename(String filename) {
@@ -74,22 +50,6 @@ public class Item {
         }
     }
 
-    public ItemState getState() {
-        return state;
-    }
-
-    public void setState(ItemState state) {
-        this.state = state;
-    }
-
-    public RangeInfo getRangeInfo() {
-        return rangeInfo;
-    }
-
-    public void setRangeInfo(RangeInfo rangeInfo) {
-        this.rangeInfo = rangeInfo;
-    }
-
     public boolean isFinish() {
         return rangeInfo.isFinish();
     }
@@ -98,20 +58,12 @@ public class Item {
         return rangeInfo.isStreaming();
     }
 
-    public Map<String, List<String>> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(Map<String, List<String>> headers) {
-        this.headers = headers;
-    }
-
     public void addHeaders(Map<String, List<String>> headers) {
         this.headers.putAll(headers);
     }
 
     public void addHeader(String name, String value) {
-        List<String> list = headers.getOrDefault(name, new ArrayList<>(1));
+        var list = headers.getOrDefault(name, new ArrayList<>());
         list.add(value);
         this.headers.put(name, list);
     }
@@ -125,7 +77,7 @@ public class Item {
     }
 
     public String path() {
-        char lastChar = saveDirectory.charAt(saveDirectory.length() - 1);
+        var lastChar = saveDirectory.charAt(saveDirectory.length() - 1);
         if (lastChar == '/' || lastChar == '\\') {
             return (saveDirectory + filename);
         } else {
@@ -142,7 +94,7 @@ public class Item {
     }
 
     public String liteString() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(filename);
         builder.append('\t');
         builder.append(uuid);
@@ -170,7 +122,7 @@ public class Item {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(liteString());
         builder.append('\n');
         builder.append("Headers Size : ");
@@ -192,7 +144,7 @@ public class Item {
         if (!(obj instanceof Item)) {
             return false;
         }
-        Item item = (Item) obj;
+        var item = (Item) obj;
         return this.url.equals(item.url)
                 && this.filename.equals(item.filename)
                 && this.state.equals(item.state)
@@ -203,7 +155,7 @@ public class Item {
     }
 
     public Item getCopy() {
-        Item item = new Item();
+        var item = new Item();
         item.setUrl(url);
         item.setRedirectUrl(redirectUrl);
         item.setFilename(filename);

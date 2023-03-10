@@ -29,10 +29,10 @@ public class SegmentDownloader implements Downloader, ContentLength {
 
     @Override
     public boolean downloadTask(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
-        Item item = metaData.getItem();
+        var item = metaData.getItem();
         if (item.getRangeInfo().isFinish(index)) return true;
 
-        try (Response response = clientRequest.get(item, index)) {
+        try (var response = clientRequest.get(item, index)) {
 
             if (metaData.getRangeInfo().isStreaming()) {
                 Optional<String> contentLength = response.firstValue("Content-Length");

@@ -54,7 +54,7 @@ public class WebDownloadService extends DownloadService {
     }
 
     private String toJsonItemsList(Stream<ItemMetaData> itemStream) {
-        List<WebItem> dataList = itemStream.map(WebItem::new).collect(Collectors.toList());
+        var dataList = itemStream.map(WebItem::new).collect(Collectors.toList());
         if (dataList.isEmpty()) return null;
         return Utils.toJson(dataList);
     }
@@ -62,7 +62,7 @@ public class WebDownloadService extends DownloadService {
     private void sendWebReport() {
         try {
             sessionProvider.send(Utils.toJson(sessionReport));
-            String downloadMessage = toJsonItemsList(downloadStream());
+            var downloadMessage = toJsonItemsList(downloadStream());
             if (Objects.nonNull(downloadMessage)) {
                 itemListProvider.send(downloadMessage);
             }

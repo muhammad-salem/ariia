@@ -4,7 +4,6 @@ import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
 import org.ariia.core.api.writer.ClinetWriter;
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.items.Item;
 import org.ariia.logging.Logger;
 import org.network.speed.report.SpeedMonitor;
 
@@ -30,7 +29,7 @@ public class ChannelDownloader implements Downloader, ContentLength {
 
     public boolean downloadTask(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
 
-        Item item = metaData.getItem();
+        var item = metaData.getItem();
         if (item.getRangeInfo().isFinish(index))
             return true;
         RandomAccessFile raf = null;
@@ -55,7 +54,7 @@ public class ChannelDownloader implements Downloader, ContentLength {
 
 
             raf = new RandomAccessFile(item.path(), "rwd");
-            clinetWriter.writeRsponse(response.bodyBytes(), raf, item.getRangeInfo().indexOf(index), monitors);
+            clinetWriter.writeResponse(response.bodyBytes(), raf, item.getRangeInfo().indexOf(index), monitors);
         } catch (Exception e) {
             return false;
         } finally {

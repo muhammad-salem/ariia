@@ -2,6 +2,7 @@ package org.ariia.web.controller;
 
 import org.ariia.config.Properties;
 import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RestController;
 import org.ariia.mvc.annotation.method.GetRequest;
@@ -13,6 +14,8 @@ import java.util.Objects;
 @RestController("/settings")
 public class SettingController {
 
+    Logger log = Logger.create(SettingController.class);
+
     final private SettingService settingService;
 
     public SettingController(SettingService settingService) {
@@ -21,25 +24,25 @@ public class SettingController {
 
     @GetRequest(path = "/")
     public Properties getProperties() {
-        Log.trace(getClass(), "getProperties");
+        log.trace("getProperties");
         return settingService.getProperties();
     }
 
     @PostRequest(path = "/update")
     public boolean updateProperties(@RequestBody Properties properties) {
-        Log.trace(getClass(), "update");
+        log.trace("update");
         return settingService.updateProperties(properties);
     }
 
     @GetRequest(path = "/isAllowDownload")
     public boolean isAllowDownload() {
-        Log.trace(getClass(), "isAllowDownload");
+        log.trace("isAllowDownload");
         return settingService.isAllowDownload();
     }
 
     @PostRequest(path = "/toggleAllowDownload")
     public boolean startList() {
-        Log.trace(getClass(), "startList");
+        log.trace("startList");
         return settingService.toggleAllowDownloadList();
     }
 

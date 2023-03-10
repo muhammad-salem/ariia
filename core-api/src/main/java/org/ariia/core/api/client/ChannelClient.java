@@ -18,8 +18,12 @@ public class ChannelClient extends Client implements StreamOrder, ThreadOrder {
     ChannelDownloader channelDownloader;
 
     public ChannelClient(Properties properties, ClientRequest clientRequest) {
-        this(properties, clientRequest, Executors.newCachedThreadPool(), new ClientChannelWriter() {
-        });
+        this(
+                properties,
+                clientRequest,
+                Executors.newCachedThreadPool(),
+                new ClientChannelWriter() {}
+        );
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ClinetWriter clinetWriter) {
@@ -32,8 +36,7 @@ public class ChannelClient extends Client implements StreamOrder, ThreadOrder {
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ExecutorService executor) {
-        this(properties, clientRequest, executor, new ClientChannelWriter() {
-        });
+        this(properties, clientRequest, executor, new ClientChannelWriter() {});
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,

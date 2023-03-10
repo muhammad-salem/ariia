@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 public class WebApp {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException, IOException {
-        Argument arguments = new Argument(args);
+        var arguments = new Argument(args);
         if (arguments.isHelp()) {
             System.out.println(TerminalArgument.help());
             return;
@@ -20,7 +20,7 @@ public class WebApp {
             System.out.println(arguments.getVersion() + " - Angular Material (11.0.9)");
             return;
         }
-        JavaHttpClient client = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
+        var client = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
         WebService.start(arguments, client);
     }
 

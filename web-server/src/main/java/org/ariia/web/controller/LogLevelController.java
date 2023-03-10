@@ -18,7 +18,7 @@ public class LogLevelController {
 
     @PostRequest(path = "/set")
     public boolean setLevel(@RequestBody String levelName) {
-        Level level = Level.valueOf(levelName);
+        var level = Level.valueOf(levelName);
         Log.level(level);
         return true;
     }

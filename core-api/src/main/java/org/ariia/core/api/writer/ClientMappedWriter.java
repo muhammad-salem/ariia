@@ -16,25 +16,26 @@ public interface ClientMappedWriter extends ClinetWriter {
     default void write(InputStream source, RandomAccessFile destination, long[] ranges, boolean stream) throws IOException {
         // Objects.requireNonNull(file, "file");
 
-        MappedByteBuffer writer = destination.getChannel().map(MapMode.READ_WRITE, ranges[0], ranges[1] - ranges[0]);
-        ReadableByteChannel reader = Channels.newChannel(source);
-        if (stream)
+        var writer = destination.getChannel().map(MapMode.READ_WRITE, ranges[0], ranges[1] - ranges[0]);
+        var reader = Channels.newChannel(source);
+        if (stream) {
             writeStream(reader, writer, ranges);
-        else
+        } else {
             write(reader, writer, ranges);
+        }
         writer.force();
     }
 
     /**
+     *
      * @param reader
      * @param writer
      * @param ranges
-     * @param buffer
      * @throws IOException
      */
     default void writeStream(ReadableByteChannel reader, MappedByteBuffer writer, long[] ranges) throws IOException {
         int count = 0;
-        ByteBuffer buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
+        var buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
         try {
             while ((count = reader.read(buffer)) != -1) {
                 buffer.flip();
@@ -49,16 +50,16 @@ public interface ClientMappedWriter extends ClinetWriter {
     }
 
     /**
+     *
      * @param reader
      * @param writer
      * @param ranges
-     * @param buffer
      * @throws IOException
      */
     default void write(ReadableByteChannel reader, MappedByteBuffer writer, long[] ranges)
             throws IOException {
         int count = 0;
-        ByteBuffer buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
+        var buffer = ByteBuffer.allocate(RESPONSE_BUFFER);
         try {
             while ((count = reader.read(buffer)) != -1) {
                 buffer.flip();

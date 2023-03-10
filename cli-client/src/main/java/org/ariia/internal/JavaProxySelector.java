@@ -31,7 +31,7 @@ public class JavaProxySelector extends ProxySelector {
 
     @Override
     public synchronized List<Proxy> select(URI uri) {
-        String scheme = uri.getScheme().toLowerCase();
+        var scheme = uri.getScheme().toLowerCase();
         if (scheme.equals("http") || scheme.equals("https")) {
             return list;
         } else {

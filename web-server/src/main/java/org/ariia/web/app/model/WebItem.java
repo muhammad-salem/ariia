@@ -6,10 +6,13 @@ import org.ariia.items.ItemState;
 import org.ariia.items.MetaLinkItem;
 import org.ariia.monitors.RangeReport;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class WebItem {
+public class WebItem implements Serializable {
+
+    private static final long serialVersionUID = -4966241683513533908L;
 
     protected String url;
     protected String redirectUrl;

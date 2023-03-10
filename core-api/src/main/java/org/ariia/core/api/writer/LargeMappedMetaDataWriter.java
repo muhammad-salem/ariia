@@ -8,7 +8,6 @@ import org.ariia.segment.Segment;
 
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +25,10 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
     @Override
     protected void initMetaData() {
         this.mappedBuffers = new HashMap<>();
-        FileChannel channel = raf.getChannel();
+        var channel = raf.getChannel();
         long length = info.getFileLength();
         for (long pos = 0; pos < length; ) {
-            Pair pair = new Pair();
+            var pair = new Pair();
             pair.start = pos;
             pos += Integer.MAX_VALUE;
             pair.limit = Math.min(pos, length);
@@ -37,7 +36,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
             pos = pair.limit;
             log.trace("Pair ", pair.toString());
             try {
-                MappedByteBuffer buffer = channel.map(MapMode.READ_WRITE, pair.start, pair.size);
+                var buffer = channel.map(MapMode.READ_WRITE, pair.start, pair.size);
                 log.trace("create mapped byte buffer", buffer.toString());
                 mappedBuffers.put(pair, buffer);
             } catch (IOException e) {
@@ -49,7 +48,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
     }
 
     protected MappedData getMappedDataOfPosition(long startPositin) {
-        for (Pair pair : mappedBuffers.keySet()) {
+        for (var pair : mappedBuffers.keySet()) {
             if (startPositin >= pair.start & startPositin <= pair.limit) {
                 MappedData data = new MappedData();
                 data.start = (int) (startPositin - pair.start);
@@ -73,7 +72,7 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
      * @return
      */
     protected boolean writeSegment(Segment segment) {
-        MappedData data = getMappedDataOfPosition(segment.start);
+        var data = getMappedDataOfPosition(segment.start);
         if (data == null) return false;
         try {
             data.mappedBuffer.position(data.start);
@@ -103,19 +102,6 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
         forceUpdate();
         super.close();
     }
-
-
-//	/**
-//	 * will wipe data in this file 
-//	 * all the data will be zero
-//	 */
-//	@Override
-//	public void clearFile() {
-//		synchronized(mappedBuffers) {
-//			mappedBuffers.forEach((d,m)->{clearMapped(m);});
-//			forceUpdate();
-//		}
-//	}
 
     private static class Pair {
         long start, limit;

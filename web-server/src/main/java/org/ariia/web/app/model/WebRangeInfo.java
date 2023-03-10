@@ -1,7 +1,11 @@
 package org.ariia.web.app.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.ariia.range.RangeInfo;
 
+@Getter
+@Setter
 public class WebRangeInfo {
 
     protected long fileLength;

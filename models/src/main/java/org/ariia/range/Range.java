@@ -9,7 +9,6 @@ public interface Range {
     /**
      * call by reference to change the values of holder array to copy array
      *
-     * @param holder
      * @param copy
      */
     void updateRange(long[][] copy);

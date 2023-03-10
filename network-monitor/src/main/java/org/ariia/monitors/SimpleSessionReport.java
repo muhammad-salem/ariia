@@ -10,7 +10,7 @@ public class SimpleSessionReport extends SessionReport {
 
     @Override
     protected String pattern() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append('\r');
 
         builder.append(Ansi.EraseDown);
@@ -40,7 +40,7 @@ public class SimpleSessionReport extends SessionReport {
     }
 
     private String firstLine() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(red(bold(Utils.getStringWidth("T: " + unitLength(totalLength), 16))));
         builder.append(magentaLight(bold(Utils.getStringWidth("Down: " + unitLength(downloadLength), 19))));
         builder.append(yellow(bold(Utils.getStringWidth("Remain: " + unitLength(remainingLength), 19))));
@@ -48,7 +48,7 @@ public class SimpleSessionReport extends SessionReport {
     }
 
     private String secondLine() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(magentaLight(bold(Utils.getStringWidth("⇩ " + getTotalDownload(), 15))));
         builder.append(blue(bold(Utils.getStringWidth("↓ " + getTcpDownloadSpeed() + "/s", 16))));
         return builder.toString();

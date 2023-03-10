@@ -90,7 +90,7 @@ public class AriiaCli {
     private void lunch(Argument arguments, Properties properties, boolean isCLI) {
         initSystemIO();
         R.MK_DIRS(R.CachePath);
-        properties.setupConfig(arguments);
+        properties.updateArguments(arguments);
         if (Objects.isNull(downloadService) || buildServiceByFactory) {
             initDownloadService(isCLI);
         }
@@ -102,7 +102,7 @@ public class AriiaCli {
             System.out.println("\u001B[50B\u001B[0m\nGood Bye!\n");
         }));
 
-        ItemBuilder builder = new ItemBuilder(arguments, properties);
+        var builder = new ItemBuilder(arguments, properties);
         downloadService.initializeFromDataStore(builder.getItems());
         builder.clear();
         downloadService.startScheduledService();

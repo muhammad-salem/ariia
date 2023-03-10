@@ -33,27 +33,27 @@ public interface ItemDownloader {
     }
 
     default List<Future<?>> download(ItemMetaData metaData, SpeedMonitor... monitors) {
-        Item item = metaData.getItem();
+        var item = metaData.getItem();
         if (item.isStreaming()) {
             log.info("Streaming...", item.getFilename());
         } else if (item.isFinish()) {
             log.info("Download Complete", item.getFilename());
             return null;
         }
-        List<Integer> indexes = downloadOrder(item.getRangeInfo().getRangeCount());
-        List<Future<?>> futures = new LinkedList<Future<?>>();
-        for (Integer index : indexes) {
+        var indexes = downloadOrder(item.getRangeInfo().getRangeCount());
+        var futures = new LinkedList<Future<?>>();
+        for (var index : indexes) {
             futures.add(downloadPart(metaData, index, monitors));
         }
         return futures;
     }
 
     default List<Integer> downloadOrder(int rangeCount) {
-        List<Integer> indexs = new ArrayList<>();
+        var indexes = new ArrayList<Integer>();
         for (int i = 0; i < rangeCount; i++) {
-            indexs.add(i);
+            indexes.add(i);
         }
-        return indexs;
+        return indexes;
     }
 
 

@@ -1,14 +1,22 @@
 package org.ariia.web.app.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.terminal.console.log.Level;
 
-public class WebMessage {
+import java.io.Serializable;
 
-    long timeMillis;
-    Level level;
-    String classname;
-    String title;
-    String message;
+@Getter
+@Setter
+public class WebMessage  implements Serializable {
+
+    private static final long serialVersionUID = -531261783335089623L;
+
+    private long timeMillis;
+    private Level level;
+    private String classname;
+    private String title;
+    private String message;
 
 
     public WebMessage(Level level, String classname, String title, String message) {
@@ -17,22 +25,6 @@ public class WebMessage {
         this.classname = classname;
         this.title = title;
         this.message = message;
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public String getClassname() {
-        return classname;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
 }

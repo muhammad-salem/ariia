@@ -10,7 +10,7 @@ public interface ContentLength {
         try {
             return Long.parseLong(contentLengthHeader);
         } catch (NumberFormatException e) {
-            RangeResponseHeader header = new RangeResponseHeader(contentLengthHeader);
+            var header = new RangeResponseHeader(contentLengthHeader);
             return header.length;
         }
     }

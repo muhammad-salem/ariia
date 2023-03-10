@@ -200,14 +200,14 @@ public enum TerminalArgument {
                 return ("use socks4 proxy [host:port] format");
 
             case SSH:
-                return ("use ssh connection as proxy - [remotehost:port], not supported yet");
+                return ("use ssh connection as proxy - [remote_host:port], not supported yet");
             case SSHUser:
                 return ("set ssh user name - remote login user name");
             case SSHPass:
                 return ("set remote login password, if non will be asked from terminal");
 
             case CheckFile:
-                return ("check donload file if is complete, and try to complete it");
+                return ("check download file if is complete, and try to complete it");
             case ChunkSize:
                 return ("length of chunk/segment to check");
             case DownloadPieces:

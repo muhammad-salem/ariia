@@ -1,9 +1,9 @@
 package org.ariia.segment;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-//import org.log.concurrent.Log;
 
 public class ByteBufferPool {
 
@@ -14,23 +14,11 @@ public class ByteBufferPool {
     private static ConcurrentLinkedQueue<ByteBuffer> BUFFER_QUEUE = new ConcurrentLinkedQueue<>();
 
     public static ByteBuffer acquire() {
-        ByteBuffer buffer = BUFFER_QUEUE.poll();
-        if (buffer == null) {
-//			buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
-            buffer = ByteBuffer.allocate(BUFFER_SIZE);
-        }
-//		else {
-//		    System.out.println("BUFFER_QUEUE.size : " + BUFFER_QUEUE.size());
-//		}
-//		Log.info(ByteBufferPool.class, "memory queue", "BUFFER_QUEUE.size : " + BUFFER_QUEUE.size() );
-        return buffer;
+        return Objects.requireNonNullElseGet(BUFFER_QUEUE.poll(), () -> ByteBuffer.allocate(BUFFER_SIZE));
     }
 
     public static void release(ByteBuffer buffer) {
-//		if (BUFFER_QUEUE.size() < QUEUE_MAX_SIZE){
         offer(buffer);
-//		}
-
     }
 
     private static void offer(ByteBuffer buffer) {

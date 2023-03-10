@@ -15,14 +15,11 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 
-//import org.ariia.core.api.queue.ItemDownloader;
 
 public abstract class ItemMetaData implements OfferSegment, Closeable {
 
@@ -62,7 +59,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
     public abstract void forceUpdate();
 
     /**
-     * @param item
+     *
      */
     protected void initRandomAccessFile() {
         try {
@@ -178,9 +175,9 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
     }
 
     public void checkCompleted() {
-        Iterator<Entry<Integer, Future<?>>> iterator = downloadMap.entrySet().iterator();
+        var iterator = downloadMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Entry<Integer, Future<?>> entry = iterator.next();
+            var entry = iterator.next();
             if (info.isFinish(entry.getKey())) {
                 iterator.remove();
             } else {
@@ -191,14 +188,17 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
     }
 
     public void checkWhileDownloading() {
-        Iterator<Entry<Integer, Future<?>>> iterator = downloadMap.entrySet().iterator();
+        var iterator = downloadMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Entry<Integer, Future<?>> entry = iterator.next();
-            boolean isFinish = info.isFinish(entry.getKey());
-            boolean isDone = entry.getValue().isDone();
-            if (isDone && isFinish) {
+            var entry = iterator.next();
+            var isFinish = info.isFinish(entry.getKey());
+            var isDone = entry.getValue().isDone();
+            if (!isDone){
+                continue;
+            }
+            if (isFinish) {
                 iterator.remove();
-            } else if (isDone && !isFinish) {
+            } else {
                 waitQueue.add(entry.getKey());
                 iterator.remove();
             }
@@ -232,15 +232,15 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
         }
         downloading = true;
         while (downloadMap.size() < properties.getRangePoolNum() & !waitQueue.isEmpty()) {
-            Integer index = waitQueue.poll();
-            if (index == null)
+            var index = waitQueue.poll();
+            if (index == null) {
                 break;
-            else {
+            } else {
                 if (info.isFinish(index)) {
                     continue;
                 }
-                Future<?> downladProcess = client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
-                downloadMap.put(index, downladProcess);
+                var downloadProcess = client.downloadPart(this, index, rangeReport.getMonitor(), monitors);
+                downloadMap.put(index, downloadProcess);
             }
         }
     }

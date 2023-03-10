@@ -38,8 +38,7 @@ public class MetaLinkItem extends Item {
     @Override
     public String getUrl() {
         if (Objects.isNull(url)) {
-            url = nextUrl();
-            return url;
+            return url = nextUrl();
         }
         return nextUrl();
     }
@@ -62,7 +61,7 @@ public class MetaLinkItem extends Item {
 
     @Override
     public String liteString() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(filename);
         builder.append("\n(#URL: " + mirrors.size() + ")\t");
         builder.append(mirrors.get(0));

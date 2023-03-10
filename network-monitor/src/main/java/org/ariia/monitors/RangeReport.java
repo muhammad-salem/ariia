@@ -49,7 +49,7 @@ public class RangeReport extends SpeedReport<SpeedMonitor> implements SpeedSnaps
     }
 
     public String getRemainingTimeString() {
-        return Utils.timeformate(getRemainingTime());
+        return Utils.timeFormat(getRemainingTime());
     }
 
     public String getFileLength() {

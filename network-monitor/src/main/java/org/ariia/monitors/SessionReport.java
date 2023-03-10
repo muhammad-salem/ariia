@@ -113,11 +113,11 @@ public abstract class SessionReport extends TotalSpeedReport<TotalSpeedMonitor> 
     }
 
     protected String getRemainingTimeString() {
-        return green(underscore(Utils.timeformate(getRemainingTime())));
+        return green(underscore(Utils.timeFormat(getRemainingTime())));
     }
 
     public String getTimer() {
-        return green(underscore(Utils.timeformate(timer++)));
+        return green(underscore(Utils.timeFormat(timer++)));
     }
 
     public String getPercent() {

@@ -303,7 +303,7 @@ public class DownloadService implements Closeable {
     }
 
     public void download(Item item) {
-        ItemMetaData metaData = initializeItemMetaData(item);
+        var metaData = initializeItemMetaData(item);
         addItemMetaData(metaData);
 
         // if (item.getRangeInfo().isFinish() ||
@@ -329,8 +329,8 @@ public class DownloadService implements Closeable {
     }
 
     public void initializeFromDataStore(List<Item> items) {
-        for (Item item : items) {
-            Item old = itemDataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
+        for (var item : items) {
+            var old = itemDataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
             if (Objects.isNull(old)) {
                 defaultClient.updateItemOnline(item);
             } else {

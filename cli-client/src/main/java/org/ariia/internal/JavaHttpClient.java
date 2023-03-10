@@ -37,7 +37,7 @@ public class JavaHttpClient implements ClientRequest {
     }
 
     private void init() throws NoSuchAlgorithmException, KeyManagementException {
-        HttpClient.Builder builder = HttpClient.newBuilder()
+        var builder = HttpClient.newBuilder()
                 .followRedirects(Redirect.ALWAYS)
                 .connectTimeout(Duration.ofSeconds(20))
                 .proxy(new JavaProxySelector(proxy))
@@ -46,14 +46,14 @@ public class JavaHttpClient implements ClientRequest {
 //			        .executor(Executors.newCachedThreadPool())
                 ;
         if (trustAll) {
-            TrustManager[] trustManagers = new TrustManager[]{
+            var trustManagers = new TrustManager[]{
                     new X509TrustManager() {
                         public X509Certificate[] getAcceptedIssuers() { return null; }
                         public void checkClientTrusted(X509Certificate[] certs, String authType) {}
                         public void checkServerTrusted(X509Certificate[] certs, String authType) {}
                     }
             };
-            SSLContext sslContext = SSLContext.getInstance("TLS");
+            var sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustManagers, null);
             builder.sslContext(sslContext);
         }
@@ -65,7 +65,7 @@ public class JavaHttpClient implements ClientRequest {
     public Response executeRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
         try {
 
-            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(new URI(url));
+            var requestBuilder = HttpRequest.newBuilder(new URI(url));
             if ("GET".equalsIgnoreCase(method)) {
                 requestBuilder.GET();
             } else if ("HEAD".equalsIgnoreCase(method)) {
@@ -80,9 +80,9 @@ public class JavaHttpClient implements ClientRequest {
                 });
             }
 
-            HttpResponse<InputStream> response = client.send(requestBuilder.build(), BodyHandlers.ofInputStream());
+            var response = client.send(requestBuilder.build(), BodyHandlers.ofInputStream());
 
-            Response.Builder responseBuilder = new Response.Builder();
+            var responseBuilder = new Response.Builder();
             responseBuilder.code(response.statusCode());
             responseBuilder.requestUrl(response.uri().toString());
             responseBuilder.requestMethod(response.request().method());

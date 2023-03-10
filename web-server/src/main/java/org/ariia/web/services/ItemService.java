@@ -6,6 +6,7 @@ import org.ariia.items.Builder;
 import org.ariia.items.Item;
 import org.ariia.items.MetaLinkItem;
 import org.ariia.logging.Log;
+import org.ariia.logging.Logger;
 import org.ariia.mvc.resource.StreamHandler;
 import org.ariia.range.RangeResponseHeader;
 import org.ariia.web.app.WebDownloadService;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 
 public class ItemService implements StreamHandler {
 
+    Logger log = Logger.create(ItemService.class);
+
     private WebDownloadService downloadService;
 
     public ItemService(WebDownloadService downloadService) {
@@ -26,7 +29,7 @@ public class ItemService implements StreamHandler {
     }
 
     public Item findById(Integer id) {
-        Optional<ItemMetaData> optional = downloadService.searchById(id);
+        var optional = downloadService.searchById(id);
         if (optional.isPresent()) {
             return optional.get().getItem();
         } else {
@@ -40,11 +43,11 @@ public class ItemService implements StreamHandler {
     }
 
     public void update(Integer id,  Item update) {
-        Optional<ItemMetaData> optionalItemMetaData = downloadService.searchById(id);
+        var optionalItemMetaData = downloadService.searchById(id);
         if (!optionalItemMetaData.isPresent()){
             return;
         }
-        ItemMetaData metaData = optionalItemMetaData.get();
+        var metaData = optionalItemMetaData.get();
         boolean isDownloading = metaData.isDownloading();
         if (isDownloading){
             this.pause(id);
@@ -60,10 +63,10 @@ public class ItemService implements StreamHandler {
     }
 
     public Integer create(String url, Map<String, List<String>> headers) {
-        Builder builder = new Builder(url);
+        var builder = new Builder(url);
         builder.saveDir(downloadService.getProperties().getDefaultSaveDirectory());
         builder.addHeaders(headers);
-        Item item = builder.build();
+        var item = builder.build();
         this.downloadService.initializeItemOnlineAndDownload(item);
         return item.getId();
     }
@@ -74,7 +77,7 @@ public class ItemService implements StreamHandler {
 
 
     public boolean delete(Integer id) {
-        Optional<ItemMetaData> optional = downloadService.searchById(id);
+        var optional = downloadService.searchById(id);
         if (optional.isPresent()) {
             downloadService.deleteFromList(optional.get());
             return true;
@@ -83,7 +86,7 @@ public class ItemService implements StreamHandler {
     }
 
     public boolean pause(Integer id) {
-        Optional<ItemMetaData> optional = downloadService.searchById(id);
+        var optional = downloadService.searchById(id);
         if (optional.isPresent()) {
             downloadService.moveToPauseList(optional.get());
             return true;
@@ -92,7 +95,7 @@ public class ItemService implements StreamHandler {
     }
 
     public boolean start(Integer id) {
-        Optional<ItemMetaData> optional = downloadService.searchById(id);
+        var optional = downloadService.searchById(id);
         if (optional.isPresent()) {
             downloadService.moveToDownloadList(optional.get());
             return true;
@@ -101,13 +104,13 @@ public class ItemService implements StreamHandler {
     }
 
     public void downloadItem(Integer id, HttpExchange exchange) {
-        Log.info(getClass(), "Download Item", "item id: " + id);
-        Optional<ItemMetaData> optional = downloadService.searchById(id);
+        log.info("Download Item", "item id: " + id);
+        var optional = downloadService.searchById(id);
         if (optional.isPresent()) {
-            Item item = optional.get().getItem();
+            var item = optional.get().getItem();
             try {
                 if (item.getState().isComplete()) {
-                    FileInputStream stream = new FileInputStream(item.path());
+                    var stream = new FileInputStream(item.path());
                     handelPlaneStream(exchange, item.getFilename(), stream);
                 } else {
                     // HTTP_UNAVAILABLE = 503
@@ -115,7 +118,7 @@ public class ItemService implements StreamHandler {
                     exchange.close();
                 }
             } catch (Exception e) {
-                Log.error(getClass(), "Download Item", "item id: " + id + "\n" + e.getMessage());
+                log.error("Download Item", "item id: " + id + "\n" + e.getMessage());
             }
         } else {
             throw new NullPointerException("no Item found with id: " + id);
@@ -123,16 +126,16 @@ public class ItemService implements StreamHandler {
     }
 
     public void downloadItemParts(Integer id, HttpExchange exchange, String range) {
-        RangeResponseHeader header = new RangeResponseHeader(range);
-        Log.info(getClass(), "setContentLength", header.start + "", header.end + "");
-        Optional<ItemMetaData> optional = downloadService.searchById(id);
+        var header = new RangeResponseHeader(range);
+        log.info("setContentLength", header.start + "", header.end + "");
+        var optional = downloadService.searchById(id);
         if (optional.isPresent()) {
-            Item item = optional.get().getItem();
+            var item = optional.get().getItem();
             try {
                 if (item.getState().isComplete()) {
-                    RandomAccessFile randomAccessFile = new RandomAccessFile(item.path(), "r");
+                    var randomAccessFile = new RandomAccessFile(item.path(), "r");
                     randomAccessFile.seek(header.start);
-                    InputStream stream = new InputStream() {
+                    var stream = new InputStream() {
                         @Override
                         public int read() throws IOException {
                             if (header.end - randomAccessFile.getFilePointer() == 0) {
@@ -153,7 +156,7 @@ public class ItemService implements StreamHandler {
                     exchange.close();
                 }
             } catch (Exception e) {
-                Log.error(getClass(), "Download Item", "item id: " + id + "\n" + e.getMessage());
+                log.error("Download Item", "item id: " + id + "\n" + e.getMessage());
             }
         } else {
             throw new NullPointerException("no Item found with id: " + id);
@@ -165,7 +168,7 @@ public class ItemService implements StreamHandler {
     }
 
     public Integer createMetaLink(String[] urls, Map<String, List<String>> headers) {
-        MetaLinkItem metalinkItem = new MetaLinkItem();
+        var metalinkItem = new MetaLinkItem();
         metalinkItem.setSaveDirectory(downloadService.getProperties().getDefaultSaveDirectory());
         metalinkItem.addHeaders(headers);
         for (String string : urls) {

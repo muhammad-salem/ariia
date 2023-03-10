@@ -114,11 +114,11 @@ public class Utils {
     public static String getStringMiddle(String str, int count, char ch) {
         if (str.length() > count)
             return str;
-        int apend = (count - str.length()) / 2;
+        int append = (count - str.length()) / 2;
         boolean reminder = ((count - str.length()) % 2) == 1;
         if (reminder)
             str = ch + str;
-        for (int i = 0; i < apend; i++) {
+        for (int i = 0; i < append; i++) {
             str = ch + str + ch;
         }
         return str;
@@ -148,7 +148,7 @@ public class Utils {
         char[] cs = new char[(count - string.length()) / 2];
         boolean reminder = ((count - string.length()) % 2) == 1;
         Arrays.fill(cs, ' ');
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(cs);
         if (reminder) builder.append(' ');
         builder.append(string);
@@ -175,7 +175,7 @@ public class Utils {
     }
 
     public static Gson getGson(boolean pretty) {
-        GsonBuilder builder = new GsonBuilder();
+        var builder = new GsonBuilder();
         if (pretty)
             builder.setPrettyPrinting();
         return builder.create();
@@ -199,7 +199,7 @@ public class Utils {
 
     public static boolean writeJson(String filename, String json) {
         try {
-            File file = new File(filename);
+            var file = new File(filename);
             file.getParentFile().mkdirs();
             FileWriter writer = new FileWriter(filename);
             writer.write(json);
@@ -223,7 +223,7 @@ public class Utils {
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            FileWriter writer = new FileWriter(file);
+            var writer = new FileWriter(file);
             writer.write(json);
             writer.flush();
             writer.close();
@@ -243,7 +243,7 @@ public class Utils {
      * @throws FileNotFoundException
      */
     public static <T> T fromJson(Class<T> classT, String file) throws FileNotFoundException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        var reader = new BufferedReader(new FileReader(file));
         return gson.fromJson(reader, classT);
     }
 
@@ -254,7 +254,7 @@ public class Utils {
     public static <T> T fromJson(String file, Class<T> classT) {
         T t = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            var reader = new BufferedReader(new FileReader(file));
             t = gson.fromJson(reader, classT);
         } catch (Exception e) {
             return null;
@@ -265,7 +265,7 @@ public class Utils {
     public static <T> T fromJson(String file, Class<T> classT, Type type) {
         T t = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            var reader = new BufferedReader(new FileReader(file));
             t = gson.fromJson(reader, type);
             // System.out.println(url);
         } catch (Exception e) {
@@ -275,10 +275,9 @@ public class Utils {
         return t;
     }
 
-    public static <T> T fromJsonGenric(String file, Class<T> classT) {
+    public static <T> T fromJsonGeneric(String file, Class<T> classT) {
         T t = null;
-        Type typeOfT = new TypeToken<T>() {
-        }.getType();
+        var typeOfT = new TypeToken<T>() {}.getType();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             t = gson.fromJson(reader, typeOfT);
@@ -292,10 +291,10 @@ public class Utils {
 
     public static <T> List<T> jsonList(Class<T> classT, String file) {
         List<T> t = null;
-        Type typeOfT = new TypeToken<ArrayList<T>>() {
+        var typeOfT = new TypeToken<ArrayList<T>>() {
         }.getType();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            var reader = new BufferedReader(new FileReader(file));
             t = gson.fromJson(reader, typeOfT);
         } catch (Exception e) {
             System.err.println("no file found " + file);
@@ -314,7 +313,7 @@ public class Utils {
      */
     public static boolean verifyURL(String fileURL) {
 
-        String str = fileURL.toLowerCase();
+        var str = fileURL.toLowerCase();
         // Allow FTP, HTTP and HTTPS URLs.
         if (str.startsWith("http://") || str.startsWith("https://") || str.startsWith("ftp://")) {
             // Verify format of URL.
@@ -383,7 +382,7 @@ public class Utils {
         return class1.getResourceAsStream(res);
     }
 
-    public static <T> URL getResourcem(Class<T> class1, String res) {
+    public static <T> URL getResource(Class<T> class1, String res) {
         return class1.getResource(res);
     }
 
@@ -401,11 +400,11 @@ public class Utils {
     }
 
 
-    public static String timeformate(final long millsecond) {
+    public static String timeFormat(final long millisecond) {
         long hh, mm, ss;
-        hh = ((millsecond / 60) / 60) % 60;
-        mm = (millsecond / 60) % 60;
-        ss = millsecond % 60;
+        hh = ((millisecond / 60) / 60) % 60;
+        mm = (millisecond / 60) % 60;
+        ss = millisecond % 60;
 
         String formate = (hh > 9 ? hh + "" : "0" + hh);
         formate += ':' + (mm > 9 ? mm + "" : "0" + mm);
@@ -417,16 +416,15 @@ public class Utils {
     public static void Copy(Path source, File destination) {
         try {
             Files.copy(source, new FileOutputStream(destination));
-
         } catch (IOException e) {
 
         }
     }
 
     public static List<String> readLines(String filePath) {
-        List<String> txtCookies = new LinkedList<>();
+        var txtCookies = new LinkedList<String>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            var reader = new BufferedReader(new FileReader(filePath));
             String text;
             while ((text = reader.readLine()) != null) {
                 txtCookies.add(text);
@@ -453,7 +451,7 @@ public class Utils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        String filename = url2.getFile();
+        var filename = url2.getFile();
         int lastslach = filename.lastIndexOf('/') + 1;
         if (lastslach != filename.length())
             filename = filename.substring(lastslach);
@@ -475,11 +473,7 @@ public class Utils {
      * @return true if file name had been changed
      */
     public boolean checkExists(String filePath) {
-        File file = new File(filePath);
-        if (file.exists()) {
-            return true;
-        }
-        return false;
+        return new File(filePath).exists();
     }
 
     public File solveName(File file) {
@@ -487,11 +481,19 @@ public class Utils {
     }
 
     public File getNewName(File file, int x) {
-        String name = file.getName();
-        String exetenation = name.substring(name.lastIndexOf('.'));
+        var name = file.getName();
+        var ext = name.substring(name.lastIndexOf('.'));
         name = name.substring(0, name.lastIndexOf('.'));
 
-        File newFile = new File(file.getParent() + File.separator + name + "_" + x + "." + exetenation);
+        var newFile = new File(
+                file.getParent()
+                        + File.separator
+                        + name
+                        + "_"
+                        + x
+                        + "."
+                        + ext
+        );
         if (newFile.exists()) {
             return getNewName(file, ++x);
         }
@@ -499,11 +501,16 @@ public class Utils {
     }
 
     public String getNameFor(String filePath, int overload) {
-        String name = filePath.substring(filePath.lastIndexOf('/'));
-        String exetenation = name.substring(name.lastIndexOf('.'));
+        var name = filePath.substring(filePath.lastIndexOf('/'));
+        var ext = name.substring(name.lastIndexOf('.'));
         name = name.substring(0, name.lastIndexOf('.'));
-        String file = filePath.substring(0, name.lastIndexOf('/')) + File.separator + name + "_" + overload + "."
-                + exetenation;
+        var file = filePath.substring(0, name.lastIndexOf('/'))
+                + File.separator
+                + name
+                + "_"
+                + overload
+                + "."
+                + ext;
         if (checkExists(file)) {
             return getNameFor(filePath, ++overload);
         }
@@ -511,9 +518,9 @@ public class Utils {
     }
 
     public long getContentLengthFromContentRange(String contentRange) {
-        int x = contentRange.indexOf("/");
-        String length = contentRange.substring(x + 1, contentRange.length());
-        long l = Long.valueOf(length);
+        var x = contentRange.indexOf("/");
+        var length = contentRange.substring(x + 1, contentRange.length());
+        var l = Long.valueOf(length);
         return l;
     }
 

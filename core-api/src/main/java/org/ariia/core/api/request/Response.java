@@ -125,7 +125,7 @@ public class Response implements Closeable {
 
 
         public Response build() {
-            Response response = new Response();
+            var response = new Response();
             response.requestMethod = this.requestMethod;
             response.requestUrl = this.requestUrl;
             response.protocol = this.protocol;

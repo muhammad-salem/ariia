@@ -9,18 +9,18 @@ public class SubRange {
 
     public static long[][] initRangeStreamer(int parts, long length, boolean isUnknowLength, long downloaded) {
 
+        long[][] ranges;
         if (isUnknowLength || length < LengthFactor) {
-            long[][] ranges = new long[1][2];
+            ranges = new long[1][2];
             if (isUnknowLength) {
                 length = 0;
             }
             ranges[0][0] = downloaded;
             ranges[0][1] = length;
 
-            return ranges;
         } else {
 
-            long[][] ranges = new long[parts][2];
+            ranges = new long[parts][2];
 
             ranges[0][0] = 0;
             ranges[0][1] = LengthFactor;
@@ -33,16 +33,12 @@ public class SubRange {
             long sub = length / parts;
 
             for (int i = 1; i < parts - 1; i++) {
-                // ranges[i][0] = sub * i;
-                // ranges[i][1] = sub * (i + 1) - 1;
-                // ranges[i][2] = 0;
-
                 ranges[i][0] = downloaded + (sub * i);
                 ranges[i][1] = downloaded + (sub * (i + 1));
             }
             ranges[parts - 2][1] = ranges[parts - 1][0];
-            return ranges;
         }
+        return ranges;
     }
 
     public static long[][] stream(long length, int parts) {
@@ -119,13 +115,13 @@ public class SubRange {
      *
      * @param length
      * @param splitCount
-     * @param from
+     * @param start
      * @return
      */
-    public static long[][] subrange(long length, int splitCount, int srart) {
+    public static long[][] subrange(long length, int splitCount, int start) {
         long[][] ranges = new long[splitCount][2];
         long sub = length / splitCount;
-        for (int i = srart; i < splitCount; i++) {
+        for (int i = start; i < splitCount; i++) {
             ranges[i][0] = sub * i;
             ranges[i][1] = sub * (i + 1);
         }
@@ -215,8 +211,7 @@ public class SubRange {
         return ranges;
     }
 
-    public static long[][] mksubrange(long length) {
-//		if(length == -1) return new long[][] {{0, Long.MAX_VALUE}};
+    public static long[][] createSubRange(long length) {
         return new long[][]{{0, length}};
     }
 

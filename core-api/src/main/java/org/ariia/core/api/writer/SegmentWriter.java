@@ -19,18 +19,20 @@ public interface SegmentWriter {
             SpeedMonitor... monitors)
             throws IOException {
 
-        InputStream source = MonitorInputStreamWrapper.wrap(stream, monitors);
-        ReadableByteChannel reader = Channels.newChannel(source);
+        var source = MonitorInputStreamWrapper.wrap(stream, monitors);
+        var reader = Channels.newChannel(source);
 
-
-        if (limit == -1) writeStream(reader, offerSegment, index, start);
-        else writeLimit(reader, offerSegment, index, start, limit);
+        if (limit == -1) {
+            writeStream(reader, offerSegment, index, start);
+        } else {
+            writeLimit(reader, offerSegment, index, start, limit);
+        }
 
     }
 
     default void writeStream(ReadableByteChannel reader, OfferSegment offerSegment, final int index, final long start) throws IOException {
-        Segment segment = new Segment(index, start);
-        ByteBuffer buffer = segment.buffer;
+        var segment = new Segment(index, start);
+        var buffer = segment.buffer;
         long length = start;
         int len = 0;
         try {
@@ -55,8 +57,8 @@ public interface SegmentWriter {
     }
 
     default void writeLimit(ReadableByteChannel reader, OfferSegment offerSegment, final int index, final long start, final long limit) throws IOException {
-        Segment segment = new Segment(index, start);
-        ByteBuffer buffer = segment.buffer;
+        var segment = new Segment(index, start);
+        var buffer = segment.buffer;
         long length = start;
         int len = 0;
         try {

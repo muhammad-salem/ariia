@@ -52,17 +52,6 @@ public class SimpleMappedMetaDataWriter extends ItemMetaData {
     }
 
 
-//	@Override
-//	public void clearFile() {
-//		mappedBuffer.position(0);
-//		int segment = mappedBuffer.capacity() > 2028098 ? 2028098 : 1;
-//		for (int pos = 0; pos < mappedBuffer.capacity(); pos += segment) {
-//			mappedBuffer.put((byte)0);
-//		}
-//		mappedBuffer.force();
-//	}
-
-
     @Override
     public void close() {
         mappedBuffer.force();

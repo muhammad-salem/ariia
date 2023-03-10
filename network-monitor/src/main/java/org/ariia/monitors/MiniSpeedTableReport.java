@@ -69,7 +69,7 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
         this.footer = borderStyle.build(
                 "└─┴─────────────────────────────────────────┴─────────────────┴──────────────┘");
 
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.append(borderStyle.build("│"));
         builder.append(dataStyle.get(0).build("{0}"));        // w = 1
         builder.append(borderStyle.build("│"));
@@ -163,7 +163,7 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
     @Override
     public String getTableReport() {
         updateInfo();
-        StringBuilder message = new StringBuilder();
+        var message = new StringBuilder();
         message.append(Ansi.EraseDown);
         message.append('\n');
         message.append('\n');
@@ -193,36 +193,34 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
 
 
     private void callSpeedForNextCycle() {
-
-        for (RangeReport mointor : monitors) {
-            mointor.snapshotPoint();
+        for (var monitor : monitors) {
+            monitor.snapshotPoint();
         }
         session.snapshotPoint();
     }
 
     private void updateInfo() {
-        for (RangeReport mointor : monitors) {
-            mointor.snapshotSpeed();
+        for (var monitor : monitors) {
+            monitor.snapshotSpeed();
         }
         session.snapshotSpeed();
     }
 
 
     private void buildTable(StringBuilder message) {
-
         message.append(header);
         int index = 0;
-        for (RangeReport mointor : monitors) {
+        for (var monitor : monitors) {
             Object[] obj = new Object[8];
             obj[0] = ++index + "";
-            obj[1] = Utils.middleMaxLength(mointor.getName(), 41);
-            obj[2] = Utils.middleMaxLength(mointor.getDownloadLength(), 17);
-            obj[3] = Utils.middleMaxLength(mointor.getTcpDownloadSpeed() + "/s", 14);
+            obj[1] = Utils.middleMaxLength(monitor.getName(), 41);
+            obj[2] = Utils.middleMaxLength(monitor.getDownloadLength(), 17);
+            obj[3] = Utils.middleMaxLength(monitor.getTcpDownloadSpeed() + "/s", 14);
 
-            obj[4] = Utils.middleMaxLength(mointor.getFileLength(), 10);
-            obj[5] = Utils.middleMaxLength(mointor.getPercent(), 10);
-            obj[6] = Utils.middleMaxLength(mointor.getRemainingLength(), 17);
-            obj[7] = Utils.middleMaxLength(mointor.getTcpDownload(), 14);
+            obj[4] = Utils.middleMaxLength(monitor.getFileLength(), 10);
+            obj[5] = Utils.middleMaxLength(monitor.getPercent(), 10);
+            obj[6] = Utils.middleMaxLength(monitor.getRemainingLength(), 17);
+            obj[7] = Utils.middleMaxLength(monitor.getTcpDownload(), 14);
 
             message.append(midBorder);
             message.append(format.format(obj));
@@ -242,7 +240,6 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
             message.append(midBorder);
             message.append(format.format(obj));
         }
-
         message.append(footer);
     }
 

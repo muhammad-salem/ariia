@@ -14,7 +14,7 @@ public interface ClinetWriter {
 
     void write(InputStream source, RandomAccessFile destination, long[] ranges) throws IOException;
 
-    default void writeRsponse(InputStream source, RandomAccessFile destination, long[] ranges, SpeedMonitor... monitors)
+    default void writeResponse(InputStream source, RandomAccessFile destination, long[] ranges, SpeedMonitor... monitors)
             throws IOException {
         source = MonitorInputStreamWrapper.wrap(source, monitors);
         write(source, destination, ranges);

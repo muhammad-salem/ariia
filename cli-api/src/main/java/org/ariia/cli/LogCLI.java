@@ -14,21 +14,21 @@ public class LogCLI {
     private static Logger log = Logger.create(LogCLI.class);
 
     public static void initLogServices(Argument arguments) {
-        String logLevel = arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
+        var logLevel = arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
         Log.level(logLevel);
         Log.initService();
         log.trace( "Terminal Argument", Arrays.toString(arguments.getArgs()));
     }
 
     public static void initLogServices(Argument arguments, Level defaultLevel) {
-        String logLevel = arguments.getOrDefault(TerminalArgument.Debug, defaultLevel.name());
+        var logLevel = arguments.getOrDefault(TerminalArgument.Debug, defaultLevel.name());
         Log.level(logLevel);
         Log.initService();
         log.trace("Terminal Argument", Arrays.toString(arguments.getArgs()));
     }
 
     public static void initLogServices(Argument arguments, Printer printer, Level defaultLevel) {
-        String logLevel = arguments.getOrDefault(TerminalArgument.Debug, defaultLevel.name());
+        var logLevel = arguments.getOrDefault(TerminalArgument.Debug, defaultLevel.name());
         Log.printer(printer, logLevel);
         Log.initService();
         log.trace("Terminal Argument", Arrays.toString(arguments.getArgs()));
@@ -36,7 +36,7 @@ public class LogCLI {
     }
 
     public static void initLogServicesNoStart(Argument arguments, Printer printer, Level defaultLevel) {
-        String logLevel = arguments.getOrDefault(TerminalArgument.Debug, defaultLevel.name());
+        var logLevel = arguments.getOrDefault(TerminalArgument.Debug, defaultLevel.name());
         Log.printer(printer, logLevel);
         log.trace("Terminal Argument", Arrays.toString(arguments.getArgs()));
     }

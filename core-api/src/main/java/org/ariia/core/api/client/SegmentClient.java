@@ -17,15 +17,21 @@ public class SegmentClient extends Client implements StreamOrder, ThreadOrder {
     private SegmentDownloader segmentDownloader;
 
     public SegmentClient(Properties properties, ClientRequest clientRequest) {
-        this(properties, clientRequest, Executors.newCachedThreadPool(),
-                new SegmentDownloader(clientRequest, new SegmentWriter() {
-                }));
+        this(
+                properties,
+                clientRequest,
+                Executors.newCachedThreadPool(),
+                new SegmentDownloader(clientRequest, new SegmentWriter() {}))
+        ;
     }
 
     public SegmentClient(Properties properties, ClientRequest clientRequest, ExecutorService executor) {
-        this(properties, clientRequest, executor,
-                new SegmentDownloader(clientRequest, new SegmentWriter() {
-                }));
+        this(
+                properties,
+                clientRequest,
+                executor,
+                new SegmentDownloader(clientRequest, new SegmentWriter() {})
+        );
     }
 
 

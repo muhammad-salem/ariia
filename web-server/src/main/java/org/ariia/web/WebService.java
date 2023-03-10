@@ -35,30 +35,32 @@ public class WebService {
     public static void start(Argument arguments, ClientRequest clientRequest) throws IOException {
 
         // setup logging service
-        EventBroadcast mainBroadcast = new EventBroadcast();
-        Printer printer = new PrinterImpl(System.out);
-        WebLoggerPrinter loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
+        var mainBroadcast = new EventBroadcast();
+        var printer = new PrinterImpl(System.out);
+        var loggingPrinter = new WebLoggerPrinter(mainBroadcast, printer);
         LogCLI.initLogServicesNoStart(arguments, loggingPrinter, Level.info);
-        Properties properties = new Properties(arguments);
+        var properties = new Properties(arguments);
 
         // setup web server
-        int port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
-        String resourceLocation = arguments.isServerResourceLocation() ? arguments.getServerResourceLocation()
+        var port = arguments.isServerPort() ? arguments.getServerPort() : 8080;
+        var resourceLocation = arguments.isServerResourceLocation()
+                ? arguments.getServerResourceLocation()
                 : "/static/angular";
-        WebServer.ResourceType type = arguments.isServerResourceLocation() ? WebServer.ResourceType.FILE :
-//        			isRunningFromJar() ?
-//        					WebServer.ResourceType.IN_MEMORY :
-                WebServer.ResourceType.STREAM;
+        WebServer.ResourceType type = arguments.isServerResourceLocation()
+                ? WebServer.ResourceType.FILE
+//        			: isRunningFromJar()
+//        			? WebServer.ResourceType.IN_MEMORY :
+                : WebServer.ResourceType.STREAM;
 
 
-        Routes homeRoutes = new Routes("home");
-        Routes dashboardRoutes = new Routes("dashboard");
-        Routes downloadRoutes = new Routes("download", "**");
-        Routes networkRoutes = new Routes("network", "monitor", "chart");
-        Routes configRoutes = new Routes("config");
-        Routes loggerRoutes = new Routes("logger");
+        var homeRoutes = new Routes("home");
+        var dashboardRoutes = new Routes("dashboard");
+        var downloadRoutes = new Routes("download", "**");
+        var networkRoutes = new Routes("network", "monitor", "chart");
+        var configRoutes = new Routes("config");
+        var loggerRoutes = new Routes("logger");
 
-        Routes rootRoutes = new Routes(
+        var rootRoutes = new Routes(
                 "/",
                 homeRoutes,
                 dashboardRoutes,
@@ -68,20 +70,20 @@ public class WebService {
                 loggerRoutes
         );
 
-        WebServer server = new WebServer(port, resourceLocation, type, rootRoutes);
+        var server = new WebServer(port, resourceLocation, type, rootRoutes);
 
         // setup download manager service
-        SegmentClient client = Clients.segmentClient(properties, clientRequest);
-        WebDownloadService downloadService = new WebDownloadService(mainBroadcast);
+        var client = Clients.segmentClient(properties, clientRequest);
+        var downloadService = new WebDownloadService(mainBroadcast);
 
-        AriiaCli cli = new AriiaCli(downloadService, client);
+        var cli = new AriiaCli(downloadService, client);
 
-        SettingController settingController = new SettingController(new SettingService(downloadService, properties));
+        var settingController = new SettingController(new SettingService(downloadService, properties));
         server.createControllerContext(settingController);
 
-        ItemController itemController = new ItemController(new ItemService(downloadService));
+        var itemController = new ItemController(new ItemService(downloadService));
         server.createControllerContext(itemController);
-        LogLevelController logLevelController = new LogLevelController();
+        var logLevelController = new LogLevelController();
         server.createControllerContext(logLevelController);
 
         server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
@@ -89,7 +91,7 @@ public class WebService {
         cli.lunchAsWebApp(arguments, properties);
         server.start();
         LogCLI.startLogService();
-        AnsiStringBuilder log = new AnsiStringBuilder();
+        var log = new AnsiStringBuilder();
         log.append("start local web server: ");
         log.blueLite().blink();
         log.build();
