@@ -16,6 +16,7 @@ import org.ariia.items.Builder;
 import org.ariia.logging.Logger;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.concurrent.Flow;
@@ -199,8 +200,10 @@ public class MainController implements Initializable {
 
     private void updateTableItems(){
         var items = downloadService.itemStream()
+                .sorted(Comparator.comparing(itemMetaData -> itemMetaData.getItem().getId()))
                 .map(i -> ItemProperty.of(i.getItem(), i.getRangeReport()))
                 .collect(Collectors.toList());
+        items.forEach(ItemProperty::updateMonitoring);
         table.setItems(FXCollections.observableArrayList(items));
     }
 
