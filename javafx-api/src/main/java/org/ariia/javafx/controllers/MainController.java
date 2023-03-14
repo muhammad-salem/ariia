@@ -2,6 +2,7 @@ package org.ariia.javafx.controllers;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,11 +28,15 @@ import java.util.stream.Collectors;
 public class MainController implements Initializable {
     private static Logger log = Logger.create(MainController.class);
 
-    private Function<ItemMetaData, ItemProperty> findBuMetaDate = itemMetaData -> this.table.getItems()
+    private Function<ItemMetaData, ItemProperty> findByMetaDate = itemMetaData -> MainController.this.table.getItems()
                  .stream()
                  .filter(itemProperty -> itemProperty.getItem() == itemMetaData.getItem())
                  .findAny()
                  .orElse(null);
+    private Function<ItemProperty, ItemMetaData> findByProperty = property -> MainController.this.downloadService.itemStream()
+            .filter(metaData -> metaData.getItem() == property.getItem())
+            .findAny()
+            .orElse(null);
 
     private Flow.Subscriber<ItemMetaData> onUpdateSubscriber = new Flow.Subscriber<>() {
         private Flow.Subscription subscription;
@@ -45,7 +50,7 @@ public class MainController implements Initializable {
         @Override
         public void onNext(ItemMetaData item) {
             log.info("onNext");
-            var property = findBuMetaDate.apply(item);
+            var property = findByMetaDate.apply(item);
             if (property != null){
                 property.updateMonitoring();
             }
@@ -105,7 +110,7 @@ public class MainController implements Initializable {
         @Override
         public void onNext(ItemMetaData item) {
             log.info("onNext");
-            var property = findBuMetaDate.apply(item);
+            var property = findByMetaDate.apply(item);
             if (property != null){
                 MainController.this.table.getItems().remove(property);
             }
@@ -207,6 +212,9 @@ public class MainController implements Initializable {
         table.setItems(FXCollections.observableArrayList(items));
     }
 
+    private ObservableList<ItemProperty> getSelectedItems() {
+        return table.getSelectionModel().getSelectedItems();
+    }
 
     @FXML
     public void exportToEF2IDM(ActionEvent event) {
@@ -250,7 +258,14 @@ public class MainController implements Initializable {
 
     @FXML
     public void resumeDownloadFile(ActionEvent event) {
-
+        downloadService.setAllowDownload(true);
+        for (var property : getSelectedItems()){
+            var item = findByProperty.apply(property);
+            if (item == null) {
+                return;
+            }
+            downloadService.moveToDownloadList(item);
+        }
     }
 
     @FXML
