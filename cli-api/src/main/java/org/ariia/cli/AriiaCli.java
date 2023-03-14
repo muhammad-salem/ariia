@@ -22,8 +22,7 @@ public class AriiaCli {
     boolean buildServiceByFactory = false;
     private Client client;
     private DownloadService downloadService;
-    private Runnable finishAction = () -> {
-    };
+    private Runnable finishAction = () -> {};
 
     public AriiaCli(Client client) {
         this.client = Objects.requireNonNull(client);
@@ -44,8 +43,7 @@ public class AriiaCli {
     }
 
     public AriiaCli(DownloadService downloadService, Client client) {
-        this(downloadService, client, () -> {
-        });
+        this(downloadService, client, () -> {});
     }
 
     public AriiaCli(DownloadService downloadService, Client client, Runnable finishAction) {

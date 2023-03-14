@@ -14,8 +14,11 @@ import org.ariia.cli.LogCLI;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
 import org.ariia.internal.JavaHttpClient;
+import org.ariia.javafx.controllers.DownloadFxService;
 import org.ariia.javafx.controllers.MainController;
 import org.ariia.javafx.controllers.MovingStage;
+import org.ariia.mvc.sse.EventBroadcast;
+import org.ariia.web.app.WebDownloadService;
 import org.terminal.console.log.Level;
 
 import java.io.IOException;
@@ -54,17 +57,13 @@ public class JavaFXApp extends Application {
         stage.getIcons().add(new Image(openStream("ariia.png")));
         LogCLI.initLogServices(arguments, Level.log);
         var properties = new Properties(arguments);
-        Runnable onComplete = () -> {
-            if (!arguments.isDaemonService()) {
-                System.exit(0);
-            }
-        };
+        var downloadService = new DownloadFxService();
         var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
-        var ariiaCli = new AriiaCli(client, onComplete);
-//        ariiaCli.lunchAsCliApp(arguments, properties);
+        var ariiaCli = new AriiaCli(downloadService, client);
+        ariiaCli.lunchAsWebApp(arguments, properties);
 
-        var controller = new MainController(stage, ariiaCli.getDownloadService());
+        var controller = new MainController(stage, downloadService);
         var url = getResource("gui/fxml/main-controller.fxml");
 
         var loader = new FXMLLoader(url);
