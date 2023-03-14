@@ -1,6 +1,7 @@
 package org.ariia.javafx.controllers;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,13 +11,118 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
-import org.ariia.core.api.service.DownloadService;
+import org.ariia.core.api.writer.ItemMetaData;
+import org.ariia.items.Builder;
+import org.ariia.logging.Logger;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.concurrent.Flow;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class MainController implements Initializable {
+    private static Logger log = Logger.create(MainController.class);
+
+    private Function<ItemMetaData, ItemProperty> findBuMetaDate = itemMetaData -> this.table.getItems()
+                 .stream()
+                 .filter(itemProperty -> itemProperty.getItem() == itemMetaData.getItem())
+                 .findAny()
+                 .orElse(null);
+
+    private Flow.Subscriber<ItemMetaData> onUpdateSubscriber = new Flow.Subscriber<>() {
+        private Flow.Subscription subscription;
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+            log.info("onSubscribe");
+            this.subscription = subscription;
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onNext(ItemMetaData item) {
+            log.info("onNext");
+            var property = findBuMetaDate.apply(item);
+            if (property != null){
+                property.updateMonitoring();
+            }
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            log.info("onError");
+        }
+
+        @Override
+        public void onComplete() {
+            log.info("onComplete");
+        }
+
+    };
+
+    private Flow.Subscriber<ItemMetaData> onAddSubscriber = new Flow.Subscriber<>() {
+        private Flow.Subscription subscription;
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+            log.info("onSubscribe");
+            this.subscription = subscription;
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onNext(ItemMetaData item) {
+            log.info("onNext");
+            var property = ItemProperty.of(item.getItem(), item.getRangeReport());
+            MainController.this.table.getItems().add(property);
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            log.info("onError");
+        }
+
+        @Override
+        public void onComplete() {
+            log.info("onComplete");
+        }
+
+    };
+
+    private Flow.Subscriber<ItemMetaData> onRemoveSubscriber = new Flow.Subscriber<>() {
+        private Flow.Subscription subscription;
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+            log.info("onSubscribe");
+            this.subscription = subscription;
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onNext(ItemMetaData item) {
+            log.info("onNext");
+            var property = findBuMetaDate.apply(item);
+            if (property != null){
+                MainController.this.table.getItems().remove(property);
+            }
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            log.info("onError");
+        }
+
+        @Override
+        public void onComplete() {
+            log.info("onComplete");
+        }
+
+    };
+
     @FXML
     public MenuBar menu;
 
@@ -24,7 +130,31 @@ public class MainController implements Initializable {
     public HBox hBoxHeader, hBoxFind;
 
     @FXML
-    public TableView<AnchorPane> table;
+    public TableView<ItemProperty> table;
+
+    @FXML
+    private TableColumn<ItemProperty, Number> colId;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colName;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colUrl;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colLength;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colProgress;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colSpeed;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colStatus;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colTimeLeft;
 
     @FXML
     public TextField findField;
@@ -45,11 +175,33 @@ public class MainController implements Initializable {
     public AnchorPane anchorRoot;
 
     private final Stage stage;
-    private final DownloadService downloadService;
+    private final DownloadFxService downloadService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        colId.setCellValueFactory(item -> item.getValue().getId());
+        colName.setCellValueFactory(item -> item.getValue().getName());
+        colUrl.setCellValueFactory(item -> item.getValue().getUrl());
+        colLength.setCellValueFactory(item -> item.getValue().getLength());
+        colProgress.setCellValueFactory(item -> item.getValue().getProgress());
+        colSpeed.setCellValueFactory(item -> item.getValue().getSpeed());
+        colStatus.setCellValueFactory(item -> item.getValue().getStatus());
+        colTimeLeft.setCellValueFactory(item -> item.getValue().getTimeLeft());
+
+        updateTableItems();
+
+        this.downloadService.getUpdatePublisher().subscribe(this.onUpdateSubscriber);
+        this.downloadService.getAddPublisher().subscribe(this.onAddSubscriber);
+        this.downloadService.getRemovePublisher().subscribe(this.onRemoveSubscriber);
+
+    }
+
+    private void updateTableItems(){
+        var items = downloadService.itemStream()
+                .map(i -> ItemProperty.of(i.getItem(), i.getRangeReport()))
+                .collect(Collectors.toList());
+        table.setItems(FXCollections.observableArrayList(items));
     }
 
 
