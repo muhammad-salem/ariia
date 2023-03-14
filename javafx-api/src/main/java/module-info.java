@@ -11,6 +11,8 @@ module ariia.javafx.api {
     requires ariia.models;
     requires ariia.core.api;
     requires ariia.cli.client;
+    requires ariia.network.monitor;
+    requires ariia.logger;
 
     exports org.ariia.javafx;
     exports org.ariia.javafx.controllers;
