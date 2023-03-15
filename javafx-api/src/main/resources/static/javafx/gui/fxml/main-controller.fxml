@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane fx:id="anchorRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="810.0" stylesheets="@res/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="anchorRoot" stylesheets="@res/main.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <MenuBar fx:id="menu" prefHeight="25.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns:fx="http://javafx.com/fxml">
+        <MenuBar fx:id="menu" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns:fx="http://javafx.com/fxml">
             <menus>
                 <Menu text="Task">
                     <items>
@@ -78,99 +78,118 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <AnchorPane layoutX="14.0" layoutY="35.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+        <HBox fx:id="hBoxStgCtrl" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="2.0" stylesheets="@res/main.css" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="1.0">
             <children>
-                <HBox fx:id="hBoxHeader" alignment="CENTER" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                <HBox fx:id="hBoxFind" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" styleClass="button-item">
                     <children>
-                        <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#addNewDownload" prefHeight="35.0" styleClass="button-header" text="Add URL">
-                            <tooltip>
-                                <Tooltip text="add new address" />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/insert-link.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button layoutX="100.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#resumeDownloadFile" prefHeight="35.0" styleClass="button-header" text="Resume">
-                            <tooltip>
-                                <Tooltip text="resume download file" />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/go-down.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button layoutX="184.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#pauseAllSelected" prefHeight="35.0" styleClass="button-header" text="Paused">
-                            <tooltip>
-                                <Tooltip text="stop download selected file(s) from the list" />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/media-playback-pause.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#pauseAllDownload" prefHeight="35.0" styleClass="button-header" text="Stop All">
-                            <tooltip>
-                                <Tooltip text="stop download all running Items " />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/media-playback-stop.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button fx:id="deleteButton" layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#deleteSelectedDownload" prefHeight="35.0" styleClass="button-header" text="Delete">
-                            <tooltip>
-                                <Tooltip text="Delete selected file(s) from the list" />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/list-remove.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button fx:id="deleteCompButton" layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#deleteAllComplete" prefHeight="35.0" styleClass="button-header" text="Delete Completed" wrapText="true">
-                            <tooltip>
-                                <Tooltip text="delete all complete Items" />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/list-remove.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#showOptionsWindows" prefHeight="35.0" styleClass="button-header" text="Options">
-                            <tooltip>
-                                <Tooltip text="show options window" />
-                            </tooltip>
-                            <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@res/24/view-list-compact-symbolic.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
+                        <TextField fx:id="findField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="250.0" promptText="Search downloads" styleClass="button-item">
+                            <HBox.margin>
+                                <Insets top="-1.0" />
+                            </HBox.margin>
+                        </TextField>
+                        <ImageView fx:id="findIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" styleClass="image-find">
+                            <HBox.margin>
+                                <Insets left="5.0" right="10.0" top="8.0" />
+                            </HBox.margin>
+                        </ImageView>
                     </children>
+                    <HBox.margin>
+                        <Insets top="1.0" />
+                    </HBox.margin>
                 </HBox>
+                <Button mnemonicParsing="false" onAction="#minimizeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="minimize" />
+                <Button mnemonicParsing="false" onAction="#closeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="close" />
             </children>
-        </AnchorPane>
-        <TableView fx:id="table" layoutX="10.0" layoutY="75.0" prefHeight="450.0" prefWidth="780.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="75.0">
+        </HBox>
+          <HBox fx:id="hBoxHeader" alignment="CENTER" layoutX="14.0" layoutY="35.0" spacing="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+              <children>
+                  <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#addNewDownload" prefHeight="35.0" styleClass="button-header" text="Add URL">
+                      <tooltip>
+                          <Tooltip text="add new address" />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/insert-link.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+                  <Button layoutX="100.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#resumeDownloadFile" prefHeight="35.0" styleClass="button-header" text="Resume">
+                      <tooltip>
+                          <Tooltip text="resume download file" />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/go-down.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+                  <Button layoutX="184.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#pauseAllSelected" prefHeight="35.0" styleClass="button-header" text="Paused">
+                      <tooltip>
+                          <Tooltip text="stop download selected file(s) from the list" />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/media-playback-pause.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+                  <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#pauseAllDownload" prefHeight="35.0" styleClass="button-header" text="Stop All">
+                      <tooltip>
+                          <Tooltip text="stop download all running Items " />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/media-playback-stop.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+                  <Button fx:id="deleteButton" layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#deleteSelectedDownload" prefHeight="35.0" styleClass="button-header" text="Delete">
+                      <tooltip>
+                          <Tooltip text="Delete selected file(s) from the list" />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/list-remove.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+                  <Button fx:id="deleteCompButton" layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#deleteAllComplete" prefHeight="35.0" styleClass="button-header" text="Delete Completed" wrapText="true">
+                      <tooltip>
+                          <Tooltip text="delete all complete Items" />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/list-remove.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+                  <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#showOptionsWindows" prefHeight="35.0" styleClass="button-header" text="Options">
+                      <tooltip>
+                          <Tooltip text="show options window" />
+                      </tooltip>
+                      <graphic>
+                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                  <Image url="@res/24/view-list-compact-symbolic.png" />
+                              </image>
+                          </ImageView>
+                      </graphic>
+                  </Button>
+              </children>
+          </HBox>
+        <TableView fx:id="table" layoutX="10.0" layoutY="75.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="75.0">
             <contextMenu>
                 <ContextMenu>
                     <items>
@@ -199,34 +218,11 @@
             <TableColumn fx:id="colTimeLeft" prefWidth="75.0" text="Time Left" />
          </columns>
         </TableView>
-        <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <AnchorPane maxHeight="24.0" minHeight="24.0" prefHeight="24.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
                 <Label fx:id="labelMessages" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" prefWidth="300.0" textFill="BLUE" AnchorPane.leftAnchor="5.0" />
             </children>
         </AnchorPane>
-        <HBox fx:id="hBoxStgCtrl" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="2.0" stylesheets="@res/main.css" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <HBox fx:id="hBoxFind" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" styleClass="button-item">
-                    <children>
-                        <TextField fx:id="findField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="250.0" promptText="Search downloads" styleClass="button-item">
-                            <HBox.margin>
-                                <Insets top="-1.0" />
-                            </HBox.margin>
-                        </TextField>
-                        <ImageView fx:id="findIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" styleClass="image-find">
-                            <HBox.margin>
-                                <Insets left="5.0" right="10.0" top="8.0" />
-                            </HBox.margin>
-                        </ImageView>
-                    </children>
-                    <HBox.margin>
-                        <Insets top="1.0" />
-                    </HBox.margin>
-                </HBox>
-                <Button mnemonicParsing="false" onAction="#minimizeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="minimize" />
-                <Button mnemonicParsing="false" onAction="#closeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="close" />
-            </children>
-        </HBox>
     </children>
     <styleClass>
         <String fx:value="background-white" />

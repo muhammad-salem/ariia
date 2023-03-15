@@ -24,8 +24,8 @@ public class MovingStage {
      */
     public MovingStage(Stage stage, AnchorPane pane) {
         moveWithMouse(stage, pane);
-        pane.heightProperty().addListener((observable, oldValue, newValue) -> stage.setHeight(pane.getHeight()));
-        pane.widthProperty().addListener((observable, oldValue, newValue) -> stage.setWidth(pane.getWidth()));
+//        pane.heightProperty().addListener((observable, oldValue, newValue) -> stage.setHeight(pane.getHeight()));
+//        pane.widthProperty().addListener((observable, oldValue, newValue) -> stage.setWidth(pane.getWidth()));
     }
 
     /**
