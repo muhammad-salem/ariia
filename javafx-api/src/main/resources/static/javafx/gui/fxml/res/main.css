@@ -49,7 +49,8 @@
 	-fx-background-repeat: no-repeat;
 }
 
-.button-header:hover {
+.button-header:hover,
+ .button-header:focused {
 	-fx-border-color: #ccc;
 	-fx-border-radius: 0.5px;
 	-fx-background-color: #ccc;
@@ -64,7 +65,8 @@
 	-fx-background-image: url("./skin/close.png");
 }
 
-.close:hover {
+.close:hover,
+.close:focused {
 	-fx-background-color: #f11a60;
 	-fx-background-image: url("./skin/close.png");
 	-fx-background-repeat: no-repeat;
@@ -78,7 +80,8 @@
 	-fx-background-image: url("./skin/minimize.png");
 }
 
-.minimize:hover {
+.minimize:hover,
+.minimize:focused {
 	-fx-background-color: #ccc;
 	-fx-background-image: url("./skin/minimize.png");
 	-fx-background-repeat: no-repeat;

@@ -12,33 +12,33 @@ public class R {
     public static String code_name = "و";
 
     public static String UserHome = System.getProperty("user.home");
-    public static char sprtr = File.separatorChar;
+    public static char separator = File.separatorChar;
 
-    public static String DownloadsPath = UserHome + sprtr + "Downloads" + sprtr + app_name + sprtr;
-    public static String ConfigPath = UserHome + sprtr + ".config" + sprtr + app_name + sprtr;
-    public static String CachePath = UserHome + sprtr + ".cache" + sprtr + app_name + sprtr;
-    public static String LockFile = CachePath + sprtr + "lock";
+    public static String DownloadsPath = UserHome + separator + "Downloads" + separator + app_name + separator;
+    public static String ConfigPath = UserHome + separator + ".config" + separator + app_name + separator;
+    public static String CachePath = UserHome + separator + ".cache" + separator + app_name + separator;
+    public static String LockFile = CachePath + separator + "lock";
     public static String ConfigJsonFile;
     public static String TempDir = "/tmp/";
 
     static {
         String cacheFolder = "";
         if (PlatformUtil.isWin7OrLater()) {
-            cacheFolder = UserHome + sprtr + "AppData" + sprtr + "Roaming" + sprtr + app_name + sprtr;
-            CachePath = cacheFolder + "cache" + sprtr;
-            ConfigPath = cacheFolder + "config" + sprtr;
+            cacheFolder = UserHome + separator + "AppData" + separator + "Roaming" + separator + app_name + separator;
+            CachePath = cacheFolder + "cache" + separator;
+            ConfigPath = cacheFolder + "config" + separator;
         } else if (PlatformUtil.isWindows()) {
-            cacheFolder = UserHome + sprtr + "Application Data" + sprtr + app_name + sprtr;
+            cacheFolder = UserHome + separator + "Application Data" + separator + app_name + separator;
             TempDir = cacheFolder + "temp";
-            CachePath = cacheFolder + "cache" + sprtr;
-            ConfigPath = cacheFolder + "config" + sprtr;
+            CachePath = cacheFolder + "cache" + separator;
+            ConfigPath = cacheFolder + "config" + separator;
         } else if (PlatformUtil.isMac()) { // Library/Application Support/
-            cacheFolder = UserHome + sprtr + "Library" + sprtr + "Application Support" + sprtr + app_name + sprtr;
+            cacheFolder = UserHome + separator + "Library" + separator + "Application Support" + separator + app_name + separator;
             TempDir = UserHome + "/Library/Caches/TemporaryItems/";
-            CachePath = cacheFolder + "cache" + sprtr;
-            ConfigPath = cacheFolder + "config" + sprtr;
+            CachePath = cacheFolder + "cache" + separator;
+            ConfigPath = cacheFolder + "config" + separator;
         }
-        LockFile = CachePath + sprtr + "lock";
+        LockFile = CachePath + separator + "lock";
         ConfigJsonFile = ConfigPath + "config.json";
 
         ;
@@ -72,11 +72,11 @@ public class R {
     }
 
     public static String getNewDownload(String name) {
-        return ConfigPath + "download" + sprtr + name;
+        return ConfigPath + "download" + separator + name;
     }
 
     public static String getCompleteDir() {
-        return ConfigPath + "complete" + sprtr;
+        return ConfigPath + "complete" + separator;
     }
 
     public static String NewCacheDir() {
@@ -84,7 +84,7 @@ public class R {
     }
 
     public static String getNewCacheDir(long timeMapId) {
-        return CachePath + timeMapId + sprtr;
+        return CachePath + timeMapId + separator;
     }
 
     public static String getCacheFile(String filename) {
@@ -93,7 +93,7 @@ public class R {
 
 
     public static String getNewCacheDir(String dirname) {
-        return CachePath + dirname + sprtr;
+        return CachePath + dirname + separator;
     }
 
     public static String NewCacheFile(String filename) {
@@ -124,7 +124,7 @@ public class R {
         mkdir(creator);
     }
 
-    public static void MK_DIRS(String creator) {
+    public static void mkdir(String creator) {
         mkdir(new File(creator));
     }
 

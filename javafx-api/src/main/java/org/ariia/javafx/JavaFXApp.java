@@ -17,8 +17,7 @@ import org.ariia.internal.JavaHttpClient;
 import org.ariia.javafx.controllers.DownloadFxService;
 import org.ariia.javafx.controllers.MainController;
 import org.ariia.javafx.controllers.MovingStage;
-import org.ariia.mvc.sse.EventBroadcast;
-import org.ariia.web.app.WebDownloadService;
+import org.ariia.util.R;
 import org.terminal.console.log.Level;
 
 import java.io.IOException;
@@ -57,16 +56,19 @@ public class JavaFXApp extends Application {
         stage.getIcons().add(new Image(openStream("ariia.png")));
         LogCLI.initLogServices(arguments, Level.log);
         var properties = new Properties(arguments);
+        if (!arguments.isSavePath()){
+            properties.setDefaultSaveDirectory(R.getDownloadDirectory());
+            R.mkdir(R.getDownloadDirectory());
+        }
         var downloadService = new DownloadFxService();
         var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
         var ariiaCli = new AriiaCli(downloadService, client);
         ariiaCli.lunchAsWebApp(arguments, properties);
 
-        var controller = new MainController(stage, downloadService);
         var url = getResource("gui/fxml/main-controller.fxml");
-
         var loader = new FXMLLoader(url);
+        var controller = new MainController(stage, downloadService);
         loader.setController(controller);
         var pane = loader.<AnchorPane>load();
 

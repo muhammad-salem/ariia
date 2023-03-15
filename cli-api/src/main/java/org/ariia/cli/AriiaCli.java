@@ -87,7 +87,7 @@ public class AriiaCli {
 
     private void lunch(Argument arguments, Properties properties, boolean isCLI) {
         initSystemIO();
-        R.MK_DIRS(R.CachePath);
+        R.mkdir(R.CachePath);
         properties.updateArguments(arguments);
         if (Objects.isNull(downloadService) || buildServiceByFactory) {
             initDownloadService(isCLI);

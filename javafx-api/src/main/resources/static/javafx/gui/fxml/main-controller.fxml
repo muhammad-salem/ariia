@@ -78,29 +78,33 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <HBox fx:id="hBoxStgCtrl" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="2.0" stylesheets="@res/main.css" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="1.0">
-            <children>
-                <HBox fx:id="hBoxFind" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" styleClass="button-item">
-                    <children>
-                        <TextField fx:id="findField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="250.0" promptText="Search downloads" styleClass="button-item">
-                            <HBox.margin>
-                                <Insets top="-1.0" />
-                            </HBox.margin>
-                        </TextField>
-                        <ImageView fx:id="findIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" styleClass="image-find">
-                            <HBox.margin>
-                                <Insets left="5.0" right="10.0" top="8.0" />
-                            </HBox.margin>
-                        </ImageView>
-                    </children>
-                    <HBox.margin>
-                        <Insets top="1.0" />
-                    </HBox.margin>
-                </HBox>
-                <Button mnemonicParsing="false" onAction="#minimizeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="minimize" />
-                <Button mnemonicParsing="false" onAction="#closeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="close" />
-            </children>
-        </HBox>
+        <TableView fx:id="table" layoutX="10.0" layoutY="75.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="75.0">
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#copyURL" text="Copy URL" />
+                        <MenuItem mnemonicParsing="false" onAction="#startDownload" text="Start Download" />
+                        <MenuItem mnemonicParsing="false" onAction="#pauseDownload" text="Stop Download" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open File" />
+                        <MenuItem mnemonicParsing="false" onAction="#openFolder" text="Open Folder" />
+                        <MenuItem mnemonicParsing="false" onAction="#deleteFile" text="Delete File" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#showProperties" text="Properties" />
+                    </items>
+                </ContextMenu>
+            </contextMenu>
+         <columns>
+            <TableColumn fx:id="colId" prefWidth="35.0" text="#" />
+            <TableColumn fx:id="colName" prefWidth="200.0" text="Name" />
+            <TableColumn fx:id="colUrl" prefWidth="150.0" text="Url" />
+            <TableColumn fx:id="colLength" text="Length" />
+            <TableColumn fx:id="colProgress" text="Progress" />
+            <TableColumn fx:id="colSpeed" prefWidth="90.0" text="Speed" />
+            <TableColumn fx:id="colStatus" prefWidth="75.0" text="Status" />
+            <TableColumn fx:id="colTimeLeft" prefWidth="75.0" text="Time Left" />
+         </columns>
+        </TableView>
           <HBox fx:id="hBoxHeader" alignment="CENTER" layoutX="14.0" layoutY="35.0" spacing="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
               <children>
                   <Button layoutX="18.0" layoutY="18.0" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#addNewDownload" prefHeight="35.0" styleClass="button-header" text="Add URL">
@@ -189,40 +193,31 @@
                   </Button>
               </children>
           </HBox>
-        <TableView fx:id="table" layoutX="10.0" layoutY="75.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="75.0">
-            <contextMenu>
-                <ContextMenu>
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#addLink" text="New Link" />
-                        <MenuItem mnemonicParsing="false" onAction="#copyURL" text="Copy URL" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#startDownload" text="Start Download" />
-                        <MenuItem mnemonicParsing="false" onAction="#pauseDownload" text="Stop Download" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open File" />
-                        <MenuItem mnemonicParsing="false" onAction="#openFolder" text="Open Folder" />
-                        <MenuItem mnemonicParsing="false" onAction="#deleteFile" text="Delete File" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#showProperties" text="Properties" />
-                    </items>
-                </ContextMenu>
-            </contextMenu>
-         <columns>
-            <TableColumn fx:id="colId" prefWidth="35.0" text="#" />
-            <TableColumn fx:id="colName" prefWidth="200.0" text="Name" />
-            <TableColumn fx:id="colUrl" prefWidth="150.0" text="Url" />
-            <TableColumn fx:id="colLength" text="Length" />
-            <TableColumn fx:id="colProgress" text="Progress" />
-            <TableColumn fx:id="colSpeed" prefWidth="90.0" text="Speed" />
-            <TableColumn fx:id="colStatus" prefWidth="75.0" text="Status" />
-            <TableColumn fx:id="colTimeLeft" prefWidth="75.0" text="Time Left" />
-         </columns>
-        </TableView>
         <AnchorPane maxHeight="24.0" minHeight="24.0" prefHeight="24.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
                 <Label fx:id="labelMessages" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" prefWidth="300.0" textFill="BLUE" AnchorPane.leftAnchor="5.0" />
             </children>
         </AnchorPane>
+          <HBox fx:id="hBoxFind" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" styleClass="button-item" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="1.0">
+              <children>
+                  <TextField fx:id="findField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="250.0" promptText="Search downloads" styleClass="button-item">
+                      <HBox.margin>
+                          <Insets top="-1.0" />
+                      </HBox.margin>
+                  </TextField>
+                  <ImageView fx:id="findIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" styleClass="image-find">
+                      <HBox.margin>
+                          <Insets left="5.0" right="10.0" top="8.0" />
+                      </HBox.margin>
+                  </ImageView>
+              </children>
+          </HBox>
+        <HBox fx:id="hBoxStgCtrl" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="2.0" stylesheets="@res/main.css" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="1.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#minimizeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="minimize" />
+                <Button mnemonicParsing="false" onAction="#closeProgram" prefHeight="32.0" prefWidth="32.0" styleClass="close" />
+            </children>
+        </HBox>
     </children>
     <styleClass>
         <String fx:value="background-white" />

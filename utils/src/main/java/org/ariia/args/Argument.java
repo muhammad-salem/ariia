@@ -196,10 +196,6 @@ public class Argument {
         return dictionary.containsKey(TerminalArgument.Insecure);
     }
 
-    public String getSavetoName() {
-        return dictionary.get(TerminalArgument.FileName);
-    }
-
     public String getUserAgent() {
         return dictionary.get(TerminalArgument.UserAgent);
     }

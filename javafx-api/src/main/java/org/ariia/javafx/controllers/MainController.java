@@ -338,11 +338,6 @@ public class MainController implements Initializable {
     /*** Context Menu ***/
 
     @FXML
-    public void addLink(ActionEvent event) {
-
-    }
-
-    @FXML
     public void copyURL(ActionEvent event) {
 
     }

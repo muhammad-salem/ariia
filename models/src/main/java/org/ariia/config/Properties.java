@@ -26,7 +26,7 @@ public class Properties {
 
     public void updateProperties(Properties properties) {
         properties = Objects.requireNonNull(properties, "properties is null");
-        R.MK_DIRS(properties.defaultSaveDirectory);
+        R.mkdir(properties.defaultSaveDirectory);
         this.defaultSaveDirectory = Objects.requireNonNull(properties.defaultSaveDirectory, "defaultSaveDirectory is null");
         this.maxActiveDownloadPool = Objects.requireNonNull(properties.maxActiveDownloadPool, "maxActiveDownloadPool is null");
         this.maxBufferPool = Objects.requireNonNull(properties.maxBufferPool, "maxBufferPool is null");
@@ -48,7 +48,7 @@ public class Properties {
         if (arguments.isSavePath()) {
             defaultSaveDirectory = arguments.getSavePath();
         }
-        R.MK_DIRS(defaultSaveDirectory);
+        R.mkdir(defaultSaveDirectory);
     }
 
 }
