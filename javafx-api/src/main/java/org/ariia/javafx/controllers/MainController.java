@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Builder;
 import org.ariia.logging.Logger;
+import org.ariia.util.R;
 
 import java.net.URL;
 import java.util.Comparator;
@@ -42,14 +43,12 @@ public class MainController implements Initializable {
         private Flow.Subscription subscription;
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
-            log.info("onSubscribe");
             this.subscription = subscription;
             this.subscription.request(1);
         }
 
         @Override
         public void onNext(ItemMetaData item) {
-            log.info("onNext");
             var property = findByMetaDate.apply(item);
             if (property != null){
                 property.updateMonitoring();
@@ -74,14 +73,12 @@ public class MainController implements Initializable {
         private Flow.Subscription subscription;
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
-            log.info("onSubscribe");
             this.subscription = subscription;
             this.subscription.request(1);
         }
 
         @Override
         public void onNext(ItemMetaData item) {
-            log.info("onNext");
             var property = ItemProperty.of(item.getItem(), item.getRangeReport());
             MainController.this.table.getItems().add(property);
             this.subscription.request(1);
@@ -103,14 +100,12 @@ public class MainController implements Initializable {
         private Flow.Subscription subscription;
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
-            log.info("onSubscribe");
             this.subscription = subscription;
             this.subscription.request(1);
         }
 
         @Override
         public void onNext(ItemMetaData item) {
-            log.info("onNext");
             var property = findByMetaDate.apply(item);
             if (property != null){
                 MainController.this.table.getItems().remove(property);
@@ -149,10 +144,16 @@ public class MainController implements Initializable {
     private TableColumn<ItemProperty, String> colUrl;
 
     @FXML
-    private TableColumn<ItemProperty, String> colLength;
+    private TableColumn<ItemProperty, String> colDownloaded;
 
     @FXML
     private TableColumn<ItemProperty, String> colProgress;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colLength;
+
+    @FXML
+    private TableColumn<ItemProperty, String> colRemaining;
 
     @FXML
     private TableColumn<ItemProperty, String> colSpeed;
@@ -190,8 +191,10 @@ public class MainController implements Initializable {
         colId.setCellValueFactory(item -> item.getValue().getId());
         colName.setCellValueFactory(item -> item.getValue().getName());
         colUrl.setCellValueFactory(item -> item.getValue().getUrl());
-        colLength.setCellValueFactory(item -> item.getValue().getLength());
+        colDownloaded.setCellValueFactory(item -> item.getValue().getDownload());
         colProgress.setCellValueFactory(item -> item.getValue().getProgress());
+        colLength.setCellValueFactory(item -> item.getValue().getLength());
+        colRemaining.setCellValueFactory(item -> item.getValue().getRemaining());
         colSpeed.setCellValueFactory(item -> item.getValue().getSpeed());
         colStatus.setCellValueFactory(item -> item.getValue().getStatus());
         colTimeLeft.setCellValueFactory(item -> item.getValue().getTimeLeft());
@@ -215,6 +218,27 @@ public class MainController implements Initializable {
 
     private ObservableList<ItemProperty> getSelectedItems() {
         return table.getSelectionModel().getSelectedItems();
+    }
+
+    private String getSessionReport(){
+        var session = this.downloadService.getSpeedTableReport().getSessionMonitor();
+        return new StringBuilder()
+                .append("Session: ")
+                .append(session.rangeCount())
+                .append(" downloads, ")
+                .append("Total Size: ")
+                .append(session.getTotalLengthMB())
+                .append(", Progress: ")
+                .append(session.getPercent())
+                .append(", Complete: ")
+                .append(session.getDownloadLengthMB())
+                .append(", Remaining: ")
+                .append(session.getRemainingLengthMB())
+                .append(", Speed: ")
+                .append(session.getTcpDownloadSpeed())
+                .append(", Downloaded: ")
+                .append(session.getTcpDownload())
+                .toString();
     }
 
     @FXML

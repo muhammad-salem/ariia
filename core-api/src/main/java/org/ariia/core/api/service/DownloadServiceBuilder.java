@@ -31,8 +31,7 @@ public class DownloadServiceBuilder {
 
     protected SessionReport sessionReport;
     protected SpeedTableReport speedTableReport;
-    private Runnable finishAction = () -> {
-    };
+    private Runnable finishAction = () -> {};
 
     public void useCliApp() {
         this.allowPause = false;

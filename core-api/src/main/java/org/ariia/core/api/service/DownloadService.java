@@ -345,4 +345,8 @@ public class DownloadService implements Closeable {
     public Properties getProperties() {
         return defaultClient.getProperties();
     }
+
+    public SpeedTableReport getSpeedTableReport() {
+        return speedTableReport;
+    }
 }
