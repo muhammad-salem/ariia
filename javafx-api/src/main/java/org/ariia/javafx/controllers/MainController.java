@@ -54,6 +54,7 @@ public class MainController implements Initializable {
             if (property != null){
                 property.updateMonitoring();
             }
+            Platform.runLater(() -> sessionReport.setText(getSessionReport()));
             this.subscription.request(1);
         }
 
@@ -166,7 +167,7 @@ public class MainController implements Initializable {
     public TextField findField;
 
     @FXML
-    public Label labelMessages;
+    public Label sessionReport;
 
     @FXML
     public ContextMenu contextOpt, contextMenuTree;
