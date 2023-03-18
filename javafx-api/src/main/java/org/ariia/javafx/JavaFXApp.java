@@ -74,7 +74,7 @@ public class JavaFXApp extends Application {
 
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Ariia");
-        stage.setScene(new Scene(pane, 850, 600));
+        stage.setScene(new Scene(pane, 1000, 600));
         MovingStage.move(stage, pane);
         stage.show();
     }
