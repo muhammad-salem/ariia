@@ -224,9 +224,9 @@ public class MainController implements Initializable {
         var session = this.downloadService.getSpeedTableReport().getSessionMonitor();
         return new StringBuilder()
                 .append("Session: ")
-                .append(session.rangeCount())
-                .append(" downloads, ")
-                .append("Total Size: ")
+                .append(session.rangeSize())
+                .append(", ")
+                .append("Total: ")
                 .append(session.getTotalLengthMB())
                 .append(", Progress: ")
                 .append(session.getPercent())
