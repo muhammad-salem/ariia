@@ -199,7 +199,7 @@ public class DownloadService implements Closeable {
 
     protected boolean isItemListHadItemsToDownload() {
         return itemMetaDataList.stream().anyMatch(metaData -> {
-            ItemState state = metaData.getItem().getState();
+            var state = metaData.getItem().getState();
             return state.isDownloading() || state.isWaiting();
         });
     }
@@ -257,8 +257,11 @@ public class DownloadService implements Closeable {
     }
 
     public void runSystemShutdownHook() {
-        for (ItemMetaData metaData : itemMetaDataList) {
+        for (var metaData : itemMetaDataList) {
             metaData.systemFlush();
+            if (metaData.getItem().getState().isDownloading()){
+                metaData.getItem().setState(ItemState.PAUSE);
+            }
             itemDataStore.save(metaData.getItem());
             metaData.close();
         }
@@ -284,9 +287,7 @@ public class DownloadService implements Closeable {
     }
 
     public final ItemMetaData initializeItemMetaData(Item item, Client client) {
-
-        Client itemClient = Objects.isNull(client) ? this.defaultClient : client;
-
+        var itemClient = Objects.isNull(client) ? this.defaultClient : client;
         if (item.getRangeInfo().isFinish()) {
             return new ItemMetaDataCompleteWrapper(item, itemClient, properties);
         } else if (item.getRangeInfo().isStreaming()) {
@@ -294,7 +295,6 @@ public class DownloadService implements Closeable {
         } else {
             return new ChannelMetaDataWriter(item, itemClient, properties);
         }
-
         // else if(Integer.MAX_VALUE > range.getFileLength()) {
         // return new SimpleMappedMetaDataWriter(item, itemClient, properties);
         // } else {
