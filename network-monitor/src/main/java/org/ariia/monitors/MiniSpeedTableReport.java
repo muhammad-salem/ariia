@@ -225,10 +225,10 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
             message.append(midBorder);
             message.append(format.format(obj));
         }
-        if (session.rangeCount() != 1) {
+        if (session.rangeSize() != 1) {
             Object[] obj = new Object[8];
             obj[0] = "#";
-            obj[1] = Utils.middleMaxLength("Session (" + session.rangeCount() + ")", 41);
+            obj[1] = Utils.middleMaxLength("Session (" + session.rangeSize() + ")", 41);
             obj[2] = Utils.middleMaxLength(session.getDownloadLengthMB(), 17);
             obj[3] = Utils.middleMaxLength(session.getTcpDownloadSpeed() + "/s", 14);
 

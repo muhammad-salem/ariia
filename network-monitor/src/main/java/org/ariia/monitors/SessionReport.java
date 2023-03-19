@@ -37,7 +37,7 @@ public abstract class SessionReport extends TotalSpeedReport<TotalSpeedMonitor> 
 
     protected abstract Callable<String> updateDataCallable();
 
-    public int rangeCount() {
+    public int rangeSize() {
         return rangeInfoList.size();
     }
 
