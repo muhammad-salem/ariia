@@ -32,8 +32,15 @@ Ariia is a command line download manager and HTML UI interface Angular 11, Auror
 - Aurora SPA
 - JavaFX Desktop Client
 
-![screenshot-01](img/dependency-hierarch.png)
+![screenshot-00](img/dependency-hierarch.png)
 ___
+
+### JavaFX UI ():
+- reuse of Ariafx (Download Manager).
+
+![screenshot-01](img/javafx-client.png)
+___
+
 
 ### Options :
  - support HTTP and HTTPS.
@@ -99,15 +106,17 @@ ___
  - add SSH implementation
 
 ### Overview
-![screenshot-01](img/angular-spa-02.png)
+
+![screenshot-02](img/angular-spa-02.png)
 ___
-![screenshot-01](img/angular-spa-03.png)
+![screenshot-03](img/angular-spa-03.png)
 ___
-![screenshot-01](img/download-ubuntu-mini.gif)
+![screenshot-04](img/download-ubuntu-mini.gif)
 ___
-![screenshot-01](img/mini-table-01.png)
+![screenshot-05](img/mini-table-01.png)
 ___
-![screenshot-02](img/mini-table-02.png)
+![screenshot-06](img/mini-table-02.png)
+
 
 ### Text Link Format: 
 ![Format1](img/text-format01.png)
