@@ -95,7 +95,6 @@
                 </ContextMenu>
             </contextMenu>
          <columns>
-            <TableColumn fx:id="colId" prefWidth="35.0" text="#" />
             <TableColumn fx:id="colName" prefWidth="200.0" text="Name" />
             <TableColumn fx:id="colUrl" prefWidth="150.0" text="Url" />
             <TableColumn fx:id="colDownloaded" prefWidth="90.0" text="Download" />

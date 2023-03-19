@@ -16,8 +16,6 @@ public class ItemProperty {
 
     private final Item item;
     private final RangeReport monitor;
-
-    private IntegerProperty id = new SimpleIntegerProperty();
     private StringProperty name = new SimpleStringProperty();
     private StringProperty url = new SimpleStringProperty();
     private StringProperty status = new SimpleStringProperty();
@@ -29,7 +27,6 @@ public class ItemProperty {
     private StringProperty timeLeft = new SimpleStringProperty();
 
     public void updateMonitoring(){
-        id.setValue(item.getId());
         name.set(item.getFilename());
         url.set(item.getUrl());
         status.set(item.getState().toString());
