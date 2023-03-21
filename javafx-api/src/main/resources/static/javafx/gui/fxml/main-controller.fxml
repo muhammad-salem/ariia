@@ -195,7 +195,7 @@
           </HBox>
       <AnchorPane maxHeight="24.0" minHeight="24.0" prefHeight="24.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
-                <Label fx:id="sessionReport" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" AnchorPane.leftAnchor="5.0" />
+                <Label fx:id="sessionReport" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
             </children>
         </AnchorPane>
           <HBox fx:id="hBoxFind" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" styleClass="button-item" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="1.0">
