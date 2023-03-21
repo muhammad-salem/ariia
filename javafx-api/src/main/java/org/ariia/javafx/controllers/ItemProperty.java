@@ -23,19 +23,21 @@ public class ItemProperty {
     private StringProperty progress = new SimpleStringProperty();
     private StringProperty length = new SimpleStringProperty();
     private StringProperty remaining = new SimpleStringProperty();
-    private StringProperty speed = new SimpleStringProperty();
     private StringProperty timeLeft = new SimpleStringProperty();
 
     public void updateMonitoring(){
         name.set(item.getFilename());
         url.set(item.getUrl());
-        status.set(item.getState().toString());
         length.set(monitor.getFileLength());
         progress.set(monitor.getPercent());
         download.set(monitor.getDownloadLength());
         remaining.set(monitor.getRemainingLength());
-        speed.set(monitor.getTcpDownloadSpeed() + "/s");
         timeLeft.set(monitor.getRemainingTimeString());
+        if (monitor.isDownloading()){
+            status.set(monitor.getTcpDownloadSpeed() + "/s");
+        } else {
+            status.set(item.getState().toString());
+        }
     }
 
 }
