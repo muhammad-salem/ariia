@@ -43,7 +43,7 @@
                   <Label layoutX="149.0" layoutY="119.0" prefHeight="25.0" text="Num. of Parallel Threads:" />
                   <ChoiceBox fx:id="parallelThread" layoutX="319.0" layoutY="113.0" prefHeight="25.0" prefWidth="62.0" styleClass="button-head">
                      <tooltip>
-                        <Tooltip text="For Streaming prefere to choise 1." />
+                        <Tooltip text="For Streaming prefer to choose 1." />
                      </tooltip>
                   </ChoiceBox>
                </children>

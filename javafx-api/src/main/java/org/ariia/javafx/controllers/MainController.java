@@ -5,18 +5,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.RequiredArgsConstructor;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Builder;
+import org.ariia.javafx.JavaFXApp;
 import org.ariia.logging.Logger;
 import org.ariia.util.R;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -264,7 +269,19 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    public void addNewDownload(ActionEvent event) {
+        var downloadStage = new Stage();
+        var downloadLinkController = new DownloadLinkController(downloadStage, downloadService);
+
+        var url = JavaFXApp.getResource("gui/fxml/control/fetch-url.fxml");
+        var loader = new FXMLLoader(url);
+        loader.setController(downloadLinkController);
+        var pane = loader.<AnchorPane>load();
+
+        downloadStage.initStyle(StageStyle.UNDECORATED);
+        downloadStage.setTitle("Add URL");
+        downloadStage.setScene(new Scene(pane, 705, 400));
+        MovingStage.move(downloadStage, pane);
+        downloadStage.show();
     }
 
     @FXML
