@@ -166,7 +166,7 @@ public class ItemBuilder {
 
             for (int i = 0; i < mirrors.getLength(); i++) {
                 var node = mirrors.item(i);
-                if (node.hasAttributes() && node.getAttributes().getNamedItem("type").getNodeValue().equals("http")){
+                if (node.hasAttributes() && node.getAttributes().getNamedItem("type").getNodeValue().equals("http")) {
                     urls.add(node.getTextContent());
                 }
             }

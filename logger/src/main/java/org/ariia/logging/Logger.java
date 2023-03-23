@@ -2,7 +2,7 @@ package org.ariia.logging;
 
 public interface Logger {
 
-    static Logger create(Class<?> clazz){
+    static Logger create(Class<?> clazz) {
         return new LoggerImpl(clazz);
     }
 

@@ -67,7 +67,6 @@ public class LargeMappedMetaDataWriter extends ItemMetaData {
     }
 
     /**
-     *
      * @param segment
      * @return
      */

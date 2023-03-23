@@ -193,7 +193,7 @@ public abstract class ItemMetaData implements OfferSegment, Closeable {
             var entry = iterator.next();
             var isFinish = info.isFinish(entry.getKey());
             var isDone = entry.getValue().isDone();
-            if (!isDone){
+            if (!isDone) {
                 continue;
             }
             if (isFinish) {

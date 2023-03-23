@@ -17,7 +17,7 @@ public class LogCLI {
         var logLevel = arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());
         Log.level(logLevel);
         Log.initService();
-        log.trace( "Terminal Argument", Arrays.toString(arguments.getArgs()));
+        log.trace("Terminal Argument", Arrays.toString(arguments.getArgs()));
     }
 
     public static void initLogServices(Argument arguments, Level defaultLevel) {

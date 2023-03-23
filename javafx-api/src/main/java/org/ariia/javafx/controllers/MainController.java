@@ -31,19 +31,34 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MainController implements Initializable {
     private static Logger log = Logger.create(MainController.class);
-
+    private final Stage stage;
+    private final DownloadService downloadService;
+    @FXML
+    public MenuBar menu;
+    @FXML
+    public HBox hBoxHeader, hBoxFind;
+    @FXML
+    public TableView<ItemProperty> table;
+    @FXML
+    public TextField findField;
+    @FXML
+    public Label sessionReport;
+    @FXML
+    public ContextMenu contextOpt, contextMenuTree;
+    @FXML
+    public Button btnOpt, deleteButton, deleteCompButton;
+    @FXML
+    public ImageView findIcon;
+    @FXML
+    public AnchorPane anchorRoot;
     private Function<ItemMetaData, ItemProperty> findByMetaDate = itemMetaData -> MainController.this.table.getItems()
-                 .stream()
-                 .filter(itemProperty -> itemProperty.getItem() == itemMetaData.getItem())
-                 .findAny()
-                 .orElse(null);
-    private Function<ItemProperty, ItemMetaData> findByProperty = property -> MainController.this.downloadService.itemStream()
-            .filter(metaData -> metaData.getItem() == property.getItem())
+            .stream()
+            .filter(itemProperty -> itemProperty.getItem() == itemMetaData.getItem())
             .findAny()
             .orElse(null);
-
     private Flow.Subscriber<ItemMetaData> onUpdateSubscriber = new Flow.Subscriber<>() {
         private Flow.Subscription subscription;
+
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
             this.subscription = subscription;
@@ -53,7 +68,7 @@ public class MainController implements Initializable {
         @Override
         public void onNext(ItemMetaData item) {
             var property = findByMetaDate.apply(item);
-            if (property != null){
+            if (property != null) {
                 property.updateMonitoring();
             }
             Platform.runLater(() -> sessionReport.setText(getSessionReport()));
@@ -71,9 +86,42 @@ public class MainController implements Initializable {
         }
 
     };
+    private Flow.Subscriber<ItemMetaData> onRemoveSubscriber = new Flow.Subscriber<>() {
+        private Flow.Subscription subscription;
 
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+            this.subscription = subscription;
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onNext(ItemMetaData item) {
+            var property = findByMetaDate.apply(item);
+            if (property != null) {
+                MainController.this.table.getItems().remove(property);
+            }
+            this.subscription.request(1);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            log.info("onError");
+        }
+
+        @Override
+        public void onComplete() {
+            log.info("onComplete");
+        }
+
+    };
+    private Function<ItemProperty, ItemMetaData> findByProperty = property -> MainController.this.downloadService.itemStream()
+            .filter(metaData -> metaData.getItem() == property.getItem())
+            .findAny()
+            .orElse(null);
     private Flow.Subscriber<ItemMetaData> onAddSubscriber = new Flow.Subscriber<>() {
         private Flow.Subscription subscription;
+
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
             this.subscription = subscription;
@@ -98,89 +146,22 @@ public class MainController implements Initializable {
         }
 
     };
-
-    private Flow.Subscriber<ItemMetaData> onRemoveSubscriber = new Flow.Subscriber<>() {
-        private Flow.Subscription subscription;
-        @Override
-        public void onSubscribe(Flow.Subscription subscription) {
-            this.subscription = subscription;
-            this.subscription.request(1);
-        }
-
-        @Override
-        public void onNext(ItemMetaData item) {
-            var property = findByMetaDate.apply(item);
-            if (property != null){
-                MainController.this.table.getItems().remove(property);
-            }
-            this.subscription.request(1);
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-            log.info("onError");
-        }
-
-        @Override
-        public void onComplete() {
-            log.info("onComplete");
-        }
-
-    };
-
-    @FXML
-    public MenuBar menu;
-
-    @FXML
-    public HBox hBoxHeader, hBoxFind;
-
-    @FXML
-    public TableView<ItemProperty> table;
-
     @FXML
     private TableColumn<ItemProperty, String> colName;
-
     @FXML
     private TableColumn<ItemProperty, String> colUrl;
-
     @FXML
     private TableColumn<ItemProperty, String> colDownloaded;
-
     @FXML
     private TableColumn<ItemProperty, String> colProgress;
-
     @FXML
     private TableColumn<ItemProperty, String> colLength;
-
     @FXML
     private TableColumn<ItemProperty, String> colRemaining;
-
     @FXML
     private TableColumn<ItemProperty, String> colStatus;
-
     @FXML
     private TableColumn<ItemProperty, String> colTimeLeft;
-
-    @FXML
-    public TextField findField;
-
-    @FXML
-    public Label sessionReport;
-
-    @FXML
-    public ContextMenu contextOpt, contextMenuTree;
-
-    @FXML
-    public Button btnOpt, deleteButton, deleteCompButton;
-
-    @FXML
-    public ImageView findIcon;
-
-    @FXML
-    public AnchorPane anchorRoot;
-
-    private final Stage stage;
-    private final DownloadService downloadService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -205,7 +186,7 @@ public class MainController implements Initializable {
 
     }
 
-    private void updateTableItems(){
+    private void updateTableItems() {
         var items = downloadService.itemStream()
                 .sorted(Comparator.comparing(itemMetaData -> itemMetaData.getItem().getId()))
                 .map(i -> ItemProperty.of(i.getItem(), i.getRangeReport()))
@@ -218,7 +199,7 @@ public class MainController implements Initializable {
         return table.getSelectionModel().getSelectedItems();
     }
 
-    private String getSessionReport(){
+    private String getSessionReport() {
         var session = this.downloadService.getSpeedTableReport().getSessionMonitor();
         return new StringBuilder()
                 .append("Session: ")
@@ -304,7 +285,7 @@ public class MainController implements Initializable {
 
     @FXML
     public void resumeDownloadFile(ActionEvent event) {
-        for (var property : getSelectedItems()){
+        for (var property : getSelectedItems()) {
             var item = findByProperty.apply(property);
             if (item == null) {
                 return;

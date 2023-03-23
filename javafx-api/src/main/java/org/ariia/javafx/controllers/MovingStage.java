@@ -8,13 +8,8 @@ import javafx.stage.Stage;
 
 public class MovingStage {
 
-    public static void move(Stage stage, AnchorPane pane) {
-        new MovingStage(stage, pane);
-    }
-
     private boolean moving;
     private double x, y;
-
     /***
      * create a new Stage and its AnchorPane
      * then assigns them to given stage and pane
@@ -26,6 +21,10 @@ public class MovingStage {
         moveWithMouse(stage, pane);
 //        pane.heightProperty().addListener((observable, oldValue, newValue) -> stage.setHeight(pane.getHeight()));
 //        pane.widthProperty().addListener((observable, oldValue, newValue) -> stage.setWidth(pane.getWidth()));
+    }
+
+    public static void move(Stage stage, AnchorPane pane) {
+        new MovingStage(stage, pane);
     }
 
     /**

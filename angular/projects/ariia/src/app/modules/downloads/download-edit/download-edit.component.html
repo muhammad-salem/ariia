@@ -2,18 +2,18 @@
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Download Link:</mat-label>
-    <input matInput [(ngModel)]="item.url">
+    <input [(ngModel)]="item.url" matInput>
   </mat-form-field>
   <mat-form-field>
     <mat-label>File Name:</mat-label>
-    <input matInput [(ngModel)]="item.filename">
+    <input [(ngModel)]="item.filename" matInput>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Save Directory:</mat-label>
-    <input matInput [(ngModel)]="item.saveDirectory">
+    <input [(ngModel)]="item.saveDirectory" matInput>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="item" cdkFocusInitial>Ok</button>
+  <button (click)="onNoClick()" mat-button>No Thanks</button>
+  <button [mat-dialog-close]="item" cdkFocusInitial mat-button>Ok</button>
 </div>

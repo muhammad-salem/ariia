@@ -27,7 +27,6 @@ public interface ClientMappedWriter extends ClinetWriter {
     }
 
     /**
-     *
      * @param reader
      * @param writer
      * @param ranges
@@ -50,7 +49,6 @@ public interface ClientMappedWriter extends ClinetWriter {
     }
 
     /**
-     *
      * @param reader
      * @param writer
      * @param ranges

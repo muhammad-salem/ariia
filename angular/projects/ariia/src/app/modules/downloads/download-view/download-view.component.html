@@ -1,104 +1,112 @@
 <mat-toolbar aria-label="download-actions" role="toolbar">
-	<mat-toolbar-row>
-		<div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm>
-			<ul fxLayout="row" fxLayoutGap.sm>
-				<li>
-					<button (click)="startItem()" mat-icon-button>
-						<mat-icon>play_circle_outline</mat-icon>
-					</button>
-				</li>
-				<li>
-					<button (click)="pauseItem()" mat-icon-button>
-						<mat-icon>pause_circle_outline</mat-icon>
-					</button>
-				</li>
-				<li>
-					<button (click)="deleteItem()" mat-icon-button>
-						<mat-icon>auto_delete</mat-icon>
-					</button>
-				</li>
-				<li>
-					<button (click)="editItem()" mat-icon-button>
-						<mat-icon>edit</mat-icon>
-					</button>
-				</li>
-			</ul>
-			<ul fxLayout="row" fxLayoutGap.sm>
-				<li>
-					<a *ngIf="item.state === 'COMPLETE'" class="card-link" mat-button
-						download href="/items/download/{{item.id}}/{{item.filename}}">
-						<mat-icon>cloud_download</mat-icon>
-						Download File from Local Server
-					</a>
-				</li>
-			</ul>
-		</div>
-	</mat-toolbar-row>
+  <mat-toolbar-row>
+    <div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm>
+      <ul fxLayout="row" fxLayoutGap.sm>
+        <li>
+          <button (click)="startItem()" mat-icon-button>
+            <mat-icon>play_circle_outline</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button (click)="pauseItem()" mat-icon-button>
+            <mat-icon>pause_circle_outline</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button (click)="deleteItem()" mat-icon-button>
+            <mat-icon>auto_delete</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button (click)="editItem()" mat-icon-button>
+            <mat-icon>edit</mat-icon>
+          </button>
+        </li>
+      </ul>
+      <ul fxLayout="row" fxLayoutGap.sm>
+        <li>
+          <a *ngIf="item.state === 'COMPLETE'" class="card-link" download
+             href="/items/download/{{item.id}}/{{item.filename}}" mat-button>
+            <mat-icon>cloud_download</mat-icon>
+            Download File from Local Server
+          </a>
+        </li>
+      </ul>
+    </div>
+  </mat-toolbar-row>
 </mat-toolbar>
 <mat-progress-bar [value]="downloadProgress()" mode="determinate" style="height: 10px;"></mat-progress-bar>
 <mat-card>
-	<mat-card-header>
-		<div mat-card-avatar></div>
-		<mat-card-title>{{item.filename}}</mat-card-title>
-		<mat-card-subtitle>
-			{{item.url}}
-			<mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>
-		</mat-card-subtitle>
-	</mat-card-header>
-	<mat-card-content>
-		<div class="row">
-			<mat-list class="col-sm-3">
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>Save Directory</div><div mat-line>{{item.saveDirectory}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>Percent</div><div mat-line>{{downloadPercent()}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>File Length</div><div mat-line>{{item.rangeInfo.fileLength | unitLength}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>Download Length</div><div mat-line>{{item.rangeInfo.downloadLength | unitLength}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>Remaining Length</div><div mat-line>{{item.rangeInfo.remainingLength | unitLength}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>Download Speed</div><div mat-line>{{item?.report?.monitor?.tcpDownloadSpeed | speed}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>Remaining Time</div><div mat-line>{{item?.report?.remainingTime | uptime}}</div>
-				</mat-list-item>
-				<mat-list-item style="height: 48px !important;">
-					<div mat-line>State</div><div mat-line>{{item.state}}</div>
-				</mat-list-item>
-			</mat-list>
-			<div class="col-sm-2">
-				<mat-progress-spinner
-					[diameter]="300"
-					[strokeWidth]="10"
-					[mode]="'determinate'"
-					[value]="downloadProgress()">
-				</mat-progress-spinner>
-				<div style="position:relative; top: -160px; left: 100px; font-size: x-large;">
-					{{percent()}} <sup class="small">%</sup>
-				</div>
-				<div style="position:relative; left: 50px; font-size: large;">
-					{{item.rangeInfo?.downloadLength | unitLength}} of {{item.rangeInfo?.fileLength | unitLength}}
-				</div>
-			</div>
-			<div class="col-sm-6">
-				speed chart
-				<div> 1 Pieces x 8 MB Complete</div>
-				<svg class="w-100 mt-2" style="height: 15px;">
-					<g>
-						<rect *ngFor="let range of item.rangeInfo.range; index as i"
-							[id]="i" width="12" height="12" [attr.x]="getX(i)"
-							[attr.y]="getY(i)" [attr.fill]="svgFill(i)">
-						</rect>
-					</g>
-				</svg>
-			</div>
-		</div>
-	</mat-card-content>
+  <mat-card-header>
+    <div mat-card-avatar></div>
+    <mat-card-title>{{item.filename}}</mat-card-title>
+    <mat-card-subtitle>
+      {{item.url}}
+      <mat-progress-bar [value]="downloadProgress()" mode="determinate"></mat-progress-bar>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="row">
+      <mat-list class="col-sm-3">
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>Save Directory</div>
+          <div mat-line>{{item.saveDirectory}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>Percent</div>
+          <div mat-line>{{downloadPercent()}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>File Length</div>
+          <div mat-line>{{item.rangeInfo.fileLength | unitLength}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>Download Length</div>
+          <div mat-line>{{item.rangeInfo.downloadLength | unitLength}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>Remaining Length</div>
+          <div mat-line>{{item.rangeInfo.remainingLength | unitLength}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>Download Speed</div>
+          <div mat-line>{{item?.report?.monitor?.tcpDownloadSpeed | speed}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>Remaining Time</div>
+          <div mat-line>{{item?.report?.remainingTime | uptime}}</div>
+        </mat-list-item>
+        <mat-list-item style="height: 48px !important;">
+          <div mat-line>State</div>
+          <div mat-line>{{item.state}}</div>
+        </mat-list-item>
+      </mat-list>
+      <div class="col-sm-2">
+        <mat-progress-spinner
+          [diameter]="300"
+          [mode]="'determinate'"
+          [strokeWidth]="10"
+          [value]="downloadProgress()">
+        </mat-progress-spinner>
+        <div style="position:relative; top: -160px; left: 100px; font-size: x-large;">
+          {{percent()}} <sup class="small">%</sup>
+        </div>
+        <div style="position:relative; left: 50px; font-size: large;">
+          {{item.rangeInfo?.downloadLength | unitLength}} of {{item.rangeInfo?.fileLength | unitLength}}
+        </div>
+      </div>
+      <div class="col-sm-6">
+        speed chart
+        <div> 1 Pieces x 8 MB Complete</div>
+        <svg class="w-100 mt-2" style="height: 15px;">
+          <g>
+            <rect *ngFor="let range of item.rangeInfo.range; index as i"
+                  [attr.fill]="svgFill(i)" [attr.x]="getX(i)" [attr.y]="getY(i)" [id]="i"
+                  height="12" width="12">
+            </rect>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </mat-card-content>
 </mat-card>

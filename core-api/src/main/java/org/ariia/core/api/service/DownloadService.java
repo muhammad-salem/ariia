@@ -34,11 +34,9 @@ import java.util.stream.Stream;
  */
 public class DownloadService implements Closeable {
 
-    private static Logger log = Logger.create(DownloadService.class);
-
     public final static int SCHEDULE_TIME = 1;
+    private static Logger log = Logger.create(DownloadService.class);
     // public final static int SCHEDULE_POOL = 10;
-
     protected ScheduledExecutorService scheduledService;
 
     protected List<ItemMetaData> itemMetaDataList;
@@ -49,7 +47,8 @@ public class DownloadService implements Closeable {
     protected ConnectivityCheck connectivityCheck;
 
     protected Properties properties;
-    protected Runnable finishAction = () -> {};
+    protected Runnable finishAction = () -> {
+    };
 
     protected boolean allowDownload = true;
     protected boolean allowPause = false;
@@ -61,7 +60,8 @@ public class DownloadService implements Closeable {
     private SubmissionPublisher<ItemMetaData> removePublisher = new SubmissionPublisher();
     private SubmissionPublisher<Void> cyclePublisher = new SubmissionPublisher();
 
-    public DownloadService() { }
+    public DownloadService() {
+    }
 
     public boolean isAllowDownload() {
         return allowDownload;
@@ -79,10 +79,10 @@ public class DownloadService implements Closeable {
         this.allowPause = allowPause;
     }
 
-    private void runEvent(SubmissionPublisher<ItemMetaData> publisher, ItemMetaData metaData){
+    private void runEvent(SubmissionPublisher<ItemMetaData> publisher, ItemMetaData metaData) {
         try {
             publisher.submit(metaData);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }
@@ -161,7 +161,7 @@ public class DownloadService implements Closeable {
             speedTableReport.remove(metaData.getRangeReport());
             metaData.getItem().setState(ItemState.PAUSE);
             itemDataStore.save(metaData.getItem());
-            log.log( "Pause", metaData.getItem().getFilename(), metaData.getItem().toString());
+            log.log("Pause", metaData.getItem().getFilename(), metaData.getItem().toString());
             pauseEvent(metaData);
             // }
         } else {
@@ -282,7 +282,7 @@ public class DownloadService implements Closeable {
     public void runSystemShutdownHook() {
         for (var metaData : itemMetaDataList) {
             metaData.systemFlush();
-            if (metaData.getItem().getState().isDownloading()){
+            if (metaData.getItem().getState().isDownloading()) {
                 metaData.getItem().setState(ItemState.PAUSE);
             }
             itemDataStore.save(metaData.getItem());
@@ -408,6 +408,7 @@ public class DownloadService implements Closeable {
     public SubmissionPublisher<ItemMetaData> getRemovePublisher() {
         return removePublisher;
     }
+
     public SubmissionPublisher<Void> getCyclePublisher() {
         return cyclePublisher;
     }

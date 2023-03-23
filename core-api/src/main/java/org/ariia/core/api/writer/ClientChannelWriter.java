@@ -28,7 +28,6 @@ public interface ClientChannelWriter extends ClinetWriter {
     }
 
     /**
-     *
      * @param reader
      * @param writer
      * @param ranges
@@ -48,7 +47,6 @@ public interface ClientChannelWriter extends ClinetWriter {
     }
 
     /**
-     *
      * @param reader
      * @param writer
      * @param ranges

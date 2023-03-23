@@ -1,39 +1,39 @@
 <form #formLink class="link-form">
-	<div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
-		<div fxLayoutGap="10px">
-			<mat-form-field appearance="legacy" class="full-width">
-				<mat-label>Download Link</mat-label>
-				<input [(ngModel)]="link" matInput
-					   name="link"
-					   placeholder="https://url-examle.com/filename.txt">
-				<mat-icon matSuffix>url</mat-icon>
-				<mat-hint>Insert Download Link</mat-hint>
-			</mat-form-field>
-			<div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
-				<button (click)="addLink()" [disabled]="link === ''"
-						color="primary"
-						mat-raised-button>
-					Add Link
-				</button>
-			</div>
-		</div>
-		<div fxLayoutGap="10px">
-			<mat-form-field appearance="legacy" class="full-width">
-				<mat-label>Download Meta Link</mat-label>
-				<textarea [(ngModel)]="metaLink" class="meta-link" matInput
-						  name="metaLink"
-						  placeholder="https://url-examle.com/filename.txt"></textarea>
-				<mat-icon matSuffix>url</mat-icon>
-				<mat-hint>
-					MetaLink Download is like several download link for the same file on different servers
-				</mat-hint>
-			</mat-form-field>
-			<div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
-				<button (click)="addLink()" [disabled]="metaLink === ''"
-						color="primary"
-						mat-raised-button>Add Meta Link
-				</button>
-			</div>
-		</div>
-	</div>
+  <div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
+    <div fxLayoutGap="10px">
+      <mat-form-field appearance="legacy" class="full-width">
+        <mat-label>Download Link</mat-label>
+        <input [(ngModel)]="link" matInput
+               name="link"
+               placeholder="https://url-examle.com/filename.txt">
+        <mat-icon matSuffix>url</mat-icon>
+        <mat-hint>Insert Download Link</mat-hint>
+      </mat-form-field>
+      <div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
+        <button (click)="addLink()" [disabled]="link === ''"
+                color="primary"
+                mat-raised-button>
+          Add Link
+        </button>
+      </div>
+    </div>
+    <div fxLayoutGap="10px">
+      <mat-form-field appearance="legacy" class="full-width">
+        <mat-label>Download Meta Link</mat-label>
+        <textarea [(ngModel)]="metaLink" class="meta-link" matInput
+                  name="metaLink"
+                  placeholder="https://url-examle.com/filename.txt"></textarea>
+        <mat-icon matSuffix>url</mat-icon>
+        <mat-hint>
+          MetaLink Download is like several download link for the same file on different servers
+        </mat-hint>
+      </mat-form-field>
+      <div fxFlex fxLayout="column" fxLayoutAlign="flex-end">
+        <button (click)="addLink()" [disabled]="metaLink === ''"
+                color="primary"
+                mat-raised-button>Add Meta Link
+        </button>
+      </div>
+    </div>
+  </div>
 </form>

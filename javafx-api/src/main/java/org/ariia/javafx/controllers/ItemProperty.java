@@ -11,10 +11,6 @@ import org.ariia.monitors.RangeReport;
 @RequiredArgsConstructor
 public class ItemProperty {
 
-    public static ItemProperty of(Item item, RangeReport monitor) {
-        return new ItemProperty(item, monitor);
-    }
-
     private final Item item;
     private final RangeReport monitor;
     private StringProperty name = new SimpleStringProperty();
@@ -26,7 +22,11 @@ public class ItemProperty {
     private StringProperty remaining = new SimpleStringProperty();
     private StringProperty timeLeft = new SimpleStringProperty();
 
-    public void updateMonitoring(){
+    public static ItemProperty of(Item item, RangeReport monitor) {
+        return new ItemProperty(item, monitor);
+    }
+
+    public void updateMonitoring() {
         name.set(item.getFilename());
         url.set(item.getUrl());
         length.set(monitor.getFileLength());
@@ -34,7 +34,7 @@ public class ItemProperty {
         download.set(monitor.getDownloadLength());
         remaining.set(monitor.getRemainingLength());
         timeLeft.set(monitor.getRemainingTimeString());
-        if (monitor.isDownloading()){
+        if (monitor.isDownloading()) {
             status.set(monitor.getTcpDownloadSpeed() + "/s");
         } else {
             status.set(item.getState().toString());

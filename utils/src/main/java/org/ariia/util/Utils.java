@@ -277,7 +277,8 @@ public class Utils {
 
     public static <T> T fromJsonGeneric(String file, Class<T> classT) {
         T t = null;
-        var typeOfT = new TypeToken<T>() {}.getType();
+        var typeOfT = new TypeToken<T>() {
+        }.getType();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             t = gson.fromJson(reader, typeOfT);

@@ -1,72 +1,72 @@
 <mat-toolbar aria-label="log-actions" role="toolbar">
-	<mat-toolbar-row>
-		<div fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm class="mat-toolbar-font">
-			<ul fxLayout="row" fxLayoutGap.sm>
-				<li>
-					<mat-form-field>
-						<mat-label>Level</mat-label>
-						<mat-select (selectionChange)="setLevel()" [(value)]="level">
-							<mat-option *ngFor="let level of logLevels" [value]="level">
-								{{level}}
-							</mat-option>
-						</mat-select>
-						<mat-icon matSuffix>search</mat-icon>
-					</mat-form-field>
-				</li>
-				<li>
-					<button (click)="clearLogMessages()" mat-icon-button>
-						<mat-icon>delete_sweep_outline</mat-icon>
-					</button>
-				</li>
-			</ul>
-			<ul fxLayout="row" fxLayoutGap.sm>
-				<li>
-					<mat-form-field appearance="legacy">
-						<mat-label>Filter</mat-label>
-						<input (keyup)="applyFilter($event.target.value)" matInput placeholder="Search Server Logs">
-						<mat-icon matSuffix>search</mat-icon>
-					</mat-form-field>
-				</li>
-			</ul>
-		</div>
-	</mat-toolbar-row>
+  <mat-toolbar-row>
+    <div class="mat-toolbar-font" fxFlex fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.sm>
+      <ul fxLayout="row" fxLayoutGap.sm>
+        <li>
+          <mat-form-field>
+            <mat-label>Level</mat-label>
+            <mat-select (selectionChange)="setLevel()" [(value)]="level">
+              <mat-option *ngFor="let level of logLevels" [value]="level">
+                {{level}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </li>
+        <li>
+          <button (click)="clearLogMessages()" mat-icon-button>
+            <mat-icon>delete_sweep_outline</mat-icon>
+          </button>
+        </li>
+      </ul>
+      <ul fxLayout="row" fxLayoutGap.sm>
+        <li>
+          <mat-form-field appearance="legacy">
+            <mat-label>Filter</mat-label>
+            <input (keyup)="applyFilter($event.target.value)" matInput placeholder="Search Server Logs">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </li>
+      </ul>
+    </div>
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <mat-divider class="divider"></mat-divider>
 
 <table [dataSource]="dataSource" mat-table matSort>
-	<!-- Time Millis -->
-	<ng-container matColumnDef="timeMillis">
-		<th *matHeaderCellDef mat-header-cell mat-sort-header>#</th>
-		<td *matCellDef="let message" mat-cell>{{message.timeMillis|date:'mediumTime'}}</td>
-	</ng-container>
+  <!-- Time Millis -->
+  <ng-container matColumnDef="timeMillis">
+    <th *matHeaderCellDef mat-header-cell mat-sort-header>#</th>
+    <td *matCellDef="let message" mat-cell>{{message.timeMillis|date:'mediumTime'}}</td>
+  </ng-container>
 
-	<!-- level-->
-	<ng-container matColumnDef="level">
-		<th *matHeaderCellDef mat-header-cell>Level</th>
-		<td *matCellDef="let message" mat-cell>{{message.level}}</td>
-	</ng-container>
+  <!-- level-->
+  <ng-container matColumnDef="level">
+    <th *matHeaderCellDef mat-header-cell>Level</th>
+    <td *matCellDef="let message" mat-cell>{{message.level}}</td>
+  </ng-container>
 
-	<!--Class Name -->
-	<ng-container matColumnDef="classname">
-		<th *matHeaderCellDef mat-header-cell>Class Name</th>
-		<td *matCellDef="let message" mat-cell>{{message.classname}}</td>
-	</ng-container>
+  <!--Class Name -->
+  <ng-container matColumnDef="classname">
+    <th *matHeaderCellDef mat-header-cell>Class Name</th>
+    <td *matCellDef="let message" mat-cell>{{message.classname}}</td>
+  </ng-container>
 
-	<!-- Title -->
-	<ng-container matColumnDef="title">
-		<th *matHeaderCellDef mat-header-cell>Title</th>
-		<td *matCellDef="let message" mat-cell>{{message.title}}</td>
-	</ng-container>
+  <!-- Title -->
+  <ng-container matColumnDef="title">
+    <th *matHeaderCellDef mat-header-cell>Title</th>
+    <td *matCellDef="let message" mat-cell>{{message.title}}</td>
+  </ng-container>
 
-	<!-- Message -->
-	<ng-container matColumnDef="message">
-		<th *matHeaderCellDef mat-header-cell>Message</th>
-		<td *matCellDef="let message" mat-cell>{{message.message}}</td>
-	</ng-container>
+  <!-- Message -->
+  <ng-container matColumnDef="message">
+    <th *matHeaderCellDef mat-header-cell>Message</th>
+    <td *matCellDef="let message" mat-cell>{{message.message}}</td>
+  </ng-container>
 
-	<!-- Header and Row Declarations -->
-	<tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
-	<tr *matRowDef="let message; columns: columnsToDisplay" mat-row></tr>
+  <!-- Header and Row Declarations -->
+  <tr *matHeaderRowDef="columnsToDisplay" mat-header-row></tr>
+  <tr *matRowDef="let message; columns: columnsToDisplay" mat-row></tr>
 
 </table>

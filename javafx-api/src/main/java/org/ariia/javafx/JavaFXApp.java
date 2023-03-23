@@ -28,6 +28,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class JavaFXApp extends Application {
 
+    private static Argument arguments;
+
     public static URL getResource(String path) {
         return JavaFXApp.class.getResource("/static/javafx/" + path);
     }
@@ -35,8 +37,6 @@ public class JavaFXApp extends Application {
     public static InputStream openStream(String path) throws IOException {
         return JavaFXApp.getResource(path).openStream();
     }
-
-    private static Argument arguments;
 
     public static void main(String[] args) {
         arguments = new Argument(args);
@@ -56,7 +56,7 @@ public class JavaFXApp extends Application {
     public void start(Stage stage) throws NoSuchAlgorithmException, KeyManagementException, IOException {
         stage.getIcons().add(new Image(openStream("ariia.png")));
         var properties = new Properties(arguments);
-        if (!arguments.isSavePath()){
+        if (!arguments.isSavePath()) {
             properties.setDefaultSaveDirectory(R.getDownloadDirectory());
             R.mkdir(R.getDownloadDirectory());
         }

@@ -14,9 +14,9 @@ Ariia is a command line download manager and HTML UI interface Angular 11, Auror
 | RESTful API          | `0.2.8`  |                |
 | Lawnha               | `0.2.1`  |                |
 | JANSI                | `1.8`    | for Windows VM |
- 
+
 ## Modules
- 
+
 - Network
 - Logger
 - Models
@@ -36,29 +36,30 @@ Ariia is a command line download manager and HTML UI interface Angular 11, Auror
 ___
 
 ### JavaFX UI ():
+
 - reuse of Ariafx (Download Manager).
 
 ![screenshot-01](img/javafx-client.png)
 ___
 
-
 ### Options :
- - support HTTP and HTTPS.
- - support Header and Cookies
- - cross-Platform: support Linux, Unix, Windows and Mac OS.
- - parallel download, using segment.
- - saved setting every 1 second.
- - support Google Chrome with extension.
- - support using Proxy [HTTP, HTTPS, SOCKS], COMING SOON JSCH(SSH)
- - support download from maven repository
- - supported arguments
- - save time while downloading, by spiriting download process and writing data to hard disk.
- - using cache memory, to reduce hate resulted by continuous writhing to (mechanical/old/magnet hard disk),
- 		not test on ssd Hard Disk
- - solve heat problem, by reduce write time to hard disk - flush on fixed rate of time every 5s.
-  
+
+- support HTTP and HTTPS.
+- support Header and Cookies
+- cross-Platform: support Linux, Unix, Windows and Mac OS.
+- parallel download, using segment.
+- saved setting every 1 second.
+- support Google Chrome with extension.
+- support using Proxy [HTTP, HTTPS, SOCKS], COMING SOON JSCH(SSH)
+- support download from maven repository
+- supported arguments
+- save time while downloading, by spiriting download process and writing data to hard disk.
+- using cache memory, to reduce hate resulted by continuous writhing to (mechanical/old/magnet hard disk),
+  not test on ssd Hard Disk
+- solve heat problem, by reduce write time to hard disk - flush on fixed rate of time every 5s.
+
 ___ 
- 
+
  ```
  java - jar ariia.jar [-u] URL
 	-u	--url			[-u] add new link/url to download manager
@@ -103,7 +104,7 @@ ___
 
 ### TO:DO:LIST
 
- - add SSH implementation
+- add SSH implementation
 
 ### Overview
 
@@ -117,8 +118,8 @@ ___
 ___
 ![screenshot-06](img/mini-table-02.png)
 
+### Text Link Format:
 
-### Text Link Format: 
 ![Format1](img/text-format01.png)
 ___
 ![Format2](img/text-format02.png)
