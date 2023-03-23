@@ -328,6 +328,10 @@ public class DownloadService implements Closeable {
         });
     }
 
+    public void fetchUrlInfo(Item item) {
+        defaultClient.updateItemOnline(item);
+    }
+
     public void initializeFromDataStore(List<Item> items) {
         for (var item : items) {
             var old = itemDataStore.findByUrlAndSaveDirectory(item.getUrl(), item.getSaveDirectory());
