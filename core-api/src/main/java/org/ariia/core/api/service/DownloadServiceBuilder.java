@@ -4,6 +4,7 @@ import org.ariia.core.api.client.Client;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.DataStore;
 import org.ariia.items.Item;
+import org.ariia.items.ItemState;
 import org.ariia.items.ItemStore;
 import org.ariia.monitors.MiniSpeedTableReport;
 import org.ariia.monitors.SessionReport;
@@ -69,6 +70,11 @@ public class DownloadServiceBuilder {
         if (Objects.isNull(itemDataStore)) {
             itemDataStore = new ItemStore();
         }
+        itemDataStore.getAll().forEach(item -> {
+            if (ItemState.DOWNLOADING.equals(item.getState())) {
+                item.setState(ItemState.PAUSE);
+            }
+        });
         downloadService.itemDataStore = itemDataStore;
 
         if (Objects.nonNull(finishAction)) {
