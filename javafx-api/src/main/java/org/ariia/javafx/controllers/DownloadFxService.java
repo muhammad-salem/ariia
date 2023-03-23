@@ -58,7 +58,7 @@ public class DownloadFxService extends DownloadService {
 
     @Override
     public void printReport() {
-        super.printReport();
+        this.speedTableReport.updateOneCycle();
         this.itemStream().forEach(updatePublisher::submit);
     }
 

@@ -10,6 +10,8 @@ public interface SpeedTableReport {
 
     String getTableReport();
 
+    void updateOneCycle();
+
     SessionReport getSessionMonitor();
 
 }

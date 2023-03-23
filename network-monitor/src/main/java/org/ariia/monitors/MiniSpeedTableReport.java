@@ -191,6 +191,12 @@ public class MiniSpeedTableReport implements SpeedTableReport, CursorControl {
         return message.toString();
     }
 
+    @Override
+    public void updateOneCycle() {
+        updateInfo();
+        callSpeedForNextCycle();
+    }
+
 
     private void callSpeedForNextCycle() {
         for (var monitor : monitors) {
