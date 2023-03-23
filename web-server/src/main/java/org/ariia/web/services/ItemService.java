@@ -1,30 +1,32 @@
 package org.ariia.web.services;
 
 import com.sun.net.httpserver.HttpExchange;
+import org.ariia.core.api.service.DownloadService;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Builder;
 import org.ariia.items.Item;
 import org.ariia.items.MetaLinkItem;
-import org.ariia.logging.Log;
 import org.ariia.logging.Logger;
 import org.ariia.mvc.resource.StreamHandler;
 import org.ariia.range.RangeResponseHeader;
-import org.ariia.web.app.WebDownloadService;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ItemService implements StreamHandler {
 
     Logger log = Logger.create(ItemService.class);
 
-    private WebDownloadService downloadService;
+    private DownloadService downloadService;
 
-    public ItemService(WebDownloadService downloadService) {
+    public ItemService(DownloadService downloadService) {
         this.downloadService = Objects.requireNonNull(downloadService);
     }
 

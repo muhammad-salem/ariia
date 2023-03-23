@@ -5,14 +5,14 @@ import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCLI;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
-import org.ariia.core.api.client.SegmentClient;
 import org.ariia.core.api.request.ClientRequest;
+import org.ariia.core.api.service.DownloadService;
 import org.ariia.logging.Log;
 import org.ariia.mvc.WebServer;
 import org.ariia.mvc.WebServer.ResourceType;
 import org.ariia.mvc.router.Routes;
 import org.ariia.mvc.sse.EventBroadcast;
-import org.ariia.web.app.WebDownloadService;
+import org.ariia.web.app.BroadcastEventService;
 import org.ariia.web.app.WebLoggerPrinter;
 import org.ariia.web.controller.ItemController;
 import org.ariia.web.controller.LogLevelController;
@@ -20,7 +20,6 @@ import org.ariia.web.controller.SettingController;
 import org.ariia.web.services.ItemService;
 import org.ariia.web.services.SettingService;
 import org.terminal.console.log.Level;
-import org.terminal.console.log.api.Printer;
 import org.terminal.console.log.impl.PrinterImpl;
 import org.terminal.strings.AnsiStringBuilder;
 
@@ -74,9 +73,11 @@ public class WebService {
 
         // setup download manager service
         var client = Clients.segmentClient(properties, clientRequest);
-        var downloadService = new WebDownloadService(mainBroadcast);
 
-        var cli = new AriiaCli(downloadService, client);
+        var downloadService = new DownloadService();
+
+        var broadcastEventService = new BroadcastEventService(downloadService, mainBroadcast);
+        var cli = new AriiaCli(downloadService, client, ()-> broadcastEventService.sendEndSession());
 
         var settingController = new SettingController(new SettingService(downloadService, properties));
         server.createControllerContext(settingController);
@@ -86,6 +87,7 @@ public class WebService {
         var logLevelController = new LogLevelController();
         server.createControllerContext(logLevelController);
 
+        broadcastEventService.initEvent();
         server.createServerSideEventContext("/backbone-broadcast", mainBroadcast);
 
         cli.lunchAsWebApp(arguments, properties);
@@ -105,7 +107,7 @@ public class WebService {
         }
 
         Log.log(WebService.class, "Running Web Server", log.toString());
-
+        broadcastEventService.sendStartSession();
 
     }
 

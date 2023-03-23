@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
+import org.ariia.core.api.service.DownloadService;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.items.Builder;
 import org.ariia.items.Item;
@@ -36,7 +37,7 @@ public class DownloadLinkController implements Initializable {
     @FXML private CheckBox streaming;
 
     private final Stage stage;
-    private final DownloadFxService downloadService;
+    private final DownloadService downloadService;
 
     private Item item;
     private ItemMetaData metaData;

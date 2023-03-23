@@ -97,12 +97,12 @@
          <columns>
             <TableColumn fx:id="colName" prefWidth="200.0" text="Name" />
             <TableColumn fx:id="colUrl" prefWidth="150.0" text="Url" />
-            <TableColumn fx:id="colLength" styleClass="center-text" text="Length" />
-            <TableColumn fx:id="colProgress" styleClass="center-text" text="Progress" />
-            <TableColumn fx:id="colDownloaded" prefWidth="90.0" styleClass="center-text" text="Download" />
-            <TableColumn fx:id="colRemaining" prefWidth="90.0" styleClass="center-text" text="Remaining" />
-            <TableColumn fx:id="colStatus" prefWidth="100.0" styleClass="center-text" text="Status" />
-            <TableColumn fx:id="colTimeLeft" prefWidth="75.0" styleClass="center-text" text="Time Left" />
+            <TableColumn fx:id="colLength" prefWidth="90.0" styleClass="center-text" text="Length" />
+            <TableColumn fx:id="colProgress" prefWidth="90.0" styleClass="center-text" text="Progress" />
+            <TableColumn fx:id="colDownloaded" prefWidth="100.0" styleClass="center-text" text="Download" />
+            <TableColumn fx:id="colRemaining" prefWidth="100.0" styleClass="center-text" text="Remaining" />
+            <TableColumn fx:id="colStatus" prefWidth="110.0" styleClass="center-text" text="Status" />
+            <TableColumn fx:id="colTimeLeft" prefWidth="90.0" styleClass="center-text" text="Time Left" />
          </columns>
         </TableView>
           <HBox fx:id="hBoxHeader" alignment="CENTER" layoutX="14.0" layoutY="35.0" spacing="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">

@@ -1,7 +1,6 @@
 package org.ariia.web.controller;
 
 import org.ariia.config.Properties;
-import org.ariia.logging.Log;
 import org.ariia.logging.Logger;
 import org.ariia.mvc.annotation.RequestBody;
 import org.ariia.mvc.annotation.RestController;

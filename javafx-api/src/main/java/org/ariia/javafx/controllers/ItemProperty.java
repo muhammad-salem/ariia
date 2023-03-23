@@ -1,6 +1,7 @@
 package org.ariia.javafx.controllers;
 
-import javafx.beans.property.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.ariia.items.Item;

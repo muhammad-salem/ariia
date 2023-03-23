@@ -19,7 +19,9 @@ import org.network.connectivity.NetworkReport;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -47,13 +49,19 @@ public class DownloadService implements Closeable {
     protected ConnectivityCheck connectivityCheck;
 
     protected Properties properties;
-    protected Runnable finishAction = () -> {
-    };
+    protected Runnable finishAction = () -> {};
+
     protected boolean allowDownload = true;
     protected boolean allowPause = false;
 
-    protected DownloadService() {
-    }
+    protected boolean allowPrintingReport = true;
+
+    private SubmissionPublisher<ItemMetaData> updatePublisher = new SubmissionPublisher();
+    private SubmissionPublisher<ItemMetaData> addPublisher = new SubmissionPublisher();
+    private SubmissionPublisher<ItemMetaData> removePublisher = new SubmissionPublisher();
+    private SubmissionPublisher<Void> cyclePublisher = new SubmissionPublisher();
+
+    public DownloadService() { }
 
     public boolean isAllowDownload() {
         return allowDownload;
@@ -71,16 +79,28 @@ public class DownloadService implements Closeable {
         this.allowPause = allowPause;
     }
 
-    protected void waitEvent(ItemMetaData item) {
+    private void runEvent(SubmissionPublisher<ItemMetaData> publisher, ItemMetaData metaData){
+        try {
+            publisher.submit(metaData);
+        } catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
-    protected void pauseEvent(ItemMetaData item) {
+    private void waitEvent(ItemMetaData metaData) {
+        runEvent(updatePublisher, metaData);
     }
 
-    protected void downloadEvent(ItemMetaData item) {
+    private void pauseEvent(ItemMetaData metaData) {
+        runEvent(updatePublisher, metaData);
     }
 
-    protected void completeEvent(ItemMetaData item) {
+    private void downloadEvent(ItemMetaData metaData) {
+        runEvent(updatePublisher, metaData);
+    }
+
+    private void completeEvent(ItemMetaData metaData) {
+        runEvent(updatePublisher, metaData);
     }
 
     public void addItemMetaData(ItemMetaData metaData) {
@@ -88,11 +108,13 @@ public class DownloadService implements Closeable {
         moveToWaitingList(metaData);
         itemMetaDataList.add(metaData);
         sessionReport.addRange(metaData.getRangeInfo());
+        runEvent(addPublisher, metaData);
     }
 
     public void removeItemMetaData(ItemMetaData metaData) {
         itemMetaDataList.remove(metaData);
         sessionReport.removeRange(metaData.getRangeInfo());
+        runEvent(removePublisher, metaData);
         // speedTableReport.remove(metaData.getRangeReport());
     }
 
@@ -158,6 +180,7 @@ public class DownloadService implements Closeable {
     }
 
     public void startScheduledService() {
+        itemDataStore.getAll().forEach(this::download);
         scheduledService.scheduleWithFixedDelay(this::checkDownloadList, 1, SCHEDULE_TIME, TimeUnit.SECONDS);
         scheduledService.scheduleWithFixedDelay(this::printReport, 2, 1, TimeUnit.SECONDS);
         scheduledService.scheduleWithFixedDelay(this::systemFlushData, 1, 1, TimeUnit.SECONDS);
@@ -173,7 +196,7 @@ public class DownloadService implements Closeable {
         return itemMetaDataList.stream();
     }
 
-    protected Stream<ItemMetaData> downloadStream() {
+    public Stream<ItemMetaData> downloadStream() {
         return itemMetaDataList.stream().filter(metaData -> metaData.getItem().getState().isDownloading());
     }
 
@@ -272,7 +295,17 @@ public class DownloadService implements Closeable {
     }
 
     public void printReport() {
-        System.out.println(speedTableReport.getTableReport());
+        if (allowPrintingReport) {
+            System.out.println(speedTableReport.getTableReport());
+        } else {
+            speedTableReport.updateOneCycle();
+        }
+        this.itemStream().forEach(updatePublisher::submit);
+        try {
+            cyclePublisher.submit(null);
+        } catch (Exception e) {
+            log.error("Error notify cycle update");
+        }
     }
 
     protected void systemFlushData() {
@@ -346,6 +379,12 @@ public class DownloadService implements Closeable {
         }
     }
 
+    public Optional<ItemMetaData> searchById(Integer id) {
+        return itemMetaDataList.stream()
+                .filter(item -> Objects.equals(item.getItem().getId(), id))
+                .findAny();
+    }
+
     public Properties getProperties() {
         return defaultClient.getProperties();
     }
@@ -353,4 +392,24 @@ public class DownloadService implements Closeable {
     public SpeedTableReport getSpeedTableReport() {
         return speedTableReport;
     }
+
+    public SessionReport getSessionReport() {
+        return sessionReport;
+    }
+
+    public SubmissionPublisher<ItemMetaData> getUpdatePublisher() {
+        return updatePublisher;
+    }
+
+    public SubmissionPublisher<ItemMetaData> getAddPublisher() {
+        return addPublisher;
+    }
+
+    public SubmissionPublisher<ItemMetaData> getRemovePublisher() {
+        return removePublisher;
+    }
+    public SubmissionPublisher<Void> getCyclePublisher() {
+        return cyclePublisher;
+    }
+
 }

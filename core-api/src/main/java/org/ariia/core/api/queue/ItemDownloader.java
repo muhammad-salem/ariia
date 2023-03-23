@@ -1,7 +1,6 @@
 package org.ariia.core.api.queue;
 
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.items.Item;
 import org.ariia.logging.Logger;
 import org.network.speed.report.SpeedMonitor;
 

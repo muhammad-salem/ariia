@@ -13,8 +13,8 @@ import org.ariia.cli.AriiaCli;
 import org.ariia.cli.LogCLI;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Clients;
+import org.ariia.core.api.service.DownloadService;
 import org.ariia.internal.JavaHttpClient;
-import org.ariia.javafx.controllers.DownloadFxService;
 import org.ariia.javafx.controllers.MainController;
 import org.ariia.javafx.controllers.MovingStage;
 import org.ariia.util.R;
@@ -60,7 +60,7 @@ public class JavaFXApp extends Application {
             properties.setDefaultSaveDirectory(R.getDownloadDirectory());
             R.mkdir(R.getDownloadDirectory());
         }
-        var downloadService = new DownloadFxService();
+        var downloadService = new DownloadService();
         var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
         var ariiaCli = new AriiaCli(downloadService, client);

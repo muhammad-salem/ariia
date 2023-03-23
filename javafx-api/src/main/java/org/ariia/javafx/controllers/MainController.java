@@ -15,16 +15,14 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.RequiredArgsConstructor;
+import org.ariia.core.api.service.DownloadService;
 import org.ariia.core.api.writer.ItemMetaData;
-import org.ariia.items.Builder;
 import org.ariia.javafx.JavaFXApp;
 import org.ariia.logging.Logger;
-import org.ariia.util.R;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.concurrent.Flow;
 import java.util.function.Function;
@@ -182,12 +180,13 @@ public class MainController implements Initializable {
     public AnchorPane anchorRoot;
 
     private final Stage stage;
-    private final DownloadFxService downloadService;
+    private final DownloadService downloadService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        downloadService.setAllowDownload(true);
+//        downloadService.setAllowDownload(true);
+        downloadService.setAllowPause(true);
 
         colName.setCellValueFactory(item -> item.getValue().getName());
         colUrl.setCellValueFactory(item -> item.getValue().getUrl());
@@ -271,6 +270,18 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    public void addNewDownload(ActionEvent event) throws IOException {
+////        var url = "https://releases.ubuntu.com/22.04.2/ubuntu-22.04.2-desktop-amd64.iso";
+//        var url = "https://github.com/microsoft/TypeScript/releases/download/v5.0.2/typescript-5.0.2.tgz";
+////        var url = "https://ag04.clicknupload.net:8080/d/725rpkjalryd7tr7y3kn5nkklvydc53hmvw3sfoca4pjdglff4flt6hq5gdutd4apvdmr53u/the.whale.2022.720p.bluray.hevc.x265.rmteam.mkv";
+////        var url = "http://localhost:5000/Big%20Sam-%D9%85%D8%A7%20%D8%A8%D8%AA%D9%87%D9%88%D9%86%20(cover)%20by%20Noel%20Kharman.mp4";
+////        var url = "https://psa.pm/torrents/2023/03/The.Last.of.Us.S01E09.720p.10bit.WEBRip.2CH.x265.HEVC-PSA-390729.torrent";
+//        var builder = new Builder(url);
+//        builder.saveDir(R.DownloadsPath);
+//        builder.addHeaders(new HashMap<>());
+//        var item = builder.build();
+//        this.downloadService.initializeItemOnlineAndDownload(item);
+
         var downloadStage = new Stage();
         var downloadLinkController = new DownloadLinkController(downloadStage, downloadService);
 
