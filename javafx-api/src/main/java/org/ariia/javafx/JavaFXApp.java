@@ -48,13 +48,13 @@ public class JavaFXApp extends Application {
             System.out.println(arguments.getVersion() + " - JDK 17 and JavaFX 19");
             return;
         }
+        LogCLI.initLogServices(arguments, Level.off);
         launch(args);
     }
 
     @Override
     public void start(Stage stage) throws NoSuchAlgorithmException, KeyManagementException, IOException {
         stage.getIcons().add(new Image(openStream("ariia.png")));
-        LogCLI.initLogServices(arguments, Level.log);
         var properties = new Properties(arguments);
         if (!arguments.isSavePath()){
             properties.setDefaultSaveDirectory(R.getDownloadDirectory());
