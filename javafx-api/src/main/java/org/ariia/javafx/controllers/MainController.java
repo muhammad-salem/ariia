@@ -187,6 +187,8 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        downloadService.setAllowDownload(true);
+
         colName.setCellValueFactory(item -> item.getValue().getName());
         colUrl.setCellValueFactory(item -> item.getValue().getUrl());
         colDownloaded.setCellValueFactory(item -> item.getValue().getDownload());
@@ -291,7 +293,6 @@ public class MainController implements Initializable {
 
     @FXML
     public void resumeDownloadFile(ActionEvent event) {
-        downloadService.setAllowDownload(true);
         for (var property : getSelectedItems()){
             var item = findByProperty.apply(property);
             if (item == null) {
