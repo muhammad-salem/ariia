@@ -65,10 +65,10 @@ public class ItemService implements StreamHandler {
     }
 
     public Integer create(String url, Map<String, List<String>> headers) {
-        var builder = new Builder(url);
-        builder.saveDir(downloadService.getProperties().getDefaultSaveDirectory());
-        builder.addHeaders(headers);
-        var item = builder.build();
+        var item = new Builder(url)
+                .saveDir(downloadService.getProperties().getDefaultSaveDirectory())
+                .addHeaders(headers)
+                .build();
         this.downloadService.initializeItemOnlineAndDownload(item);
         return item.getId();
     }
