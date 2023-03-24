@@ -166,9 +166,6 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-//        downloadService.setAllowDownload(true);
-        downloadService.setAllowPause(true);
-
         colName.setCellValueFactory(item -> item.getValue().getName());
         colUrl.setCellValueFactory(item -> item.getValue().getUrl());
         colDownloaded.setCellValueFactory(item -> item.getValue().getDownload());

@@ -64,7 +64,7 @@ public class JavaFXApp extends Application {
         var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
         var ariiaCli = new AriiaCli(downloadService, client);
-        ariiaCli.lunchAsWebApp(arguments, properties);
+        ariiaCli.lunchAsJavafxApp(arguments, properties);
 
         var url = getResource("gui/fxml/main-controller.fxml");
         var loader = new FXMLLoader(url);

@@ -58,23 +58,23 @@ public class AriiaCli {
     }
 
     public void lunchAsWebApp(Argument arguments, Properties properties) {
-        lunch(arguments, properties, false);
+        lunch(arguments, properties, LunchMode.ALLOW_DOWNLOAD_DISABLE_PAUSE);
     }
 
     public void lunchAsCliApp(Argument arguments, Properties properties) {
-        lunch(arguments, properties, true);
+        lunch(arguments, properties, LunchMode.DISABLE_DOWNLOAD_ALLOW_PAUSE);
     }
 
-    private void initDownloadService(boolean isCLI) {
+    public void lunchAsJavafxApp(Argument arguments, Properties properties) {
+        lunch(arguments, properties, LunchMode.ALLOW_DOWNLOAD_ALLOW_PAUSE);
+    }
+
+    private void initDownloadService(LunchMode lunchMode) {
         if (Objects.nonNull(client)) {
             DownloadServiceFactory factory = new DownloadServiceFactory(client);
             DownloadServiceBuilder builder = factory.builder();
             builder.setFinishAction(finishAction);
-            if (isCLI) {
-                builder.useCliApp();
-            } else {
-                builder.useWebApp();
-            }
+            builder.setLunchMode(lunchMode.isAllowDownload(), lunchMode.isAllowPause());
             if (buildServiceByFactory) {
                 downloadService = builder.build(downloadService);
             } else {
@@ -85,12 +85,12 @@ public class AriiaCli {
         }
     }
 
-    private void lunch(Argument arguments, Properties properties, boolean isCLI) {
+    private void lunch(Argument arguments, Properties properties, LunchMode lunchMode) {
         initSystemIO();
         R.mkdir(R.CachePath);
         properties.updateArguments(arguments);
         if (Objects.isNull(downloadService) || buildServiceByFactory) {
-            initDownloadService(isCLI);
+            initDownloadService(lunchMode);
         }
         Log.trace(getClass(), "Set Shutdown Hook Thread", "register shutdown thread");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

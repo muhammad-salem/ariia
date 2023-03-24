@@ -34,14 +34,9 @@ public class DownloadServiceBuilder {
     protected SpeedTableReport speedTableReport;
     private Runnable finishAction = () -> {};
 
-    public void useCliApp() {
-        this.allowPause = false;
-        this.allowDownload = true;
-    }
-
-    public void useWebApp() {
-        this.allowPause = true;
-        this.allowDownload = false;
+    public void setLunchMode(boolean allowDownload, boolean allowPause) {
+        this.allowDownload = allowDownload;
+        this.allowPause = allowPause;
     }
 
     public DownloadService build() {
@@ -138,4 +133,6 @@ public class DownloadServiceBuilder {
     void setClient(Client client) {
         this.client = client;
     }
+
+
 }
