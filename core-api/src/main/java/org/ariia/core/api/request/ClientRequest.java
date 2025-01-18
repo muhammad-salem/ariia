@@ -46,9 +46,9 @@ public interface ClientRequest {
         Map<String, List<String>> headersCopy = new HashMap<>(headers);
         if (Objects.nonNull(startRange) && startRange > -1) {
             if (Objects.isNull(endRange) || endRange == -1) {
-                headersCopy.put("Range", Arrays.asList("bytes=" + startRange + "-"));
+                headersCopy.put("Range", List.of("bytes=" + startRange + "-"));
             } else {
-                headersCopy.put("Range", Arrays.asList("bytes=" + startRange + "-" + endRange));
+                headersCopy.put("Range", List.of("bytes=" + startRange + "-" + endRange));
             }
         }
         return executeAndDebugRequest("GET", url, headersCopy);
