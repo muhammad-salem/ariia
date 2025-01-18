@@ -14,4 +14,5 @@ module ariia.web.server {
     exports org.ariia.web.app.model;
     exports org.ariia.web.controller;
     exports org.ariia.web.services;
+    opens org.ariia.web.app.model to com.google.gson;
 }
