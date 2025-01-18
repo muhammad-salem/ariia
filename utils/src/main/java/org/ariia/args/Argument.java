@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Argument {
 
-    private final String version = "Ariia version (0.2.9)";
+    private final String version = "Ariia version (2.1.0)";
     private String urlSplit = "!:!";
     transient private String[] args;
     private Map<TerminalArgument, String> dictionary;

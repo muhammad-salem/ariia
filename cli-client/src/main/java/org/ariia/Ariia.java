@@ -21,7 +21,7 @@ public class Ariia {
             System.out.println(TerminalArgument.help());
             return;
         } else if (arguments.isVersion()) {
-            System.out.println(arguments.getVersion() + " - JDK (11+)");
+            System.out.println(arguments.getVersion() + " - JDK (21+)");
             return;
         }
 

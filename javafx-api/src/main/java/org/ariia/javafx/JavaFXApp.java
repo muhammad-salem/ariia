@@ -45,7 +45,7 @@ public class JavaFXApp extends Application {
             return;
         }
         if (arguments.isVersion()) {
-            System.out.println(arguments.getVersion() + " - JDK 17 and JavaFX 19");
+            System.out.println(arguments.getVersion() + " - JDK 21+ and JavaFX 19");
             return;
         }
         LogCLI.initLogServices(arguments, Level.off);

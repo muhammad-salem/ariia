@@ -1,4 +1,4 @@
-# ariia  (2.0.0)
+# ariia  (2.1.0)
 
 Ariia is a command line download manager and HTML UI interface Angular 11, Aurora 0.8.6 and Java 17.
 
@@ -46,7 +46,7 @@ ___
 
 - support HTTP and HTTPS.
 - support Header and Cookies
-- cross-Platform: support Linux, Unix, Windows and Mac OS.
+- cross-Platform: add support for Linux, Unix, Windows and MacOS.
 - parallel download, using segment.
 - saved setting every 1 second.
 - support Google Chrome with extension.
@@ -56,7 +56,7 @@ ___
 - save time while downloading, by spiriting download process and writing data to hard disk.
 - using cache memory, to reduce hate resulted by continuous writhing to (mechanical/old/magnet hard disk),
   not test on ssd Hard Disk
-- solve heat problem, by reduce write time to hard disk - flush on fixed rate of time every 5s.
+- solve the heat problem by reducing write time to hard disk - flush on fixed rate of time every 5s.
 
 ___ 
 
