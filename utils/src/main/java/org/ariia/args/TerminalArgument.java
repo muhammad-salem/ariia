@@ -33,6 +33,9 @@ public enum TerminalArgument {
     Socks4Proxy("-socks4", "--socks4-proxy"),
     Socks5Proxy("-socks5", "--socks5-proxy"),
 
+    ProxyUsername("-pu", "--proxy-user"),
+    ProxyPassword("-pp", "--proxy-password"),
+
     SSH("-s", "--ssh"),
     SSHUser("-su", "--ssh-user"),
     SSHPass("-sp", "--ssh-pass"),
@@ -198,6 +201,10 @@ public enum TerminalArgument {
                 return ("use socks5 proxy [host:port] format");
             case Socks4Proxy:
                 return ("use socks4 proxy [host:port] format");
+            case ProxyUsername:
+                return ("Specify the username for authentication on a proxy server");
+            case ProxyPassword:
+                return ("Specify the password for authentication on a proxy server");
 
             case SSH:
                 return ("use ssh connection as proxy - [remote_host:port], not supported yet");

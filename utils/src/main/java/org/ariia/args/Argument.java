@@ -1,5 +1,6 @@
 package org.ariia.args;
 
+import lombok.Getter;
 import org.ariia.util.R;
 import org.ariia.util.Utils;
 
@@ -7,12 +8,13 @@ import java.net.*;
 import java.net.Proxy.Type;
 import java.util.*;
 
+@Getter
 public class Argument {
 
     private final String version = "Ariia version (2.1.0)";
-    private String urlSplit = "!:!";
-    transient private String[] args;
-    private Map<TerminalArgument, String> dictionary;
+    private final String urlSplit = "!:!";
+    private transient String[] args;
+    private final Map<TerminalArgument, String> dictionary;
 
     public Argument() {
         dictionary = new HashMap<TerminalArgument, String>();
@@ -20,24 +22,12 @@ public class Argument {
 
     public Argument(String... args) {
         this.args = args;
-        dictionary = new HashMap<TerminalArgument, String>();
+        dictionary = new HashMap<>();
         initDictionary();
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String[] getArgs() {
-        return args;
     }
 
     public boolean isEmpty() {
         return dictionary.isEmpty();
-    }
-
-    public Map<TerminalArgument, String> getDictionary() {
-        return dictionary;
     }
 
     /**
@@ -111,15 +101,18 @@ public class Argument {
 
         } else if (isHttpProxy() || isHttpsProxy()) {
             value = get(TerminalArgument.HttpProxy);
-            if (value == null)
+            if (value == null){
                 value = get(TerminalArgument.HttpsProxy);
+            }
             proxy = getProxy(value, Type.HTTP);
         } else if (isSocksProxy() || isSocks4Proxy() || isSocks5Proxy()) {
             value = dictionary.get(TerminalArgument.SocksProxy);
-            if (value == null)
+            if (value == null) {
                 value = dictionary.get(TerminalArgument.Socks5Proxy);
-            if (value == null)
+            }
+            if (value == null) {
                 value = dictionary.get(TerminalArgument.Socks4Proxy);
+            }
             proxy = getProxy(value, Type.SOCKS);
         }
         return proxy;
@@ -132,7 +125,7 @@ public class Argument {
      */
     protected Proxy getProxy(String value, Proxy.Type type) {
         Proxy proxy;
-        String host = null;
+        String host = "";
         int port = 0;
         try {
             String[] temp = value.split(":");
@@ -190,6 +183,16 @@ public class Argument {
 
     public String getFileName() {
         return dictionary.get(TerminalArgument.FileName);
+    }
+
+    public String getProxyUsername() {
+        return dictionary.get(TerminalArgument.ProxyUsername);
+    }
+
+    public char[] getProxyPassword() {
+        return Optional.ofNullable(dictionary.get(TerminalArgument.ProxyPassword))
+                .map(String::toCharArray)
+                .orElse(null);
     }
 
     public boolean isInsecure() {
@@ -286,20 +289,20 @@ public class Argument {
     }
 
     public int[] parseDownloadPieces() {
-        String pices = getDownloadPieces();
-        if (pices.startsWith("/") || pices.startsWith("file://")) {
-            List<String> list = Utils.readLines(pices);
-            int[] indexs = new int[list.size()];
+        var pieces = this.getDownloadPieces();
+        if (pieces.startsWith("/") || pieces.startsWith("file://")) {
+            List<String> list = Utils.readLines(pieces);
+            int[] indexes = new int[list.size()];
             for (int i = 0; i < list.size(); i++) {
                 try {
-                    indexs[i] = Integer.parseInt(list.get(i));
+                    indexes[i] = Integer.parseInt(list.get(i));
                 } catch (Exception e) {
-                    indexs[i] = -1;
+                    indexes[i] = -1;
                 }
             }
-            return indexs;
+            return indexes;
         } else {
-            String temp[] = pices.split(" ");
+            var temp = pieces.split(" ");
             int[] indexes = new int[temp.length];
             for (int i = 0; i < temp.length; i++) {
                 indexes[i] = Integer.parseInt(temp[i]);
@@ -359,11 +362,13 @@ public class Argument {
     public boolean isSocksProxy() {
         boolean proxy = false;
         if (isProxy()) {
-            if (get(TerminalArgument.Proxy).startsWith("socks"))
+            if (get(TerminalArgument.Proxy).startsWith("socks")) {
                 proxy = true;
-
+            }
         }
-        return is(TerminalArgument.SocksProxy) || is(TerminalArgument.Socks4Proxy) || is(TerminalArgument.Socks5Proxy)
+        return is(TerminalArgument.SocksProxy)
+                || is(TerminalArgument.Socks4Proxy)
+                || is(TerminalArgument.Socks5Proxy)
                 || proxy;
     }
 

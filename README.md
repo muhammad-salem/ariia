@@ -84,6 +84,8 @@ ___
 	-socks	--socks-proxy		use socks proxy [host:port] format
 	-socks4	--socks4-proxy		use socks4 proxy [host:port] format
 	-socks5	--socks5-proxy		use socks5 proxy [host:port] format
+	-pu	--proxy-user		    Specify the username for authentication on a proxy server
+	-pp	--proxy-password		Specify the password for authentication on a proxy server
 	-s	--ssh			use ssh connection as proxy - [remotehost:port], not supported yet
 	-su	--ssh-user		set ssh user name - remote login user name
 	-sp	--ssh-pass		set remote login password, if non will be asked from terminal
