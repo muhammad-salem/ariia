@@ -32,7 +32,7 @@ public class Ariia {
                 System.exit(0);
             }
         };
-        var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
+        var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.getProxyUsername(), arguments.getProxyPassword(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
         var cli = new AriiaCli(client, onComplete);
         cli.lunchAsCliApp(arguments, properties);

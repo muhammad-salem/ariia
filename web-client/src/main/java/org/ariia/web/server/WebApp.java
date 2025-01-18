@@ -20,7 +20,7 @@ public class WebApp {
             System.out.println(arguments.getVersion() + " - Angular Material (11.0.9)");
             return;
         }
-        var client = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
+        var client = new JavaHttpClient(arguments.getProxy(), arguments.getProxyUsername(), arguments.getProxyPassword(), arguments.isInsecure());
         WebService.start(arguments, client);
     }
 

@@ -61,7 +61,7 @@ public class JavaFXApp extends Application {
             R.mkdir(R.getDownloadDirectory());
         }
         var downloadService = new DownloadService();
-        var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.isInsecure());
+        var httpClient = new JavaHttpClient(arguments.getProxy(), arguments.getProxyUsername(), arguments.getProxyPassword(), arguments.isInsecure());
         var client = Clients.segmentClient(properties, httpClient);
         var ariiaCli = new AriiaCli(downloadService, client);
         ariiaCli.lunchAsJavafxApp(arguments, properties);
