@@ -7,6 +7,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -16,7 +17,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,10 +40,15 @@ public class JavaHttpClient implements ClientRequest {
             var authenticator = new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(username, password);
+                    if (RequestorType.PROXY.equals(this.getRequestorType())) {
+                        return new PasswordAuthentication(username, password);
+                    }
+                    return null;
                 }
             };
             builder.authenticator(authenticator);
+            System.setProperty("jdk.http.auth.proxying.disabledSchemes", "");
+            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
         }
         if (trustAll) {
             var trustManagers = new TrustManager[]{
@@ -60,11 +65,9 @@ public class JavaHttpClient implements ClientRequest {
         this.client = builder.build();
     }
 
-
     @Override
     public Response executeRequest(String method, String url, Map<String, List<String>> headers) throws IOException {
         try {
-
             var requestBuilder = HttpRequest.newBuilder(new URI(url));
             if ("GET".equalsIgnoreCase(method)) {
                 requestBuilder.GET();
@@ -82,15 +85,15 @@ public class JavaHttpClient implements ClientRequest {
 
             var response = client.send(requestBuilder.build(), BodyHandlers.ofInputStream());
 
-            var responseBuilder = new Response.Builder();
-            responseBuilder.code(response.statusCode());
-            responseBuilder.requestUrl(response.uri().toString());
-            responseBuilder.requestMethod(response.request().method());
-            responseBuilder.protocol(response.version().toString());
-            responseBuilder.responseMessage(Code.msg(response.statusCode()));
-            responseBuilder.headers(response.headers().map());
-            responseBuilder.setBodyBytes(response.body());
-            return responseBuilder.build();
+            return new Response.Builder()
+                    .code(response.statusCode())
+                    .requestUrl(response.uri().toString())
+                    .requestMethod(response.request().method())
+                    .protocol(response.version().toString())
+                    .responseMessage(Code.msg(response.statusCode()))
+                    .headers(response.headers().map())
+                    .setBodyBytes(response.body())
+                    .build();
 
         } catch (InterruptedException | URISyntaxException e) {
             throw new IOException(e.getMessage(), e);
