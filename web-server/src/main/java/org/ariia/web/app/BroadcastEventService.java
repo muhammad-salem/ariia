@@ -16,13 +16,13 @@ import java.util.stream.Stream;
 
 @Getter
 public class BroadcastEventService {
-    private DownloadService downloadService;
-    private SourceEvent sourceEvent;
-    private EventProvider sessionProvider;
-    private EventProvider itemListProvider;
-    private EventProvider itemProvider;
+    private final DownloadService downloadService;
+    private final SourceEvent sourceEvent;
+    private final EventProvider sessionProvider;
+    private final EventProvider itemListProvider;
+    private final EventProvider itemProvider;
 
-    private Flow.Subscriber<ItemMetaData> onUpdateSubscriber = new Flow.Subscriber<>() {
+    private final Flow.Subscriber<ItemMetaData> onUpdateSubscriber = new Flow.Subscriber<>() {
         private Flow.Subscription subscription;
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
@@ -37,17 +37,14 @@ public class BroadcastEventService {
         }
 
         @Override
-        public void onError(Throwable throwable) {
-
-        }
+        public void onError(Throwable throwable) {}
 
         @Override
-        public void onComplete() {
-        }
+        public void onComplete() {}
 
     };
 
-    private Flow.Subscriber<Void> onCycleUpdateSubscriber = new Flow.Subscriber<>() {
+    private final Flow.Subscriber<Void> onCycleUpdateSubscriber = new Flow.Subscriber<>() {
         private Flow.Subscription subscription;
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
@@ -62,13 +59,10 @@ public class BroadcastEventService {
         }
 
         @Override
-        public void onError(Throwable throwable) {
-
-        }
+        public void onError(Throwable throwable) {}
 
         @Override
-        public void onComplete() {
-        }
+        public void onComplete() {}
 
     };
 

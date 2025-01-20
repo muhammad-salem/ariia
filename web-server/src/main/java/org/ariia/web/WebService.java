@@ -52,24 +52,7 @@ public class WebService {
                 : WebServer.ResourceType.STREAM;
 
 
-        var homeRoutes = new Routes("home");
-        var dashboardRoutes = new Routes("dashboard");
-        var downloadRoutes = new Routes("download", "**");
-        var networkRoutes = new Routes("network", "monitor", "chart");
-        var configRoutes = new Routes("config");
-        var loggerRoutes = new Routes("logger");
-
-        var rootRoutes = new Routes(
-                "/",
-                homeRoutes,
-                dashboardRoutes,
-                downloadRoutes,
-                networkRoutes,
-                configRoutes,
-                loggerRoutes
-        );
-
-        var server = new WebServer(port, resourceLocation, type, rootRoutes);
+        var server = getWebServer(port, resourceLocation, type);
 
         // setup download manager service
         var client = Clients.segmentClient(properties, clientRequest);
@@ -77,7 +60,7 @@ public class WebService {
         var downloadService = new DownloadService();
 
         var broadcastEventService = new BroadcastEventService(downloadService, mainBroadcast);
-        var cli = new AriiaCli(downloadService, client, ()-> broadcastEventService.sendEndSession());
+        var cli = new AriiaCli(downloadService, client, broadcastEventService::sendEndSession);
 
         var settingController = new SettingController(new SettingService(downloadService, properties));
         server.createControllerContext(settingController);
@@ -109,6 +92,25 @@ public class WebService {
         Log.log(WebService.class, "Running Web Server", log.toString());
         broadcastEventService.sendStartSession();
 
+    }
+
+    private static WebServer getWebServer(int port, String resourceLocation, ResourceType type) throws IOException {
+        var homeRoutes = new Routes("home");
+        var dashboardRoutes = new Routes("dashboard");
+        var downloadRoutes = new Routes("download", "**");
+        var networkRoutes = new Routes("network", "monitor", "chart");
+        var configRoutes = new Routes("config");
+        var loggerRoutes = new Routes("logger");
+        var rootRoutes = new Routes(
+                "/",
+                homeRoutes,
+                dashboardRoutes,
+                downloadRoutes,
+                networkRoutes,
+                configRoutes,
+                loggerRoutes
+        );
+        return new WebServer(port, resourceLocation, type, rootRoutes);
     }
 
 }

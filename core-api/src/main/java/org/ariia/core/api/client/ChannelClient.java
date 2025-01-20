@@ -6,7 +6,7 @@ import org.ariia.core.api.queue.ThreadOrder;
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.response.ChannelDownloader;
 import org.ariia.core.api.writer.ClientChannelWriter;
-import org.ariia.core.api.writer.ClinetWriter;
+import org.ariia.core.api.writer.ClientWriter;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.network.speed.report.SpeedMonitor;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 public class ChannelClient extends Client implements StreamOrder, ThreadOrder {
 
-    ChannelDownloader channelDownloader;
+    private final ChannelDownloader channelDownloader;
 
     public ChannelClient(Properties properties, ClientRequest clientRequest) {
         this(
@@ -26,13 +26,13 @@ public class ChannelClient extends Client implements StreamOrder, ThreadOrder {
         );
     }
 
-    public ChannelClient(Properties properties, ClientRequest clientRequest, ClinetWriter clinetWriter) {
-        this(properties, clientRequest, Executors.newCachedThreadPool(), new ChannelDownloader(clientRequest, clinetWriter));
+    public ChannelClient(Properties properties, ClientRequest clientRequest, ClientWriter clientWriter) {
+        this(properties, clientRequest, Executors.newCachedThreadPool(), new ChannelDownloader(clientRequest, clientWriter));
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,
-                         ClinetWriter clinetWriter) {
-        this(properties, clientRequest, executor, new ChannelDownloader(clientRequest, clinetWriter));
+                         ClientWriter clientWriter) {
+        this(properties, clientRequest, executor, new ChannelDownloader(clientRequest, clientWriter));
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ExecutorService executor) {

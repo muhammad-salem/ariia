@@ -31,19 +31,16 @@ public interface ClientRequest {
     }
 
     default Response get(Item item) throws IOException {
-        return executeAndDebugRequest("GET",
-                item.isRedirected() ? item.getRedirectUrl() : item.getUrl(), item.getHeaders());
+        return executeAndDebugRequest("GET", item.isRedirected() ? item.getRedirectUrl() : item.getUrl(), item.getHeaders());
     }
 
     default Response get(Item item, int index) throws IOException {
-        long[] range = item.getRangeInfo().indexOf(index);
-        return get(item.isRedirected() ? item.getRedirectUrl() : item.getUrl(),
-                range[0], range[1], item.getHeaders());
+        var range = item.getRangeInfo().indexOf(index);
+        return get(item.isRedirected() ? item.getRedirectUrl() : item.getUrl(), range[0], range[1], item.getHeaders());
     }
 
     default Response get(String url, Long startRange, Long endRange, Map<String, List<String>> headers) throws IOException {
-
-        Map<String, List<String>> headersCopy = new HashMap<>(headers);
+        var headersCopy = new HashMap<>(headers);
         if (Objects.nonNull(startRange) && startRange > -1) {
             if (Objects.isNull(endRange) || endRange == -1) {
                 headersCopy.put("Range", List.of("bytes=" + startRange + "-"));
@@ -95,7 +92,6 @@ public interface ClientRequest {
                 builder.append('\n');
             });
         });
-//    	builder.append(response.headers().toString());
         Log.debug(getClass(), "Client Request / Server Response", builder.toString());
     }
 

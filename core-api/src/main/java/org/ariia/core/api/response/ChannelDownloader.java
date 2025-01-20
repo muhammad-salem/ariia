@@ -2,7 +2,7 @@ package org.ariia.core.api.response;
 
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
-import org.ariia.core.api.writer.ClinetWriter;
+import org.ariia.core.api.writer.ClientWriter;
 import org.ariia.core.api.writer.ItemMetaData;
 import org.ariia.logging.Logger;
 import org.network.speed.report.SpeedMonitor;
@@ -19,12 +19,12 @@ public class ChannelDownloader implements Downloader, ContentLength {
     private static Logger log = Logger.create(ChannelDownloader.class);
 
     private ClientRequest clientRequest;
-    private ClinetWriter clinetWriter;
+    private ClientWriter clientWriter;
 
-    public ChannelDownloader(ClientRequest clientRequest, ClinetWriter clinetWriter) {
+    public ChannelDownloader(ClientRequest clientRequest, ClientWriter clientWriter) {
         super();
         this.clientRequest = clientRequest;
-        this.clinetWriter = clinetWriter;
+        this.clientWriter = clientWriter;
     }
 
     public boolean downloadTask(ItemMetaData metaData, int index, SpeedMonitor... monitors) {
@@ -54,7 +54,7 @@ public class ChannelDownloader implements Downloader, ContentLength {
 
 
             raf = new RandomAccessFile(item.path(), "rwd");
-            clinetWriter.writeResponse(response.bodyBytes(), raf, item.getRangeInfo().indexOf(index), monitors);
+            clientWriter.writeResponse(response.bodyBytes(), raf, item.getRangeInfo().indexOf(index), monitors);
         } catch (Exception e) {
             return false;
         } finally {

@@ -1,5 +1,7 @@
 package org.ariia.core.api.client;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.ariia.config.Properties;
 import org.ariia.core.api.queue.ItemDownloader;
 import org.ariia.core.api.request.ClientRequest;
@@ -26,6 +28,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Getter @Setter
 public abstract class Client implements Downloader, ItemDownloader, ContentLength {
 
     // protected int retries;
@@ -42,22 +45,6 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 
     public Proxy getProxy() {
         return clientRequest.proxy();
-    }
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
-    public ClientRequest getClientRequest() {
-        return clientRequest;
-    }
-
-    public ExecutorService getExecutor() {
-        return executor;
     }
 
     public void shutdownServiceNow() {
@@ -104,7 +91,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
                 try {
                     updateItemOnline(item, true);
                     break;
-                } catch (IOException e1) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -122,7 +109,7 @@ public abstract class Client implements Downloader, ItemDownloader, ContentLengt
 
                 String decodedUrl;
                 try {
-                    decodedUrl = URLDecoder.decode(response.requestUrl(), StandardCharsets.UTF_8.name());
+                    decodedUrl = URLDecoder.decode(response.requestUrl(), StandardCharsets.UTF_8);
                 } catch (Exception e) {
                     decodedUrl = response.requestUrl();
                 }

@@ -1,5 +1,8 @@
 package org.ariia.core.api.service;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
 import org.ariia.core.api.writer.ChannelMetaDataWriter;
@@ -26,16 +29,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
- * item life cycle metadata to waiting list then it moved to download list if
- * finish >> to complete list else to pause list and if any action to waiting
+ * item life cycle metadata to the waiting list then it moved to download a list if
+ * finish >> to complete the list else to pause list and if any action to waiting
  * list again <br/>
- * item --> [item meta data] --> add to [waiting list] -- > [download list] -->
+ * item --> [item metadata] --> add to [waiting list] -- > [download list] -->
  * [ complete list] |---<--- [pause list] <--|
  */
+@Getter @Setter
+@NoArgsConstructor
 public class DownloadService implements Closeable {
 
     public final static int SCHEDULE_TIME = 1;
-    private static Logger log = Logger.create(DownloadService.class);
+    private static final Logger log = Logger.create(DownloadService.class);
     // public final static int SCHEDULE_POOL = 10;
     protected ScheduledExecutorService scheduledService;
 
@@ -47,37 +52,16 @@ public class DownloadService implements Closeable {
     protected ConnectivityCheck connectivityCheck;
 
     protected Properties properties;
-    protected Runnable finishAction = () -> {
-    };
+    protected Runnable finishAction = () -> {};
 
     protected boolean allowDownload = true;
     protected boolean allowPause = false;
-
     protected boolean allowPrintingReport = true;
 
-    private SubmissionPublisher<ItemMetaData> updatePublisher = new SubmissionPublisher();
-    private SubmissionPublisher<ItemMetaData> addPublisher = new SubmissionPublisher();
-    private SubmissionPublisher<ItemMetaData> removePublisher = new SubmissionPublisher();
-    private SubmissionPublisher<Void> cyclePublisher = new SubmissionPublisher();
-
-    public DownloadService() {
-    }
-
-    public boolean isAllowDownload() {
-        return allowDownload;
-    }
-
-    public void setAllowDownload(boolean allowDownload) {
-        this.allowDownload = allowDownload;
-    }
-
-    public boolean isAllowPause() {
-        return allowPause;
-    }
-
-    public void setAllowPause(boolean allowPause) {
-        this.allowPause = allowPause;
-    }
+    private final SubmissionPublisher<ItemMetaData> updatePublisher = new SubmissionPublisher<>();
+    private final SubmissionPublisher<ItemMetaData> addPublisher = new SubmissionPublisher<>();
+    private final SubmissionPublisher<ItemMetaData> removePublisher = new SubmissionPublisher<>();
+    private final SubmissionPublisher<Void> cyclePublisher = new SubmissionPublisher<>();
 
     private void runEvent(SubmissionPublisher<ItemMetaData> publisher, ItemMetaData metaData) {
         try {
@@ -217,7 +201,7 @@ public class DownloadService implements Closeable {
     }
 
     public boolean isFinishTime() {
-        return waitStream().count() == 0L & downloadStream().count() == 0L & pauseStream().count() == 0L;
+        return waitStream().findAny().isEmpty() & downloadStream().findAny().isEmpty() & pauseStream().findAny().isEmpty();
     }
 
     protected boolean isItemListHadItemsToDownload() {
@@ -268,9 +252,7 @@ public class DownloadService implements Closeable {
             // check waiting to download
             long reamingActiveDownloadPool = properties.getMaxActiveDownloadPool() - getDownloadCount();
             if (reamingActiveDownloadPool > 0) {
-                waitStream().limit(reamingActiveDownloadPool).forEach(metaData -> {
-                    this.moveToDownloadList(metaData);
-                });
+                waitStream().limit(reamingActiveDownloadPool).forEach(this::moveToDownloadList);
             }
             if (isFinishTime()) {
                 finishAction.run();
@@ -288,10 +270,6 @@ public class DownloadService implements Closeable {
             itemDataStore.save(metaData.getItem());
             metaData.close();
         }
-    }
-
-    public DataStore<Item> getItemDataStore() {
-        return itemDataStore;
     }
 
     public void printReport() {
@@ -387,30 +365,6 @@ public class DownloadService implements Closeable {
 
     public Properties getProperties() {
         return defaultClient.getProperties();
-    }
-
-    public SpeedTableReport getSpeedTableReport() {
-        return speedTableReport;
-    }
-
-    public SessionReport getSessionReport() {
-        return sessionReport;
-    }
-
-    public SubmissionPublisher<ItemMetaData> getUpdatePublisher() {
-        return updatePublisher;
-    }
-
-    public SubmissionPublisher<ItemMetaData> getAddPublisher() {
-        return addPublisher;
-    }
-
-    public SubmissionPublisher<ItemMetaData> getRemovePublisher() {
-        return removePublisher;
-    }
-
-    public SubmissionPublisher<Void> getCyclePublisher() {
-        return cyclePublisher;
     }
 
 }
