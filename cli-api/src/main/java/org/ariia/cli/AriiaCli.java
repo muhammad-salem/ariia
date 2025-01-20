@@ -1,5 +1,6 @@
 package org.ariia.cli;
 
+import lombok.Getter;
 import org.ariia.args.Argument;
 import org.ariia.config.Properties;
 import org.ariia.core.api.client.Client;
@@ -17,6 +18,7 @@ import java.util.Objects;
 import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
 import static org.fusesource.jansi.internal.CLibrary.isatty;
 
+@Getter
 public class AriiaCli {
 
     boolean buildServiceByFactory = false;
@@ -51,10 +53,6 @@ public class AriiaCli {
         this.client = Objects.requireNonNull(client);
         this.finishAction = Objects.requireNonNull(finishAction);
         this.buildServiceByFactory = true;
-    }
-
-    public DownloadService getDownloadService() {
-        return downloadService;
     }
 
     public void lunchAsWebApp(Argument arguments, Properties properties) {
