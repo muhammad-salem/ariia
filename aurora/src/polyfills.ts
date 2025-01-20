@@ -1,7 +1,6 @@
-import 'zone.js';
 import { bootstrapZone } from '@ibyar/aurora';
 
-bootstrapZone('aurora');
+bootstrapZone('manual');
 
 
 declare global {
