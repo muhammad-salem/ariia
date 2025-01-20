@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 
-public interface ClinetWriter {
+public interface ClientWriter {
 
     int RESPONSE_BUFFER = 2048;
 

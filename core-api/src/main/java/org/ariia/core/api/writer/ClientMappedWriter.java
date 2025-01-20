@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel.MapMode;
 import java.nio.channels.ReadableByteChannel;
 
 
-public interface ClientMappedWriter extends ClinetWriter {
+public interface ClientMappedWriter extends ClientWriter {
 
 
     default void write(InputStream source, RandomAccessFile destination, long[] ranges, boolean stream) throws IOException {

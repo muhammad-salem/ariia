@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
 
-public interface ClientChannelWriter extends ClinetWriter {
+public interface ClientChannelWriter extends ClientWriter {
 
     default void write(InputStream source, RandomAccessFile destination, long[] ranges)
             throws IOException {
@@ -63,7 +63,7 @@ public interface ClientChannelWriter extends ClinetWriter {
             addToRange(ranges, count);
 
             /**
-             * stop read write operation intently
+             * stop read/write operation intently
              * in case of keep reading more than the given range
              * when modify/update ranges 
              * new will read until new modified range
