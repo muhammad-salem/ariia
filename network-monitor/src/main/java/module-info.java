@@ -6,4 +6,5 @@ module ariia.network.monitor {
     requires ariia.utils;
     requires ariia.models;
     exports org.ariia.monitors;
+    opens org.ariia.monitors to com.google.gson;
 }
