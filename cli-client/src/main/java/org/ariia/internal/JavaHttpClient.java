@@ -31,11 +31,7 @@ public class JavaHttpClient implements ClientRequest {
         var builder = HttpClient.newBuilder()
                 .followRedirects(Redirect.ALWAYS)
                 .connectTimeout(Duration.ofSeconds(20))
-                .proxy(new JavaProxySelector(proxy))
-//			        .proxy(ProxySelector.of( (InetSocketAddress) proxy.address() ))
-//			        .authenticator(Authenticator.getDefault())
-//			        .executor(Executors.newCachedThreadPool())
-                ;
+                .proxy(new JavaProxySelector(proxy));
         if (!Proxy.NO_PROXY.equals(proxy) && proxy != null && username != null && password != null) {
             var authenticator = new Authenticator() {
                 @Override

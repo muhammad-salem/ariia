@@ -21,13 +21,13 @@ public class ChannelClient extends Client implements StreamOrder, ThreadOrder {
         this(
                 properties,
                 clientRequest,
-                Executors.newCachedThreadPool(),
+                Executors.newVirtualThreadPerTaskExecutor(),
                 new ClientChannelWriter() {}
         );
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ClientWriter clientWriter) {
-        this(properties, clientRequest, Executors.newCachedThreadPool(), new ChannelDownloader(clientRequest, clientWriter));
+        this(properties, clientRequest, Executors.newVirtualThreadPerTaskExecutor(), new ChannelDownloader(clientRequest, clientWriter));
     }
 
     public ChannelClient(Properties properties, ClientRequest clientRequest, ExecutorService executor,

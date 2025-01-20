@@ -14,13 +14,13 @@ import java.util.concurrent.Executors;
 
 public class SegmentClient extends Client implements StreamOrder, ThreadOrder {
 
-    private SegmentDownloader segmentDownloader;
+    private final SegmentDownloader segmentDownloader;
 
     public SegmentClient(Properties properties, ClientRequest clientRequest) {
         this(
                 properties,
                 clientRequest,
-                Executors.newCachedThreadPool(),
+                Executors.newVirtualThreadPerTaskExecutor(),
                 new SegmentDownloader(clientRequest, new SegmentWriter() {}))
         ;
     }

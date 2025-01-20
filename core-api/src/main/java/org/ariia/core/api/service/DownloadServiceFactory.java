@@ -31,7 +31,7 @@ public class DownloadServiceFactory {
             builder.setSessionReport(sessionReportFactory);
         }
         if (Objects.isNull(scheduledService)) {
-            this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL);
+            this.scheduledService = Executors.newScheduledThreadPool(SCHEDULE_POOL, Thread.ofVirtual().factory());
         }
         builder.setScheduledService(scheduledService);
         if (Objects.isNull(connectivityCheck)) {
