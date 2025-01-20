@@ -1,4 +1,4 @@
-# ariia  (2.1.0)
+# ariia  (2.1.1)
 
 Ariia is a command line download manager and HTML UI interface Angular 11, Aurora 0.8.6 and Java 17.
 
