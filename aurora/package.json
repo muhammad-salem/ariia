@@ -1,6 +1,6 @@
 {
   "name": "ariia",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Ariia Web client, build by Aurora",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,12 +23,12 @@
     "ibyar:watch": "npx ibyar --build --watch --verbose"
   },
   "dependencies": {
-    "@ibyar/aurora": "^1.1.0",
-    "bootstrap": "^5.3.2",
+    "@ibyar/aurora": "^3.0.0",
+    "bootstrap": "^5.3.3",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@ibyar/esmpack": "^1.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.7.3"
   }
 }
