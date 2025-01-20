@@ -44,7 +44,7 @@ public class BroadcastEventService {
 
     };
 
-    private final Flow.Subscriber<Void> onCycleUpdateSubscriber = new Flow.Subscriber<>() {
+    private final Flow.Subscriber<Integer> onCycleUpdateSubscriber = new Flow.Subscriber<>() {
         private Flow.Subscription subscription;
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
@@ -53,7 +53,7 @@ public class BroadcastEventService {
         }
 
         @Override
-        public void onNext(Void unused) {
+        public void onNext(Integer unused) {
             BroadcastEventService.this.sendWebReport();
             this.subscription.request(1);
         }

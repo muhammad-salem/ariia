@@ -61,7 +61,7 @@ public class DownloadService implements Closeable {
     private final SubmissionPublisher<ItemMetaData> updatePublisher = new SubmissionPublisher<>();
     private final SubmissionPublisher<ItemMetaData> addPublisher = new SubmissionPublisher<>();
     private final SubmissionPublisher<ItemMetaData> removePublisher = new SubmissionPublisher<>();
-    private final SubmissionPublisher<Void> cyclePublisher = new SubmissionPublisher<>();
+    private final SubmissionPublisher<Integer> cyclePublisher = new SubmissionPublisher<>();
 
     private void runEvent(SubmissionPublisher<ItemMetaData> publisher, ItemMetaData metaData) {
         try {
@@ -280,7 +280,7 @@ public class DownloadService implements Closeable {
         }
         this.itemStream().forEach(updatePublisher::submit);
         try {
-            cyclePublisher.submit(null);
+            cyclePublisher.submit(1);
         } catch (Exception e) {
             log.error("Error notify cycle update");
         }
