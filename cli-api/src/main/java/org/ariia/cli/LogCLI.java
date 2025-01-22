@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class LogCLI {
 
-    private static Logger log = Logger.create(LogCLI.class);
+    private static final Logger log = Logger.create(LogCLI.class);
 
     public static void initLogServices(Argument arguments) {
         var logLevel = arguments.getOrDefault(TerminalArgument.Debug, Level.info.name());

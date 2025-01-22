@@ -2,6 +2,7 @@ package org.ariia.internal;
 
 import org.ariia.core.api.request.ClientRequest;
 import org.ariia.core.api.request.Response;
+import org.ariia.logging.Log;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -36,6 +37,12 @@ public class JavaHttpClient implements ClientRequest {
             var authenticator = new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
+                    Log.debug(JavaHttpClient.this.getClass(),
+                            "Ask for Password Authentication for host: %s, and type: %s".formatted(
+                                    this.getRequestingHost(),
+                                    this.getRequestorType()
+                            )
+                    );
                     if (RequestorType.PROXY.equals(this.getRequestorType())) {
                         return new PasswordAuthentication(username, password);
                     }

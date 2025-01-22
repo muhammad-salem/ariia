@@ -6,6 +6,7 @@ module ariia.cli.client {
     requires java.net.http;
     requires ariia.utils;
     requires ariia.models;
+    requires ariia.logger;
     exports org.ariia;
     exports org.ariia.internal;
 }
