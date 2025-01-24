@@ -64,7 +64,7 @@ ___
  java - jar ariia.jar [-u] URL
 	-u	--url			[-u] add new link/url to download manager
 	-i	--input-file		download from text file - list of urls
-	-m	--metalink		download from  metal ink text/xml file - list of urls on deficient servers for the same downloadable file
+	-m	--meta-link		download from  metal ink text/xml file - list of urls on deficient servers for the same downloadable file
 	-r	--http-referer		set referer header for that link
 	-ua	--user-agent		set user-agent header while download
 	-H	--header		set one/more different header(s) for that link
@@ -84,7 +84,7 @@ ___
 	-socks	--socks-proxy		use socks proxy [host:port] format
 	-socks4	--socks4-proxy		use socks4 proxy [host:port] format
 	-socks5	--socks5-proxy		use socks5 proxy [host:port] format
-	-pu	--proxy-user		    Specify the username for authentication on a proxy server
+	-pu	--proxy-user		        Specify the username for authentication on a proxy server
 	-pp	--proxy-password		Specify the password for authentication on a proxy server
 	-s	--ssh			use ssh connection as proxy - [remotehost:port], not supported yet
 	-su	--ssh-user		set ssh user name - remote login user name

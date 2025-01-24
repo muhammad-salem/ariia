@@ -8,7 +8,7 @@ import java.util.Arrays;
 public enum TerminalArgument {
     Url("-u", "--url"),
     InputFile("-i", "--input-file"),
-    MetaLink("-m", "--metalink"),
+    MetaLink("-m", "--meta-link"),
     Referer("-r", "--http-referer"),
 
     UserAgent("-ua", "--user-agent"),
@@ -59,10 +59,10 @@ public enum TerminalArgument {
     Chrome("-ch", "--chrome");
 
 
-    String full;
-    private String mini;
+    private final String full;
+    private final String mini;
 
-    private TerminalArgument(String mini, String full) {
+    TerminalArgument(String mini, String full) {
         this.mini = mini;
         this.full = full;
     }
